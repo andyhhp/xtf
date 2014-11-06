@@ -1,11 +1,15 @@
 #ifndef XTF_TYPES_H
 #define XTF_TYPES_H
 
+#ifndef __ASSEMBLY__
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <inttypes.h>
+
+#endif /* !__ASSEMBLY__ */
 
 #endif /* XTF_TYPES_H */
 

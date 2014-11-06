@@ -12,4 +12,9 @@ than useful test.
 
 @subpage test-selftest - A set of sanity tests of the framework environment
 and functionality.
+
+
+@section index-functional Functional tests
+
+@subpage test-swint-emulation - Software interrupt emulation for HVM guests.
 */
