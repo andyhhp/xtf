@@ -8,6 +8,7 @@ ELFNOTE(Xen, XEN_ELFNOTE_GUEST_VERSION, .asciz "0")
 
 /* PV loader */
 ELFNOTE(Xen, XEN_ELFNOTE_LOADER, .asciz "generic")
+ELFNOTE(Xen, XEN_ELFNOTE_HYPERCALL_PAGE, _WORD hypercall_page)
 
 /* Xen ABI information */
 ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION, .asciz "xen-3.0")

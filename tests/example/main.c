@@ -2,8 +2,6 @@
 
 void test_main(void)
 {
-    for ( ; ; )
-        asm volatile ("rep; nop");
 }
 
 /*

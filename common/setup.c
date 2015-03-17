@@ -4,6 +4,8 @@
  * C entry point.
  */
 
+#include <xtf/compiler.h>
+#include <xtf/hypercall.h>
 #include <xtf/test.h>
 
 /**
@@ -11,9 +13,12 @@
  *
  * Set up the microkernel and invoke the test.
  */
-void xtf_main(void)
+void __noreturn xtf_main(void)
 {
     test_main();
+
+    hypercall_shutdown(SHUTDOWN_poweroff);
+    unreachable();
 }
 
 /*

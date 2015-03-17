@@ -5,3 +5,6 @@
 # obj-$(env)   are objects unique to a specific environment
 
 obj-perarch += $(ROOT)/common/setup.o
+
+# Always link hypercall_page.S last as it is a page of data replaced by the hyperisor
+obj-perenv += $(ROOT)/arch/x86/hypercall_page.o

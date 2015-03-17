@@ -6,6 +6,15 @@
 #ifndef XTF_ASM_MACROS_H
 #define XTF_ASM_MACROS_H
 
+/* Declare data at the architectures width. */
+#if defined(__x86_64__)
+# define _WORD .quad
+#elif defined(__i386__)
+# define _WORD .long
+#else
+# error Bad architecture for _WORD
+#endif
+
 /**
  * Declare a global symbol.
  * @param name Symbol name.
@@ -20,6 +29,15 @@ name:
  */
 #define SIZE(name)                              \
     .size name, . - name;
+
+/**
+ * Identify a specific hypercall in the hypercall page
+ * @param name Hypercall name.
+ */
+#define DECLARE_HYPERCALL(name)                                         \
+    .globl HYPERCALL_ ## name;                                          \
+    .set HYPERCALL_ ## name, hypercall_page + __HYPERVISOR_ ## name * 32; \
+    .size HYPERCALL_ ## name, 32
 
 /**
  * Create an ELF note entry.
