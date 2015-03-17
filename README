@@ -11,12 +11,12 @@ machine.
 
 ## The framework consists of:
 
-* Nothing (yet)
+* PV 32 and 64 bit entry points
 
 ## TODO List:
 
 * More introductory text
-* Entry points for 32 and 64bit PV and HVM guests
+* Entry points for 32 and 64bit HVM guests
 * Hypercall infrastructure
 * PV console driver
 * Common reporting framework
