@@ -24,6 +24,14 @@ ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
 
  /* PV entry point. */
 GLOBAL(_start)
+
+        /* Stash start_info_t pointer from domain build. */
+#ifdef __x86_64__
+        mov %rsi, start_info
+#else
+        mov %esi, start_info
+#endif
+
         call xtf_main
         ud2
 SIZE(_start)

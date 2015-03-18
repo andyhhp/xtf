@@ -6,6 +6,7 @@
 
 #include <xtf/compiler.h>
 #include <xtf/hypercall.h>
+#include <xtf/framework.h>
 #include <xtf/test.h>
 
 /**
@@ -15,6 +16,8 @@
  */
 void __noreturn xtf_main(void)
 {
+    arch_setup();
+
     test_main();
 
     hypercall_shutdown(SHUTDOWN_poweroff);
