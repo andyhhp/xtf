@@ -13,6 +13,7 @@
 
 #define __HYPERVISOR_console_io           18
 #define __HYPERVISOR_sched_op             29
+#define __HYPERVISOR_event_channel_op     32
 
 /* Commands to HYPERVISOR_console_io */
 #define CONSOLEIO_write                   0

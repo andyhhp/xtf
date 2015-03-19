@@ -11,3 +11,4 @@ GLOBAL(hypercall_page)
 
 DECLARE_HYPERCALL(console_io)
 DECLARE_HYPERCALL(sched_op)
+DECLARE_HYPERCALL(event_channel_op)

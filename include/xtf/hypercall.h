@@ -22,6 +22,7 @@
 /* All Xen ABI for includers convenience .*/
 #include <xen/xen.h>
 #include <xen/sched.h>
+#include <xen/event_channel.h>
 
 /*
  * Hypercall primatives, compiled for the correct bitness
@@ -29,6 +30,11 @@
 static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, sched_op, cmd, arg);
+}
+
+static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
+{
+    return HYPERCALL2(long, event_channel_op, cmd, arg);
 }
 
 /*
@@ -42,6 +48,16 @@ static inline void hypercall_console_write(const char *buf, unsigned long count)
 static inline long hypercall_shutdown(unsigned int reason)
 {
     return hypercall_sched_op(SCHEDOP_shutdown, &reason);
+}
+
+static inline void hypercall_yield(void)
+{
+    hypercall_sched_op(SCHEDOP_yield, NULL);
+}
+
+static inline int hypercall_evtchn_send(evtchn_port_t port)
+{
+    return hypercall_event_channel_op(EVTCHNOP_send, &port);
 }
 
 #endif /* XTF_HYPERCALL_H */

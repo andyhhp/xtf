@@ -5,6 +5,7 @@
 #ifndef XEN_PUBLIC_SCHED_H
 #define XEN_PUBLIC_SCHED_H
 
+#define SCHEDOP_yield    0
 #define SCHEDOP_shutdown 2
 
 #ifndef __ASSEMBLY__
