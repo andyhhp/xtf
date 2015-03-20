@@ -3,6 +3,9 @@
 
 #include <xtf/compiler.h>
 
+#include <xen/event_channel.h>
+#include <xen/io/console.h>
+
 /* Console output callback. */
 typedef void (*cons_output_cb)(const char *buf, size_t len);
 
@@ -11,6 +14,12 @@ typedef void (*cons_output_cb)(const char *buf, size_t len);
  * destinations of console text.
  */
 void register_console_callback(cons_output_cb cb);
+
+/*
+ * Initialise the PV console.  Will register a callback.
+ */
+void init_pv_console(xencons_interface_t *ring,
+                     evtchn_port_t port);
 
 void printk(const char *fmt, ...) __printf(1, 2);
 

@@ -1,6 +1,7 @@
 #ifndef XTF_ATOMIC_H
 #define XTF_ATOMIC_H
 
+#include <xtf/lib.h>
 #include <xtf/barrier.h>
 
 #define LOAD_ACQUIRE(p)                         \
