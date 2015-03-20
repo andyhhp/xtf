@@ -5,6 +5,14 @@
 #ifndef XEN_PUBLIC_ARCH_X86_XEN_H
 #define XEN_PUBLIC_ARCH_X86_XEN_H
 
+#if defined (__i386__)
+# include "xen-x86_32.h"
+#elif defined (__x86_64__)
+# include "xen-x86_64.h"
+#else
+# error Bad architecture
+#endif
+
 #ifndef __ASSEMBLY__
 typedef unsigned long xen_pfn_t;
 #endif
