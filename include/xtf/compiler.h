@@ -6,6 +6,8 @@
 
 #define __printf(f, v)        __attribute__((format(__printf__, f, v)))
 
+#define barrier()             __asm__ __volatile__ ("" ::: "memory")
+
 #endif /* XTF_COMPILER_H */
 
 /*
