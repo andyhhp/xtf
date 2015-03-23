@@ -18,6 +18,8 @@
 size_t strlen(const char *str);
 size_t strnlen(const char *str, size_t max);
 
+int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
+
 #endif /* XTF_LIBC_H */
 
 /*
