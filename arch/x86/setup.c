@@ -5,6 +5,8 @@
 #include <arch/x86/config.h>
 #include <arch/x86/mm.h>
 
+uint8_t boot_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
+
 #ifdef CONFIG_ENV_pv
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;

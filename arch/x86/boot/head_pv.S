@@ -1,5 +1,7 @@
 #include <xtf/asm_macros.h>
 
+#include <arch/x86/page.h>
+
 #include <xen/elfnote.h>
 
 /* Guest name and version */
@@ -31,6 +33,9 @@ GLOBAL(_start)
 #else
         mov %esi, start_info
 #endif
+
+        /* Move onto own stack. */
+        mov $boot_stack + PAGE_SIZE, %esp
 
         call xtf_main
 

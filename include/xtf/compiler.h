@@ -1,6 +1,8 @@
 #ifndef XTF_COMPILER_H
 #define XTF_COMPILER_H
 
+#define __aligned(x)          __attribute__((aligned(x)))
+
 #define __noreturn            __attribute__((noreturn))
 #define unreachable()         __builtin_unreachable()
 
