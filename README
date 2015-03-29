@@ -1,0 +1,23 @@
+% Xen Test Framework
+
+This is a framework for creating microkernel-based tests of Xen, and a suite
+of tests.  Tests are performed by the microkernel, with a single test (or
+related set) per domain, with common setup, logging and reporting, designed
+with "ease of automation" in mind for the entire suite of tests.
+
+Tests for more generic areas are build multiple times into different
+microkernels, to test the same functionality from different types of virtual
+machine.
+
+## The framework consists of:
+
+* Nothing (yet)
+
+## TODO List:
+
+* More introductory text
+* Entry points for 32 and 64bit PV and HVM guests
+* Hypercall infrastructure
+* PV console driver
+* Common reporting framework
+* Tests

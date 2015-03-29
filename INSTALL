@@ -1,0 +1,7 @@
+Xen Test Framework
+
+Build requirements:
+ - GNU Make >= 3.81
+ - GNU compatible compiler, capable of:
+   -std=gnu99
+   -m64 and -m32
