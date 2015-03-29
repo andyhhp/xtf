@@ -9,4 +9,5 @@ GLOBAL(hypercall_page)
         .fill PAGE_SIZE, 1, 0xc3
         .size hypercall_page, PAGE_SIZE
 
+DECLARE_HYPERCALL(console_io)
 DECLARE_HYPERCALL(sched_op)

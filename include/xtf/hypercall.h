@@ -7,11 +7,13 @@
 
 # include <arch/x86/x86_64/hypercall-x86_64.h>
 # define HYPERCALL2 _hypercall64_2
+# define HYPERCALL3 _hypercall64_3
 
 #elif defined(__i386__)
 
 # include <arch/x86/x86_32/hypercall-x86_32.h>
 # define HYPERCALL2 _hypercall32_2
+# define HYPERCALL3 _hypercall32_3
 
 #else
 # error Bad architecture for hypercalls
@@ -32,6 +34,11 @@ static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 /*
  * Higher level hypercall helpers
  */
+static inline void hypercall_console_write(const char *buf, unsigned long count)
+{
+    (void)HYPERCALL3(long, console_io, CONSOLEIO_write, count, buf);
+}
+
 static inline long hypercall_shutdown(unsigned int reason)
 {
     return hypercall_sched_op(SCHEDOP_shutdown, &reason);

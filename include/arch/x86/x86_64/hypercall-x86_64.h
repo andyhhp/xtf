@@ -19,6 +19,18 @@
         (type)__res;                                                    \
     })
 
+#define _hypercall64_3(type, name, a1, a2, a3)                          \
+    ({                                                                  \
+        long __res, __ign1, __ign2, __ign3;                             \
+        asm volatile (                                                  \
+            "call hypercall_page + %c[offset]"                          \
+            : "=a" (__res), "=D" (__ign1), "=S" (__ign2), "=d" (__ign3) \
+            : [offset] "i" (__HYPERVISOR_##name * 32),                  \
+              "1" ((long)(a1)), "2" ((long)(a2)), "3" ((long)(a3))      \
+            : "memory" );                                               \
+        (type)__res;                                                    \
+    })
+
 #endif /* XTF_X86_64_HYPERCALL_H */
 
 /*

@@ -11,7 +11,11 @@
 #error Bad architecture
 #endif
 
+#define __HYPERVISOR_console_io           18
 #define __HYPERVISOR_sched_op             29
+
+/* Commands to HYPERVISOR_console_io */
+#define CONSOLEIO_write                   0
 
 #ifndef __ASSEMBLY__
 struct start_info {

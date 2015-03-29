@@ -6,6 +6,7 @@
 /*
  * Output functions, registered if/when available.
  * Possibilities:
+ * - Xen hypervisor console
  */
 static cons_output_cb output_fns[1];
 static unsigned int nr_cons_cb;
