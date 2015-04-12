@@ -81,12 +81,25 @@ void init_pv_console(xencons_interface_t *ring, evtchn_port_t port)
     register_console_callback(pv_console_write);
 }
 
-void printk(const char *fmt, ...)
+void vprintk(const char *fmt, va_list args)
 {
+    static char buf[2048];
     unsigned int i;
+    int rc;
+
+    rc = vsnprintf(buf, sizeof(buf), fmt, args);
 
     for ( i = 0; i < nr_cons_cb; ++i )
-        output_fns[i](fmt, strlen(fmt));
+        output_fns[i](buf, rc);
+}
+
+void printk(const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    vprintk(fmt, args);
+    va_end(args);
 }
 
 /*

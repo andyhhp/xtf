@@ -1,6 +1,7 @@
 #ifndef XTF_CONSOLE_H
 #define XTF_CONSOLE_H
 
+#include <xtf/libc.h>
 #include <xtf/compiler.h>
 
 #include <xen/event_channel.h>
@@ -21,6 +22,7 @@ void register_console_callback(cons_output_cb cb);
 void init_pv_console(xencons_interface_t *ring,
                      evtchn_port_t port);
 
+void vprintk(const char *fmt, va_list args) __printf(1, 0);
 void printk(const char *fmt, ...) __printf(1, 2);
 
 #endif /* XTF_CONSOLE_H */
