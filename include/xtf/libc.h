@@ -16,6 +16,7 @@
 #define strlen(s)                   __builtin_strlen(s)
 
 size_t strlen(const char *str);
+size_t strnlen(const char *str, size_t max);
 
 #endif /* XTF_LIBC_H */
 

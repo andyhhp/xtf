@@ -10,6 +10,16 @@ size_t strlen(const char *str)
     return s - str;
 }
 
+size_t strnlen(const char *str, size_t max)
+{
+    const char *s = str;
+
+    while ( max-- && *s != '\0' )
+        ++s;
+
+    return s - str;
+}
+
 /*
  * Local variables:
  * mode: C
