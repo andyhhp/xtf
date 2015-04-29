@@ -2,10 +2,13 @@ ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist/
 
 PV_ENVIRONMENTS  := pv64 pv32
-ALL_ENVIRONMENTS := $(PV_ENVIRONMENTS)
+HVM_ENVIRONMENTS := hvm64 hvm32
+ALL_ENVIRONMENTS := $(PV_ENVIRONMENTS) $(HVM_ENVIRONMENTS)
 
 pv64_arch  := x86_64
 pv32_arch  := x86_32
+hvm64_arch := x86_64
+hvm32_arch := x86_32
 
 COMMON_FLAGS := -pipe -I$(ROOT)/include -MMD -MP
 
@@ -23,6 +26,8 @@ COMMON_CFLAGS-x86_64 := -m64
 
 head-pv64  := $(ROOT)/arch/x86/boot/head_pv64.o
 head-pv32  := $(ROOT)/arch/x86/boot/head_pv32.o
+head-hvm64 := $(ROOT)/arch/x86/boot/head_hvm64.o
+head-hvm32 := $(ROOT)/arch/x86/boot/head_hvm32.o
 
 obj-perarch :=
 obj-perenv  :=
@@ -50,6 +55,11 @@ DEPS-$(1) = $(head-$(1)) \
 ifneq ($(findstring $(1),$(PV_ENVIRONMENTS)),)
 # PV guests generate head_pv64.o and head_pv32.o from head_pv.S
 %/head_$(1).o: %/head_pv.S
+	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
+endif
+ifneq ($(findstring $(1),$(HVM_ENVIRONMENTS)),)
+# HVM guests generate head_hvm64.o and head_hvm32.o from head_hvm.S
+%/head_$(1).o: %/head_hvm.S
 	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
 endif
 
