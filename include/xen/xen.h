@@ -14,6 +14,13 @@
 #define __HYPERVISOR_console_io           18
 #define __HYPERVISOR_sched_op             29
 #define __HYPERVISOR_event_channel_op     32
+#define __HYPERVISOR_hvm_op               34
+
+#ifndef __ASSEMBLY__
+typedef uint16_t domid_t;
+#endif
+
+#define DOMID_SELF (0x7ff0U)
 
 /* Commands to HYPERVISOR_console_io */
 #define CONSOLEIO_write                   0

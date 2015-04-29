@@ -26,6 +26,8 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 #include <xen/xen.h>
 #include <xen/sched.h>
 #include <xen/event_channel.h>
+#include <xen/hvm/hvm_op.h>
+#include <xen/hvm/params.h>
 
 /*
  * Hypercall primatives, compiled for the correct bitness
@@ -38,6 +40,11 @@ static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, event_channel_op, cmd, arg);
+}
+
+static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
+{
+    return HYPERCALL2(long, hvm_op, cmd, arg);
 }
 
 /*
@@ -61,6 +68,23 @@ static inline void hypercall_yield(void)
 static inline int hypercall_evtchn_send(evtchn_port_t port)
 {
     return hypercall_event_channel_op(EVTCHNOP_send, &port);
+}
+
+static inline int hvm_set_param(unsigned int idx, uint64_t value)
+{
+    xen_hvm_param_t p = { .domid = DOMID_SELF, .index = idx, .value = value };
+
+    return hypercall_hvm_op(HVMOP_set_param, &p);
+}
+
+static inline int hvm_get_param(unsigned int idx, uint64_t *value)
+{
+    xen_hvm_param_t p = { .domid = DOMID_SELF, .index = idx };
+    int rc = hypercall_hvm_op(HVMOP_get_param, &p);
+
+    if ( rc == 0 )
+        *value = p.value;
+    return rc;
 }
 
 #endif /* XTF_HYPERCALL_H */

@@ -1,0 +1,21 @@
+/*
+ * Xen public hvm paramter index
+ */
+
+#ifndef XEN_PUBLIC_HVM_PARAMS_H
+#define XEN_PUBLIC_HVM_PARAMS_H
+
+#define HVM_PARAM_CONSOLE_PFN    17
+#define HVM_PARAM_CONSOLE_EVTCHN 18
+
+#endif /* XEN_PUBLIC_HVM_PARAMS_H */
+
+/*
+ * Local variables:
+ * mode: C
+ * c-file-style: "BSD"
+ * c-basic-offset: 4
+ * tab-width: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

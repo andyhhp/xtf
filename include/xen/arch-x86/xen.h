@@ -13,6 +13,8 @@
 # error Bad architecture
 #endif
 
+#include "cpuid.h"
+
 #ifndef __ASSEMBLY__
 typedef unsigned long xen_pfn_t;
 #endif
