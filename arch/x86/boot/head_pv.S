@@ -33,5 +33,17 @@ GLOBAL(_start)
 #endif
 
         call xtf_main
-        ud2
+
+        /* panic() if xtf_main manages to return. */
+#ifdef __x86_64__
+        lea main_err_msg(%rip), %rdi
+#else
+        push $main_err_msg
+#endif
+        call panic
 SIZE(_start)
+
+.section .rodata.str1, "aMS", @progbits, 1
+
+main_err_msg: .asciz "xtf_main() returned\n"
+SIZE(main_err_msg)

@@ -2,6 +2,7 @@
 #define XTF_HYPERCALL_H
 
 #include <xtf/types.h>
+#include <arch/x86/page.h>
 
 #if defined(__x86_64__)
 
@@ -18,6 +19,8 @@
 #else
 # error Bad architecture for hypercalls
 #endif
+
+extern uint8_t hypercall_page[PAGE_SIZE];
 
 /* All Xen ABI for includers convenience .*/
 #include <xen/xen.h>

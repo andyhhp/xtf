@@ -1,4 +1,4 @@
-#include <xtf/types.h>
+#include <xtf/lib.h>
 #include <xtf/console.h>
 #include <xtf/hypercall.h>
 
@@ -9,6 +9,21 @@
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;
 #endif
+
+/*
+ * PV guests should have hypercalls set up by the domain builder, due to the
+ * HYPERCALL_PAGE ELFNOTE being filled.
+ */
+static void init_hypercalls(void)
+{
+    /*
+     * Confirm that the `ret` poision has been overwritten with a real
+     * hypercall page.  At the time of writing, a legitimate hypercall page
+     * should start with `movl $0, %eax` or `0xb8 imm32`.
+     */
+    if ( hypercall_page[0] == 0xc3 )
+        panic("Hypercall page not initialised correctly\n");
+}
 
 static void setup_pv_console(void)
 {
@@ -31,6 +46,8 @@ static void xen_console_write(const char *buf, size_t len)
 void arch_setup(void)
 {
     register_console_callback(xen_console_write);
+
+    init_hypercalls();
 
     setup_pv_console();
 }

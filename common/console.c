@@ -22,6 +22,8 @@ void register_console_callback(cons_output_cb fn)
 {
     if ( nr_cons_cb < ARRAY_SIZE(output_fns) )
         output_fns[nr_cons_cb++] = fn;
+    else
+        panic("Too many console callbacks\n");
 }
 
 /*
@@ -88,6 +90,9 @@ void vprintk(const char *fmt, va_list args)
     int rc;
 
     rc = vsnprintf(buf, sizeof(buf), fmt, args);
+
+    if ( rc > (int)sizeof(buf) )
+        panic("vprintk() buffer overflow\n");
 
     for ( i = 0; i < nr_cons_cb; ++i )
         output_fns[i](buf, rc);
