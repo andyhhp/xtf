@@ -4,6 +4,8 @@
 #include <xtf/types.h>
 #include <xtf/compiler.h>
 
+#include <arch/x86/lib.h>
+
 #define ARRAY_SIZE(a)    (sizeof(a) / sizeof(*a))
 
 #define ACCESS_ONCE(x)   (*(volatile typeof(x) *)&(x))
