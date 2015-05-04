@@ -1987,6 +1987,7 @@ INCLUDE_FILE_PATTERNS  =
 
 PREDEFINED             = __aligned(x)= \
                          __attribute__(x)= \
+                         __packed \
                          __printf(x,y)= \
                          __noreturn \
 
