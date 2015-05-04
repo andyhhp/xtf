@@ -14,10 +14,39 @@ start_info_t *start_info = NULL;
 
 /*
  * PV guests should have hypercalls set up by the domain builder, due to the
- * HYPERCALL_PAGE ELFNOTE being filled.
+ * HYPERCALL_PAGE ELFNOTE being filled.  HVM guests have to locate the
+ * hypervisor cpuid leaves to find correct MSR to requst that Xen writes a
+ * hypercall page.
  */
 static void init_hypercalls(void)
 {
+#ifdef CONFIG_ENV_hvm
+    uint32_t eax, ebx, ecx, edx, base;
+    bool found = false;
+
+    for ( base = XEN_CPUID_FIRST_LEAF;
+          base < XEN_CPUID_FIRST_LEAF + 0x10000; base += 0x100 )
+    {
+        cpuid(base, &eax, &ebx, &ecx, &edx);
+
+        if ( (ebx == XEN_CPUID_SIGNATURE_EBX) &&
+             (ecx == XEN_CPUID_SIGNATURE_ECX) &&
+             (edx == XEN_CPUID_SIGNATURE_EDX) &&
+             ((eax - base) >= 2) )
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if ( !found )
+        panic("Unable to locate Xen CPUID leaves\n");
+
+    cpuid(base + 2, &eax, &ebx, &ecx, &edx);
+    wrmsr(ebx, (unsigned long)&hypercall_page);
+    barrier();
+#endif
+
     /*
      * Confirm that the `ret` poision has been overwritten with a real
      * hypercall page.  At the time of writing, a legitimate hypercall page
@@ -35,10 +64,30 @@ static void setup_pv_console(void)
 #if defined(CONFIG_ENV_pv)
     cons_ring = mfn_to_virt(start_info->console.domU.mfn);
     cons_evtchn = start_info->console.domU.evtchn;
+#elif defined(CONFIG_ENV_hvm)
+    {
+        uint64_t raw_pfn, raw_evtchn;
+
+        if ( hvm_get_param(HVM_PARAM_CONSOLE_PFN, &raw_pfn) != 0 ||
+             hvm_get_param(HVM_PARAM_CONSOLE_EVTCHN, &raw_evtchn) != 0 )
+            return;
+
+        cons_ring = pfn_to_virt(raw_pfn);
+        cons_evtchn = raw_evtchn;
+    }
 #endif
 
     init_pv_console(cons_ring, cons_evtchn);
 }
+
+#if defined(CONFIG_ENV_hvm)
+static void qemu_console_write(const char *buf, size_t len)
+{
+    asm volatile("rep; outsb"
+                 : "+S" (buf), "+c" (len)
+                 : "d" (0x12));
+}
+#endif
 
 static void xen_console_write(const char *buf, size_t len)
 {
@@ -47,6 +96,10 @@ static void xen_console_write(const char *buf, size_t len)
 
 void arch_setup(void)
 {
+#if defined(CONFIG_ENV_hvm)
+    register_console_callback(qemu_console_write);
+#endif
+
     register_console_callback(xen_console_write);
 
     init_hypercalls();

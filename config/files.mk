@@ -16,3 +16,9 @@ obj-perenv += $(ROOT)/arch/x86/traps.o
 
 # Always link hypercall_page.S last as it is a page of data replaced by the hyperisor
 obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
+
+# HVM specific objects
+obj-hvm += $(ROOT)/arch/x86/hvm_pagetables.o
+
+obj-hvm32 += $(obj-hvm)
+obj-hvm64 += $(obj-hvm)

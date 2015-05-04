@@ -16,7 +16,14 @@
  * PV guests: VIRT_OFFSET is 0 which causes all linked virtual addresses to be
  * contiguous in the pagetables created by the domain builder.  Therefore,
  * virt == pfn << PAGE_SHIFT for any pfn constructed by the domain builder.
+ *
+ * HVM guests: All memory from 0 to 4GB is identity mapped.
  */
+
+static inline void *pfn_to_virt(unsigned long pfn)
+{
+    return (void *)(pfn << PAGE_SHIFT);
+}
 
 #if defined(CONFIG_ENV_pv)
 
@@ -24,7 +31,7 @@
 
 static inline void *mfn_to_virt(unsigned long mfn)
 {
-    return (void *)(m2p[mfn] << PAGE_SHIFT);
+    return pfn_to_virt(m2p[mfn]);
 }
 
 #undef m2p

@@ -1,5 +1,6 @@
 #include <xtf/traps.h>
 
+#include <arch/x86/config.h>
 
 /*
  * Getting called means that a shutdown(crash) hypercall has not succeeded.
@@ -23,6 +24,13 @@ void __noreturn arch_crash_hard(void)
      */
     asm volatile("movabs %0, %%rsp; pushf"
                  :: "i" (0x800000000badc0deUL) : "memory");
+
+#elif defined(CONFIG_ENV_hvm)
+    /*
+     * HVM - clear interrupts and halt.  Xen should catch this condition and
+     * shut the VM down.
+     */
+    asm volatile("cli; hlt");
 
 #endif
 

@@ -10,8 +10,9 @@
  * Possibilities:
  * - Xen hypervisor console
  * - PV console
+ * - Qemu debug console
  */
-static cons_output_cb output_fns[2];
+static cons_output_cb output_fns[3];
 static unsigned int nr_cons_cb;
 
 /* Guest PV console details. */
