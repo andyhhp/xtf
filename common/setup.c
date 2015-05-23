@@ -8,6 +8,7 @@
 #include <xtf/hypercall.h>
 #include <xtf/framework.h>
 #include <xtf/test.h>
+#include <xtf/console.h>
 
 /**
  * Entry point into C.
@@ -17,6 +18,8 @@
 void __noreturn xtf_main(void)
 {
     arch_setup();
+
+    printk("--- Xen Test Framework ---\n");
 
     test_main();
 

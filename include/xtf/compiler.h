@@ -4,6 +4,8 @@
 #define __noreturn            __attribute__((noreturn))
 #define unreachable()         __builtin_unreachable()
 
+#define __printf(f, v)        __attribute__((format(__printf__, f, v)))
+
 #endif /* XTF_COMPILER_H */
 
 /*

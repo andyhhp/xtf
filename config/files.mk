@@ -4,6 +4,8 @@
 # obj-perenv   get get compiled once for each environment
 # obj-$(env)   are objects unique to a specific environment
 
+obj-perarch += $(ROOT)/common/console.o
+obj-perarch += $(ROOT)/common/libc/string.o
 obj-perarch += $(ROOT)/common/setup.o
 
 obj-perenv += $(ROOT)/arch/x86/setup.o
