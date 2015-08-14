@@ -14,9 +14,9 @@ machine.
 * PV and HVM, 32 and 64 bit entry points
 * Hypercall interface
 * PV console driver (output)
+* Common reporting framework
 
 ## TODO List:
 
 * More introductory text
-* Common reporting framework
 * Tests

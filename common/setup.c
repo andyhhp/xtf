@@ -9,11 +9,13 @@
 #include <xtf/framework.h>
 #include <xtf/test.h>
 #include <xtf/console.h>
+#include <xtf/report.h>
 
 /**
  * Entry point into C.
  *
- * Set up the microkernel and invoke the test.
+ * Set up the microkernel and invoke the test.  Report the tests status
+ * afterwards, and shut down.
  */
 void __noreturn xtf_main(void)
 {
@@ -22,6 +24,8 @@ void __noreturn xtf_main(void)
     printk("--- Xen Test Framework ---\n");
 
     test_main();
+
+    xtf_report_status();
 
     hypercall_shutdown(SHUTDOWN_poweroff);
     unreachable();
