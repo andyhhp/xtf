@@ -2,6 +2,7 @@
 #define XTF_X86_LIB_H
 
 #include <xtf/types.h>
+#include <xen/arch-x86/xen.h>
 
 static inline uint64_t rdmsr(uint32_t idx)
 {
@@ -28,11 +29,29 @@ static inline void cpuid(uint32_t leaf,
                   : "0" (leaf));
 }
 
+static inline void pv_cpuid(uint32_t leaf,
+                            uint32_t *eax, uint32_t *ebx,
+                            uint32_t *ecx, uint32_t *edx)
+{
+    asm volatile (_ASM_XEN_FEP "cpuid"
+                  : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
+                  : "0" (leaf));
+}
+
 static inline void cpuid_count(uint32_t leaf, uint32_t subleaf,
                                uint32_t *eax, uint32_t *ebx,
                                uint32_t *ecx, uint32_t *edx)
 {
     asm volatile ("cpuid"
+                  : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
+                  : "0" (leaf), "2" (subleaf));
+}
+
+static inline void pv_cpuid_count(uint32_t leaf, uint32_t subleaf,
+                                  uint32_t *eax, uint32_t *ebx,
+                                  uint32_t *ecx, uint32_t *edx)
+{
+    asm volatile (_ASM_XEN_FEP "cpuid"
                   : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
                   : "0" (leaf), "2" (subleaf));
 }

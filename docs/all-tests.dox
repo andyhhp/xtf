@@ -23,4 +23,9 @@ Coveres XSA-106 and XSA-156.
 @section index-xsa XSA Proof-of-Concept tests
 
 @subpage test-xsa-167 - PV superpage sanity checks.
+
+
+@section index-utility Utilities
+
+@subpage test-cpuid - Print CPUID information.
 */
