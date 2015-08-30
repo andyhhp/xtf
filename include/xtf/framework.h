@@ -4,6 +4,9 @@
 /* To be implemented by each arch */
 void arch_setup(void);
 
+/* Single line summary of execution environment. */
+extern const char *environment_description;
+
 #endif /* XTF_FRAMEWORK_H */
 
 /*

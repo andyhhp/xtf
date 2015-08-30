@@ -7,6 +7,20 @@
 
 uint8_t boot_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
 
+const char *environment_description =
+#if defined(CONFIG_ENV_pv32)
+    "PV 32bit"
+#elif defined(CONFIG_ENV_pv64)
+    "PV 64bit"
+#elif defined(CONFIG_ENV_hvm32)
+    "HVM 32bit"
+#elif defined(CONFIG_ENV_hvm64)
+    "HVM 64bit"
+#else
+# error Bad Environment
+#endif
+    ;
+
 #ifdef CONFIG_ENV_pv
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;
