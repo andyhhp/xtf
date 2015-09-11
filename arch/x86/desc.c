@@ -14,6 +14,18 @@ desc_ptr gdt_ptr =
     .base = (unsigned long)&gdt,
 };
 
+#if defined(CONFIG_ENV_hvm)
+
+gate_desc idt[256] = { };
+
+desc_ptr idt_ptr =
+{
+    .limit = sizeof(idt) - 1,
+    .base = (unsigned long)&idt,
+};
+
+#endif
+
 /*
  * Local variables:
  * mode: C

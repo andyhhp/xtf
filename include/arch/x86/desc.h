@@ -56,6 +56,39 @@ struct __packed seg_desc32 {
     };
 };
 
+/** 8-byte gate - Protected mode IDT entry, GDT task/call gate. */
+struct __packed seg_gate32 {
+    union {
+        struct {
+            uint32_t lo, hi;
+        };
+        struct {
+            uint16_t offset0;
+            uint16_t selector;
+            uint8_t  _r0;
+            unsigned type: 4, s: 1, dpl: 2, p: 1;
+            uint16_t offset1;
+        };
+    };
+};
+
+/** 16-byte gate - Long mode IDT entry. */
+struct __packed seg_gate64 {
+    union {
+        struct {
+            uint64_t lo, hi;
+        };
+        struct {
+            uint16_t offset0;
+            uint16_t selector;
+            unsigned ist: 3, _r0: 5, type: 4, s: 1, dpl: 2, p: 1;
+            uint16_t offset1;
+            uint32_t offset2;
+            uint32_t _r1;
+        };
+    };
+};
+
 /* GDT/LDT attribute flags for user segments */
 
 /* Common */
@@ -128,11 +161,13 @@ struct __packed desc_ptr32 {
 
 typedef struct desc_ptr64 desc_ptr;
 typedef struct seg_desc32 user_desc;
+typedef struct seg_gate64 gate_desc;
 
 #elif defined(__i386__)
 
 typedef struct desc_ptr32 desc_ptr;
 typedef struct seg_desc32 user_desc;
+typedef struct seg_gate32 gate_desc;
 
 #else
 # error Bad architecture for descriptor infrastructure
@@ -140,6 +175,11 @@ typedef struct seg_desc32 user_desc;
 
 extern user_desc gdt[NR_GDT_ENTRIES];
 extern desc_ptr  gdt_ptr;
+
+#if defined(CONFIG_ENV_hvm)
+extern gate_desc idt[256];
+extern desc_ptr  idt_ptr;
+#endif
 
 #endif /* XTF_X86_DESC_H */
 

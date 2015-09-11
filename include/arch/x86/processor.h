@@ -60,6 +60,58 @@
 #define X86_CR4_SMEP            0x00100000  /* SMEP                           */
 #define X86_CR4_SMAP            0x00200000  /* SMAP                           */
 
+/*
+ * Exception mnemonics.
+ */
+#define X86_EXC_DE             0 /* Divide Error. */
+#define X86_EXC_DB             1 /* Debug Exception. */
+#define X86_EXC_NMI            2 /* NMI. */
+#define X86_EXC_BP             3 /* Breakpoint. */
+#define X86_EXC_OF             4 /* Overflow. */
+#define X86_EXC_BR             5 /* BOUND Range. */
+#define X86_EXC_UD             6 /* Invalid Opcode. */
+#define X86_EXC_NM             7 /* Device Not Available. */
+#define X86_EXC_DF             8 /* Double Fault. */
+#define X86_EXC_CSO            9 /* Coprocessor Segment Overrun. */
+#define X86_EXC_TS            10 /* Invalid TSS. */
+#define X86_EXC_NP            11 /* Segment Not Present. */
+#define X86_EXC_SS            12 /* Stack-Segment Fault. */
+#define X86_EXC_GP            13 /* General Porection Fault. */
+#define X86_EXC_PF            14 /* Page Fault. */
+#define X86_EXC_SPV           15 /* PIC Spurious Interrupt Vector. */
+#define X86_EXC_MF            16 /* Maths fault (x87 FPU). */
+#define X86_EXC_AC            17 /* Alignment Check. */
+#define X86_EXC_MC            18 /* Machine Check. */
+#define X86_EXC_XM            19 /* SIMD Exception. */
+#define X86_EXC_VE            20 /* Virtualisation Exception. */
+
+/* Bitmap of exceptions which have error codes. */
+#define X86_EXC_HAVE_EC ((1 << X86_EXC_DF) | (1 << X86_EXC_TS) |    \
+                         (1 << X86_EXC_NP) | (1 << X86_EXC_SS) |    \
+                         (1 << X86_EXC_GP) | (1 << X86_EXC_PF) |    \
+                         (1 << X86_EXC_AC))
+
+/* Bitmap of exceptions which are classified as faults. */
+#define X86_EXC_FAULTS ((1 << X86_EXC_DE)  | (1 << X86_EXC_BR) |    \
+                        (1 << X86_EXC_UD)  | (1 << X86_EXC_NM) |    \
+                        (1 << X86_EXC_CSO) | (1 << X86_EXC_TS) |    \
+                        (1 << X86_EXC_NP)  | (1 << X86_EXC_SS) |    \
+                        (1 << X86_EXC_GP)  | (1 << X86_EXC_PF) |    \
+                        (1 << X86_EXC_MF)  | (1 << X86_EXC_AC) |    \
+                        (1 << X86_EXC_XM)  | (1 << X86_EXC_VE))
+
+/* Bitmap of exceptions which are classified as interrupts. */
+#define X86_EXC_INTERRUPTS (1 << X86_EXC_NMI)
+
+/* Bitmap of exceptions which are classified as traps. */
+#define X86_EXC_TRAPS ((1 << X86_EXC_BP) | (1 << X86_EXC_OF))
+
+/* Bitmap of exceptions which are classified as aborts. */
+#define X86_EXC_ABORTS ((1 << X86_EXC_DF) | (1 << X86_EXC_MC))
+
+/* Number of reserved vectors for exceptions. */
+#define X86_NR_RESERVED_VECTORS 32
+
 #endif /* XTF_X86_PROCESSOR_H */
 
 /*
