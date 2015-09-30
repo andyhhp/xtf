@@ -1,5 +1,6 @@
 ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist/
+CC = gcc
 
 PV_ENVIRONMENTS  := pv64 pv32
 HVM_ENVIRONMENTS := hvm64 hvm32
