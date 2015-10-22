@@ -1,0 +1,4 @@
+name="@@NAME@@-@@ENV@@"
+loader="generic"
+memory=128
+kernel="test-@@ENV@@-@@NAME@@"

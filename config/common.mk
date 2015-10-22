@@ -30,6 +30,14 @@ head-pv32  := $(ROOT)/arch/x86/boot/head_pv32.o
 head-hvm64 := $(ROOT)/arch/x86/boot/head_hvm64.o
 head-hvm32 := $(ROOT)/arch/x86/boot/head_hvm32.o
 
+defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
+defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
+
+defcfg-pv64  := $(defcfg-pv)
+defcfg-pv32  := $(defcfg-pv)
+defcfg-hvm64 := $(defcfg-hvm)
+defcfg-hvm32 := $(defcfg-hvm)
+
 obj-perarch :=
 obj-perenv  :=
 include $(ROOT)/config/files.mk

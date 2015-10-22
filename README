@@ -20,3 +20,4 @@ machine.
 
 * More introductory text
 * Tests
+* Be able to specify per-test configuration

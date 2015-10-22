@@ -14,7 +14,7 @@ $(error Unrecognised environments '$(filter-out $(ALL_ENVIRONMENTS),$(TEST-ENVS)
 endif
 
 .PHONY: build
-build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME))
+build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
 
 .PHONY: install install-each-env
 install: install-each-env
@@ -24,14 +24,26 @@ define PERENV_build
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
 	$$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
 
+cfg-$(1) ?= $(defcfg-$(1))
+
+test-$(1)-$(NAME).cfg: $$(cfg-$(1))
+	sed -e "s/@@NAME@@/$$(NAME)/g" \
+		-e "s/@@ENV@@/$(1)/g" \
+		< $$< > $$@
+
 -include $$(link-$(1):%.lds=%.d)
 -include $$(DEPS-$(1):%.o=%.d)
 
-.PHONY: install-$(1)
+.PHONY: install-$(1) install-$(1).cfg
 install-$(1): test-$(1)-$(NAME)
 	@mkdir -p $(DESTDIR)
 	install -m775 -p $$< $(DESTDIR)
-install-each-env: install-$(1)
+
+install-$(1).cfg: test-$(1)-$(NAME).cfg
+	@mkdir -p $(DESTDIR)
+	install -m664 -p $$< $(DESTDIR)
+
+install-each-env: install-$(1) install-$(1).cfg
 
 endef
 $(foreach env,$(TEST-ENVS),$(eval $(call PERENV_build,$(env))))
@@ -39,7 +51,7 @@ $(foreach env,$(TEST-ENVS),$(eval $(call PERENV_build,$(env))))
 .PHONY: clean
 clean:
 	find $(ROOT) \( -name "*.o" -o -name "*.d" \) -delete
-	rm -f $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME))
+	rm -f $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
 
 .PHONY: %var
 %var:
