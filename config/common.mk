@@ -16,7 +16,7 @@ COMMON_FLAGS := -pipe -I$(ROOT)/include -MMD -MP
 COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
 COMMON_CFLAGS += -fno-common -fno-asynchronous-unwind-tables -fno-strict-aliasing
-COMMON_CFLAGS += -fno-stack-protector -flto -ffreestanding
+COMMON_CFLAGS += -fno-stack-protector -ffreestanding
 COMMON_CFLAGS += -mno-red-zone -mno-sse
 
 COMMON_AFLAGS-x86_32 := -m32
