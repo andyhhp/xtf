@@ -1,4 +1,4 @@
-name="@@NAME@@-@@ENV@@"
+name="test-@@ENV@@-@@NAME@@"
 builder="hvm"
 memory=128
 firmware_override="test-@@ENV@@-@@NAME@@"
