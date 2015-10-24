@@ -6,6 +6,8 @@
 #ifndef XTF_ASM_MACROS_H
 #define XTF_ASM_MACROS_H
 
+#include <xtf/numbers.h>
+
 /* Declare data at the architectures width. */
 #if defined(__x86_64__)
 # define _WORD .quad

@@ -1,17 +1,15 @@
 #ifndef XTF_X86_PAGE_H
 #define XTF_X86_PAGE_H
 
+#include <xtf/numbers.h>
+
 /*
  * Nomenclature inherited from Xen.
  */
 
 #define PAGE_SHIFT              12
 
-#ifdef __ASSEMBLY__
-#define PAGE_SIZE               (1 << PAGE_SHIFT)
-#else
-#define PAGE_SIZE               (1L << PAGE_SHIFT)
-#endif
+#define PAGE_SIZE               (_AC(1, L) << PAGE_SHIFT)
 
 #define PAGE_MASK               (~(PAGE_SIZE - 1))
 

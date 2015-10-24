@@ -2,6 +2,8 @@
  * Common linker file for all x86 environments
  */
 
+#include <xtf/numbers.h>
+
 /* Don't clobber the ld directive */
 #undef i386
 
@@ -36,7 +38,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-        . = 0x10000;
+        . = MB(1);
 
         .text : {
                 *(.text)
