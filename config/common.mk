@@ -78,7 +78,7 @@ endif
 
 # Generate a per-arch .o from .S
 %-$($(1)_arch).o: %.S
-	$$(CC) $$(AFLAGS_$$((1)_arch)) -c $$< -o $$@
+	$$(CC) $$(AFLAGS_$($(1)_arch)) -c $$< -o $$@
 
 # Generate a per-arch .o from .c
 %-$($(1)_arch).o: %.c
