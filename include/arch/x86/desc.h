@@ -11,6 +11,8 @@
 #include <xtf/compiler.h>
 #include <xtf/macro_magic.h>
 
+#include <arch/x86/segment.h>
+
 /** 8 byte user segment descriptor (GDT/LDT entries with .s = 1) */
 struct __packed seg_desc32 {
     union {
@@ -135,6 +137,9 @@ typedef struct seg_desc32 user_desc;
 #else
 # error Bad architecture for descriptor infrastructure
 #endif
+
+extern user_desc gdt[NR_GDT_ENTRIES];
+extern desc_ptr  gdt_ptr;
 
 #endif /* XTF_X86_DESC_H */
 
