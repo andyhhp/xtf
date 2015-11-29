@@ -2,7 +2,7 @@
 #include <xtf/console.h>
 #include <xtf/hypercall.h>
 
-#include <arch/x86/config.h>
+#include <arch/x86/desc.h>
 #include <arch/x86/mm.h>
 
 uint8_t boot_stack[PAGE_SIZE] __aligned(PAGE_SIZE);

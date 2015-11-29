@@ -1,7 +1,5 @@
 #include <xtf/traps.h>
 
-#include <arch/x86/config.h>
-
 /*
  * Getting called means that a shutdown(crash) hypercall has not succeeded.
  * Attempt more extreme measures to try and force a crash, and fall into an

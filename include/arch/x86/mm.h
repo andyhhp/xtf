@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#include <arch/x86/config.h>
 #include <arch/x86/page.h>
 
 #include <xen/xen.h>
