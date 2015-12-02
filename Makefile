@@ -1,13 +1,15 @@
 .PHONY: all
 all:
 	@for D in $(wildcard tests/*); do \
-		[ -e $$D/Makefile ] && $(MAKE) -C $$D build; \
+		[ ! -e $$D/Makefile ] && continue; \
+		$(MAKE) -C $$D build; \
 	done
 
 .PHONY: install
 install:
 	@for D in $(wildcard tests/*); do \
-		[ -e $$D/Makefile ] && $(MAKE) -C $$D install; \
+		[ ! -e $$D/Makefile ] && continue; \
+		$(MAKE) -C $$D install; \
 	done
 
 .PHONY: cscope
