@@ -20,6 +20,27 @@ size_t strnlen(const char *str, size_t max)
     return s - str;
 }
 
+void *memset(void *s, int c, size_t n)
+{
+    char *p = s;
+
+    while ( n-- )
+        *p++ = c;
+
+    return s;
+}
+
+int memcmp(const void *s1, const void *s2, size_t n)
+{
+    const unsigned char *u1 = s1, *u2 = s2;
+    int res = 0;
+
+    for ( ; !res && n; --n )
+        res = *u1++ - *u2++;
+
+    return res;
+}
+
 /*
  * Local variables:
  * mode: C
