@@ -38,7 +38,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-        . = MB(1);
+        . = 0x10000;
 
         .text : {
                 *(.text)
