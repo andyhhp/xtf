@@ -21,8 +21,17 @@ install: install-each-env
 
 define PERENV_build
 
+ifneq ($(1),hvm64)
+# Generic link line for most environments
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
 	$$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
+else
+# hvm64 needs linking normally, then converting to elf32-x86-64
+test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
+	$$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@.tmp
+	objcopy $$@.tmp -O elf32-x86-64 $$@
+	rm -f $$@.tmp
+endif
 
 cfg-$(1) ?= $(defcfg-$(1))
 
