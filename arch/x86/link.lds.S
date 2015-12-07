@@ -23,13 +23,19 @@ OUTPUT_ARCH(i386)
 
 ENTRY(_start)
 
+PHDRS
+{
+        /* Single loadable section, RWE. */
+        load PT_LOAD FLAGS(7);
+}
+
 SECTIONS
 {
-        . = 0x10000;
+        . = SEGMENT_START("text-segment", MB(1));
 
         .text : {
                 *(.text)
-        } = 0x9090
+        } :load = 0x9090
 
         .rodata : {
                 *(.rodata)
