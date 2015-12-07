@@ -1,13 +1,16 @@
 #ifndef XTF_COMPILER_H
 #define XTF_COMPILER_H
 
-#define __aligned(x)          __attribute__((aligned(x)))
-#define __packed              __attribute__((packed))
+#define __aligned(x)          __attribute__((__aligned__(x)))
+#define __packed              __attribute__((__packed__))
 
-#define __noreturn            __attribute__((noreturn))
+#define __noinline            __attribute__((__noinline__))
+#define __always_inline       __attribute__((__always_inline__))
+
+#define __noreturn            __attribute__((__noreturn__))
 #define unreachable()         __builtin_unreachable()
 
-#define __printf(f, v)        __attribute__((format(__printf__, f, v)))
+#define __printf(f, v)        __attribute__((__format__(__printf__, f, v)))
 
 #define barrier()             __asm__ __volatile__ ("" ::: "memory")
 
