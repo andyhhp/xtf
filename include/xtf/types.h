@@ -4,10 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
-
-#define __need_size_t
-#define __need_ptrsize_t
-#define __need_NULL
 #include <stddef.h>
 
 #endif /* XTF_TYPES_H */
