@@ -2,3 +2,8 @@ name="test-@@ENV@@-@@NAME@@"
 builder="hvm"
 memory=128
 firmware_override="test-@@ENV@@-@@NAME@@"
+
+# Work around a bug whereby both Xen and libxl fail to calculate the minimum
+# required shadow pool size for this VM, which causes a failure to construct
+# the domain on hardware lacking hap support.
+shadow_memory=4
