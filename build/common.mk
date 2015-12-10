@@ -40,7 +40,7 @@ defcfg-hvm32 := $(defcfg-hvm)
 
 obj-perarch :=
 obj-perenv  :=
-include $(ROOT)/config/files.mk
+include $(ROOT)/build/files.mk
 
 # Run once per environment to set up some common bits & pieces
 define PERENV_setup

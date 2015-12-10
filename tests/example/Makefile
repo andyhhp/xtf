@@ -1,10 +1,10 @@
 ROOT := $(abspath $(CURDIR)/../..)
 
-include $(ROOT)/config/common.mk
+include $(ROOT)/build/common.mk
 
 NAME      := example
 TEST-ENVS := $(ALL_ENVIRONMENTS)
 
 obj-perenv += main.o
 
-include $(ROOT)/config/gen.mk
+include $(ROOT)/build/gen.mk
