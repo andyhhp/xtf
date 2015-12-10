@@ -3,6 +3,10 @@ builder="hvm"
 memory=128
 firmware_override="test-@@ENV@@-@@NAME@@"
 
+# The framework doesn't reboot.  A reboot signal is almost certainly a triple
+# fault instead.  Prevent it turning into a runaway domain.
+on_reboot = "destroy"
+
 # Work around a bug whereby both Xen and libxl fail to calculate the minimum
 # required shadow pool size for this VM, which causes a failure to construct
 # the domain on hardware lacking hap support.
