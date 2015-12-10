@@ -34,17 +34,17 @@ extern uint8_t hypercall_page[PAGE_SIZE];
  */
 static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 {
-    return HYPERCALL2(long, sched_op, cmd, arg);
+    return HYPERCALL2(long, __HYPERVISOR_sched_op, cmd, arg);
 }
 
 static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
 {
-    return HYPERCALL2(long, event_channel_op, cmd, arg);
+    return HYPERCALL2(long, __HYPERVISOR_event_channel_op, cmd, arg);
 }
 
 static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
 {
-    return HYPERCALL2(long, hvm_op, cmd, arg);
+    return HYPERCALL2(long, __HYPERVISOR_hvm_op, cmd, arg);
 }
 
 /*
@@ -52,7 +52,7 @@ static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
  */
 static inline void hypercall_console_write(const char *buf, unsigned long count)
 {
-    (void)HYPERCALL3(long, console_io, CONSOLEIO_write, count, buf);
+    (void)HYPERCALL3(long, __HYPERVISOR_console_io, CONSOLEIO_write, count, buf);
 }
 
 static inline long hypercall_shutdown(unsigned int reason)
