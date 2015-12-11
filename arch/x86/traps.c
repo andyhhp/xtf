@@ -1,42 +1,13 @@
+#include <xtf/lib.h>
 #include <xtf/traps.h>
 
 /*
- * Getting called means that a shutdown(crash) hypercall has not succeeded.
- * Attempt more extreme measures to try and force a crash, and fall into an
- * infinite loop if all else fails.
+ * C entry-point for exceptions, after the per-environment stubs have suitably
+ * adjusted the stack.
  */
-void __noreturn arch_crash_hard(void)
+void do_exception(void)
 {
-#if defined(CONFIG_ENV_pv32)
-    /*
-     * 32bit PV - put the stack in the Xen read-only M2P mappings and attempt
-     * to use it.
-     */
-    asm volatile("mov %0, %%esp; pushf"
-                 :: "i" (0xfbadc0deUL) : "memory");
-
-#elif defined(CONFIG_ENV_pv64)
-    /*
-     * 64bit PV - put the stack in the middle of the non-canonical region, and
-     * attempt to use it.
-     */
-    asm volatile("movabs %0, %%rsp; pushf"
-                 :: "i" (0x800000000badc0deUL) : "memory");
-
-#elif defined(CONFIG_ENV_hvm)
-    /*
-     * HVM - clear interrupts and halt.  Xen should catch this condition and
-     * shut the VM down.
-     */
-    asm volatile("cli; hlt");
-
-#endif
-
-    /*
-     * Attempt to crash failed.  Give up and sit in a loop.
-     */
-    asm volatile("1: hlt; rep; nop; jmp 1b" ::: "memory");
-    unreachable();
+    panic("Unhandled exception\n");
 }
 
 /*

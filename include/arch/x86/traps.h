@@ -3,6 +3,15 @@
 
 #include <xtf/compiler.h>
 
+/*
+ * Arch-specific function to initialise the exception entry points, etc.
+ */
+void arch_init_traps(void);
+
+/*
+ * Arch-specific function to quiesce the domain, in the event that a
+ * shutdown(crash) hypercall has not succeeded.
+ */
 void __noreturn arch_crash_hard(void);
 
 #endif /* XTF_X86_TRAPS_H */

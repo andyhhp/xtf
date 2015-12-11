@@ -20,6 +20,13 @@ obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
 
 # HVM specific objects
 obj-hvm += $(ROOT)/arch/x86/hvm_pagetables.o
+obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
 
 obj-hvm32 += $(obj-hvm)
 obj-hvm64 += $(obj-hvm)
+
+# PV specific objects
+obj-pv  += $(ROOT)/arch/x86/pv/traps.o
+
+obj-pv32 += $(obj-pv)
+obj-pv64 += $(obj-pv)

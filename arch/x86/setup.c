@@ -4,6 +4,7 @@
 
 #include <arch/x86/desc.h>
 #include <arch/x86/mm.h>
+#include <arch/x86/traps.h>
 
 uint8_t boot_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
 
@@ -115,6 +116,8 @@ void arch_setup(void)
 #endif
 
     register_console_callback(xen_console_write);
+
+    arch_init_traps();
 
     init_hypercalls();
 
