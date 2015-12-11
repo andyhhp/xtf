@@ -23,7 +23,10 @@ obj-hvm += $(ROOT)/arch/x86/hvm_pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
 
 obj-hvm32 += $(obj-hvm)
+obj-hvm32 += $(ROOT)/arch/x86/entry_32.o
+
 obj-hvm64 += $(obj-hvm)
+obj-hvm64 += $(ROOT)/arch/x86/entry_64.o
 
 # PV specific objects
 obj-pv  += $(ROOT)/arch/x86/pv/traps.o

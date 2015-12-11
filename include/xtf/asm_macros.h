@@ -26,6 +26,15 @@
 name:
 
 /**
+ * Declare a function entry, aligned on a cacheline boundary.
+ * @param name Function name.
+ */
+#define ENTRY(name)                             \
+    .align 16;                                  \
+    GLOBAL(name)                                \
+name:
+
+/**
  * Set the size of a named symbol.
  * @param name Symbol name.
  */
