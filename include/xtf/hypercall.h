@@ -7,12 +7,14 @@
 #if defined(__x86_64__)
 
 # include <arch/x86/x86_64/hypercall-x86_64.h>
+# define HYPERCALL1 _hypercall64_1
 # define HYPERCALL2 _hypercall64_2
 # define HYPERCALL3 _hypercall64_3
 
 #elif defined(__i386__)
 
 # include <arch/x86/x86_32/hypercall-x86_32.h>
+# define HYPERCALL1 _hypercall32_1
 # define HYPERCALL2 _hypercall32_2
 # define HYPERCALL3 _hypercall32_3
 
@@ -32,6 +34,11 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 /*
  * Hypercall primatives, compiled for the correct bitness
  */
+static inline long hypercall_set_trap_table(const struct xen_trap_info *ti)
+{
+    return HYPERCALL1(long, __HYPERVISOR_set_trap_table, ti);
+}
+
 static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, __HYPERVISOR_sched_op, cmd, arg);

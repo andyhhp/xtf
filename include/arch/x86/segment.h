@@ -1,6 +1,8 @@
 #ifndef XTF_X86_SEGMENT_H
 #define XTF_X86_SEGMENT_H
 
+#include <xen/arch-x86/xen.h>
+
 /*
  * GDT layout:
  *
@@ -28,6 +30,21 @@
 
 #define __KERN_CS (GDTE_CS32_DPL0 * 8)
 #define __KERN_DS (GDTE_DS32_DPL0 * 8)
+
+#endif
+
+/*
+ * PV guests by default use the Xen ABI-provided selectors.
+ */
+#if defined(CONFIG_ENV_pv64)
+
+#define __KERN_CS FLAT_RING3_CS64
+#define __KERN_DS FLAT_RING3_DS64
+
+#elif defined(CONFIG_ENV_pv32)
+
+#define __KERN_CS FLAT_RING1_CS
+#define __KERN_DS FLAT_RING1_DS
 
 #endif
 

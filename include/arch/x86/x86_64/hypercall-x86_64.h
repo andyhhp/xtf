@@ -7,6 +7,18 @@
  * Inputs: %rdi, %rsi, %rdx, %r10, %r8, %r9 (arguments 1-6)
  */
 
+#define _hypercall64_1(type, hcall, a1)                                 \
+    ({                                                                  \
+        long __res, __ign1;                                             \
+        asm volatile (                                                  \
+            "call hypercall_page + %c[offset]"                          \
+            : "=a" (__res), "=D" (__ign1)                               \
+            : [offset] "i" (hcall * 32),                                \
+              "1" ((long)(a1))                                          \
+            : "memory" );                                               \
+        (type)__res;                                                    \
+    })
+
 #define _hypercall64_2(type, hcall, a1, a2)                             \
     ({                                                                  \
         long __res, __ign1, __ign2;                                     \

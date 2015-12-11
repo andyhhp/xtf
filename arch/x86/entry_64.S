@@ -5,26 +5,37 @@
 
 Stack frame layout: (first aligned to 16 byte boundary)
 
-|          Hardware | Notes         |
-|-------------------+---------------|
-|               <r> | <l>           |
-|-------------------+---------------|
-|               %ss |               |
-|              %rsp |               |
-|            rflags |               |
-|               %cs |               |
-|              %rip |               |
-| %rsp-> error_code | if applicable |
+|               Xen |          Hardware | Notes         |
+|-------------------+-------------------+---------------|
+|               <r> |               <r> | <l>           |
+|-------------------+-------------------+---------------|
+|               %ss |               %ss |               |
+|              %rsp |              %rsp |               |
+|            rflags |            rflags |               |
+| upcall_mask / %cs |               %cs |               |
+|              %rip |              %rip |               |
+|        error_code | %rsp-> error_code | if applicable |
+|              %r11 |                   |               |
+| %rsp->       %rcx |                   |               |
 
-These stubs push an error_code of zero (if applicable) to make a common
-layout for the frame, then use the upper 32 bits of the error_code to stash
-additional metadata.  Currently just the entry vector.
+The %rcx and %r11 parameters are because Xen will typically SYSRET to the
+entry point; they should be restored promptly.
+
+The stubs then push an error_code (if required) to make a common layout for
+the frame, then use the upper 32bits of the error_code to stash additional
+metadata.  Currently just the entry vector.
 
 */
 
 .macro exception_entry sym vec
 
 ENTRY(entry_\sym)
+
+#if defined(CONFIG_ENV_pv64)
+        /* Restore results of Xen SYSRET'ing to this point. */
+        pop   %rcx
+        pop   %r11
+#endif
 
         .if !((1 << \vec) & X86_EXC_HAVE_EC)
         /* Push dummy error code (if needed) to align stack. */

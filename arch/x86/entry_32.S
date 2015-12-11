@@ -5,16 +5,16 @@
 
 Stack frame layout:
 
-|          Hardware | Notes                |
-|-------------------+----------------------|
-|               <r> | <l>                  |
-|-------------------+----------------------|
-|               %ss | only on stack switch |
-|              %esp | only on stack switch |
-|            eflags |                      |
-|               %cs |                      |
-|              %eip |                      |
-| %esp-> error_code | if applicable        |
+|               Xen |          Hardware | Notes                |
+|-------------------+-------------------+----------------------|
+|               <r> |               <r> | <l>                  |
+|-------------------+-------------------+----------------------|
+|               %ss |               %ss | only on stack switch |
+|              %esp |              %esp | only on stack switch |
+|            eflags |            eflags |                      |
+| upcall_mask / %cs |               %cs |                      |
+|              %eip |              %eip |                      |
+| %esp-> error_code | %esp-> error_code | if applicable        |
 
 These stubs push an error_code of zero (if applicable) to make a common layout
 for the frame.  A further word of metadata is then pushed, currently just

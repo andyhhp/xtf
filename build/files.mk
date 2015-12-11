@@ -32,4 +32,7 @@ obj-hvm64 += $(ROOT)/arch/x86/entry_64.o
 obj-pv  += $(ROOT)/arch/x86/pv/traps.o
 
 obj-pv32 += $(obj-pv)
+obj-pv32 += $(ROOT)/arch/x86/entry_32.o
+
 obj-pv64 += $(obj-pv)
+obj-pv64 += $(ROOT)/arch/x86/entry_64.o
