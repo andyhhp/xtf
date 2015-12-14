@@ -71,5 +71,8 @@ exception_entry VE  X86_EXC_VE
         .align 16
 handle_exception:
 
+        SAVE_ALL
+
+        mov %rsp, %rdi          /* struct cpu_regs * */
         call do_exception
         ud2a

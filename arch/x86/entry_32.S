@@ -60,5 +60,9 @@ exception_entry VE  X86_EXC_VE
         .align 16
 handle_exception:
 
+        SAVE_ALL
+
+        push %esp               /* struct cpu_regs * */
         call do_exception
+        add $4, %esp
         ud2a

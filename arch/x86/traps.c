@@ -5,9 +5,10 @@
  * C entry-point for exceptions, after the per-environment stubs have suitably
  * adjusted the stack.
  */
-void do_exception(void)
+void do_exception(struct cpu_regs *regs)
 {
-    panic("Unhandled exception\n");
+    panic("Unhandled exception: vec %u at %04x:%p\n",
+          regs->entry_vector, regs->cs, _p(regs->ip));
 }
 
 /*

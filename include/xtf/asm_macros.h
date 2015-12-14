@@ -8,14 +8,7 @@
 
 #include <xtf/numbers.h>
 
-/* Declare data at the architectures width. */
-#if defined(__x86_64__)
-# define _WORD .quad
-#elif defined(__i386__)
-# define _WORD .long
-#else
-# error Bad architecture for _WORD
-#endif
+#include <arch/x86/asm_macros.h>
 
 /**
  * Declare a global symbol.

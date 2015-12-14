@@ -22,6 +22,8 @@
 #define GB(num) (_AC(num, ULL) << 30)
 #define TB(num) (_AC(num, ULL) << 40)
 
+#define _p(v) ((void*)(unsigned long)(v))
+
 #endif /* XTF_NUMBERS_H */
 
 /*
