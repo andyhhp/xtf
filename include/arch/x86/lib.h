@@ -79,6 +79,24 @@ static inline void outl(uint32_t val, uint16_t port)
     asm volatile("outl %k0, %w1": : "a" (val), "Nd" (port));
 }
 
+static inline unsigned long read_dr6(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr6, %0" : "=r" (val));
+
+    return val;
+}
+
+static inline unsigned long read_dr7(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr7, %0" : "=r" (val));
+
+    return val;
+}
+
 #endif /* XTF_X86_LIB_H */
 
 /*

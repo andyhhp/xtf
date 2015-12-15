@@ -65,4 +65,14 @@ handle_exception:
         push %esp               /* struct cpu_regs * */
         call do_exception
         add $4, %esp
-        ud2a
+
+        RESTORE_ALL
+        add $8, %esp            /* Pop error_code/entry_vector. */
+
+#if defined(CONFIG_ENV_pv)
+
+        jmp HYPERCALL_iret      /* PV guests use the 'iret' hypercall. */
+
+#else
+        iret                    /* HVM guests use a real 'iret' instruction. */
+#endif

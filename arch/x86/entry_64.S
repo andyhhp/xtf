@@ -75,4 +75,15 @@ handle_exception:
 
         mov %rsp, %rdi          /* struct cpu_regs * */
         call do_exception
-        ud2a
+
+        RESTORE_ALL
+        add $8, %rsp            /* Pop error_code/entry_vector. */
+
+#if defined(CONFIG_ENV_pv)
+
+        push $0                 /* Indicate that this isn't a SYSRET'able   */
+        jmp HYPERCALL_iret      /* situation, and use the 'iret' hypercall. */
+
+#else
+        iretq                   /* HVM guests use a real 'iret' instruction. */
+#endif
