@@ -1,6 +1,7 @@
 #include <xtf/lib.h>
 #include <xtf/console.h>
 #include <xtf/hypercall.h>
+#include <xtf/extable.h>
 
 #include <arch/x86/desc.h>
 #include <arch/x86/mm.h>
@@ -120,6 +121,8 @@ void arch_setup(void)
     arch_init_traps();
 
     init_hypercalls();
+
+    sort_extable();
 
     setup_pv_console();
 }

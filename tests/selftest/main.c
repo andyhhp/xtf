@@ -14,11 +14,24 @@ static void test_int3_breakpoint(void)
     asm volatile ("int3");
 }
 
+static void test_extable(void)
+{
+    printk("Test: Exception Table\n");
+
+    /*
+     * Check that control flow is successfully redirected with a ud2a
+     * instruction and appropriate extable entry.
+     */
+    asm volatile ("1: ud2a; 2:"
+                  _ASM_EXTABLE(1b, 2b));
+}
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
 
     test_int3_breakpoint();
+    test_extable();
 
     xtf_success();
 }

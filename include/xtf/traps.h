@@ -1,6 +1,8 @@
 #ifndef XTF_TRAPS_H
 #define XTF_TRAPS_H
 
+#include <xtf/extable.h>
+
 #include <arch/x86/traps.h>
 
 #endif /* XTF_TRAPS_H */

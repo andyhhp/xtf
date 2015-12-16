@@ -56,7 +56,15 @@ static bool is_trap_or_interrupt(const struct cpu_regs *regs)
  */
 void do_exception(struct cpu_regs *regs)
 {
+    unsigned long fixup_addr;
     bool safe = is_trap_or_interrupt(regs);
+
+    /* Look in the exception table to see if a redirection has been set up. */
+    if ( !safe && (fixup_addr = search_extable(regs->ip)) )
+    {
+        regs->ip = fixup_addr;
+        safe = true;
+    }
 
     if ( !safe )
         panic("Unhandled exception: vec %u at %04x:%p\n",

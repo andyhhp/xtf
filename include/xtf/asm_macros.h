@@ -10,6 +10,8 @@
 
 #include <arch/x86/asm_macros.h>
 
+#ifdef __ASSEMBLY__
+
 /**
  * Declare a global symbol.
  * @param name Symbol name.
@@ -59,6 +61,8 @@ name:
 3:desc                    /* desc   */            ; \
 4:.align 4                                        ; \
     .popsection
+
+#endif /* __ASSEMBLY__ */
 
 #endif /* XTF_ASM_MACROS_H */
 

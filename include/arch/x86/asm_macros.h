@@ -6,14 +6,22 @@
 #ifndef XTF_X86_ASM_MACROS_H
 #define XTF_X86_ASM_MACROS_H
 
+#ifdef __ASSEMBLY__
 /* Declare data at the architectures width. */
-#if defined(__x86_64__)
-# define _WORD .quad
-#elif defined(__i386__)
-# define _WORD .long
+# if defined(__x86_64__)
+#  define _WORD .quad
+# elif defined(__i386__)
+#  define _WORD .long
+# endif
 #else
-# error Bad architecture for _WORD
+# if defined(__x86_64__)
+#  define _WORD ".quad "
+# elif defined(__i386__)
+#  define _WORD ".long "
+# endif
 #endif
+
+#ifdef __ASSEMBLY__
 
 .macro SAVE_ALL
     cld
@@ -75,6 +83,8 @@
 # error Bad architecture for RESTORE_ALL
 #endif
 .endm
+
+#endif /* __ASSEMBLY__ */
 
 #endif /* XTF_X86_ASM_MACROS_H */
 
