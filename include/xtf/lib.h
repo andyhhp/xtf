@@ -13,6 +13,10 @@
 
 void __noreturn panic(const char *fmt, ...) __printf(1, 2);
 
+void heapsort(void *base, size_t nmemb, size_t size,
+              int (*compar)(const void *, const void *),
+              void (*swap)(void *, void *));
+
 #endif /* XTF_LIB_H */
 
 /*
