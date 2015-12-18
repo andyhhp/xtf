@@ -5,7 +5,10 @@
 #define __packed              __attribute__((__packed__))
 
 #define __noinline            __attribute__((__noinline__))
+
+#ifndef __always_inline /* Avoid conflicting with cdefs.h */
 #define __always_inline       __attribute__((__always_inline__))
+#endif
 
 #define __noreturn            __attribute__((__noreturn__))
 #define unreachable()         __builtin_unreachable()
