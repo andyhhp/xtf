@@ -5,6 +5,7 @@
 # obj-$(env)   are objects unique to a specific environment
 
 obj-perarch += $(ROOT)/common/console.o
+obj-perarch += $(ROOT)/common/exlog.o
 obj-perarch += $(ROOT)/common/extable.o
 obj-perarch += $(ROOT)/common/heapsort.o
 obj-perarch += $(ROOT)/common/lib.o

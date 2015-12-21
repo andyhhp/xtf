@@ -3,6 +3,7 @@
 
 #include <xtf/types.h>
 #include <xtf/compiler.h>
+#include <xtf/console.h>
 #include <xtf/numbers.h>
 
 #include <arch/x86/lib.h>
