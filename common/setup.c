@@ -24,6 +24,8 @@ void __noreturn xtf_main(void)
     printk("--- Xen Test Framework ---\n");
     printk("Environment: %s\n", environment_description);
 
+    test_setup();
+
     test_main();
 
     xtf_report_status();

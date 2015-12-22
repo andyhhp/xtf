@@ -128,6 +128,29 @@ void arch_setup(void)
 }
 
 /*
+ * Common test setup:
+ *
+ * xtf_has_* indicates the availabiliy of options which require runtime
+ * detection.
+ */
+bool xtf_has_fep = false;
+
+void test_setup(void)
+{
+    /*
+     * Attempt to use the forced emulation prefix to set the value of
+     * xtf_has_fep to the value of 1.  Use the exception table to compensate
+     * for the #UD exception if FEP is not available.
+     */
+    asm volatile ("xor %0, %0;"
+                  "1: ud2a; .ascii \"xen\";"
+                  "mov $1, %0;"
+                  "2:"
+                  _ASM_EXTABLE(1b, 2b)
+                  : "=q" (xtf_has_fep));
+}
+
+/*
  * Local variables:
  * mode: C
  * c-file-style: "BSD"

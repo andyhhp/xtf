@@ -3,6 +3,7 @@
 
 /* To be implemented by each arch */
 void arch_setup(void);
+void test_setup(void);
 
 /* Single line summary of execution environment. */
 extern const char *environment_description;
