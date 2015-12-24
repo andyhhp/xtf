@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <inttypes.h>
 
 #endif /* XTF_TYPES_H */
 

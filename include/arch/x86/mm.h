@@ -33,6 +33,11 @@ static inline void *mfn_to_virt(unsigned long mfn)
     return pfn_to_virt(m2p[mfn]);
 }
 
+static inline void *maddr_to_virt(uint64_t maddr)
+{
+    return mfn_to_virt(maddr >> PAGE_SHIFT) + (maddr & ~PAGE_MASK);
+}
+
 #undef m2p
 
 #endif /* CONFIG_ENV_pv */

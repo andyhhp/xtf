@@ -4,6 +4,7 @@
 
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
+#include <arch/x86/mm.h>
 
 /* Real entry points */
 void entry_DE(void);
@@ -85,6 +86,66 @@ void arch_init_traps(void)
     if ( rc )
         panic("Failed to set user %%cr3: %d\n", rc);
 
+#elif defined(__i386__)
+    /*
+     * Walk the live pagetables and set _PAGE_USER
+     *
+     * XTF uses a shared user/kernel address space, and _PAGE_USER must be set
+     * to permit cpl3 access to the virtual addresses without taking a
+     * pagefault.
+     *
+     * !!! WARNING !!!
+     *
+     * Because PV guests and Xen share CR4, Xen's setting of CR4.{SMEP,SMAP}
+     * interfere with 32bit PV guests.  For now, 32bit PV XTF tests require
+     * the hypervisor to be booted with "smep=0 smap=0".
+     *
+     * TODO - figure out how to work around this restriction while maintaining
+     * a shared user/kernel address space for the framework.
+     *
+     * !!! WARNING !!!
+     */
+    uint64_t *l3 = _p(start_info->pt_base);
+    unsigned long va = 0;
+
+    while ( va < __HYPERVISOR_VIRT_START_PAE )
+    {
+        unsigned int i3 = l3_table_offset(va);
+
+        if ( !(l3[i3] & _PAGE_PRESENT) )
+        {
+            va += 1UL << L3_PT_SHIFT;
+            continue;
+        }
+
+        uint64_t *l2 = maddr_to_virt(pte_to_paddr(l3[i3]));
+        unsigned int i2 = l2_table_offset(va);
+
+        if ( !(l2[i2] & _PAGE_PRESENT) )
+        {
+            va += 1UL << L2_PT_SHIFT;
+            continue;
+        }
+
+        uint64_t *l1 = maddr_to_virt(pte_to_paddr(l2[i2]));
+        unsigned int i1 = l1_table_offset(va);
+
+        if ( !(l1[i1] & _PAGE_PRESENT) )
+        {
+            va += 1UL << L1_PT_SHIFT;
+            continue;
+        }
+
+        if ( !(l1[i1] & _PAGE_USER) )
+        {
+            rc = hypercall_update_va_mapping(_p(va), l1[i1] | _PAGE_USER, 2);
+            if ( rc )
+                panic("update_va_mapping(%p, 0x%016"PRIx64") failed: %d\n",
+                      _p(va), l1[i1] | _PAGE_USER, rc);
+        }
+
+        va += 1UL << L1_PT_SHIFT;
+    }
 #endif
 }
 

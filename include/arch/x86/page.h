@@ -22,10 +22,34 @@
 #define _PAGE_USER              0x004
 #define _PAGE_PSE               0x080
 
+#define L1_PT_SHIFT             12
+#define L2_PT_SHIFT             21
+#define L3_PT_SHIFT             30
+#define L4_PT_SHIFT             39
+
 #define L1_PT_ENTRIES           512
 #define L2_PT_ENTRIES           512
 #define L3_PT_ENTRIES           512
 #define L4_PT_ENTRIES           512
+
+#ifndef __ASSEMBLY__
+
+static inline unsigned int l1_table_offset(unsigned long va)
+{ return (va >> L1_PT_SHIFT) & (L1_PT_ENTRIES - 1); }
+static inline unsigned int l2_table_offset(unsigned long va)
+{ return (va >> L2_PT_SHIFT) & (L2_PT_ENTRIES - 1); }
+static inline unsigned int l3_table_offset(unsigned long va)
+{ return (va >> L3_PT_SHIFT) & (L3_PT_ENTRIES - 1); }
+#ifdef __x86_64__
+static inline unsigned int l4_table_offset(unsigned long va)
+{ return (va >> L4_PT_SHIFT) & (L4_PT_ENTRIES - 1); }
+#endif /* __x86_64__ */
+
+
+static inline uint64_t pte_to_paddr(uint64_t pte)
+{ return pte & 0x000ffffffffff000ULL; }
+
+#endif /* !__ASSEMBLY__ */
 
 #endif /* XTF_X86_PAGE_H */
 

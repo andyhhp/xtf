@@ -46,6 +46,17 @@ static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);
 }
 
+static inline long hypercall_update_va_mapping(void *va, uint64_t npte,
+                                               unsigned int flags)
+{
+#ifdef __x86_64__
+    return HYPERCALL3(long, __HYPERVISOR_update_va_mapping, va, npte, flags);
+#else
+    return HYPERCALL4(long, __HYPERVISOR_update_va_mapping,
+                      va, npte, npte >> 32, flags);
+#endif
+}
+
 static inline long hypercall_mmuext_op(const mmuext_op_t ops[],
                                        unsigned int count,
                                        unsigned int *done,
