@@ -22,6 +22,16 @@ containing the entry vector.
 
 */
 
+.macro env_IRET                 /* Environment specific version of `iret`. */
+#if defined(CONFIG_ENV_pv)
+
+        jmp HYPERCALL_iret      /* PV guests use the 'iret' hypercall. */
+
+#else
+        iret                    /* HVM guests use a real 'iret' instruction. */
+#endif
+.endm
+
 .macro exception_entry sym vec
 
 ENTRY(entry_\sym)
@@ -69,10 +79,4 @@ handle_exception:
         RESTORE_ALL
         add $8, %esp            /* Pop error_code/entry_vector. */
 
-#if defined(CONFIG_ENV_pv)
-
-        jmp HYPERCALL_iret      /* PV guests use the 'iret' hypercall. */
-
-#else
-        iret                    /* HVM guests use a real 'iret' instruction. */
-#endif
+        env_IRET

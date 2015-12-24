@@ -27,15 +27,29 @@ metadata.  Currently just the entry vector.
 
 */
 
-.macro exception_entry sym vec
-
-ENTRY(entry_\sym)
-
+.macro env_ADJUST_FRAME         /* Environment specific exception entry. */
 #if defined(CONFIG_ENV_pv64)
-        /* Restore results of Xen SYSRET'ing to this point. */
+                                /* Restore results of Xen SYSRET'ing to this point. */
         pop   %rcx
         pop   %r11
 #endif
+.endm
+
+.macro env_IRETQ                /* Environment specific version of `iretq`. */
+#if defined(CONFIG_ENV_pv64)
+
+        push $0                 /* Indicate that this isn't a SYSRET'able   */
+        jmp HYPERCALL_iret      /* situation, and use the 'iret' hypercall. */
+
+#else
+        iretq                   /* HVM guests use a real 'iretq' instruction. */
+#endif
+.endm
+
+.macro exception_entry sym vec
+
+ENTRY(entry_\sym)
+        env_ADJUST_FRAME
 
         .if !((1 << \vec) & X86_EXC_HAVE_EC)
         /* Push dummy error code (if needed) to align stack. */
@@ -79,11 +93,4 @@ handle_exception:
         RESTORE_ALL
         add $8, %rsp            /* Pop error_code/entry_vector. */
 
-#if defined(CONFIG_ENV_pv)
-
-        push $0                 /* Indicate that this isn't a SYSRET'able   */
-        jmp HYPERCALL_iret      /* situation, and use the 'iret' hypercall. */
-
-#else
-        iretq                   /* HVM guests use a real 'iret' instruction. */
-#endif
+        env_IRETQ
