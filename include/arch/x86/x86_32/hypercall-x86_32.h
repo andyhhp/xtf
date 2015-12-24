@@ -43,6 +43,20 @@
         (type)__res;                                                    \
     })
 
+#define _hypercall32_4(type, hcall, a1, a2, a3, a4)                     \
+    ({                                                                  \
+        long __res, __ign1, __ign2, __ign3, __ign4;                     \
+        asm volatile (                                                  \
+            "call hypercall_page + %c[offset]"                          \
+            : "=a" (__res), "=b" (__ign1), "=c" (__ign2), "=d" (__ign3),\
+              "=S" (__ign4)                                             \
+            : [offset] "i" (hcall * 32),                                \
+              "1" ((long)(a1)), "2" ((long)(a2)), "3" ((long)(a3)),     \
+              "4" ((long)(a4))                                          \
+            : "memory" );                                               \
+        (type)__res;                                                    \
+    })
+
 #endif /* XTF_X86_32_HYPERCALL_H */
 
 /*

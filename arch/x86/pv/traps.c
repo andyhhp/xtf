@@ -67,6 +67,25 @@ void arch_init_traps(void)
     write_es(__USER_DS);
     write_fs(__USER_DS);
     write_gs(__USER_DS);
+
+#ifdef __x86_64__
+    /*
+     * Set the user pagetables (only applicable to 64bit PV).
+     *
+     * XTF uses a shared user/kernel address space, so register the kernel
+     * %cr3 as the user %cr3.
+     */
+    mmuext_op_t ext =
+    {
+        .cmd = MMUEXT_NEW_USER_BASEPTR,
+        .arg1.mfn = read_cr3() >> PAGE_SHIFT,
+    };
+
+    rc = hypercall_mmuext_op(&ext, 1, NULL, DOMID_SELF);
+    if ( rc )
+        panic("Failed to set user %%cr3: %d\n", rc);
+
+#endif
 }
 
 void __noreturn arch_crash_hard(void)

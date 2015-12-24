@@ -56,11 +56,16 @@
  * report cpl0 when interrupting kernel mode.  Trim the kernel selectors down
  * to rpl0 so they match the exception frames; Xen will take care of bumping
  * rpl back to 3 when required.
+ *
+ * In Long mode, it is permitted to have NULL selectors for the plain data
+ * segment selectors (this is expressed in the Xen ABI), but not for %ss.  As
+ * __{KERN,USER}_DS are used for all data selectors including %ss, use the
+ * FLAT_RING3_SS64 rather than FLAT_RING3_DS64.
  */
 #define __KERN_CS (FLAT_RING3_CS64 & ~3)
-#define __KERN_DS (FLAT_RING3_DS64 & ~3)
+#define __KERN_DS (FLAT_RING3_SS64 & ~3)
 #define __USER_CS FLAT_RING3_CS64
-#define __USER_DS FLAT_RING3_DS64
+#define __USER_DS FLAT_RING3_SS64
 
 #elif defined(CONFIG_ENV_pv32)
 

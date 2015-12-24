@@ -10,6 +10,7 @@
 # define HYPERCALL1 _hypercall64_1
 # define HYPERCALL2 _hypercall64_2
 # define HYPERCALL3 _hypercall64_3
+# define HYPERCALL4 _hypercall64_4
 
 #elif defined(__i386__)
 
@@ -17,6 +18,7 @@
 # define HYPERCALL1 _hypercall32_1
 # define HYPERCALL2 _hypercall32_2
 # define HYPERCALL3 _hypercall32_3
+# define HYPERCALL4 _hypercall32_4
 
 #else
 # error Bad architecture for hypercalls
@@ -42,6 +44,15 @@ static inline long hypercall_set_trap_table(const struct xen_trap_info *ti)
 static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
 {
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);
+}
+
+static inline long hypercall_mmuext_op(const mmuext_op_t ops[],
+                                       unsigned int count,
+                                       unsigned int *done,
+                                       unsigned int foreigndom)
+{
+    return HYPERCALL4(long, __HYPERVISOR_mmuext_op,
+                      ops, count, done, foreigndom);
 }
 
 static inline long hypercall_sched_op(unsigned int cmd, void *arg)
