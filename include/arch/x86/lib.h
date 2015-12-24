@@ -79,6 +79,85 @@ static inline void outl(uint32_t val, uint16_t port)
     asm volatile("outl %k0, %w1": : "a" (val), "Nd" (port));
 }
 
+static inline unsigned int read_cs(void)
+{
+    unsigned int cs;
+
+    asm volatile ("mov %%cs, %0" : "=r" (cs));
+
+    return cs;
+}
+
+static inline unsigned int read_ds(void)
+{
+    unsigned int ds;
+
+    asm volatile ("mov %%ds, %0" : "=r" (ds));
+
+    return ds;
+}
+
+static inline unsigned int read_es(void)
+{
+    unsigned int es;
+
+    asm volatile ("mov %%es, %0" : "=r" (es));
+
+    return es;
+}
+
+static inline unsigned int read_fs(void)
+{
+    unsigned int fs;
+
+    asm volatile ("mov %%fs, %0" : "=r" (fs));
+
+    return fs;
+}
+
+static inline unsigned int read_gs(void)
+{
+    unsigned int gs;
+
+    asm volatile ("mov %%gs, %0" : "=r" (gs));
+
+    return gs;
+}
+
+static inline unsigned int read_ss(void)
+{
+    unsigned int ss;
+
+    asm volatile ("mov %%ss, %0" : "=r" (ss));
+
+    return ss;
+}
+
+static inline void write_ds(unsigned int ds)
+{
+    asm volatile ("mov %0, %%ds" :: "r" (ds));
+}
+
+static inline void write_es(unsigned int es)
+{
+    asm volatile ("mov %0, %%es" :: "r" (es));
+}
+
+static inline void write_fs(unsigned int fs)
+{
+    asm volatile ("mov %0, %%fs" :: "r" (fs));
+}
+
+static inline void write_gs(unsigned int gs)
+{
+    asm volatile ("mov %0, %%gs" :: "r" (gs));
+}
+
+static inline void write_ss(unsigned int ss)
+{
+    asm volatile ("mov %0, %%ss" :: "r" (ss));
+}
+
 static inline unsigned long read_dr6(void)
 {
     unsigned long val;

@@ -52,10 +52,21 @@ struct xen_trap_info pv_default_trap_info[] =
 
 void arch_init_traps(void)
 {
+    /* PV equivalent of `lidt`. */
     int rc = hypercall_set_trap_table(pv_default_trap_info);
 
     if ( rc )
         panic("Failed to set trap table: %d\n", rc);
+
+    /* PV equivalent of setting tss.{esp0,ss0}. */
+    rc = hypercall_stack_switch(__KERN_DS, &boot_stack[2 * PAGE_SIZE]);
+    if ( rc )
+        panic("Failed to set kernel stack: %d\n", rc);
+
+    write_ds(__USER_DS);
+    write_es(__USER_DS);
+    write_fs(__USER_DS);
+    write_gs(__USER_DS);
 }
 
 void __noreturn arch_crash_hard(void)
