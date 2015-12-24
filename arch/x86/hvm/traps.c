@@ -24,6 +24,7 @@ void entry_AC(void);
 void entry_MC(void);
 void entry_XM(void);
 void entry_VE(void);
+void entry_ret_to_kernel(void);
 
 hw_tss tss __aligned(16) =
 {
@@ -100,6 +101,8 @@ void arch_init_traps(void)
     setup_gate(X86_EXC_MC,  &entry_MC,  0);
     setup_gate(X86_EXC_XM,  &entry_XM,  0);
     setup_gate(X86_EXC_VE,  &entry_VE,  0);
+
+    setup_gate(0x20, &entry_ret_to_kernel, 3);
 
     asm volatile ("lidt idt_ptr");
 

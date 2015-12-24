@@ -80,3 +80,12 @@ handle_exception:
         add $8, %esp            /* Pop error_code/entry_vector. */
 
         env_IRET
+
+
+ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
+
+        /* User required to ensure this is called from CPL > KERNEL_RPL */
+
+        mov 0*4(%esp), %eax     /* Stash %eip from iret frame */
+        mov 3*4(%esp), %esp     /* Load %esp from iret frame  */
+        jmp *%eax               /* Jump back                  */

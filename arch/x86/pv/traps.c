@@ -26,6 +26,7 @@ void entry_AC(void);
 void entry_MC(void);
 void entry_XM(void);
 void entry_VE(void);
+void entry_ret_to_kernel(void);
 
 struct xen_trap_info pv_default_trap_info[] =
 {
@@ -48,6 +49,9 @@ struct xen_trap_info pv_default_trap_info[] =
     { X86_EXC_MC,  0|4, __KERN_CS, (unsigned long)&entry_MC  },
     { X86_EXC_XM,  0|4, __KERN_CS, (unsigned long)&entry_XM  },
     { X86_EXC_VE,  0|4, __KERN_CS, (unsigned long)&entry_VE  },
+
+    { 0x20, 3|4, __KERN_CS, (unsigned long)&entry_ret_to_kernel },
+
     { 0 }, /* Sentinel. */
 };
 

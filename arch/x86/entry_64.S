@@ -94,3 +94,11 @@ handle_exception:
         add $8, %rsp            /* Pop error_code/entry_vector. */
 
         env_IRETQ
+
+
+ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
+        env_ADJUST_FRAME
+
+        mov 0*8(%rsp), %rax     /* Stash %rip from iret frame */
+        mov 3*8(%rsp), %rsp     /* Load %esp from iret frame  */
+        jmp *%rax               /* Jump back                  */
