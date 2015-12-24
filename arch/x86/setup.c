@@ -7,7 +7,13 @@
 #include <arch/x86/mm.h>
 #include <arch/x86/traps.h>
 
-uint8_t boot_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
+/*
+ * XTF Stack layout:
+ *
+ * boot_stack[page 2] Exception entrypoints
+ * boot_stack[page 1] Top of work stack
+ */
+uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
 
 const char *environment_description =
 #if defined(CONFIG_ENV_pv32)

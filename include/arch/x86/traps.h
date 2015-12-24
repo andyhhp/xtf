@@ -3,6 +3,7 @@
 
 #include <xtf/compiler.h>
 #include <arch/x86/regs.h>
+#include <arch/x86/page.h>
 
 /*
  * Arch-specific function to initialise the exception entry points, etc.
@@ -14,6 +15,8 @@ void arch_init_traps(void);
  * shutdown(crash) hypercall has not succeeded.
  */
 void __noreturn arch_crash_hard(void);
+
+extern uint8_t boot_stack[2 * PAGE_SIZE];
 
 #endif /* XTF_X86_TRAPS_H */
 

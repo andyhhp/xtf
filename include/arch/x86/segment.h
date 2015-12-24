@@ -13,23 +13,36 @@
  *  1 - 64bit supervisor code
  *  2 - 32bit supervisor code
  *  3 - 32bit supervisor data
+ *  4 - 64bit userspace code
+ *  5 - 32bit userspace code
+ *  6 - 32bit userspace data
+ *  7 - TSS (two slots in long mode)
  */
 
 #define GDTE_CS64_DPL0 1
 #define GDTE_CS32_DPL0 2
 #define GDTE_DS32_DPL0 3
+#define GDTE_CS64_DPL3 4
+#define GDTE_CS32_DPL3 5
+#define GDTE_DS32_DPL3 6
 
-#define NR_GDT_ENTRIES 4
+#define GDTE_TSS 7
+
+#define NR_GDT_ENTRIES 9
 
 #if defined(CONFIG_ENV_hvm64)
 
 #define __KERN_CS (GDTE_CS64_DPL0 * 8)
 #define __KERN_DS (0)
+#define __USER_CS (GDTE_CS64_DPL3 * 8 + 3)
+#define __USER_DS (GDTE_DS32_DPL3 * 8 + 3)
 
 #elif defined(CONFIG_ENV_hvm32)
 
 #define __KERN_CS (GDTE_CS32_DPL0 * 8)
 #define __KERN_DS (GDTE_DS32_DPL0 * 8)
+#define __USER_CS (GDTE_CS32_DPL3 * 8 + 3)
+#define __USER_DS (GDTE_DS32_DPL3 * 8 + 3)
 
 #endif
 
@@ -46,11 +59,15 @@
  */
 #define __KERN_CS (FLAT_RING3_CS64 & ~3)
 #define __KERN_DS (FLAT_RING3_DS64 & ~3)
+#define __USER_CS FLAT_RING3_CS64
+#define __USER_DS FLAT_RING3_DS64
 
 #elif defined(CONFIG_ENV_pv32)
 
 #define __KERN_CS FLAT_RING1_CS
 #define __KERN_DS FLAT_RING1_DS
+#define __USER_CS FLAT_RING3_CS
+#define __USER_DS FLAT_RING3_DS
 
 #endif
 
