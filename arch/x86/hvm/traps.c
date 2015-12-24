@@ -25,6 +25,22 @@ void entry_MC(void);
 void entry_XM(void);
 void entry_VE(void);
 
+hw_tss tss __aligned(16) =
+{
+#if defined(__i386__)
+
+    .esp0 = (unsigned long)&boot_stack[2 * PAGE_SIZE],
+    .ss0  = __KERN_DS,
+
+#elif defined(__x86_64__)
+
+    .rsp0 = (unsigned long)&boot_stack[2 * PAGE_SIZE],
+
+#endif
+
+    .iopb = X86_TSS_INVALID_IO_BITMAP,
+};
+
 void pack_gate32(struct seg_gate32 *gate, unsigned type, uint32_t func,
                  unsigned dpl, unsigned seg)
 {
@@ -86,6 +102,9 @@ void arch_init_traps(void)
     setup_gate(X86_EXC_VE,  &entry_VE,  0);
 
     asm volatile ("lidt idt_ptr");
+
+    gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE_RAW((unsigned long)&tss, 0x67, 0x89);
+    asm volatile ("ltr %w0" :: "rm" (GDTE_TSS * 8));
 }
 
 void __noreturn arch_crash_hard(void)

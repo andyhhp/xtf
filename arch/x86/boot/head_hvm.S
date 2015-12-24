@@ -45,11 +45,12 @@ GLOBAL(_start)
 #endif
 
         /* Load data segments. */
-1:      mov $__KERN_DS, %eax
+1:      mov $__USER_DS, %eax
         mov %eax, %ds
         mov %eax, %es
         mov %eax, %fs
         mov %eax, %gs
+        mov $__KERN_DS, %eax
         mov %eax, %ss
 
         /* Move onto the boot stack. */
