@@ -1,4 +1,5 @@
 #include <arch/x86/processor.h>
+#include <arch/x86/segment.h>
 #include <xtf/asm_macros.h>
 
 /*
@@ -102,3 +103,25 @@ ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
         mov 0*8(%rsp), %rax     /* Stash %rip from iret frame */
         mov 3*8(%rsp), %rsp     /* Load %esp from iret frame  */
         jmp *%rax               /* Jump back                  */
+
+
+ENTRY(exec_user)                /* void (*fn)(void) */
+
+        push $__USER_DS         /* SS */
+        push %rsp
+        addq $8, (%rsp)         /* RSP */
+        pushf                   /* RFLAGS */
+
+#if defined(CONFIG_ENV_pv)      /* PV guests see the real interrupt flag. Clobber it. */
+        andq $~X86_EFLAGS_IF, (%rsp)
+#endif
+
+        push $__USER_CS         /* CS */
+        push $1f                /* RIP */
+
+        env_IRETQ               /* Drop to user privilege. */
+1:
+        call *%rdi              /* fn() */
+
+        int $0x20               /* Return to kernel privilege. */
+        ret

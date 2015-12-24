@@ -2,6 +2,7 @@
 #include <xtf/report.h>
 #include <xtf/console.h>
 
+#include <xtf/lib.h>
 #include <xtf/traps.h>
 #include <xtf/exlog.h>
 
@@ -130,6 +131,44 @@ static void test_exlog(void)
     xtf_exlog_stop();
 }
 
+static enum {
+    USER_not_seen,
+    USER_seen,
+    USER_bad_cs,
+} seen_from_userspace = USER_not_seen;
+
+static void test_exec_user_cpl3(void)
+{
+    unsigned int cs = read_cs();
+
+    if ( (cs & 3) == 3 )
+        seen_from_userspace = USER_seen;
+    else
+        seen_from_userspace = USER_bad_cs;
+}
+
+static void test_exec_user(void)
+{
+    printk("Test: Userspace execution\n");
+
+    exec_user(test_exec_user_cpl3);
+
+    switch ( seen_from_userspace )
+    {
+    case USER_seen:
+        /* Success */
+        break;
+
+    case USER_not_seen:
+        xtf_failure("Fail: Did not execute function\n");
+        break;
+
+    case USER_bad_cs:
+        xtf_failure("Fail: Not at cpl3\n");
+        break;
+    }
+}
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
@@ -137,6 +176,7 @@ void test_main(void)
     test_int3_breakpoint();
     test_extable();
     test_exlog();
+    test_exec_user();
 
     xtf_success();
 }

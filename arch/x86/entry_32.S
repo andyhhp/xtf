@@ -1,4 +1,5 @@
 #include <arch/x86/processor.h>
+#include <arch/x86/segment.h>
 #include <xtf/asm_macros.h>
 
 /*
@@ -89,3 +90,25 @@ ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
         mov 0*4(%esp), %eax     /* Stash %eip from iret frame */
         mov 3*4(%esp), %esp     /* Load %esp from iret frame  */
         jmp *%eax               /* Jump back                  */
+
+
+ENTRY(exec_user)                /* void (*fn)(void) */
+
+        push $__USER_DS         /* SS */
+        push %esp
+        addl $4, (%esp)         /* ESP */
+        pushf                   /* EFLAGS */
+
+#if defined(CONFIG_ENV_pv)      /* PV guests see the real interrupt flag. Clobber it. */
+        andl $~X86_EFLAGS_IF, (%esp)
+#endif
+
+        push $__USER_CS         /* CS */
+        push $1f                /* EIP */
+
+        env_IRET                /* Drop to user privilege. */
+1:
+        call *4(%esp)           /* fn() */
+
+        int $0x20               /* Return to kernel privilege. */
+        ret
