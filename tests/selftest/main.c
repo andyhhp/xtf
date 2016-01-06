@@ -1,3 +1,12 @@
+/**
+ * @file tests/selftest/main.c
+ * @ref test-selftest - Sanity tests for the XTF environment.
+ *
+ * @page test-selftest Selftest
+ *
+ * Sanity tests for the framework environment and functionality.  Failure of
+ * these tests tend to suggest bugs with the framework itself.
+ */
 #include <xtf/lib.h>
 
 #include <arch/x86/processor.h>

@@ -29,4 +29,4 @@ distclean: clean
 
 .PHONY: doxygen
 doxygen: Doxyfile
-	doxygen Doxyfile
+	doxygen Doxyfile > /dev/null

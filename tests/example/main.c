@@ -1,3 +1,11 @@
+/**
+ * @file tests/example/main.c
+ * @ref test-example - Hello World testcase.
+ *
+ * @page test-example Example
+ *
+ * A Hello World XTF testcase.
+ */
 #include <xtf/lib.h>
 
 void test_main(void)

@@ -14,7 +14,7 @@
 /**
  * Tokenise and OR together.
  *
- * For each varadic, tokenise with 't' and OR together.
+ * For each varadic parameter, tokenise with 't' and OR together.
  *
  * @param t   Common stem partial token.
  * @param ... Partial tokens.

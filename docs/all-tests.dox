@@ -1,0 +1,15 @@
+/**
+@page test-index Test index
+@tableofcontents
+
+Index of all tests, sorted by category.
+
+
+@section index-special Special tests
+
+@subpage test-example - A hello-world example, more as a development reference
+than useful test.
+
+@subpage test-selftest - A set of sanity tests of the framework environment
+and functionality.
+*/

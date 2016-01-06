@@ -1,0 +1,70 @@
+/**
+@mainpage Xen Test Framework
+@tableofcontents
+
+@section intro Introduction
+
+This is both a framework for creating microkernel-based tests, and a suite of
+tests built using the framework.
+
+The microkernel boots, runs a set of related tests, and report the overall
+status on the configured consoles.  Automating a suite of tests simply
+involves booting each microkernel and checking the final printed line on the
+guest's console.
+
+The build system and library abstractions are specifically designed to make it
+easy to write code once and compile it for multiple different environments
+(virtual machines).
+
+The current environments supported are:
+- `pv32` - 32bit PV guest (PAE paging).
+- `pv64` - 64bit PV guest.
+- `hvm32` - 32bit HVM guest (PAE paging).
+- `hvm64` - 64bit HVM guest.
+
+
+@section getting-started Getting Started
+
+To obtain and build:
+
+    $ git clone git://xenbits.xen.org/people/andrewcoop/xen-test-framework.git
+    $ cd xen-test-framework
+    $ make -j4
+
+To run tests: (see @ref errata first)
+
+    # cd tests/example
+    # xl create test-pv32-example.cfg
+    # cat /var/log/xen/console/guest-test-pv32-example.log
+    --- Xen Test Framework ---
+    Environment: PV 32bit
+    Hello World
+    Test result: SUCCESS
+
+
+@section errata Errata
+
+- Running `pv32` tests requires booting Xen with `"smep=0"` on IvyBridge and
+  newer hardware, and with `"smap=0"` on Broadwell and newer hardware, as
+  there is not clean separation between the paging settings of Xen and the
+  guest.
+
+- For kernel paths, `xl` accepts either an absolute path, a path relative to
+  `/etc/xen/` or relative to `$CWD`.  The `kernel=` path for a PV guest
+  typically needs turning into an absolute path on the test system.
+
+- For firmware override, `xl` accepts either an absolute path, or a path
+  relative to `$libdir/xen/boot`.  The `firmware_override=` path for an HVM
+  test typically needs turning into an absolute path on the test system.
+
+
+@section further Further Information
+
+@subsection test-idx Test Index
+@subpage test-index
+
+
+@section licence Licence
+@include COPYING
+
+*/
