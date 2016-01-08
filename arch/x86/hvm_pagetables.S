@@ -5,9 +5,20 @@
         .data
         .p2align PAGE_SHIFT
 
-/* Mapping of first 4G of memory in 2M superpages. Uses 4x 4k pages. */
+/* Mapping of first 2M of memory in 4k pages. Uses 1x 4k page. */
+GLOBAL(l1_identmap)
+        .long 0, 0 /* Unmap page at 0 to catch errors with NULL pointers. */
+        .rept L1_PT_ENTRIES - 1
+        .long (((. - l1_identmap) / 8) << (PAGE_ORDER_4K + PAGE_SHIFT)) + \
+              _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
+        .long 0
+        .endr
+
+/* Mappings up to 4G in 2M superpages. Uses 4x 4k pages. */
 GLOBAL(l2_identmap)
-        .rept (4 * L2_PT_ENTRIES)
+        .long l1_identmap + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
+        .long 0
+        .rept (4 * L2_PT_ENTRIES) - 1
         .long (((. - l2_identmap) / 8) << (PAGE_ORDER_2M + PAGE_SHIFT)) + \
               _PAGE_PSE + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
         .long 0

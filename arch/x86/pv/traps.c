@@ -73,6 +73,11 @@ void arch_init_traps(void)
     write_fs(__USER_DS);
     write_gs(__USER_DS);
 
+    /* Unmap page at 0 to catch errors with NULL pointers. */
+    rc = hypercall_update_va_mapping(NULL, 0, 2);
+    if ( rc )
+        panic("Failed to unmap page at NULL: %d\n", rc);
+
 #ifdef __x86_64__
     /*
      * Set the user pagetables (only applicable to 64bit PV).

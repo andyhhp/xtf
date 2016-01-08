@@ -169,6 +169,27 @@ static void test_exec_user(void)
     }
 }
 
+static void test_NULL_unmapped(void)
+{
+    extern unsigned long label_test_NULL_unmapped[];
+    unsigned long tmp;
+
+    printk("Test: NULL unmapped\n");
+
+    xtf_exlog_start();
+
+    asm volatile ("label_test_NULL_unmapped: mov 0, %0; 2:"
+                  _ASM_EXTABLE(label_test_NULL_unmapped, 2b)
+                  : "=q" (tmp) :: "memory");
+
+    if ( check_nr_entries(1) )
+        check_exlog_entry(0, __KERN_CS,
+                          (unsigned long)&label_test_NULL_unmapped,
+                          X86_EXC_PF, 0);
+
+    xtf_exlog_stop();
+}
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
@@ -177,6 +198,7 @@ void test_main(void)
     test_extable();
     test_exlog();
     test_exec_user();
+    test_NULL_unmapped();
 
     xtf_success();
 }
