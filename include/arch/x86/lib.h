@@ -1,7 +1,7 @@
 #ifndef XTF_X86_LIB_H
 #define XTF_X86_LIB_H
 
-#include <stdint.h>
+#include <xtf/types.h>
 
 static inline uint64_t rdmsr(uint32_t idx)
 {

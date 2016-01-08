@@ -1,7 +1,7 @@
 #ifndef XTF_X86_MM_H
 #define XTF_X86_MM_H
 
-#include <stdint.h>
+#include <xtf/types.h>
 
 #include <arch/x86/page.h>
 

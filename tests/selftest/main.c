@@ -1,10 +1,4 @@
-#include <xtf/test.h>
-#include <xtf/report.h>
-#include <xtf/console.h>
-
 #include <xtf/lib.h>
-#include <xtf/traps.h>
-#include <xtf/exlog.h>
 
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>

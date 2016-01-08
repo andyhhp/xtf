@@ -1,7 +1,7 @@
 #ifndef XTF_X86_DIV_H
 #define XTF_X86_DIV_H
 
-#include <stdint.h>
+#include <xtf/types.h>
 
 /*
  * Divide a 64bit number by 32bit divisor without software support.

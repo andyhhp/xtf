@@ -1,6 +1,4 @@
-#include <xtf/test.h>
-#include <xtf/report.h>
-#include <xtf/console.h>
+#include <xtf/lib.h>
 
 void test_main(void)
 {

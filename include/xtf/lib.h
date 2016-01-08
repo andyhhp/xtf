@@ -4,7 +4,12 @@
 #include <xtf/types.h>
 #include <xtf/compiler.h>
 #include <xtf/console.h>
+#include <xtf/exlog.h>
+#include <xtf/libc.h>
 #include <xtf/numbers.h>
+#include <xtf/report.h>
+#include <xtf/test.h>
+#include <xtf/traps.h>
 
 #include <arch/x86/lib.h>
 
