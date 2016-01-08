@@ -10,18 +10,32 @@
 
 #include <arch/x86/desc.h>
 
-/* Macro magic to expand symbolic SEG_ATTR names into a constant */
-#define _GDTE_ATTR0()       (0)
-#define _GDTE_ATTR1(x)      (SEG_ATTR_ ## x)
-#define _GDTE_ATTR2(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR1(__VA_ARGS__))
-#define _GDTE_ATTR3(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR2(__VA_ARGS__))
-#define _GDTE_ATTR4(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR3(__VA_ARGS__))
-#define _GDTE_ATTR5(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR4(__VA_ARGS__))
-#define _GDTE_ATTR6(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR5(__VA_ARGS__))
-#define _GDTE_ATTR7(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR6(__VA_ARGS__))
-#define _GDTE_ATTR8(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR7(__VA_ARGS__))
-
-#define _GDTE_ATTR(...) VAR_MACRO(_GDTE_ATTR, __VA_ARGS__)
+/**
+ * Tokenise and OR together.
+ *
+ * For each varadic, tokenise with 't' and OR together.
+ *
+ * @param t   Common stem partial token.
+ * @param ... Partial tokens.
+ *
+ * Example:
+ * <pre>
+ *   TOK_OR(t, x, y)    => (t ## x | t ## y)
+ *   TOK_OR(t, x, y, z) => (t ## x | t ## y | t ## z)
+ * </pre>
+ */
+/** @cond */
+#define TOK_OR0(t)         (0)
+#define TOK_OR1(t, x)      (t ## x)
+#define TOK_OR2(t, x, ...) (t ## x | TOK_OR1(t, ##__VA_ARGS__))
+#define TOK_OR3(t, x, ...) (t ## x | TOK_OR2(t, ##__VA_ARGS__))
+#define TOK_OR4(t, x, ...) (t ## x | TOK_OR3(t, ##__VA_ARGS__))
+#define TOK_OR5(t, x, ...) (t ## x | TOK_OR4(t, ##__VA_ARGS__))
+#define TOK_OR6(t, x, ...) (t ## x | TOK_OR5(t, ##__VA_ARGS__))
+#define TOK_OR7(t, x, ...) (t ## x | TOK_OR6(t, ##__VA_ARGS__))
+#define TOK_OR8(t, x, ...) (t ## x | TOK_OR7(t, ##__VA_ARGS__))
+/** @endcond */
+#define TOK_OR(t, ...)     VAR_MACRO_C1(TOK_OR, t, ##__VA_ARGS__)
 
 /**
  * Initialise an LDT/GDT entry using SEG_ATTR_ mnemonics.
@@ -38,7 +52,7 @@
  *   - uses @ref SEG_ATTR_CODE and @ref SEG_ATTR_L
  */
 #define INIT_GDTE_SYM(base, limit, ...) \
-    INIT_GDTE(base, limit, _GDTE_ATTR(__VA_ARGS__))
+    INIT_GDTE(base, limit, TOK_OR(SEG_ATTR_, ##__VA_ARGS__))
 
 #endif /* XTF_X86_SYMBOLIC_CONST_H */
 

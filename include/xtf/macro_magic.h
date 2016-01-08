@@ -1,32 +1,52 @@
+/**
+ * @file include/xtf/macro_magic.h
+ *
+ * Varadic macro helpers - Here be many dragons.
+ */
 #ifndef XTF_MACRO_MAGIC_H
 #define XTF_MACRO_MAGIC_H
 
-/* Here be many dragons */
-
-/*
- * VA_NRARGS(...) will count the number of provided arguments.
+/**
+ * Count the number of varadic arguments provided.
  *
- * - VA_NRARGS()  => 0
- * - VA_NRARGS(x) => 1
+ * <pre>
+ *   VA_NARGS()     => 0
+ *   VA_NARGS(x)    => 1
+ *   VA_NARGS(x, y) => 2
+ * </pre>
  *
  * Currently functions for 0 to 11 arguments.
  */
+/** @cond */
 #define VA_NARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, N, ...) N
+/** @endcond */
 #define VA_NARGS(...) \
     VA_NARGS_(X,##__VA_ARGS__, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 
-/*
- * VAR_MACRO(macro, ...) will construct a macro which counts its arguments and
- * calls a evaluates a varient of its first parameter.
+/**
+ * Call a macro variation, based on the number of varadic arguments.
  *
- * - VAR_MACRO(x)       => x0()
- * - VAR_MACRO(x, y)    => x1(y)
- * - VAR_MACRO(x, y, x) => x2(y, z)
+ * @param macro Partial token to call a variation of.
+ * @param c1    Constant parameter to pass through.
+ * @param ...   Varadic arguments to pass through.
+ *
+ * Tokenises 'macro' with the count of varadic arguments, passing 'c1' and the
+ * varadic arguments.
+ *
+ * <pre>
+ *   VAR_MACRO_C1(m, c)          => m0(c)
+ *   VAR_MACRO_C1(m, c, x)       => m1(c, x)
+ *   VAR_MACRO_C1(m, c, x, y)    => m2(c, x, y)
+ *   VAR_MACRO_C1(m, c, x, y, z) => m3(c, x, y, z)
+ * </pre>
  */
-#define VAR_MACRO__(macro, count, ...) macro##count(__VA_ARGS__)
-#define VAR_MACRO_(macro, count, ...)  VAR_MACRO__(macro, count, __VA_ARGS__)
-#define VAR_MACRO(macro, ...) \
-    VAR_MACRO_(macro, VA_NARGS(__VA_ARGS__), __VA_ARGS__)
+/** @cond */
+#define VAR_MACRO_C1__(macro, c1, count, ...) macro##count(c1, ##__VA_ARGS__)
+#define VAR_MACRO_C1_(macro, c1, count, ...)        \
+    VAR_MACRO_C1__(macro, c1, count, ##__VA_ARGS__)
+/** @endcond */
+#define VAR_MACRO_C1(macro, c1, ...)                                \
+    VAR_MACRO_C1_(macro, c1, VA_NARGS(__VA_ARGS__), ##__VA_ARGS__)
 
 #endif /* XTF_MACRO_MAGIC_H */
 
