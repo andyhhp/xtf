@@ -9,6 +9,7 @@
 #include <xtf/macro_magic.h>
 
 #include <arch/x86/desc.h>
+#include <arch/x86/processor.h>
 
 /**
  * Tokenise and OR together.
@@ -53,6 +54,38 @@
  */
 #define INIT_GDTE_SYM(base, limit, ...) \
     INIT_GDTE(base, limit, TOK_OR(SEG_ATTR_, ##__VA_ARGS__))
+
+/**
+ * Create a selector based error code using X86_EC_ mnemonics.
+ *
+ * @param sel Selector value.
+ * @param ... Partial X86_EC_ tokens.
+ *
+ * Example usage:
+ * - EXC_EC_SYM(0, GDT)
+ *   - Uses @ref X86_EC_GDT.
+ *
+ * - EXC_EC_SYM(0, IDT, EXT)
+ *   - Uses @ref X86_EC_IDT and @ref X86_EC_EXT.
+ */
+#define SEL_EC_SYM(sel, ...) (sel | TOK_OR(X86_EC_, ##__VA_ARGS__))
+
+/**
+ * Create an exception selector based error code using mnemonics, with
+ * implicit @ref X86_EC_IDT.
+ *
+ * @param exc Partial X86_EXC_ token for selector.
+ * @param ... Partial X86_EC_ tokens.
+ *
+ * Example usage:
+ * - EXC_EC_SYM(DE)
+ *   - Uses @ref X86_EXC_DE and @ref X86_EC_IDT.
+ *
+ * - EXC_EC_SYM(DB, EXT)
+ *   - Uses @ref X86_EXC_DB, @ref X86_EC_IDT and @ref X86_EC_EXT.
+ */
+#define EXC_EC_SYM(exc, ...) \
+    SEL_EC_SYM(((X86_EXC_ ## exc) << 3), IDT, ##__VA_ARGS__)
 
 #endif /* XTF_X86_SYMBOLIC_CONST_H */
 

@@ -123,6 +123,20 @@
 /* Number of reserved vectors for exceptions. */
 #define X86_NR_RESERVED_VECTORS 32
 
+/*
+ * Error Code mnemonics.
+ */
+/* Segment-based Error Code - architecturally defined. */
+#define X86_EC_EXT (1U << 0) /* External event. */
+#define X86_EC_IDT (1U << 1) /* Descriptor Location.  IDT, or LDT/GDT */
+#define X86_EC_TI  (1U << 2) /* Only if !IDT.  LDT or GDT. */
+
+/* Segment-based Error Code - supplemental constants. */
+#define X86_EC_TABLE_MASK (3U << 1)
+#define X86_EC_SEL_MASK   (-1L << 3)
+#define X86_EC_GDT        0
+#define X86_EC_LDT        X86_EC_TI
+
 #endif /* XTF_X86_PROCESSOR_H */
 
 /*
