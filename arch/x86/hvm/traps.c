@@ -106,7 +106,7 @@ void arch_init_traps(void)
 
     asm volatile ("lidt idt_ptr");
 
-    gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE_RAW((unsigned long)&tss, 0x67, 0x89);
+    gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE((unsigned long)&tss, 0x67, 0x89);
     asm volatile ("ltr %w0" :: "rm" (GDTE_TSS * 8));
 }
 

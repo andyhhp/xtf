@@ -9,7 +9,6 @@
 
 #include <xtf/types.h>
 #include <xtf/compiler.h>
-#include <xtf/macro_magic.h>
 
 #include <arch/x86/segment.h>
 
@@ -120,30 +119,18 @@ struct __packed seg_gate64 {
 #define SEG_ATTR_E      0x0004 /**< Expand-down? (0 = normal, 1 = expand-down) */
 #define SEG_ATTR_W      0x0002 /**< Writable? (0 = RO seg, 1 = RW seg) */
 
-/* Macro magic to expand symbolic SEG_ATTR names into a constant */
-#define _GDTE_ATTR0()       (0)
-#define _GDTE_ATTR1(x)      (SEG_ATTR_ ## x)
-#define _GDTE_ATTR2(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR1(__VA_ARGS__))
-#define _GDTE_ATTR3(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR2(__VA_ARGS__))
-#define _GDTE_ATTR4(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR3(__VA_ARGS__))
-#define _GDTE_ATTR5(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR4(__VA_ARGS__))
-#define _GDTE_ATTR6(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR5(__VA_ARGS__))
-#define _GDTE_ATTR7(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR6(__VA_ARGS__))
-#define _GDTE_ATTR8(x, ...) (SEG_ATTR_ ## x | _GDTE_ATTR7(__VA_ARGS__))
-
-#define GDTE_ATTR(...) VAR_MACRO(_GDTE_ATTR, __VA_ARGS__)
-
-
-#define _INIT_GDTE(base, limit, attr) { { {                           \
+/**
+ * Initialise an LDT/GDT entry using a raw attribute number.
+ *
+ * @param base  Segment base.
+ * @param limit Segment limit.
+ * @param attr  Segment attributes.
+ */
+#define INIT_GDTE(base, limit, attr) { { {                            \
      .lo = (((base) & 0xffff) << 16) | ((limit) & 0xffff),            \
      .hi = ((base) & 0xff000000) | ((limit) & 0xf0000) |              \
            (((attr) & 0xf0ff) << 8) | (((base) & 0xff0000) >> 16)     \
      } } }
-
-/** Initialise an LDT/GDT entry using a raw attribute number. */
-#define INIT_GDTE_RAW(base, limit, attr) _INIT_GDTE(base, limit, attr)
-/** Initialise an LDT/GDT entry using symbol attributes. */
-#define INIT_GDTE_SYM(base, limit, ...)  _INIT_GDTE(base, limit, GDTE_ATTR(__VA_ARGS__))
 
 /** Long mode lgdt/lidt table pointer. */
 struct __packed desc_ptr64 {
