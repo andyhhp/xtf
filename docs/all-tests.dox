@@ -44,6 +44,9 @@ XSA-156 - See @ref test-swint-emulation
 
 @subpage test-xsa-168 - `invvpid` non-canonical guest address.
 
+@subpage test-xsa-170 - VMX: guest user mode may crash guest with
+non-canonical RIP.
+
 @subpage test-xsa-173 - x86 shadow pagetables: address width overflow.
 
 @subpage test-xsa-182 - x86: Privilege escalation in PV guests.
