@@ -184,6 +184,33 @@ static void test_NULL_unmapped(void)
     xtf_exlog_stop();
 }
 
+static bool local_unhandled_exception_hook(struct cpu_regs *regs)
+{
+    extern unsigned long hook_fault[], hook_fixup[];
+
+    if ( _p(regs->ip) != hook_fault )
+    {
+        xtf_failure("Fail: Expected fault at %p, got %p\n",
+                    hook_fault, _p(regs->ip));
+        return false;
+    }
+
+    regs->ip = (unsigned long)hook_fixup;
+    return true;
+}
+
+static void test_unhandled_exception_hook(void)
+{
+    printk("Test: Unhandled Exception Hook\n");
+
+    /* Check that the hook catches the exception, and fix it up. */
+    xtf_unhandled_exception_hook = local_unhandled_exception_hook;
+
+    asm volatile ("hook_fault: ud2a; hook_fixup:" ::: "memory");
+
+    xtf_unhandled_exception_hook = NULL;
+}
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
@@ -193,6 +220,7 @@ void test_main(void)
     test_exlog();
     test_exec_user();
     test_NULL_unmapped();
+    test_unhandled_exception_hook();
 
     xtf_success();
 }

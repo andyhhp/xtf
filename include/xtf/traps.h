@@ -5,6 +5,14 @@
 
 #include <arch/x86/traps.h>
 
+/**
+ * Function pointer to allow tests to install an unhandled exception hook.
+ *
+ * Must only return true if action has been taken resolve the exception.
+ * i.e. that it is now safe to iret back.  If not, a panic() will occur.
+ */
+extern bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
+
 #endif /* XTF_TRAPS_H */
 
 /*

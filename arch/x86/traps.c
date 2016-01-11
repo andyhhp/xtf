@@ -4,6 +4,8 @@
 
 #include <arch/x86/processor.h>
 
+bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
+
 /*
  * Evaluate whether this exception is a trap or an interrupt.  i.e. whether it
  * save to just return at the current %eip, or whether further action is
@@ -68,6 +70,13 @@ void do_exception(struct cpu_regs *regs)
         regs->ip = fixup_addr;
         safe = true;
     }
+
+    /*
+     * If the test has installed an unhandled exception hook, call it in the
+     * hope that it can resolve the exception.
+     */
+    if ( !safe && xtf_unhandled_exception_hook )
+        safe = xtf_unhandled_exception_hook(regs);
 
     if ( !safe )
         panic("Unhandled exception: vec %u at %04x:%p\n",
