@@ -149,7 +149,7 @@ void test_setup(void)
      * for the #UD exception if FEP is not available.
      */
     asm volatile ("xor %0, %0;"
-                  "1: ud2a; .ascii \"xen\";"
+                  "1:" _ASM_XEN_FEP
                   "mov $1, %0;"
                   "2:"
                   _ASM_EXTABLE(1b, 2b)

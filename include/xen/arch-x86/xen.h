@@ -38,6 +38,22 @@ struct xen_trap_info {
 
 #endif
 
+/**
+ * Xen Forced Emulation Prefix.
+ *
+ * For PV guests, may prefix a `cpuid` instruction to allow Xen to fill in
+ * information, rather than reading the hardware values.
+ *
+ * For HVM guests (and with the Xen 'hvm_fep' command line option enabled),
+ * may be used for cause any arbitrary instruction to be emulated in the
+ * hypervisor's x86 emulator.
+ */
+#ifdef __ASSEMBLY__
+#define _ASM_XEN_FEP ud2a; .ascii "xen";
+#else
+#define _ASM_XEN_FEP "ud2a; .ascii \"xen\";"
+#endif
+
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_H */
 
 /*
