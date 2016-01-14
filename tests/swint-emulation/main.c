@@ -15,6 +15,7 @@
  * - `int $3` (`0xcd 0x03`)
  * - `icebp`  (`0xf1`)
  * - `int $1` (`0xcd 0x01`)
+ * - `into`   (`0xce`) (32bit only)
  *
  * with and without a redundant prefix (address size override specifically, as
  * it has no effect on instructs like these).  Each combination is executed
@@ -131,6 +132,26 @@ struct sequence int_0x1 =
   },
 };
 
+#ifdef __i386__
+/** Sequence for `into`. */
+struct sequence into =
+{ "into",
+  {
+      {"regular", stub_into_reg,
+       label_into_reg_trap, label_into_reg_fault},
+
+      {"redundant", stub_into_red,
+       label_into_red_trap, label_into_red_fault},
+
+      {"forced", stub_into_force,
+       label_into_force_trap, label_into_force_fault},
+
+      {"forced redundant", stub_into_forcered,
+       label_into_forcered_trap, label_into_forcered_fault},
+  },
+};
+#endif
+
 /** Whether to run the stub in user or supervisor mode. */
 static bool user = false;
 
@@ -237,6 +258,7 @@ static void set_idt_entries_present(bool present)
 {
     idt[X86_EXC_DB].p = present;
     idt[X86_EXC_BP].p = present;
+    idt[X86_EXC_OF].p = present;
 }
 
 /** Modify the descriptor privilege level on the IDT entries under test. */
@@ -244,6 +266,7 @@ static void set_idt_entries_dpl(unsigned int dpl)
 {
     idt[X86_EXC_DB].dpl = dpl;
     idt[X86_EXC_BP].dpl = dpl;
+    idt[X86_EXC_OF].dpl = dpl;
 }
 
 /** Tests run in user mode. */
@@ -257,6 +280,9 @@ void cpl3_tests(void)
         test_trap(&int_0x3, X86_EXC_BP);
         test_trap(&icebp,   X86_EXC_DB);
         test_trap(&int_0x1, X86_EXC_DB);
+#ifdef __i386__
+        test_trap(&into,    X86_EXC_OF);
+#endif
     }
 
     printk("Test cpl3: p=0\n");
@@ -267,6 +293,9 @@ void cpl3_tests(void)
         test_fault(&int_0x3, X86_EXC_NP, EXC_EC_SYM(BP));
         test_fault(&icebp,   X86_EXC_NP, EXC_EC_SYM(DB, EXT));
         test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
+#ifdef __i386__
+        test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
+#endif
 
         set_idt_entries_present(true);
     }
@@ -280,6 +309,9 @@ void cpl3_tests(void)
          /* icebp count as external, so no dpl check. */
         test_trap (&icebp,   X86_EXC_DB);
         test_fault(&int_0x1, X86_EXC_GP, EXC_EC_SYM(DB));
+#ifdef __i386__
+        test_fault(&into,    X86_EXC_GP, EXC_EC_SYM(OF));
+#endif
 
         set_idt_entries_dpl(3);
     }
@@ -296,6 +328,9 @@ void cpl0_tests(void)
         test_trap(&int_0x3, X86_EXC_BP);
         test_trap(&icebp,   X86_EXC_DB);
         test_trap(&int_0x1, X86_EXC_DB);
+#ifdef __i386__
+        test_trap(&into,    X86_EXC_OF);
+#endif
     }
 
     printk("Test cpl0: p=0\n");
@@ -306,6 +341,9 @@ void cpl0_tests(void)
         test_fault(&int_0x3, X86_EXC_NP, EXC_EC_SYM(BP));
         test_fault(&icebp,   X86_EXC_NP, EXC_EC_SYM(DB, EXT));
         test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
+#ifdef __i386__
+        test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
+#endif
 
         set_idt_entries_present(true);
     }

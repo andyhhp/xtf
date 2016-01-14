@@ -1,6 +1,7 @@
 #include <xtf/extable.h>
 #include <xtf/asm_macros.h>
 #include <xen/arch-x86/xen.h>
+#include <arch/x86/processor.h>
 
         /* Macro to generate a single test function. */
         /* See lowlevel.h for a description of nomenclature. */
@@ -9,8 +10,15 @@
         /* Function label.  e.g. stub_int3_red(). */
 ENTRY(stub_\insn\()_\type)
 
-        /* Avoid function label and fault label possibly aliasing. */
-        nop
+        .if \insn == into
+            /* Ensure the overflow flag is set, to trigger 'into'. */
+            pushf
+            orl $X86_EFLAGS_OF, (%esp)
+            popf
+        .else
+            /* Avoid function label and fault label possibly aliasing. */
+            nop
+        .endif
 
         /* Possibly insert a Xen Forced Emulation prefix. */
         .if \type == force || \type == forcered
@@ -39,6 +47,8 @@ GLOBAL(label_\insn\()_\type\()_fault)
             .byte 0xf1
         .elseif \insn == int_0x1
             int $0x1
+        .elseif \insn == into
+            into
         .endif
 
         /* Label where a trap should occur.  e.g. label_int3_red_trap. */
@@ -65,3 +75,6 @@ GEN_SEQUENCE int3
 GEN_SEQUENCE int_0x3
 GEN_SEQUENCE icebp
 GEN_SEQUENCE int_0x1
+#ifdef __i386__
+GEN_SEQUENCE into
+#endif
