@@ -64,6 +64,45 @@ To run tests: (see @ref errata first)
 @subpage test-index
 
 
+@section history History
+
+The Xen Test Framework grew out of the work done to debug
+[XSA-106](http://xenbits.xen.org/xsa/advisory-106.html).  As reported, Xen's
+instruction emulator failed to perform dpl checks for instructions generating
+software exceptions, which allowed guest userspace to bypass a security check
+set up by the guest kernel.  Further investigation showed that the exception
+frames which resulted from emulation were incorrect; specifically that the
+reported `%%eip` was usually wrong.
+
+A test kernel was written to compare the exception frames of faults and traps
+when executed by hardware, and when emulated by the instruction emulator.  On
+doing this, it was observed that different hardware was behaving differently
+(depending on the degree of hardware assistance available), and some CPUs were
+not behaving as described in the manual.
+
+Once the embargo on XSA-106 lifted, changesets
+[7dfa94c](http://xenbits.xen.org/gitweb/
+?p=xen.git;a=commitdiff;h=7dfa94c6212b979cbfc8cff5ad5336922f4809d9) and
+[36ebf14](http://xenbits.xen.org/gitweb/
+?p=xen.git;a=commitdiff;h=36ebf14ebe60310aa22952cbb94de951c158437d) were the
+eventual bugfixes which caused Xen to inject software exceptions correctly.
+
+The test was deemed, in principle, to be a good project to invest some time in
+and to clean up for more general use.  Naturally therefore, the cleanup
+progressed only in the authors copious free time, when more important tasks
+were not being done.
+
+Moving forward by a year, the author was dismayed to discover that the
+[XSA-156](http://xenbits.xen.org/xsa/advisory-156.html) release contained a
+regression (causing infinite loops inside guests which used hardware debugging
+facilities, fixed in [0747bc8](http://xenbits.xen.org/gitweb/
+?p=xen.git;a=commitdiff;h=0747bc8b4d85f3fc0ee1e58418418fa0229e8ff8)) which
+would have been caught by the original test for XSA-106, had that test been in
+a usable state.
+
+[It](@ref test-swint-emulation) now is.
+
+
 @section licence Licence
 @include COPYING
 
