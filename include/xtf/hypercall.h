@@ -29,6 +29,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 /* All Xen ABI for includers convenience .*/
 #include <xen/xen.h>
 #include <xen/sched.h>
+#include <xen/errno.h>
 #include <xen/event_channel.h>
 #include <xen/hvm/hvm_op.h>
 #include <xen/hvm/params.h>
