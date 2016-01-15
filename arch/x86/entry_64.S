@@ -125,3 +125,10 @@ ENTRY(exec_user)                /* void (*fn)(void) */
 
         int $0x20               /* Return to kernel privilege. */
         ret
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */

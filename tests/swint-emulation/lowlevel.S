@@ -78,3 +78,10 @@ GEN_SEQUENCE int_0x1
 #ifdef __i386__
 GEN_SEQUENCE into
 #endif
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */

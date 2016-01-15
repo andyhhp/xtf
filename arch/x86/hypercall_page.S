@@ -58,3 +58,10 @@ DECLARE_HYPERCALL(arch_4)
 DECLARE_HYPERCALL(arch_5)
 DECLARE_HYPERCALL(arch_6)
 DECLARE_HYPERCALL(arch_7)
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -94,3 +94,13 @@ void xtf_report_status(void)
            (warnings && (status == STATUS_SUCCESS)) ?
            " with warnings" : "");
 }
+
+/*
+ * Local variables:
+ * mode: C
+ * c-file-style: "BSD"
+ * c-basic-offset: 4
+ * tab-width: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

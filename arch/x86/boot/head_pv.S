@@ -52,3 +52,10 @@ SIZE(_start)
 
 main_err_msg: .asciz "xtf_main() returned\n"
 SIZE(main_err_msg)
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -41,8 +41,8 @@ SECTIONS
                 *(.rodata)
                 *(.rodata.*)
 
-	. = ALIGN(8);
-	__start_ex_table = .;
+        . = ALIGN(8);
+        __start_ex_table = .;
                 *(.ex_table)
         __stop_ex_table = .;
         }
@@ -52,3 +52,10 @@ SECTIONS
                 *(.note.*)
         }
 }
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -49,3 +49,10 @@ GLOBAL(l3_paemap)
         .long 0
         .endr
 SIZE(l3_paemap)
+
+/*
+ * Local variables:
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ */
