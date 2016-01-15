@@ -5,6 +5,7 @@
 enum test_status {
     STATUS_RUNNING, /**< Test not yet completed.       */
     STATUS_SUCCESS, /**< Test was successful.          */
+    STATUS_SKIP,    /**< Test cannot be completed.     */
     STATUS_ERROR,   /**< Issue with the test itself.   */
     STATUS_FAILURE, /**< Issue with the tested matter. */
 };
@@ -12,7 +13,7 @@ enum test_status {
 /** Current status of this test. */
 static enum test_status status;
 
-/** Whether a warning has occured. */
+/** Whether a warning has occurred. */
 static bool warnings;
 
 static const char *status_to_str[] =
@@ -21,6 +22,7 @@ static const char *status_to_str[] =
 
     STA(RUNNING),
     STA(SUCCESS),
+    STA(SKIP),
     STA(ERROR),
     STA(FAILURE),
 
@@ -43,6 +45,17 @@ void xtf_warning(const char *fmt, ...)
     va_list args;
 
     warnings = true;
+
+    va_start(args, fmt);
+    vprintk(fmt, args);
+    va_end(args);
+}
+
+void xtf_skip(const char *fmt, ...)
+{
+    va_list args;
+
+    set_status(STATUS_SKIP);
 
     va_start(args, fmt);
     vprintk(fmt, args);

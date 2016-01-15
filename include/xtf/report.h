@@ -11,12 +11,13 @@
  *
  * A test is expected to report one of:
  *  - Success
+ *  - Skip
  *  - Error
  *  - Failure
  *
- * 'Success' indicates that everything went well.  'Error' indicates a bug in
- * the test code or environment itself, while 'Failure' indicates a bug in the
- * code under test.
+ * 'Success' indicates that everything went well, while 'Skip' indicates that
+ * the test cannot be completed.  'Error' indicates a bug in the test code or
+ * environment itself, while 'Failure' indicates a bug in the code under test.
  *
  * If multiple statuses are reported, the most severe is the one which is
  * kept.
@@ -34,6 +35,14 @@ void xtf_success(void);
  * was encountered.
  */
 void xtf_warning(const char *fmt, ...) __printf(1, 2);
+
+/**
+ * Report a test skip.
+ *
+ * Indicates that the test cannot be completed.  This may count as a success
+ * or failure, depending on the opinion of the tester.
+ */
+void xtf_skip(const char *fmt, ...) __printf(1, 2);
 
 /**
  * Report a test error.
