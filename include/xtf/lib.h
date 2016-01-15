@@ -5,6 +5,7 @@
 #include <xtf/compiler.h>
 #include <xtf/console.h>
 #include <xtf/exlog.h>
+#include <xtf/hypercall.h>
 #include <xtf/libc.h>
 #include <xtf/numbers.h>
 #include <xtf/report.h>
