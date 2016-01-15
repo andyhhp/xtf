@@ -22,6 +22,8 @@ Coveres XSA-106 and XSA-156.
 
 @section index-xsa XSA Proof-of-Concept tests
 
+@subpage test-xsa-122 - Hypervisor stack leak via xen_version() hypercall.
+
 @subpage test-xsa-167 - PV superpage sanity checks.
 
 
