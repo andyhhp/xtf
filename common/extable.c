@@ -33,7 +33,12 @@ static int compare_extable_entry(const void *_l, const void *_r)
 {
     const struct extable_entry *l = _l, *r = _r;
 
-    return l->fault - r->fault;
+    if ( l->fault == r->fault )
+        return 0;
+    else if ( l->fault > r->fault )
+        return 1;
+    else
+        return -1;
 }
 
 static void swap_extable_entry(void *_l, void *_r)
