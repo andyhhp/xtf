@@ -31,10 +31,10 @@
  * Each instruction/prefix combination is executed in the following
  * conditions:
  * - cpl0, all permissions ok - expect traps
- * - cpl0, descriptors not present - expect #%NP faults
+ * - cpl0, descriptors not present - expect @#NP faults
  * - cpl3, all permissions ok - expect traps
- * - cpl3, descriptors dpl0 - expect #%GP faults (except `icebp`)
- * - cpl3, descriptors not present - expect #%NP faults
+ * - cpl3, descriptors dpl0 - expect @#GP faults (except `icebp`)
+ * - cpl3, descriptors not present - expect @#NP faults
  *
  * In all cases, the exception frame is verified to be correct.
  */
