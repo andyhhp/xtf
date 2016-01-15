@@ -26,6 +26,8 @@ Coveres XSA-106 and XSA-156.
 
 @subpage test-xsa-122 - Hypervisor stack leak via xen_version() hypercall.
 
+@subpage test-xsa-123 - Hypervisor memory corruption due to x86 emulator flaw.
+
 @subpage test-xsa-167 - PV superpage sanity checks.
 
 @subpage test-xsa-168 - `INVVPID` non-canonical guest address.
