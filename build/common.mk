@@ -2,9 +2,12 @@ ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist/
 CC = gcc
 
-PV_ENVIRONMENTS  := pv64 pv32
-HVM_ENVIRONMENTS := hvm64 hvm32
-ALL_ENVIRONMENTS := $(PV_ENVIRONMENTS) $(HVM_ENVIRONMENTS)
+ALL_ENVIRONMENTS   := pv64 pv32 hvm64 hvm32
+
+PV_ENVIRONMENTS    := $(filter pv%,$(ALL_ENVIRONMENTS))
+HVM_ENVIRONMENTS   := $(filter hvm%,$(ALL_ENVIRONMENTS))
+32BIT_ENVIRONMENTS := $(filter pv32% hvm32%,$(ALL_ENVIRONMENTS))
+64BIT_ENVIRONMENTS := $(filter pv64% hvm64%,$(ALL_ENVIRONMENTS))
 
 pv64_arch  := x86_64
 pv32_arch  := x86_32

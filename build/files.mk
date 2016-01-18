@@ -21,21 +21,23 @@ obj-perenv += $(ROOT)/arch/x86/traps.o
 # Always link hypercall_page.S last as it is a page of data replaced by the hyperisor
 obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
 
+
 # HVM specific objects
 obj-hvm += $(ROOT)/arch/x86/hvm_pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
+$(foreach env,$(HVM_ENVIRONMENTS),$(eval obj-$(env) += $(obj-hvm)))
 
-obj-hvm32 += $(obj-hvm)
-obj-hvm32 += $(ROOT)/arch/x86/entry_32.o
-
-obj-hvm64 += $(obj-hvm)
-obj-hvm64 += $(ROOT)/arch/x86/entry_64.o
 
 # PV specific objects
 obj-pv  += $(ROOT)/arch/x86/pv/traps.o
+$(foreach env,$(PV_ENVIRONMENTS),$(eval obj-$(env) += $(obj-pv)))
 
-obj-pv32 += $(obj-pv)
-obj-pv32 += $(ROOT)/arch/x86/entry_32.o
 
-obj-pv64 += $(obj-pv)
-obj-pv64 += $(ROOT)/arch/x86/entry_64.o
+# 32bit specific objects
+obj-32  += $(ROOT)/arch/x86/entry_32.o
+$(foreach env,$(32BIT_ENVIRONMENTS),$(eval obj-$(env) += $(obj-32)))
+
+
+# 64bit specific objects
+obj-64  += $(ROOT)/arch/x86/entry_64.o
+$(foreach env,$(64BIT_ENVIRONMENTS),$(eval obj-$(env) += $(obj-64)))
