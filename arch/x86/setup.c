@@ -16,20 +16,24 @@
 uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
 
 const char *environment_description =
-#if defined(CONFIG_ENV_pv32)
-    "PV 32bit"
-#elif defined(CONFIG_ENV_pv64)
-    "PV 64bit"
-#elif defined(CONFIG_ENV_hvm32)
-    "HVM 32bit"
-#elif defined(CONFIG_ENV_hvm64)
-    "HVM 64bit"
+#if defined(CONFIG_PV)
+    "PV"
+#elif defined(CONFIG_HVM)
+    "HVM"
 #else
-# error Bad Environment
+# error Bad Guest Type
+#endif
+
+#if defined(__x86_64__)
+    " 64bit"
+#elif defined(__i386__)
+    " 32bit"
+#else
+# error Bad Width
 #endif
     ;
 
-#ifdef CONFIG_ENV_pv
+#ifdef CONFIG_PV
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;
 #endif
@@ -42,7 +46,7 @@ start_info_t *start_info = NULL;
  */
 static void init_hypercalls(void)
 {
-#ifdef CONFIG_ENV_hvm
+#ifdef CONFIG_HVM
     uint32_t eax, ebx, ecx, edx, base;
     bool found = false;
 
@@ -67,7 +71,7 @@ static void init_hypercalls(void)
     cpuid(base + 2, &eax, &ebx, &ecx, &edx);
     wrmsr(ebx, (unsigned long)&hypercall_page);
     barrier();
-#endif
+#endif /* CONFIG_HVM */
 
     /*
      * Confirm that the `ret` poision has been overwritten with a real
@@ -83,10 +87,10 @@ static void setup_pv_console(void)
     xencons_interface_t *cons_ring;
     evtchn_port_t cons_evtchn;
 
-#if defined(CONFIG_ENV_pv)
+#if defined(CONFIG_PV)
     cons_ring = mfn_to_virt(start_info->console.domU.mfn);
     cons_evtchn = start_info->console.domU.evtchn;
-#elif defined(CONFIG_ENV_hvm)
+#elif defined(CONFIG_HVM)
     {
         uint64_t raw_pfn, raw_evtchn;
 
@@ -102,7 +106,7 @@ static void setup_pv_console(void)
     init_pv_console(cons_ring, cons_evtchn);
 }
 
-#if defined(CONFIG_ENV_hvm)
+#if defined(CONFIG_HVM)
 static void qemu_console_write(const char *buf, size_t len)
 {
     asm volatile("rep; outsb"
@@ -118,7 +122,7 @@ static void xen_console_write(const char *buf, size_t len)
 
 void arch_setup(void)
 {
-#if defined(CONFIG_ENV_hvm)
+#if defined(CONFIG_HVM)
     register_console_callback(qemu_console_write);
 #endif
 

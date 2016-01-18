@@ -29,7 +29,7 @@ metadata.  Currently just the entry vector.
 */
 
 .macro env_ADJUST_FRAME         /* Environment specific exception entry. */
-#if defined(CONFIG_ENV_pv64)
+#if defined(CONFIG_PV)
                                 /* Restore results of Xen SYSRET'ing to this point. */
         pop   %rcx
         pop   %r11
@@ -37,7 +37,7 @@ metadata.  Currently just the entry vector.
 .endm
 
 .macro env_IRETQ                /* Environment specific version of `iretq`. */
-#if defined(CONFIG_ENV_pv64)
+#if defined(CONFIG_PV)
 
         push $0                 /* Indicate that this isn't a SYSRET'able   */
         jmp HYPERCALL_iret      /* situation, and use the 'iret' hypercall. */
@@ -112,7 +112,7 @@ ENTRY(exec_user)                /* void (*fn)(void) */
         addq $8, (%rsp)         /* RSP */
         pushf                   /* RFLAGS */
 
-#if defined(CONFIG_ENV_pv)      /* PV guests see the real interrupt flag. Clobber it. */
+#if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
         andq $~X86_EFLAGS_IF, (%rsp)
 #endif
 

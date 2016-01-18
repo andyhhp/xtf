@@ -18,7 +18,7 @@ void __noreturn arch_crash_hard(void);
 
 extern uint8_t boot_stack[2 * PAGE_SIZE];
 
-#if defined(CONFIG_ENV_pv)
+#if defined(CONFIG_PV)
 #include <xen/xen.h>
 
 extern struct start_info *start_info;

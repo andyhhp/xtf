@@ -2,9 +2,9 @@
 #define XTF_X86_CONFIG_H
 
 #if defined(CONFIG_ENV_pv64) || defined(CONFIG_ENV_pv32)
-# define CONFIG_ENV_pv
+# define CONFIG_PV
 #elif defined(CONFIG_ENV_hvm64) || defined(CONFIG_ENV_hvm32)
-# define CONFIG_ENV_hvm
+# define CONFIG_HVM
 #endif
 
 #endif /* XTF_X86_CONFIG_H */

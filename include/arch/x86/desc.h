@@ -218,7 +218,7 @@ typedef struct hw_tss32 hw_tss;
 extern user_desc gdt[NR_GDT_ENTRIES];
 extern desc_ptr  gdt_ptr;
 
-#if defined(CONFIG_ENV_hvm)
+#if defined(CONFIG_HVM)
 extern gate_desc idt[256];
 extern desc_ptr  idt_ptr;
 

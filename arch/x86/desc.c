@@ -22,7 +22,7 @@ desc_ptr gdt_ptr =
     .base = (unsigned long)&gdt,
 };
 
-#if defined(CONFIG_ENV_hvm)
+#if defined(CONFIG_HVM)
 
 gate_desc idt[256] = { };
 

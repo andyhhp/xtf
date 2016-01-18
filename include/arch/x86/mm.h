@@ -24,7 +24,7 @@ static inline void *pfn_to_virt(unsigned long pfn)
     return (void *)(pfn << PAGE_SHIFT);
 }
 
-#if defined(CONFIG_ENV_pv)
+#if defined(CONFIG_PV)
 
 #define m2p ((unsigned long *)MACH2PHYS_VIRT_START)
 
@@ -40,7 +40,7 @@ static inline void *maddr_to_virt(uint64_t maddr)
 
 #undef m2p
 
-#endif /* CONFIG_ENV_pv */
+#endif /* CONFIG_PV */
 
 #endif /* XTF_X86_MM_H */
 

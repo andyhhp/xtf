@@ -24,7 +24,7 @@ containing the entry vector.
 */
 
 .macro env_IRET                 /* Environment specific version of `iret`. */
-#if defined(CONFIG_ENV_pv)
+#if defined(CONFIG_PV)
 
         jmp HYPERCALL_iret      /* PV guests use the 'iret' hypercall. */
 
@@ -99,7 +99,7 @@ ENTRY(exec_user)                /* void (*fn)(void) */
         addl $4, (%esp)         /* ESP */
         pushf                   /* EFLAGS */
 
-#if defined(CONFIG_ENV_pv)      /* PV guests see the real interrupt flag. Clobber it. */
+#if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
         andl $~X86_EFLAGS_IF, (%esp)
 #endif
 
