@@ -17,10 +17,15 @@ easy to write code once and compile it for multiple different environments
 (virtual machines).
 
 The current environments supported are:
-- `pv32` - 32bit PV guest (PAE paging).
-- `pv64` - 64bit PV guest.
-- `hvm32` - 32bit HVM guest (PAE paging).
-- `hvm64` - 64bit HVM guest.
+
+Environment | Guest | Width | Paging
+:-----------|:------|:------|:---------
+`pv32pae`   | PV    | 32bit | PAE
+`pv64`      | PV    | 64bit | Long mode
+`hvm32pae`  | HVM   | 32bit | PAE
+`hvm64`     | HVM   | 64bit | Long mode
+
+@todo Possibly implement `hvm32`, `hvm32pg`, `hvm32pse` and `hvm16`.
 
 
 @section getting-started Getting Started
@@ -34,17 +39,17 @@ To obtain and build:
 To run tests: (see @ref errata first)
 
     # cd tests/example
-    # xl create test-pv32-example.cfg
-    # cat /var/log/xen/console/guest-test-pv32-example.log
+    # xl create test-pv64-example.cfg
+    # cat /var/log/xen/console/guest-test-pv64-example.log
     --- Xen Test Framework ---
-    Environment: PV 32bit
+    Environment: PV 64bit
     Hello World
     Test result: SUCCESS
 
 
 @section errata Errata
 
-- Running `pv32` tests requires booting Xen with `"smep=0"` on IvyBridge and
+- Running 32bit PV tests requires booting Xen with `"smep=0"` on IvyBridge and
   newer hardware, and with `"smap=0"` on Broadwell and newer hardware, as
   there is not clean separation between the paging settings of Xen and the
   guest.

@@ -2,17 +2,17 @@ ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist/
 CC = gcc
 
-ALL_ENVIRONMENTS   := pv64 pv32 hvm64 hvm32
+ALL_ENVIRONMENTS   := pv64 pv32pae hvm64 hvm32pae
 
 PV_ENVIRONMENTS    := $(filter pv%,$(ALL_ENVIRONMENTS))
 HVM_ENVIRONMENTS   := $(filter hvm%,$(ALL_ENVIRONMENTS))
 32BIT_ENVIRONMENTS := $(filter pv32% hvm32%,$(ALL_ENVIRONMENTS))
 64BIT_ENVIRONMENTS := $(filter pv64% hvm64%,$(ALL_ENVIRONMENTS))
 
-pv64_arch  := x86_64
-pv32_arch  := x86_32
-hvm64_arch := x86_64
-hvm32_arch := x86_32
+pv64_arch     := x86_64
+pv32pae_arch  := x86_32
+hvm64_arch    := x86_64
+hvm32pae_arch := x86_32
 
 COMMON_FLAGS := -pipe -I$(ROOT)/include -MMD -MP
 
@@ -29,18 +29,18 @@ COMMON_AFLAGS-x86_64 := -m64
 COMMON_CFLAGS-x86_32 := -m32
 COMMON_CFLAGS-x86_64 := -m64
 
-head-pv64  := $(ROOT)/arch/x86/boot/head_pv64.o
-head-pv32  := $(ROOT)/arch/x86/boot/head_pv32.o
-head-hvm64 := $(ROOT)/arch/x86/boot/head_hvm64.o
-head-hvm32 := $(ROOT)/arch/x86/boot/head_hvm32.o
+head-pv64     := $(ROOT)/arch/x86/boot/head_pv64.o
+head-pv32pae  := $(ROOT)/arch/x86/boot/head_pv32pae.o
+head-hvm64    := $(ROOT)/arch/x86/boot/head_hvm64.o
+head-hvm32pae := $(ROOT)/arch/x86/boot/head_hvm32pae.o
 
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
 defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
 
-defcfg-pv64  := $(defcfg-pv)
-defcfg-pv32  := $(defcfg-pv)
-defcfg-hvm64 := $(defcfg-hvm)
-defcfg-hvm32 := $(defcfg-hvm)
+defcfg-pv64     := $(defcfg-pv)
+defcfg-pv32pae  := $(defcfg-pv)
+defcfg-hvm64    := $(defcfg-hvm)
+defcfg-hvm32pae := $(defcfg-hvm)
 
 obj-perarch :=
 obj-perenv  :=
@@ -66,12 +66,12 @@ DEPS-$(1) = $(head-$(1)) \
 
 # Generate head with approprate flags
 ifneq ($(findstring $(1),$(PV_ENVIRONMENTS)),)
-# PV guests generate head_pv64.o and head_pv32.o from head_pv.S
+# PV guests generate head_$(env).o from head_pv.S
 %/head_$(1).o: %/head_pv.S
 	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
 endif
 ifneq ($(findstring $(1),$(HVM_ENVIRONMENTS)),)
-# HVM guests generate head_hvm64.o and head_hvm32.o from head_hvm.S
+# HVM guests generate head_$(env).o from head_hvm.S
 %/head_$(1).o: %/head_hvm.S
 	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
 endif

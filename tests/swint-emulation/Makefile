@@ -3,7 +3,7 @@ ROOT := $(abspath $(CURDIR)/../..)
 include $(ROOT)/build/common.mk
 
 NAME      := swint-emulation
-TEST-ENVS := hvm64 hvm32
+TEST-ENVS := $(HVM_ENVIRONMENTS)
 
 obj-perenv += main.o lowlevel.o
 
