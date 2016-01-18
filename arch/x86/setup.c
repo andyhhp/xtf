@@ -15,23 +15,7 @@
  */
 uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
 
-const char *environment_description =
-#if defined(CONFIG_PV)
-    "PV"
-#elif defined(CONFIG_HVM)
-    "HVM"
-#else
-# error Bad Guest Type
-#endif
-
-#if defined(__x86_64__)
-    " 64bit"
-#elif defined(__i386__)
-    " 32bit"
-#else
-# error Bad Width
-#endif
-    ;
+const char *environment_description = ENVIRONMENT_DESCRIPTION;
 
 #ifdef CONFIG_PV
 /* Filled in by head_pv.S */

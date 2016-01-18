@@ -5,36 +5,39 @@
 #include <arch/x86/msr-index.h>
 #include <arch/x86/segment.h>
 
-        .code32 /* Always starts in 32bit flat mode. */
+        .code32                 /* Always starts in 32bit flat mode. */
+GLOBAL(_start)                  /* HVM common setup. */
 
-
-/* HVM common setup for pae paging. */
-GLOBAL(_start)
-
-        /* CR4.PAE = 1 */
+#ifdef CONFIG_PAGING_PAE        /* CR4.PAE = 1 */
         mov $X86_CR4_PAE, %eax
         mov %eax, %cr4
+#endif /* CONFIG_PAGING_PAE */
 
-        /* CR3 = l?_???map */
-#ifdef __x86_64__
+#if CONFIG_PAGING_LEVELS > 0    /* CR3 = pagetable */
+
+#if CONFIG_PAGING_LEVELS == 4
         mov $l4_identmap, %eax
-#else
+#elif CONFIG_PAGING_LEVELS == 3 && defined CONFIG_PAGING_PAE
         mov $l3_paemap, %eax
+#else
+# error Bad paging mode
 #endif
-        mov %eax, %cr3
 
-#ifdef __x86_64__
-        /* EFER.LME = 1 */
+        mov %eax, %cr3
+#endif /* CONFIG_PAGING_LEVELS > 0 */
+
+#ifdef __x86_64__               /* EFER.LME = 1 */
         mov $MSR_EFER, %ecx
         rdmsr
         bts $_EFER_LME, %eax
         wrmsr
-#endif
+#endif /* __x86_64__ */
 
-        /* CR0.{PG,PE} = 1 */
+#if CONFIG_PAGING_LEVELS > 0    /* CR0.PG = 1 */
         mov %cr0, %eax
-        or $(X86_CR0_PG | X86_CR0_PE), %eax
+        or $X86_CR0_PG, %eax
         mov %eax, %cr0
+#endif /* CONFIG_PAGING_LEVELS > 0 */
 
         lgdt gdt_ptr
 

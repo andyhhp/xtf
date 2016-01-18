@@ -42,7 +42,7 @@ To run tests: (see @ref errata first)
     # xl create test-pv64-example.cfg
     # cat /var/log/xen/console/guest-test-pv64-example.log
     --- Xen Test Framework ---
-    Environment: PV 64bit
+    Environment: PV 64bit (Long mode 4 levels)
     Hello World
     Test result: SUCCESS
 
