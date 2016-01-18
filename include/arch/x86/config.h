@@ -48,6 +48,14 @@
 
 #undef CONFIG_ENV_hvm32pae
 
+#elif defined(CONFIG_ENV_hvm32)
+
+#define CONFIG_HVM
+#define CONFIG_PAGING_LEVELS 0
+#define ENVIRONMENT_DESCRIPTION "HVM 32bit (No paging)"
+
+#undef CONFIG_ENV_hvm32
+
 #else
 # error Bad environment
 #endif

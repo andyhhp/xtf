@@ -22,10 +22,11 @@ Environment | Guest | Width | Paging
 :-----------|:------|:------|:---------
 `pv32pae`   | PV    | 32bit | PAE
 `pv64`      | PV    | 64bit | Long mode
+`hvm32`     | HVM   | 32bit | None
 `hvm32pae`  | HVM   | 32bit | PAE
 `hvm64`     | HVM   | 64bit | Long mode
 
-@todo Possibly implement `hvm32`, `hvm32pg`, `hvm32pse` and `hvm16`.
+@todo Possibly implement `hvm32pg`, `hvm32pse` and `hvm16`.
 
 
 @section getting-started Getting Started
