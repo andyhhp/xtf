@@ -1,3 +1,4 @@
+MAKEFLAGS += -r
 ROOT := $(abspath $(CURDIR)/..)
 CC = gcc
 

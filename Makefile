@@ -1,3 +1,5 @@
+MAKEFLAGS += -r
+
 .PHONY: all
 all:
 	@for D in $(wildcard tests/*); do \
