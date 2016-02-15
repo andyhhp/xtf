@@ -13,6 +13,7 @@ GLOBAL(l1_identmap)
               _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
         .long 0
         .endr
+SIZE(l1_identmap)
 
 /* Mappings up to 4G in 2M superpages. Uses 4x 4k pages. */
 GLOBAL(l2_identmap)
