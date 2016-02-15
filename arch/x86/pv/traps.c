@@ -52,7 +52,7 @@ struct xen_trap_info pv_default_trap_info[] =
 
     { 0x20, 3|4, __KERN_CS, (unsigned long)&entry_ret_to_kernel },
 
-    { 0 }, /* Sentinel. */
+    { 0, 0, 0, 0 }, /* Sentinel. */
 };
 
 void arch_init_traps(void)
