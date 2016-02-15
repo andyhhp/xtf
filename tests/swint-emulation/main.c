@@ -37,6 +37,8 @@
  * - cpl3, descriptors not present - expect @#NP faults
  *
  * In all cases, the exception frame is verified to be correct.
+ *
+ * @sa tests/swint-emulation/main.c
  */
 #include <xtf/lib.h>
 

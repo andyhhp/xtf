@@ -5,6 +5,8 @@
  * @page test-example Example
  *
  * A Hello World XTF testcase.
+ *
+ * @sa tests/example/main.c
  */
 #include <xtf/lib.h>
 
