@@ -26,8 +26,7 @@ name:
  */
 #define ENTRY(name)                             \
     .align 16;                                  \
-    GLOBAL(name)                                \
-name:
+    GLOBAL(name)
 
 /**
  * Set the size of a named symbol.
