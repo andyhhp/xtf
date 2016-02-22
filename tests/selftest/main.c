@@ -237,7 +237,7 @@ void test_main(void)
 #endif
     test_unhandled_exception_hook();
 
-    xtf_success();
+    xtf_success(NULL);
 }
 
 /*

@@ -26,7 +26,7 @@
 /**
  * Report test success.
  */
-void xtf_success(void);
+void xtf_success(const char *fmt, ...) __printf(1, 2);
 
 /**
  * Report a test warning.

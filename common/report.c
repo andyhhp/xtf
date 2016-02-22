@@ -35,53 +35,74 @@ static void set_status(enum test_status s)
         status = s;
 }
 
-void xtf_success(void)
+void xtf_success(const char *fmt, ...)
 {
     set_status(STATUS_SUCCESS);
+
+    if ( fmt )
+    {
+        va_list args;
+
+        va_start(args, fmt);
+        vprintk(fmt, args);
+        va_end(args);
+    }
 }
 
 void xtf_warning(const char *fmt, ...)
 {
-    va_list args;
-
     warnings = true;
 
-    va_start(args, fmt);
-    vprintk(fmt, args);
-    va_end(args);
+    if ( fmt )
+    {
+        va_list args;
+
+        va_start(args, fmt);
+        vprintk(fmt, args);
+        va_end(args);
+    }
 }
 
 void xtf_skip(const char *fmt, ...)
 {
-    va_list args;
-
     set_status(STATUS_SKIP);
 
-    va_start(args, fmt);
-    vprintk(fmt, args);
-    va_end(args);
+    if ( fmt )
+    {
+        va_list args;
+
+        va_start(args, fmt);
+        vprintk(fmt, args);
+        va_end(args);
+    }
 }
 
 void xtf_error(const char *fmt, ...)
 {
-    va_list args;
-
     set_status(STATUS_ERROR);
 
-    va_start(args, fmt);
-    vprintk(fmt, args);
-    va_end(args);
+    if ( fmt )
+    {
+        va_list args;
+
+        va_start(args, fmt);
+        vprintk(fmt, args);
+        va_end(args);
+    }
 }
 
 void xtf_failure(const char *fmt, ...)
 {
-    va_list args;
-
     set_status(STATUS_FAILURE);
 
-    va_start(args, fmt);
-    vprintk(fmt, args);
-    va_end(args);
+    if ( fmt )
+    {
+        va_list args;
+
+        va_start(args, fmt);
+        vprintk(fmt, args);
+        va_end(args);
+    }
 }
 
 void xtf_report_status(void)

@@ -12,9 +12,7 @@
 
 void test_main(void)
 {
-    printk("Hello World\n");
-
-    xtf_success();
+    xtf_success("Hello World\n");
 }
 
 /*

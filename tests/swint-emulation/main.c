@@ -370,7 +370,7 @@ void test_main(void)
 
     xtf_exlog_stop();
 
-    xtf_success();
+    xtf_success(NULL);
 }
 
 /*
