@@ -38,6 +38,7 @@ cfg-$(1) ?= $(defcfg-$(1))
 test-$(1)-$(NAME).cfg: $$(cfg-$(1))
 	sed -e "s/@@NAME@@/$$(NAME)/g" \
 		-e "s/@@ENV@@/$(1)/g" \
+		-e "s!@@PREFIX@@!$$(PREFIX)!g" \
 		< $$< > $$@
 
 -include $$(link-$(1):%.lds=%.d)

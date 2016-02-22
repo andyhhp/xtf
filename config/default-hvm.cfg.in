@@ -1,7 +1,7 @@
 name="test-@@ENV@@-@@NAME@@"
 builder="hvm"
 memory=128
-firmware_override="test-@@ENV@@-@@NAME@@"
+firmware_override="@@PREFIX@@/test-@@ENV@@-@@NAME@@"
 
 # The framework doesn't reboot.  A reboot signal is almost certainly a triple
 # fault instead.  Prevent it turning into a runaway domain.
