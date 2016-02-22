@@ -35,23 +35,24 @@ endif
 
 cfg-$(1) ?= $(defcfg-$(1))
 
-test-$(1)-$(NAME).cfg: $$(cfg-$(1))
-	sed -e "s/@@NAME@@/$$(NAME)/g" \
+test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
+	@sed -e "s/@@NAME@@/$$(NAME)/g" \
 		-e "s/@@ENV@@/$(1)/g" \
 		-e "s!@@PREFIX@@!$$(PREFIX)!g" \
-		< $$< > $$@
+		< $$< > $$@.tmp
+	@if ! cmp -s $$@ $$@.tmp; then mv -f $$@.tmp $$@; else rm -f $$@.tmp; fi
 
 -include $$(link-$(1):%.lds=%.d)
 -include $$(DEPS-$(1):%.o=%.d)
 
 .PHONY: install-$(1) install-$(1).cfg
 install-$(1): test-$(1)-$(NAME)
-	@mkdir -p $(DESTDIR)
-	install -m775 -p $$< $(DESTDIR)
+	@mkdir -p $(DESTDIR)/tests/$(NAME)
+	install -m775 -p $$< $(DESTDIR)/tests/$(NAME)
 
 install-$(1).cfg: test-$(1)-$(NAME).cfg
-	@mkdir -p $(DESTDIR)
-	install -m664 -p $$< $(DESTDIR)
+	@mkdir -p $(DESTDIR)/tests/$(NAME)
+	install -m664 -p $$< $(DESTDIR)/tests/$(NAME)
 
 install-each-env: install-$(1) install-$(1).cfg
 
@@ -66,3 +67,6 @@ clean:
 .PHONY: %var
 %var:
 	@echo "$* = $($*)"
+
+.PHONY: FORCE
+FORCE:

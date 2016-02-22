@@ -1,4 +1,4 @@
 name="test-@@ENV@@-@@NAME@@"
 loader="generic"
 memory=128
-kernel="@@PREFIX@@/test-@@ENV@@-@@NAME@@"
+kernel="@@PREFIX@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"

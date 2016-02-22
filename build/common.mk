@@ -1,5 +1,5 @@
 ROOT := $(abspath $(CURDIR)/../..)
-DESTDIR ?= $(ROOT)/dist/
+DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
 CC = gcc
 

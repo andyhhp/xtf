@@ -44,8 +44,7 @@ To obtain and build:
 
 To run tests on a Xen host: (see @ref errata first)
 
-    # cd tests/example
-    # xl create test-pv64-example.cfg
+    # xl create tests/example/test-pv64-example.cfg
     # cat /var/log/xen/console/guest-test-pv64-example.log
     --- Xen Test Framework ---
     Environment: PV 64bit (Long mode 4 levels)
@@ -60,13 +59,12 @@ To run tests on a Xen host: (see @ref errata first)
   there is not clean separation between the paging settings of Xen and the
   guest.
 
-- For kernel paths, `xl` accepts either an absolute path, a path relative to
-  `/etc/xen/` or relative to `$CWD`.  The `kernel=` path for a PV guest
-  typically needs turning into an absolute path on the test system.
-
-- For firmware override, `xl` accepts either an absolute path, or a path
-  relative to `$libdir/xen/boot`.  The `firmware_override=` path for an HVM
-  test typically needs turning into an absolute path on the test system.
+- For the paths of binaries, `xl` accepts either an absolute path, or certain
+  relative paths (`/etc/xen/` or `$CWD` for `kernel=`, `$libdir/xen/boot` for
+  `firmware_override=`).  The default `PREFIX=` is configured correctly for
+  running the tests out of the build working tree.  If the tests are running
+  elsewhere, use `make install DESTDIR=$X PREFIX=$Y` to configure absolute
+  paths appropriately for the test system.
 
 
 @section further Further Information
