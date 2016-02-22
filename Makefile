@@ -1,4 +1,7 @@
 MAKEFLAGS += -r
+ROOT := $(abspath $(CURDIR))
+DESTDIR ?= $(ROOT)/dist
+PREFIX ?= $(ROOT)
 
 .PHONY: all
 all:
@@ -9,6 +12,8 @@ all:
 
 .PHONY: install
 install:
+	@mkdir -p $(DESTDIR)
+	install -m775 xtf-runner $(DESTDIR)
 	@for D in $(wildcard tests/*); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \
@@ -33,3 +38,7 @@ distclean: clean
 .PHONY: doxygen
 doxygen: Doxyfile
 	doxygen Doxyfile > /dev/null
+
+.PHONY: pylint
+pylint:
+	-pylint --rcfile=.pylintrc xtf-runner
