@@ -13,11 +13,26 @@ ifneq ($(filter-out $(ALL_ENVIRONMENTS),$(TEST-ENVS)),)
 $(error Unrecognised environments '$(filter-out $(ALL_ENVIRONMENTS),$(TEST-ENVS))')
 endif
 
+ifeq ($(CATEGORY),)
+$(error CATEGORY should not be empty)
+endif
+
+ifneq ($(filter-out $(ALL_CATEGORIES),$(CATEGORY)),)
+$(error Unrecognised category '$(filter-out $(ALL_CATEGORIES),$(CATEGORY))')
+endif
+
 .PHONY: build
 build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
+build: test-info.json
+
+test-info.json: $(ROOT)/build/mkinfo.py FORCE
+	@python $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
+	@if ! cmp -s $@ $@.tmp; then mv -f $@.tmp $@; else rm -f $@.tmp; fi
 
 .PHONY: install install-each-env
-install: install-each-env
+install: install-each-env test-info.json
+	@mkdir -p $(DESTDIR)/tests/$(NAME)
+	install -m664 -p test-info.json $(DESTDIR)/tests/$(NAME)
 
 define PERENV_build
 

@@ -35,6 +35,7 @@ Requirements:
 - GNU Make >= 3.81
 - GNU comaptible toolchain, capable of `-std=gnu99`, `-m64`, and `-m32`
     - Clang may be used, via `CC="clang -no-integrated-as"`
+- Python
 
 To obtain and build:
 
