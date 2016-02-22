@@ -1,6 +1,8 @@
 *~
 *.o
 *.d
+*.pyc
+*.pyo
 /arch/x86/*.lds
 /cscope.*
 /dist/
