@@ -8,22 +8,24 @@
         .code32                 /* Always starts in 32bit flat mode. */
 GLOBAL(_start)                  /* HVM common setup. */
 
-#ifdef CONFIG_PAGING_PAE        /* CR4.PAE = 1 */
+#if CONFIG_PAGING_LEVELS > 0    /* Paging setup for CR3 and CR4 */
+
+#if CONFIG_PAGING_LEVELS == 4   /* 64bit PAE, 4 levels */
+
         mov $X86_CR4_PAE, %eax
-        mov %eax, %cr4
-#endif /* CONFIG_PAGING_PAE */
+        mov $l4_identmap, %ebx
 
-#if CONFIG_PAGING_LEVELS > 0    /* CR3 = pagetable */
+#elif CONFIG_PAGING_LEVELS == 3 /* 32bit PAE, 3 levels */
 
-#if CONFIG_PAGING_LEVELS == 4
-        mov $l4_identmap, %eax
-#elif CONFIG_PAGING_LEVELS == 3 && defined CONFIG_PAGING_PAE
-        mov $l3_paemap, %eax
+        mov $X86_CR4_PAE, %eax
+        mov $l3_paemap, %ebx
+
 #else
 # error Bad paging mode
 #endif
 
-        mov %eax, %cr3
+        mov %eax, %cr4
+        mov %ebx, %cr3
 #endif /* CONFIG_PAGING_LEVELS > 0 */
 
 #ifdef __x86_64__               /* EFER.LME = 1 */

@@ -5,7 +5,6 @@
  * Converts `CONFIG_ENV_$foo` into:
  * - `CONFIG_PV` or `CONFIG_HVM`
  * - `CONFIG_PAGING_LEVELS = $num`
- * - Possibly `CONFIG_PAGING_PAE`
  *
  * The `CONFIG_ENV_$foo` is then undefined, to prevent its use in general code.
  */
@@ -16,7 +15,6 @@
 
 #define CONFIG_PV
 #define CONFIG_PAGING_LEVELS 4
-#define CONFIG_PAGING_PAE
 #define ENVIRONMENT_DESCRIPTION "PV 64bit (Long mode 4 levels)"
 
 #undef CONFIG_ENV_pv64
@@ -25,7 +23,6 @@
 
 #define CONFIG_PV
 #define CONFIG_PAGING_LEVELS 3
-#define CONFIG_PAGING_PAE
 #define ENVIRONMENT_DESCRIPTION "PV 32bit (PAE 3 levels)"
 
 #undef CONFIG_ENV_pv32pae
@@ -34,7 +31,6 @@
 
 #define CONFIG_HVM
 #define CONFIG_PAGING_LEVELS 4
-#define CONFIG_PAGING_PAE
 #define ENVIRONMENT_DESCRIPTION "HVM 64bit (Long mode 4 levels)"
 
 #undef CONFIG_ENV_hvm64
@@ -43,7 +39,6 @@
 
 #define CONFIG_HVM
 #define CONFIG_PAGING_LEVELS 3
-#define CONFIG_PAGING_PAE
 #define ENVIRONMENT_DESCRIPTION "HVM 32bit (PAE 3 levels)"
 
 #undef CONFIG_ENV_hvm32pae
