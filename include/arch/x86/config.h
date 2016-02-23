@@ -43,6 +43,14 @@
 
 #undef CONFIG_ENV_hvm32pae
 
+#elif defined(CONFIG_ENV_hvm32pse)
+
+#define CONFIG_HVM
+#define CONFIG_PAGING_LEVELS 2
+#define ENVIRONMENT_DESCRIPTION "HVM 32bit (PSE 2 levels)"
+
+#undef CONFIG_ENV_hvm32pse
+
 #elif defined(CONFIG_ENV_hvm32)
 
 #define CONFIG_HVM

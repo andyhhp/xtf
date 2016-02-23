@@ -20,6 +20,11 @@ GLOBAL(_start)                  /* HVM common setup. */
         mov $X86_CR4_PAE, %eax
         mov $pae32_l3_identmap, %ebx
 
+#elif CONFIG_PAGING_LEVELS == 2 /* 32bit PSE, 2 levels */
+
+        mov $X86_CR4_PSE, %eax
+        mov $pse_l2_identmap, %ebx
+
 #else
 # error Bad paging mode
 #endif

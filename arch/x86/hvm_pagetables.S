@@ -5,6 +5,7 @@
 #define PAGE_COMMON _PAGE_DIRTY + _PAGE_ACCESSED + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
 
 #define PAE_IDX(sym) ((. - (sym)) / PAE_PTE_SZ)
+#define PSE_IDX(sym) ((. - (sym)) / PSE_PTE_SZ)
 
         .data
         .p2align PAGE_SHIFT
@@ -43,6 +44,22 @@ GLOBAL(pae_l4_identmap)
         .long 0
         .fill PAE_L4_PT_ENTRIES - 1, 8, 0
 SIZE(pae_l4_identmap)
+
+/* PSE mappings of the first 4M of memory in 4k pages.  Uses 1x 4k page. */
+GLOBAL(pse_l1_identmap)
+        .long 0 /* Unmap page at 0 to catch errors with NULL pointers. */
+        .rept PSE_L1_PT_ENTRIES - 1
+        .long (PSE_IDX(pse_l1_identmap) << PSE_L1_PT_SHIFT) + PAGE_COMMON
+        .endr
+SIZE(pse_l1_identmap)
+
+/* PSE mappings up to 4G, mostly in 4M superpages.  Uses 1x 4k page. */
+GLOBAL(pse_l2_identmap)
+        .long pse_l1_identmap + PAGE_COMMON
+        .rept PSE_L2_PT_ENTRIES - 1
+        .long (PSE_IDX(pse_l2_identmap) << PSE_L2_PT_SHIFT) + _PAGE_PSE + PAGE_COMMON
+        .endr
+SIZE(pse_l1_identmap)
 
 /* PAE l3 32bit quad.  Contains 4 64bit entries. */
 GLOBAL(pae32_l3_identmap)

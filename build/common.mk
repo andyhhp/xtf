@@ -5,7 +5,7 @@ CC = gcc
 
 ALL_CATEGORIES     := special functional xsa utility
 
-ALL_ENVIRONMENTS   := pv64 pv32pae hvm64 hvm32pae hvm32
+ALL_ENVIRONMENTS   := pv64 pv32pae hvm64 hvm32pae hvm32pse hvm32
 
 PV_ENVIRONMENTS    := $(filter pv%,$(ALL_ENVIRONMENTS))
 HVM_ENVIRONMENTS   := $(filter hvm%,$(ALL_ENVIRONMENTS))
@@ -16,6 +16,7 @@ pv64_arch     := x86_64
 pv32pae_arch  := x86_32
 hvm64_arch    := x86_64
 hvm32pae_arch := x86_32
+hvm32pse_arch := x86_32
 hvm32_arch    := x86_32
 
 COMMON_FLAGS := -pipe -I$(ROOT)/include -MMD -MP
@@ -37,6 +38,7 @@ head-pv64     := $(ROOT)/arch/x86/boot/head_pv64.o
 head-pv32pae  := $(ROOT)/arch/x86/boot/head_pv32pae.o
 head-hvm64    := $(ROOT)/arch/x86/boot/head_hvm64.o
 head-hvm32pae := $(ROOT)/arch/x86/boot/head_hvm32pae.o
+head-hvm32pse := $(ROOT)/arch/x86/boot/head_hvm32pse.o
 head-hvm32    := $(ROOT)/arch/x86/boot/head_hvm32.o
 
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
@@ -46,6 +48,7 @@ defcfg-pv64     := $(defcfg-pv)
 defcfg-pv32pae  := $(defcfg-pv)
 defcfg-hvm64    := $(defcfg-hvm)
 defcfg-hvm32pae := $(defcfg-hvm)
+defcfg-hvm32pse := $(defcfg-hvm)
 defcfg-hvm32    := $(defcfg-hvm)
 
 obj-perarch :=

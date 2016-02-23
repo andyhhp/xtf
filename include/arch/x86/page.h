@@ -12,6 +12,7 @@
 #define PAGE_MASK               (~(PAGE_SIZE - 1))
 
 #include "page-pae.h"
+#include "page-pse.h"
 
 #define PAGE_ORDER_4K           0
 #define PAGE_ORDER_2M           9
@@ -24,10 +25,20 @@
 #define _PAGE_DIRTY             0x040
 #define _PAGE_PSE               0x080
 
-#if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
+#if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
+
+#define L1_PT_SHIFT PSE_L1_PT_SHIFT
+#define L2_PT_SHIFT PSE_L2_PT_SHIFT
+
+#else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
 
 #define L1_PT_SHIFT PAE_L1_PT_SHIFT
 #define L2_PT_SHIFT PAE_L2_PT_SHIFT
+
+#endif /* !CONFIG_PAGING_LEVELS == 2 */
+
+#if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
+
 #define L3_PT_SHIFT PAE_L3_PT_SHIFT
 
 #endif /* CONFIG_PAGING_LEVELS >= 3 */
@@ -41,7 +52,16 @@
 
 #ifndef __ASSEMBLY__
 
-#if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
+#if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
+
+typedef pse_intpte_t intpte_t;
+
+static inline unsigned int l1_table_offset(unsigned long va)
+{ return pse_l1_table_offset(va); }
+static inline unsigned int l2_table_offset(unsigned long va)
+{ return pse_l2_table_offset(va); }
+
+#else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
 
 typedef pae_intpte_t intpte_t;
 
@@ -49,6 +69,11 @@ static inline unsigned int l1_table_offset(unsigned long va)
 { return pae_l1_table_offset(va); }
 static inline unsigned int l2_table_offset(unsigned long va)
 { return pae_l2_table_offset(va); }
+
+#endif /* !CONFIG_PAGING_LEVELS == 2 */
+
+#if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
+
 static inline unsigned int l3_table_offset(unsigned long va)
 { return pae_l3_table_offset(va); }
 
