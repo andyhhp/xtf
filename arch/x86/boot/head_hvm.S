@@ -13,12 +13,12 @@ GLOBAL(_start)                  /* HVM common setup. */
 #if CONFIG_PAGING_LEVELS == 4   /* 64bit PAE, 4 levels */
 
         mov $X86_CR4_PAE, %eax
-        mov $l4_identmap, %ebx
+        mov $pae_l4_identmap, %ebx
 
 #elif CONFIG_PAGING_LEVELS == 3 /* 32bit PAE, 3 levels */
 
         mov $X86_CR4_PAE, %eax
-        mov $l3_paemap, %ebx
+        mov $pae32_l3_identmap, %ebx
 
 #else
 # error Bad paging mode

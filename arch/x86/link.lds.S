@@ -3,6 +3,7 @@
  */
 
 #include <xtf/numbers.h>
+#include <arch/x86/page.h>
 
 /* Don't clobber the ld directive */
 #undef i386
@@ -53,6 +54,16 @@ SECTIONS
         }
 }
 
+#ifdef CONFIG_HVM
+
+ASSERT(IS_ALIGNED(pae_l1_identmap, PAGE_SIZE), "pae_l1_identmap misaligned");
+ASSERT(IS_ALIGNED(pae_l2_identmap, PAGE_SIZE), "pae_l2_identmap misaligned");
+ASSERT(IS_ALIGNED(pae_l3_identmap, PAGE_SIZE), "pae_l3_identmap misaligned");
+ASSERT(IS_ALIGNED(pae_l4_identmap, PAGE_SIZE), "pae_l4_identmap misaligned");
+
+ASSERT(IS_ALIGNED(pae32_l3_identmap, 32), "pae32_l3_ident misaligned");
+
+#endif
 /*
  * Local variables:
  * tab-width: 8
