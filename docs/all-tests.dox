@@ -28,4 +28,6 @@ Coveres XSA-106 and XSA-156.
 @section index-utility Utilities
 
 @subpage test-cpuid - Print CPUID information.
+
+@subpage test-msr - Print MSR information.
 */
