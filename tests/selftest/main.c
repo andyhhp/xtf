@@ -174,7 +174,6 @@ static void test_exec_user(void)
     }
 }
 
-#ifdef CONFIG_PAGING
 static void test_NULL_unmapped(void)
 {
     extern unsigned long label_test_NULL_unmapped[];
@@ -195,7 +194,6 @@ static void test_NULL_unmapped(void)
 
     xtf_exlog_stop();
 }
-#endif
 
 static bool local_unhandled_exception_hook(struct cpu_regs *regs)
 {
@@ -232,9 +230,8 @@ void test_main(void)
     test_extable();
     test_exlog();
     test_exec_user();
-#ifdef CONFIG_PAGING
-    test_NULL_unmapped();
-#endif
+    if ( CONFIG_PAGING_LEVELS > 0 )
+        test_NULL_unmapped();
     test_unhandled_exception_hook();
 
     xtf_success(NULL);
