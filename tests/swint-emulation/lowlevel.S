@@ -42,7 +42,7 @@ GLOBAL(label_\insn\()_\type\()_fault)
         .if \insn == int3
             int3
         .elseif \insn == int_0x3
-            int $0x3
+            .byte 0xcd, 0x03     /* Some assembers turn `int $3` into `int3`. */
         .elseif \insn == icebp
             .byte 0xf1
         .elseif \insn == int_0x1
