@@ -15,7 +15,7 @@
  * - `int $3` (`0xcd 0x03`)
  * - `icebp`  (`0xf1`)
  * - `int $1` (`0xcd 0x01`)
- * - `into`   (`0xce`) (32bit only)
+ * - `into`   (`0xce`)
  *
  * with and without a redundant prefix (address size override specifically, as
  * it has no effect on instructs like these).  Each combination is executed
@@ -35,6 +35,10 @@
  * - cpl3, all permissions ok - expect traps
  * - cpl3, descriptors dpl0 - expect @#GP faults (except `icebp`)
  * - cpl3, descriptors not present - expect @#NP faults
+ *
+ * Handling of `into` is more complicated.  In 32bit it is tested as normal,
+ * but the instruction isn't recognised in 64bit.  Instead, it is just tested
+ * to unconditionally generate a @#UD fault.
  *
  * In all cases, the exception frame is verified to be correct.
  *
@@ -134,7 +138,6 @@ struct sequence int_0x1 =
   },
 };
 
-#ifdef __i386__
 /** Sequence for `into`. */
 struct sequence into =
 { "into",
@@ -152,7 +155,6 @@ struct sequence into =
        label_into_forcered_trap, label_into_forcered_fault},
   },
 };
-#endif
 
 /** Whether to run the stub in user or supervisor mode. */
 static bool user = false;
@@ -218,7 +220,8 @@ bool unhandled_exception(struct cpu_regs *regs)
 }
 
 /** Test a single sequence of related instructions. */
-void test_seq(struct sequence *seq, unsigned int vector, unsigned int error)
+void test_seq(struct sequence *seq, unsigned int vector,
+              unsigned int error, bool fault)
 {
     unsigned int i;
 
@@ -229,7 +232,7 @@ void test_seq(struct sequence *seq, unsigned int vector, unsigned int error)
         struct single *s = &seq->tests[i];
 
         expect(s->type,
-               error == 0 ? s->trap : s->fault,
+               fault ? s->fault : s->trap,
                vector, error);
 
         user ? exec_user(s->fn) : s->fn();
@@ -245,14 +248,14 @@ void test_seq(struct sequence *seq, unsigned int vector, unsigned int error)
 /** test_seq() wrapper, for caller clarity. */
 static void test_trap(struct sequence *seq, unsigned int vector)
 {
-    test_seq(seq, vector, 0);
+    test_seq(seq, vector, 0, false);
 }
 
 /** test_seq() wrapper, for caller clarity. */
 static void test_fault(struct sequence *seq,
                        unsigned int vector, unsigned int error)
 {
-    test_seq(seq, vector, error);
+    test_seq(seq, vector, error, true);
 }
 
 /** Modify the present flag on the IDT entries under test. */
@@ -284,6 +287,8 @@ void cpl3_tests(void)
         test_trap(&int_0x1, X86_EXC_DB);
 #ifdef __i386__
         test_trap(&into,    X86_EXC_OF);
+#else
+        test_fault(&into,   X86_EXC_UD, 0);
 #endif
     }
 
@@ -297,6 +302,8 @@ void cpl3_tests(void)
         test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
 #ifdef __i386__
         test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
+#else
+        test_fault(&into,    X86_EXC_UD, 0);
 #endif
 
         set_idt_entries_present(true);
@@ -313,6 +320,8 @@ void cpl3_tests(void)
         test_fault(&int_0x1, X86_EXC_GP, EXC_EC_SYM(DB));
 #ifdef __i386__
         test_fault(&into,    X86_EXC_GP, EXC_EC_SYM(OF));
+#else
+        test_fault(&into,    X86_EXC_UD, 0);
 #endif
 
         set_idt_entries_dpl(3);
@@ -332,6 +341,8 @@ void cpl0_tests(void)
         test_trap(&int_0x1, X86_EXC_DB);
 #ifdef __i386__
         test_trap(&into,    X86_EXC_OF);
+#else
+        test_fault(&into,   X86_EXC_UD, 0);
 #endif
     }
 
@@ -345,6 +356,8 @@ void cpl0_tests(void)
         test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
 #ifdef __i386__
         test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
+#else
+        test_fault(&into,    X86_EXC_UD, 0);
 #endif
 
         set_idt_entries_present(true);

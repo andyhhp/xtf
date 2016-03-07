@@ -70,7 +70,6 @@ extern unsigned long label_int_0x1_red_trap[], label_int_0x1_red_fault[];
 extern unsigned long label_int_0x1_force_trap[], label_int_0x1_force_fault[];
 extern unsigned long label_int_0x1_forcered_trap[], label_int_0x1_forcered_fault[];
 
-#ifdef __i386__
 void stub_into_reg(void);
 void stub_into_red(void);
 void stub_into_force(void);
@@ -79,7 +78,6 @@ extern unsigned long label_into_reg_trap[], label_into_reg_fault[];
 extern unsigned long label_into_red_trap[], label_into_red_fault[];
 extern unsigned long label_into_force_trap[], label_into_force_fault[];
 extern unsigned long label_into_forcered_trap[], label_into_forcered_fault[];
-#endif
 
 #endif /* __LOWLEVEL_H__ */
 

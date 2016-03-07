@@ -48,7 +48,7 @@ GLOBAL(label_\insn\()_\type\()_fault)
         .elseif \insn == int_0x1
             int $0x1
         .elseif \insn == into
-            into
+            .byte 0xce           /* Raw opcode to avoid failure in 64bit build. */
         .endif
 
         /* Label where a trap should occur.  e.g. label_int3_red_trap. */
@@ -75,9 +75,7 @@ GEN_SEQUENCE int3
 GEN_SEQUENCE int_0x3
 GEN_SEQUENCE icebp
 GEN_SEQUENCE int_0x1
-#ifdef __i386__
 GEN_SEQUENCE into
-#endif
 
 /*
  * Local variables:
