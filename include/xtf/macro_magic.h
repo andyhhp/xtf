@@ -48,6 +48,20 @@
 #define VAR_MACRO_C1(macro, c1, ...)                                \
     VAR_MACRO_C1_(macro, c1, VA_NARGS(__VA_ARGS__), ##__VA_ARGS__)
 
+/**
+ * Evalute whether the CONFIG_ token @p x is defined
+ *
+ * Suitable for use in an `if ()` condition, even if @p x is not defined.
+ * Will strictly evaluate to 0 or 1.
+ */
+#define IS_DEFINED(x) _IS_DEFINED(x)
+/** @cond */
+#define _IS_DEFINED_PARTIAL_1 0,
+#define _IS_DEFINED(x) __IS_DEFINED(_IS_DEFINED_PARTIAL_ ## x)
+#define __IS_DEFINED(y) ___IS_DEFINED(y 1, 0)
+#define ___IS_DEFINED(maybe, val, ...) val
+/** @endcond */
+
 #endif /* XTF_MACRO_MAGIC_H */
 
 /*
