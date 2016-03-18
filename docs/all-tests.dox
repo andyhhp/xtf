@@ -34,6 +34,8 @@ Coveres XSA-106 and XSA-156.
 
 @subpage test-xsa-168 - `invvpid` non-canonical guest address.
 
+@subpage test-xsa-173 - x86 shadow pagetables: address width overflow.
+
 
 @section index-utility Utilities
 
