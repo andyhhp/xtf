@@ -31,6 +31,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 #include <xen/sched.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
+#include <xen/physdev.h>
 #include <xen/memory.h>
 #include <xen/version.h>
 #include <xen/hvm/hvm_op.h>
@@ -87,6 +88,11 @@ static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, __HYPERVISOR_event_channel_op, cmd, arg);
+}
+
+static inline long hypercall_physdev_op(unsigned int cmd, void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_physdev_op, cmd, arg);
 }
 
 static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
