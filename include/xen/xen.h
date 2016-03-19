@@ -71,6 +71,21 @@ typedef uint16_t domid_t;
 /* Commands to HYPERVISOR_console_io */
 #define CONSOLEIO_write                   0
 
+/*
+ * Commands to HYPERVISOR_vm_assist().
+ */
+#define VMASST_CMD_enable                 0
+#define VMASST_CMD_disable                1
+
+/*
+ * x86 guests: Sane behaviour for virtual iopl
+ *  - virtual iopl updated from do_iret() hypercalls.
+ *  - virtual iopl reported in bounce frames.
+ *  - guest kernels assumed to be level 0 for the purpose of iopl checks.
+ */
+#define VMASST_TYPE_architectural_iopl   4
+
+
 #ifndef __ASSEMBLY__
 struct start_info {
     /* THE FOLLOWING ARE FILLED IN BOTH ON INITIAL BOOT AND ON RESUME.    */

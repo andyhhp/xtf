@@ -71,6 +71,11 @@ static inline long hypercall_update_va_mapping(void *va, uint64_t npte,
 #endif
 }
 
+static inline long hypercall_vm_assist(unsigned int cmd, unsigned int type)
+{
+    return HYPERCALL2(long, __HYPERVISOR_vm_assist, cmd, type);
+}
+
 static inline long hypercall_mmuext_op(const mmuext_op_t ops[],
                                        unsigned int count,
                                        unsigned int *done,

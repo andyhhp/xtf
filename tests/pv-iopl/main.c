@@ -28,11 +28,25 @@
  *    kernel will suffer faults from IO accesses until it sets an IOPL of 1.
  *    A guest may set the current IOPL, but cannot query the value.
  *
+ * 2. VMASST_TYPE_architectural_iopl
+ *
+ *    This is a change to the ABI, introduced in Xen 4.7 (following XSA-171)
+ *    to make IOPL handling easier for the guest kernel.  A guest must opt in
+ *    to the new ABI by enabling the VMASSIT.  This ABI considers a guest
+ *    kernel to have an cpl of 0, and the shadowed IOPL will be updated from
+ *    the contents of iret frame during an iret hypercall.
+ *
  * @sa tests/pv-iopl/main.c
  */
 #include <xtf/lib.h>
 
 #include <arch/x86/processor.h>
+
+/**
+ * Execute @p fn at user privilege on the current stack, folding @p iopl into
+ * the iret frame.
+ */
+void exec_user_with_iopl(void (*fn)(void), unsigned int iopl);
 
 /** Stub CLI instruction with @#GP fixup. */
 static void stub_cli(void)
@@ -149,7 +163,7 @@ static void run_test(const struct test *t)
 
             /* Run insn in userspace. */
             expect(seq->name, 1, t->should_fault(1, iopl));
-            exec_user(seq->fn);
+            exec_user_with_iopl(seq->fn, iopl);
             check();
         }
     }
@@ -192,6 +206,38 @@ static const struct test hypercall =
     .should_fault = hypercall_should_fault,
 };
 
+static void nop(void){}
+static void vmassist_set_iopl(unsigned int iopl)
+{
+    /*
+     * All that needs to happen to set iopl is to execute an iret hypercall
+     * with the appropriate iopl set.  Reuse the exec_user infrastructure to
+     * issue the iret, and execute nothing interesting in user context.
+     */
+    exec_user_with_iopl(nop, iopl);
+}
+
+static bool vmassist_should_fault(bool user, unsigned int iopl)
+{
+    /*
+     * Kernel has vCPL 0, userspace has vCPL 3.
+     *
+     * Kenrel should never fault, while userspace should only not fault at
+     * iopl 3.
+     */
+    if ( !user )
+        return false;
+
+    return iopl != 3;
+}
+
+/** VMASSIT based IOPL interface. */
+static const struct test vmassist =
+{
+    .set_iopl     = vmassist_set_iopl,
+    .should_fault = vmassist_should_fault,
+};
+
 void test_main(void)
 {
     printk("PV IOPL emulation\n");
@@ -200,6 +246,13 @@ void test_main(void)
 
     printk("Test: PHYSDEVOP_set_iopl\n");
     run_test(&hypercall);
+
+    if ( hypercall_vm_assist(VMASST_CMD_enable,
+                             VMASST_TYPE_architectural_iopl) )
+        return xtf_skip("VMASST_TYPE_architectural_iopl not detected\n");
+
+    printk("Test: VMASST_TYPE_architectural_iopl\n");
+    run_test(&vmassist);
 
     xtf_exlog_stop();
     xtf_success(NULL);
