@@ -30,6 +30,17 @@ void *memset(void *s, int c, size_t n)
     return s;
 }
 
+void *memcpy(void *_d, const void *_s, size_t n)
+{
+    char *d = _d;
+    const char *s = _s;
+
+    for ( ; n; --n )
+        *d++ = *s++;
+
+    return _d;
+}
+
 int memcmp(const void *s1, const void *s2, size_t n)
 {
     const unsigned char *u1 = s1, *u2 = s2;
