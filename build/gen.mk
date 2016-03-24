@@ -51,10 +51,11 @@ endif
 cfg-$(1) ?= $(defcfg-$(1))
 
 test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
-	@sed -e "s/@@NAME@@/$$(NAME)/g" \
+	@{ cat $$< $(TEST-EXTRA-CFG) ;} | \
+	sed -e "s/@@NAME@@/$$(NAME)/g" \
 		-e "s/@@ENV@@/$(1)/g" \
 		-e "s!@@PREFIX@@!$$(PREFIX)!g" \
-		< $$< > $$@.tmp
+		> $$@.tmp
 	@if ! cmp -s $$@ $$@.tmp; then mv -f $$@.tmp $$@; else rm -f $$@.tmp; fi
 
 -include $$(link-$(1):%.lds=%.d)
