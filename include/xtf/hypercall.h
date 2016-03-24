@@ -31,6 +31,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 #include <xen/sched.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
+#include <xen/version.h>
 #include <xen/hvm/hvm_op.h>
 #include <xen/hvm/params.h>
 
@@ -45,6 +46,11 @@ static inline long hypercall_set_trap_table(const struct xen_trap_info *ti)
 static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
 {
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);
+}
+
+static inline long hypercall_xen_version(unsigned cmd, void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_xen_version, cmd, arg);
 }
 
 static inline long hypercall_update_va_mapping(void *va, uint64_t npte,
