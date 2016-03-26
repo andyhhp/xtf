@@ -20,6 +20,8 @@
 #define _PAGE_PRESENT           0x001
 #define _PAGE_RW                0x002
 #define _PAGE_USER              0x004
+#define _PAGE_ACCESSED          0x020
+#define _PAGE_DIRTY             0x040
 #define _PAGE_PSE               0x080
 
 #if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
