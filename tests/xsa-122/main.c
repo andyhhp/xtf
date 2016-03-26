@@ -52,7 +52,9 @@ void test_main(void)
 
     printk("XENVER_extraversion:\n");
     {
-        xen_extraversion_t extra = {};
+        xen_extraversion_t extra;
+
+        memset(&extra, 0, sizeof(extra));
 
         rc = hypercall_xen_version(XENVER_extraversion, extra);
         if ( rc < 0 )
@@ -64,7 +66,9 @@ void test_main(void)
 
     printk("XENVER_compile_info:\n");
     {
-        xen_compile_info_t ci = {};
+        xen_compile_info_t ci;
+
+        memset(&ci, 0, sizeof(ci));
 
         rc = hypercall_xen_version(XENVER_compile_info, &ci);
         if ( rc < 0 )
@@ -84,7 +88,9 @@ void test_main(void)
 
     printk("XENVER_changeset:\n");
     {
-        xen_changeset_info_t ci = {};
+        xen_changeset_info_t ci;
+
+        memset(&ci, 0, sizeof(ci));
 
         rc = hypercall_xen_version(XENVER_changeset, &ci);
         if ( rc < 0 )
