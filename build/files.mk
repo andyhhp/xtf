@@ -14,6 +14,7 @@ obj-perarch += $(ROOT)/common/libc/string.o
 obj-perarch += $(ROOT)/common/libc/vsnprintf.o
 obj-perarch += $(ROOT)/common/report.o
 obj-perarch += $(ROOT)/common/setup.o
+obj-perarch += $(ROOT)/common/xenbus.o
 
 obj-perenv += $(ROOT)/arch/x86/decode.o
 obj-perenv += $(ROOT)/arch/x86/desc.o

@@ -23,6 +23,7 @@
 #include <xtf/exlog.h>
 #include <xtf/hypercall.h>
 #include <xtf/traps.h>
+#include <xtf/xenbus.h>
 
 /* Arch specific headers. */
 #include <arch/xtf.h>
