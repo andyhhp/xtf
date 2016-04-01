@@ -20,7 +20,7 @@
  *
  * @sa tests/xsa-122/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 /*
  * Check a buffer of a specified size for non-NUL bytes following the string

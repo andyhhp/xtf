@@ -8,7 +8,7 @@
  *
  * @sa tests/example/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 void test_main(void)
 {

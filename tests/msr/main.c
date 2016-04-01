@@ -11,7 +11,7 @@
  *
  * @sa tests/msr/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 static int rdmsr_safe(uint32_t msr, uint64_t *val)
 {

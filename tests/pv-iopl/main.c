@@ -38,7 +38,7 @@
  *
  * @sa tests/pv-iopl/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 #include <arch/x86/processor.h>
 

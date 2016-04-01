@@ -27,7 +27,7 @@
  *
  * @sa tests/xsa-123/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 void test_main(void)
 {

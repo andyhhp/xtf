@@ -1,5 +1,7 @@
 #include <xtf/lib.h>
+#include <xtf/console.h>
 #include <xtf/exlog.h>
+#include <xtf/numbers.h>
 
 static bool logging = false;
 static unsigned int log_entries;

@@ -9,7 +9,7 @@
  *
  * @sa tests/cpuid/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 static void dump_leaves(
     void (*cpuid_fn)(uint32_t leaf, uint32_t subleaf,

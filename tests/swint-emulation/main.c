@@ -44,7 +44,7 @@
  *
  * @sa tests/swint-emulation/main.c
  */
-#include <xtf/lib.h>
+#include <xtf.h>
 
 #include <arch/x86/processor.h>
 #include <arch/x86/symbolic-const.h>
