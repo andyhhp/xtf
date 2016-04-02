@@ -24,6 +24,7 @@
 #include <xtf/hypercall.h>
 #include <xtf/traps.h>
 #include <xtf/xenbus.h>
+#include <xtf/xenstore.h>
 
 /* Arch specific headers. */
 #include <arch/xtf.h>

@@ -18,6 +18,29 @@
 
 const char test_title[] = "XTF Selftests";
 
+static void test_xenstore(void)
+{
+    printk("Test: Xenstore read\n");
+
+    const char *domid_str = xenstore_read("domid");
+
+    if ( !domid_str )
+        return xtf_failure("Fail: No domid value returned\n");
+
+    if ( domid_str[0] == '\0' )
+        return xtf_failure("Fail: domid value empty\n");
+
+    unsigned int i;
+    for ( i = 0; domid_str[i]; ++i )
+    {
+        if ( domid_str[i] < '0' || domid_str[i] > '9' )
+            return xtf_failure("Fail: unexpected domid value '%s'\n",
+                               domid_str);
+    }
+
+    printk("  Found domid %s\n", domid_str);
+}
+
 static void test_extable(void)
 {
     printk("Test: Exception Table\n");
@@ -314,6 +337,7 @@ void test_main(void)
             write_cr4(cr4);
     }
 
+    test_xenstore();
     test_extable();
     test_exlog();
     test_exec_user();
