@@ -54,6 +54,9 @@ SECTIONS
         }
 }
 
+ASSERT(IS_ALIGNED(hypercall_page, PAGE_SIZE), "hypercall_page misaligned");
+ASSERT(IS_ALIGNED(boot_stack, PAGE_SIZE), "boot_stack misaligned");
+
 #ifdef CONFIG_HVM
 
 ASSERT(IS_ALIGNED(pae_l1_identmap, PAGE_SIZE), "pae_l1_identmap misaligned");
@@ -62,6 +65,9 @@ ASSERT(IS_ALIGNED(pae_l3_identmap, PAGE_SIZE), "pae_l3_identmap misaligned");
 ASSERT(IS_ALIGNED(pae_l4_identmap, PAGE_SIZE), "pae_l4_identmap misaligned");
 
 ASSERT(IS_ALIGNED(pae32_l3_identmap, 32), "pae32_l3_ident misaligned");
+
+ASSERT(IS_ALIGNED(pse_l1_identmap, PAGE_SIZE), "pse_l1_identmap misaligned");
+ASSERT(IS_ALIGNED(pse_l2_identmap, PAGE_SIZE), "pse_l2_identmap misaligned");
 
 #endif
 /*
