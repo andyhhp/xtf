@@ -46,6 +46,8 @@ ENTRY(entry_\sym)
         push  $\vec
 
         jmp   handle_exception
+
+ENDFUNC(entry_\sym)
 .endm
 
 exception_entry DE  X86_EXC_DE
@@ -81,6 +83,7 @@ handle_exception:
         add $8, %esp            /* Pop error_code/entry_vector. */
 
         env_IRET
+ENDFUNC(handle_exception)
 
 
 ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
@@ -91,6 +94,7 @@ ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
         mov 3*4(%esp), %esp     /* Load %esp from iret frame  */
         jmp *%eax               /* Jump back                  */
 
+ENDFUNC(entry_ret_to_kernel)
 
 ENTRY(exec_user)                /* void (*fn)(void) */
 
@@ -112,6 +116,8 @@ ENTRY(exec_user)                /* void (*fn)(void) */
 
         int $0x20               /* Return to kernel privilege. */
         ret
+
+ENDFUNC(exec_user)
 
 /*
  * Local variables:

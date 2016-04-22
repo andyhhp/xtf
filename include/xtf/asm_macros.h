@@ -36,6 +36,14 @@ name:
     .size name, . - name;
 
 /**
+ * Set the type of @p name to function, and set its size.
+ * @param name Symbol name.
+ */
+#define ENDFUNC(name)                           \
+    .type name, STT_FUNC;                       \
+    SIZE(name)
+
+/**
  * Create an ELF note entry.
  *
  * 'desc' may be an arbitrary asm construct.

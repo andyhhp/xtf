@@ -79,7 +79,7 @@ GLOBAL(_start)                  /* HVM common setup. */
         push $main_err_msg
 #endif
         call panic
-SIZE(_start)
+ENDFUNC(_start)
 
 .section .rodata.str1, "aMS", @progbits, 1
 
