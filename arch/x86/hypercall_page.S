@@ -2,12 +2,23 @@
 #include <xtf/asm_macros.h>
 #include <xen/xen.h>
 
-.text
+.data
 .align PAGE_SIZE
 GLOBAL(hypercall_page)
          /* Poisoned with `ret` for safety before hypercalls are set up. */
         .fill PAGE_SIZE, 1, 0xc3
+        .type hypercall_page, STT_OBJECT
         .size hypercall_page, PAGE_SIZE
+
+/*
+ * Identify a specific hypercall in the hypercall page
+ * @param name Hypercall name.
+ */
+#define DECLARE_HYPERCALL(name)                                                 \
+        .globl HYPERCALL_ ## name;                                              \
+        .set   HYPERCALL_ ## name, hypercall_page + __HYPERVISOR_ ## name * 32; \
+        .type  HYPERCALL_ ## name, STT_FUNC;                                    \
+        .size  HYPERCALL_ ## name, 32
 
 DECLARE_HYPERCALL(set_trap_table)
 DECLARE_HYPERCALL(mmu_update)

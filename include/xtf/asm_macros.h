@@ -36,15 +36,6 @@ name:
     .size name, . - name;
 
 /**
- * Identify a specific hypercall in the hypercall page
- * @param name Hypercall name.
- */
-#define DECLARE_HYPERCALL(name)                                         \
-    .globl HYPERCALL_ ## name;                                          \
-    .set HYPERCALL_ ## name, hypercall_page + __HYPERVISOR_ ## name * 32; \
-    .size HYPERCALL_ ## name, 32
-
-/**
  * Create an ELF note entry.
  *
  * 'desc' may be an arbitrary asm construct.
