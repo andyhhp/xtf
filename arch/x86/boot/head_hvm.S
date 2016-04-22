@@ -74,17 +74,14 @@ GLOBAL(_start)                  /* HVM common setup. */
 
         /* panic() if xtf_main manages to return. */
 #ifdef __x86_64__
-        lea main_err_msg(%rip), %rdi
+        lea .Lmain_err_msg(%rip), %rdi
 #else
-        push $main_err_msg
+        push $.Lmain_err_msg
 #endif
         call panic
 ENDFUNC(_start)
 
-.section .rodata.str1, "aMS", @progbits, 1
-
-main_err_msg: .asciz "xtf_main() returned\n"
-SIZE(main_err_msg)
+DECLSTR(.Lmain_err_msg, "xtf_main() returned\n")
 
 /*
  * Local variables:

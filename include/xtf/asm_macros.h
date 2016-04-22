@@ -44,6 +44,19 @@ name:
     SIZE(name)
 
 /**
+ * Declare a string with label @p name and value @p val.  It is placed in the
+ * mergable string section, is declared as data, and has its size set.
+ * @param name String name.
+ * @param val String content.
+ */
+#define DECLSTR(name, val)                          \
+    .pushsection .rodata.str1, "aMS", @progbits, 1; \
+    name: .asciz val;                               \
+    .type name, STT_OBJECT;                         \
+    SIZE(name)                                      \
+    .popsection
+
+/**
  * Create an ELF note entry.
  *
  * 'desc' may be an arbitrary asm construct.
