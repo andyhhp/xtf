@@ -10,7 +10,7 @@
         /* Function label.  e.g. stub_int3_red(). */
 ENTRY(stub_\insn\()_\type)
 
-        .if \insn == into
+        .ifc \insn, into
             /* Ensure the overflow flag is set, to trigger 'into'. */
             pushf
             orl $X86_EFLAGS_OF, (%esp)
@@ -21,7 +21,10 @@ ENTRY(stub_\insn\()_\type)
         .endif
 
         /* Possibly insert a Xen Forced Emulation prefix. */
-        .if \type == force || \type == forcered
+        .ifc \type, force
+            _ASM_XEN_FEP
+        .endif
+        .ifc \type, forcered
             _ASM_XEN_FEP
         .endif
 
@@ -34,20 +37,27 @@ GLOBAL(label_\insn\()_\type\()_fault)
          * Uses 'address size override' which has no effect on any of the
          * target instructions, but in a form which GAS won't complain about.
          */
-        .if \type == red || \type == forcered
+        .ifc \type, red
+            .byte 0x67
+        .endif
+        .ifc \type, forcered
             .byte 0x67
         .endif
 
         /* Target instruction to test. */
-        .if \insn == int3
+        .ifc \insn, int3
             int3
-        .elseif \insn == int_0x3
+        .endif
+        .ifc \insn, int_0x3
             .byte 0xcd, 0x03     /* Some assembers turn `int $3` into `int3`. */
-        .elseif \insn == icebp
+        .endif
+        .ifc \insn, icebp
             .byte 0xf1
-        .elseif \insn == int_0x1
+        .endif
+        .ifc \insn, int_0x1
             int $0x1
-        .elseif \insn == into
+        .endif
+        .ifc \insn, into
             .byte 0xce           /* Raw opcode to avoid failure in 64bit build. */
         .endif
 
