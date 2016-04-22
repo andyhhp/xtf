@@ -23,7 +23,7 @@ obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
 
 
 # HVM specific objects
-obj-hvm += $(ROOT)/arch/x86/hvm_pagetables.o
+obj-hvm += $(ROOT)/arch/x86/hvm/pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
 $(foreach env,$(HVM_ENVIRONMENTS),$(eval obj-$(env) += $(obj-hvm)))
 
