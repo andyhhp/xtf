@@ -132,10 +132,19 @@
 #define X86_EC_TI  (1U << 2) /* Only if !IDT.  LDT or GDT. */
 
 /* Segment-based Error Code - supplemental constants. */
-#define X86_EC_TABLE_MASK (3U << 1)
-#define X86_EC_SEL_MASK   (-1L << 3)
+#define X86_EC_TABLE_MASK (3  << 1)
+#define X86_EC_SEL_SHIFT  3
+#define X86_EC_SEL_MASK   (-1 << X86_EC_SEL_SHIFT)
 #define X86_EC_GDT        0
 #define X86_EC_LDT        X86_EC_TI
+
+/* Pagefault Error Code - architecturally defined. */
+#define X86_PFEC_PRESENT  (1U << 0)
+#define X86_PFEC_WRITE    (1U << 1)
+#define X86_PFEC_USER     (1U << 2)
+#define X86_PFEC_RSVD     (1U << 3)
+#define X86_PFEC_INSN     (1U << 4)
+#define X86_PFEC_PK       (1U << 5)
 
 #endif /* XTF_X86_PROCESSOR_H */
 
