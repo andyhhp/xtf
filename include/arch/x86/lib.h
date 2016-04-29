@@ -195,6 +195,15 @@ static inline unsigned long read_dr7(void)
     return val;
 }
 
+static inline unsigned long read_cr2(void)
+{
+    unsigned long cr2;
+
+    asm volatile ("mov %%cr2, %0" : "=r" (cr2));
+
+    return cr2;
+}
+
 static inline unsigned long read_cr3(void)
 {
     unsigned long cr3;

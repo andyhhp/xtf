@@ -2,6 +2,7 @@
 #include <xtf/traps.h>
 #include <xtf/exlog.h>
 
+#include <arch/x86/decode.h>
 #include <arch/x86/processor.h>
 
 bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
@@ -78,9 +79,29 @@ void do_exception(struct cpu_regs *regs)
     if ( !safe && xtf_unhandled_exception_hook )
         safe = xtf_unhandled_exception_hook(regs);
 
+    /* Still unresolved? Give up and panic() with some relevent information. */
     if ( !safe )
-        panic("Unhandled exception: vec %u at %04x:%p\n",
-              regs->entry_vector, regs->cs, _p(regs->ip));
+    {
+        char buf[16];
+
+        x86_exc_decode_ec(buf, ARRAY_SIZE(buf),
+                          regs->entry_vector, regs->error_code);
+
+        if ( regs->entry_vector == X86_EXC_PF )
+        {
+            unsigned long cr2 = read_cr2();
+
+            panic("Unhandled exception at %04x:%p\n"
+                  "Vec %u %s[%s] %%cr2 %p\n",
+                  regs->cs, _p(regs->ip), regs->entry_vector,
+                  x86_exc_short_name(regs->entry_vector), buf, _p(cr2));
+        }
+        else
+            panic("Unhandled exception at %04x:%p\n"
+                  "Vec %u %s[%s]\n",
+                  regs->cs, _p(regs->ip), regs->entry_vector,
+                  x86_exc_short_name(regs->entry_vector), buf);
+    }
 }
 
 /*
