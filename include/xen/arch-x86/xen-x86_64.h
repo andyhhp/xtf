@@ -19,6 +19,11 @@
 
 #ifndef __ASSEMBLY__
 
+struct arch_vcpu_info {
+    unsigned long cr2;
+    unsigned long pad; /* sizeof(vcpu_info_t) == 64 */
+};
+
 typedef unsigned long xen_callback_t;
 
 #endif /* __ASSEMBLY__ */

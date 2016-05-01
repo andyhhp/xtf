@@ -34,6 +34,11 @@ static inline unsigned int xen_cr3_to_pfn(unsigned int cr3)
     return cr3 >> 12 | cr3 << 20;
 }
 
+struct arch_vcpu_info {
+    unsigned long cr2;
+    unsigned long pad[5]; /* sizeof(vcpu_info_t) == 64 */
+};
+
 struct xen_callback {
     unsigned long cs;
     unsigned long eip;

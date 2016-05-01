@@ -87,6 +87,119 @@ typedef uint16_t domid_t;
 
 
 #ifndef __ASSEMBLY__
+struct vcpu_time_info {
+    /*
+     * Updates to the following values are preceded and followed by an
+     * increment of 'version'. The guest can therefore detect updates by
+     * looking for changes to 'version'. If the least-significant bit of
+     * the version number is set then an update is in progress and the guest
+     * must wait to read a consistent set of values.
+     * The correct way to interact with the version number is similar to
+     * Linux's seqlock: see the implementations of read_seqbegin/read_seqretry.
+     */
+    uint32_t version;
+    uint32_t pad0;
+    uint64_t tsc_timestamp;   /* TSC at last update of time vals.  */
+    uint64_t system_time;     /* Time, in nanosecs, since boot.    */
+    /*
+     * Current system time:
+     *   system_time +
+     *   ((((tsc - tsc_timestamp) << tsc_shift) * tsc_to_system_mul) >> 32)
+     * CPU frequency (Hz):
+     *   ((10^9 << 32) / tsc_to_system_mul) >> tsc_shift
+     */
+    uint32_t tsc_to_system_mul;
+    int8_t   tsc_shift;
+    uint8_t  flags;
+    uint8_t  pad1[2];
+}; /* 32 bytes */
+typedef struct vcpu_time_info vcpu_time_info_t;
+
+struct vcpu_info {
+    /*
+     * 'evtchn_upcall_pending' is written non-zero by Xen to indicate
+     * a pending notification for a particular VCPU. It is then cleared
+     * by the guest OS /before/ checking for pending work, thus avoiding
+     * a set-and-check race. Note that the mask is only accessed by Xen
+     * on the CPU that is currently hosting the VCPU. This means that the
+     * pending and mask flags can be updated by the guest without special
+     * synchronisation (i.e., no need for the x86 LOCK prefix).
+     * This may seem suboptimal because if the pending flag is set by
+     * a different CPU then an IPI may be scheduled even when the mask
+     * is set. However, note:
+     *  1. The task of 'interrupt holdoff' is covered by the per-event-
+     *     channel mask bits. A 'noisy' event that is continually being
+     *     triggered can be masked at source at this very precise
+     *     granularity.
+     *  2. The main purpose of the per-VCPU mask is therefore to restrict
+     *     reentrant execution: whether for concurrency control, or to
+     *     prevent unbounded stack usage. Whatever the purpose, we expect
+     *     that the mask will be asserted only for short periods at a time,
+     *     and so the likelihood of a 'spurious' IPI is suitably small.
+     * The mask is read before making an event upcall to the guest: a
+     * non-zero mask therefore guarantees that the VCPU will not receive
+     * an upcall activation. The mask is cleared when the VCPU requests
+     * to block: this avoids wakeup-waiting races.
+     */
+    uint8_t evtchn_upcall_pending;
+    uint8_t evtchn_upcall_mask;
+    unsigned long evtchn_pending_sel;
+    struct arch_vcpu_info arch;
+    struct vcpu_time_info time;
+}; /* 64 bytes (x86) */
+
+struct shared_info {
+    struct vcpu_info vcpu_info[32];
+
+    /*
+     * A domain can create "event channels" on which it can send and receive
+     * asynchronous event notifications. There are three classes of event that
+     * are delivered by this mechanism:
+     *  1. Bi-directional inter- and intra-domain connections. Domains must
+     *     arrange out-of-band to set up a connection (usually by allocating
+     *     an unbound 'listener' port and avertising that via a storage service
+     *     such as xenstore).
+     *  2. Physical interrupts. A domain with suitable hardware-access
+     *     privileges can bind an event-channel port to a physical interrupt
+     *     source.
+     *  3. Virtual interrupts ('events'). A domain can bind an event-channel
+     *     port to a virtual interrupt source, such as the virtual-timer
+     *     device or the emergency console.
+     *
+     * Event channels are addressed by a "port index". Each channel is
+     * associated with two bits of information:
+     *  1. PENDING -- notifies the domain that there is a pending notification
+     *     to be processed. This bit is cleared by the guest.
+     *  2. MASK -- if this bit is clear then a 0->1 transition of PENDING
+     *     will cause an asynchronous upcall to be scheduled. This bit is only
+     *     updated by the guest. It is read-only within Xen. If a channel
+     *     becomes pending while the channel is masked then the 'edge' is lost
+     *     (i.e., when the channel is unmasked, the guest must manually handle
+     *     pending notifications as no upcall will be scheduled by Xen).
+     *
+     * To expedite scanning of pending notifications, any 0->1 pending
+     * transition on an unmasked channel causes a corresponding bit in a
+     * per-vcpu selector word to be set. Each bit in the selector covers a
+     * 'C long' in the PENDING bitfield array.
+     */
+    unsigned long evtchn_pending[sizeof(unsigned long) * 8];
+    unsigned long evtchn_mask[sizeof(unsigned long) * 8];
+
+    /*
+     * Wallclock time: updated only by control software. Guests should base
+     * their gettimeofday() syscall on this wallclock-base value.
+     */
+    uint32_t wc_version;      /* Version counter: see vcpu_time_info_t. */
+    uint32_t wc_sec;          /* Secs  00:00:00 UTC, Jan 1, 1970.  */
+    uint32_t wc_nsec;         /* Nsecs 00:00:00 UTC, Jan 1, 1970.  */
+#if !defined(__i386__)
+    uint32_t wc_sec_hi;
+#endif
+
+    struct arch_shared_info arch;
+};
+typedef struct shared_info shared_info_t;
+
 struct start_info {
     /* THE FOLLOWING ARE FILLED IN BOTH ON INITIAL BOOT AND ON RESUME.    */
     char magic[32];             /* "xen-<version>-<platform>".            */
