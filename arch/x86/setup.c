@@ -7,6 +7,7 @@
 #include <arch/desc.h>
 #include <arch/lib.h>
 #include <arch/mm.h>
+#include <arch/symbolic-const.h>
 #include <arch/traps.h>
 
 /*
@@ -31,6 +32,8 @@ const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;
 #endif
+
+shared_info_t shared_info __page_aligned_bss;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 {
@@ -168,6 +171,31 @@ static void setup_pv_console(void)
     init_pv_console(cons_ring, cons_evtchn);
 }
 
+static void map_shared_info(void)
+{
+    int rc;
+
+    if ( IS_DEFINED(CONFIG_HVM) )
+    {
+        struct xen_add_to_physmap xatp =
+            {
+                .domid = DOMID_SELF,
+                .space = XENMAPSPACE_shared_info,
+                .idx = 0,
+                .gfn = virt_to_gfn(&shared_info),
+            };
+
+        rc = hypercall_memory_op(XENMEM_add_to_physmap, &xatp);
+    }
+    else /* PV */
+        rc = hypercall_update_va_mapping(
+            &shared_info, start_info->shared_info | PF_SYM(RW, P),
+            UVMF_INVLPG);
+
+    if ( rc )
+        panic("Failed to map shared_info: %d\n", rc);
+}
+
 static void qemu_console_write(const char *buf, size_t len)
 {
     asm volatile("rep; outsb"
@@ -196,6 +224,7 @@ void arch_setup(void)
     init_hypercalls();
 
     setup_pv_console();
+    map_shared_info();
 }
 
 /*

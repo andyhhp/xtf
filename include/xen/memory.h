@@ -17,6 +17,24 @@ struct xen_memory_reservation {
     domid_t domid;
 };
 
+#define XENMEM_add_to_physmap       7
+
+struct xen_add_to_physmap {
+    domid_t domid;
+    uint16_t size;
+
+#define XENMAPSPACE_shared_info  0
+#define XENMAPSPACE_grant_table  1
+#define XENMAPSPACE_gmfn         2
+#define XENMAPSPACE_gmfn_range   3
+#define XENMAPSPACE_gmfn_foreign 4
+#define XENMAPSPACE_dev_mmio     5
+    unsigned int space;
+
+    unsigned long idx;
+    unsigned long gfn;
+};
+
 #define XENMEM_exchange             11
 
 struct xen_memory_exchange {

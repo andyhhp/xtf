@@ -44,7 +44,7 @@ static inline unsigned long virt_to_pfn(const void *va)
 #if defined(CONFIG_PV)
 
 #define m2p ((unsigned long *)MACH2PHYS_VIRT_START)
-extern struct start_info *start_info;
+extern start_info_t *start_info;
 
 static inline void *mfn_to_virt(unsigned long mfn)
 {
