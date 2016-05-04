@@ -16,6 +16,8 @@ and functionality.
 
 @section index-functional Functional tests
 
+@subpage test-invlpg - `invlpg` instruction behaviour.
+
 @subpage test-pv-iopl - IOPL emulation for PV guests.
 
 @subpage test-swint-emulation - Software interrupt emulation for HVM guests.
@@ -30,7 +32,7 @@ Coveres XSA-106 and XSA-156.
 
 @subpage test-xsa-167 - PV superpage sanity checks.
 
-@subpage test-xsa-168 - `INVVPID` non-canonical guest address.
+@subpage test-xsa-168 - `invvpid` non-canonical guest address.
 
 
 @section index-utility Utilities

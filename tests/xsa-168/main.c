@@ -39,9 +39,6 @@ void test_main(void)
      * At the time of writing, Xen doesn't correctly handle `invlpg` while
      * running in shadow mode on AMD Gen1 hardware lacking decode assistance.
      * For this test, we simply care that Xen doesn't crash.
-     *
-     * @todo Write a different test which cares about the architecturally
-     * correct handling of `invlpg`.
      */
     asm volatile ("1: invlpg (%0); 2:"
                   _ASM_EXTABLE(1b, 2b)
