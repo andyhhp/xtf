@@ -17,6 +17,8 @@
  *  5 - 32bit userspace code
  *  6 - 32bit userspace data
  *  7 - TSS (two slots in long mode)
+ *
+ *  9-12 - Available for test use
  */
 
 #define GDTE_CS64_DPL0 1
@@ -28,7 +30,12 @@
 
 #define GDTE_TSS 7
 
-#define NR_GDT_ENTRIES 9
+#define GDTE_AVAIL0     9
+#define GDTE_AVAIL1    10
+#define GDTE_AVAIL2    11
+#define GDTE_AVAIL3    12
+
+#define NR_GDT_ENTRIES 13
 
 /*
  * HVM guests use the GDT directly.
