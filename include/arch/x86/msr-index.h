@@ -5,6 +5,10 @@
 #define _EFER_LME                       8  /* Long mode enable */
 #define EFER_LME                        (1<<_EFER_LME)
 
+#define MSR_FS_BASE                     0xc0000100
+#define MSR_GS_BASE                     0xc0000101
+#define MSR_SHADOW_GS_BASE              0xc0000102
+
 #endif /* XFT_X86_MSR_INDEX_H */
 
 /*
