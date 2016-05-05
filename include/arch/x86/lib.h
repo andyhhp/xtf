@@ -195,6 +195,15 @@ static inline unsigned long read_dr7(void)
     return val;
 }
 
+static inline unsigned long read_cr0(void)
+{
+    unsigned long cr0;
+
+    asm volatile ("mov %%cr0, %0" : "=r" (cr0));
+
+    return cr0;
+}
+
 static inline unsigned long read_cr2(void)
 {
     unsigned long cr2;
@@ -211,6 +220,49 @@ static inline unsigned long read_cr3(void)
     asm volatile ("mov %%cr3, %0" : "=r" (cr3));
 
     return cr3;
+}
+
+static inline unsigned long read_cr4(void)
+{
+    unsigned long cr4;
+
+    asm volatile ("mov %%cr4, %0" : "=r" (cr4));
+
+    return cr4;
+}
+
+static inline unsigned long read_cr8(void)
+{
+    unsigned long cr8;
+
+    asm volatile ("mov %%cr8, %0" : "=r" (cr8));
+
+    return cr8;
+}
+
+static inline void write_cr0(unsigned long cr0)
+{
+    asm volatile ("mov %0, %%cr0" :: "r" (cr0));
+}
+
+static inline void write_cr2(unsigned long cr2)
+{
+    asm volatile ("mov %0, %%cr2" :: "r" (cr2));
+}
+
+static inline void write_cr3(unsigned long cr3)
+{
+    asm volatile ("mov %0, %%cr3" :: "r" (cr3));
+}
+
+static inline void write_cr4(unsigned long cr4)
+{
+    asm volatile ("mov %0, %%cr4" :: "r" (cr4));
+}
+
+static inline void write_cr8(unsigned long cr8)
+{
+    asm volatile ("mov %0, %%cr8" :: "r" (cr8));
 }
 
 #endif /* XTF_X86_LIB_H */
