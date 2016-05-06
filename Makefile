@@ -22,7 +22,7 @@ cscope:
 .PHONY: clean
 clean:
 	find . \( -name "*.o" -o -name "*.d" -o -name "*.lds" \) -delete
-	find tests/ \( -executable -name "test-*" -o -name "test-*.cfg" \
+	find tests/ \( -perm -a=x -name "test-*" -o -name "test-*.cfg" \
 		-o -name "test-info.json" \) -delete
 
 .PHONY: distclean
