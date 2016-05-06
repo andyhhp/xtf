@@ -134,7 +134,7 @@
 /* Segment-based Error Code - supplemental constants. */
 #define X86_EC_TABLE_MASK (3  << 1)
 #define X86_EC_SEL_SHIFT  3
-#define X86_EC_SEL_MASK   (-1 << X86_EC_SEL_SHIFT)
+#define X86_EC_SEL_MASK   (~0U << X86_EC_SEL_SHIFT)
 #define X86_EC_GDT        0
 #define X86_EC_LDT        X86_EC_TI
 
