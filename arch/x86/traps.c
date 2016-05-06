@@ -60,16 +60,21 @@ static bool is_trap_or_interrupt(const struct cpu_regs *regs)
  */
 void do_exception(struct cpu_regs *regs)
 {
-    unsigned long fixup_addr;
+    const struct extable_entry *ex;
     bool safe = is_trap_or_interrupt(regs);
 
     xtf_exlog_log_exception(regs);
 
     /* Look in the exception table to see if a redirection has been set up. */
-    if ( !safe && (fixup_addr = search_extable(regs->ip)) )
+    if ( !safe && (ex = search_extable(regs->ip)) )
     {
-        regs->ip = fixup_addr;
-        safe = true;
+        if ( ex->handler )
+            safe = ex->handler(regs, ex);
+        else
+        {
+            regs->ip = ex->fixup;
+            safe = true;
+        }
     }
 
     /*

@@ -3,6 +3,7 @@
 
 #define __aligned(x)          __attribute__((__aligned__(x)))
 #define __packed              __attribute__((__packed__))
+#define __used                __attribute__((__used__))
 
 #ifndef __noinline /* Avoid conflicting with cdefs.h */
 #define __noinline            __attribute__((__noinline__))

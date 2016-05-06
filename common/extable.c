@@ -1,15 +1,14 @@
+/**
+ * @file common/extable.c
+ *
+ * Exception table support.
+ */
 #include <xtf/lib.h>
 #include <xtf/extable.h>
 
-struct extable_entry
-{
-    unsigned long fault;
-    unsigned long cont;
-};
-
 extern struct extable_entry __start_ex_table[], __stop_ex_table[];
 
-unsigned long search_extable(unsigned long addr)
+const struct extable_entry *search_extable(unsigned long addr)
 {
     const struct extable_entry *start = __start_ex_table,
         *stop = __stop_ex_table, *mid;
@@ -19,7 +18,7 @@ unsigned long search_extable(unsigned long addr)
         mid = start + (stop - start) / 2;
 
         if ( addr == mid->fault )
-            return mid->cont;
+            return mid;
         else if ( addr > mid->fault )
             start = mid + 1;
         else

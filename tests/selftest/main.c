@@ -222,6 +222,27 @@ static void test_unhandled_exception_hook(void)
     xtf_unhandled_exception_hook = NULL;
 }
 
+static bool test_extable_handler_handler_run;
+static bool __used test_extable_handler_handler(struct cpu_regs *regs,
+                                                const struct extable_entry *ex)
+{
+    test_extable_handler_handler_run = true;
+    regs->ip = ex->fixup;
+    return true;
+}
+
+static void test_extable_handler(void)
+{
+    printk("Test: Exception Table Handler\n");
+
+    asm volatile ("1: ud2a; 2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b,
+                                       test_extable_handler_handler));
+
+    if ( !test_extable_handler_handler_run )
+        xtf_failure("Fail: Custom handler didn't run\n");
+}
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
@@ -233,6 +254,7 @@ void test_main(void)
     if ( CONFIG_PAGING_LEVELS > 0 )
         test_NULL_unmapped();
     test_unhandled_exception_hook();
+    test_extable_handler();
 
     xtf_success(NULL);
 }
