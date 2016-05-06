@@ -4,7 +4,9 @@
 #define __aligned(x)          __attribute__((__aligned__(x)))
 #define __packed              __attribute__((__packed__))
 
+#ifndef __noinline /* Avoid conflicting with cdefs.h */
 #define __noinline            __attribute__((__noinline__))
+#endif
 
 #ifndef __always_inline /* Avoid conflicting with cdefs.h */
 #define __always_inline       __attribute__((__always_inline__))
