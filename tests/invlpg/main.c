@@ -90,8 +90,6 @@
 #include <arch/x86/msr-index.h>
 #include <arch/x86/symbolic-const.h>
 
-extern uint64_t pae_l1_identmap[PAE_L1_PT_ENTRIES];
-
 /* Swizzle to easily change all invlpg instructions to being emulated. */
 #if 0
 #define _ASM_MAYBE_XEN_FEP _ASM_XEN_FEP

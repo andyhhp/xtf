@@ -93,6 +93,19 @@ static inline uint64_t pte_to_paddr(intpte_t pte)
 
 #endif /* CONFIG_PAGING_LEVELS > 0 */
 
+#ifdef CONFIG_HVM
+
+extern uint64_t pae_l1_identmap[PAE_L1_PT_ENTRIES];
+extern uint64_t pae_l2_identmap[4 * PAE_L2_PT_ENTRIES];
+extern uint64_t pae_l3_identmap[PAE_L3_PT_ENTRIES];
+extern uint64_t pae_l4_identmap[PAE_L4_PT_ENTRIES];
+extern uint64_t pae32_l3_identmap[PAE32_L3_ENTRIES];
+
+extern uint32_t pse_l1_identmap[PSE_L1_PT_ENTRIES];
+extern uint32_t pse_l2_identmap[PSE_L2_PT_ENTRIES];
+
+#endif /* CONFIG_HVM */
+
 #endif /* !__ASSEMBLY__ */
 
 #endif /* XTF_X86_PAGE_H */
