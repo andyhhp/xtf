@@ -1,7 +1,7 @@
 ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
-CC = gcc
+CC ?= gcc
 
 ALL_CATEGORIES     := special functional xsa utility
 
