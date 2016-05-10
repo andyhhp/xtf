@@ -2,6 +2,7 @@ ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
 CC ?= gcc
+OBJCOPY ?= objcopy
 
 ALL_CATEGORIES     := special functional xsa utility
 
