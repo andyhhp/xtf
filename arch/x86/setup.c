@@ -31,32 +31,33 @@ start_info_t *start_info = NULL;
  */
 static void init_hypercalls(void)
 {
-#ifdef CONFIG_HVM
-    uint32_t eax, ebx, ecx, edx, base;
-    bool found = false;
-
-    for ( base = XEN_CPUID_FIRST_LEAF;
-          base < XEN_CPUID_FIRST_LEAF + 0x10000; base += 0x100 )
+    if ( IS_DEFINED(CONFIG_HVM) )
     {
-        cpuid(base, &eax, &ebx, &ecx, &edx);
+        uint32_t eax, ebx, ecx, edx, base;
+        bool found = false;
 
-        if ( (ebx == XEN_CPUID_SIGNATURE_EBX) &&
-             (ecx == XEN_CPUID_SIGNATURE_ECX) &&
-             (edx == XEN_CPUID_SIGNATURE_EDX) &&
-             ((eax - base) >= 2) )
+        for ( base = XEN_CPUID_FIRST_LEAF;
+              base < XEN_CPUID_FIRST_LEAF + 0x10000; base += 0x100 )
         {
-            found = true;
-            break;
+            cpuid(base, &eax, &ebx, &ecx, &edx);
+
+            if ( (ebx == XEN_CPUID_SIGNATURE_EBX) &&
+                 (ecx == XEN_CPUID_SIGNATURE_ECX) &&
+                 (edx == XEN_CPUID_SIGNATURE_EDX) &&
+                 ((eax - base) >= 2) )
+            {
+                found = true;
+                break;
+            }
         }
+
+        if ( !found )
+            panic("Unable to locate Xen CPUID leaves\n");
+
+        cpuid(base + 2, &eax, &ebx, &ecx, &edx);
+        wrmsr(ebx, (unsigned long)&hypercall_page);
+        barrier();
     }
-
-    if ( !found )
-        panic("Unable to locate Xen CPUID leaves\n");
-
-    cpuid(base + 2, &eax, &ebx, &ecx, &edx);
-    wrmsr(ebx, (unsigned long)&hypercall_page);
-    barrier();
-#endif /* CONFIG_HVM */
 
     /*
      * Confirm that the `ret` poision has been overwritten with a real
@@ -91,14 +92,12 @@ static void setup_pv_console(void)
     init_pv_console(cons_ring, cons_evtchn);
 }
 
-#if defined(CONFIG_HVM)
 static void qemu_console_write(const char *buf, size_t len)
 {
     asm volatile("rep; outsb"
                  : "+S" (buf), "+c" (len)
                  : "d" (0x12));
 }
-#endif
 
 static void xen_console_write(const char *buf, size_t len)
 {
@@ -107,9 +106,8 @@ static void xen_console_write(const char *buf, size_t len)
 
 void arch_setup(void)
 {
-#if defined(CONFIG_HVM)
-    register_console_callback(qemu_console_write);
-#endif
+    if ( IS_DEFINED(CONFIG_HVM) )
+        register_console_callback(qemu_console_write);
 
     register_console_callback(xen_console_write);
 

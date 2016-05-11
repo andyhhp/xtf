@@ -99,10 +99,11 @@ void test_main(void)
     printk("Native cpuid:\n");
     dump_leaves(cpuid_count);
 
-#ifdef CONFIG_PV
-    printk("Emulated cpuid:\n");
-    dump_leaves(pv_cpuid_count);
-#endif
+    if ( IS_DEFINED(CONFIG_PV) )
+    {
+        printk("Emulated cpuid:\n");
+        dump_leaves(pv_cpuid_count);
+    }
 
     xtf_success(NULL);
 }
