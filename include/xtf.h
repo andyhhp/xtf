@@ -24,6 +24,9 @@
 #include <xtf/hypercall.h>
 #include <xtf/traps.h>
 
+/* Arch specific headers. */
+#include <arch/x86/xtf.h>
+
 #endif /* XTF_H */
 
 /*

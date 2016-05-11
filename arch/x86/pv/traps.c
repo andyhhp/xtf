@@ -2,6 +2,7 @@
 #include <xtf/lib.h>
 #include <xtf/hypercall.h>
 
+#include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 #include <arch/x86/mm.h>

@@ -1,6 +1,7 @@
 #include <xtf/traps.h>
 #include <xtf/lib.h>
 
+#include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/desc.h>
 

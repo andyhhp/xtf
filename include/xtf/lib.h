@@ -2,8 +2,7 @@
 #define XTF_LIB_H
 
 #include <xtf/compiler.h>
-
-#include <arch/x86/lib.h>
+#include <xtf/types.h>
 
 #define ARRAY_SIZE(a)    (sizeof(a) / sizeof(*a))
 

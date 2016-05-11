@@ -4,6 +4,7 @@
 #include <xtf/extable.h>
 
 #include <arch/x86/desc.h>
+#include <arch/x86/lib.h>
 #include <arch/x86/mm.h>
 #include <arch/x86/traps.h>
 

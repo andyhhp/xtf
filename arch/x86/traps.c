@@ -3,6 +3,7 @@
 #include <xtf/exlog.h>
 
 #include <arch/x86/decode.h>
+#include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 
 bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
