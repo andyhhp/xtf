@@ -11,11 +11,7 @@
  */
 #include <xtf.h>
 
-static void dump_leaves(
-    void (*cpuid_fn)(uint32_t leaf, uint32_t subleaf,
-                     uint32_t *eax, uint32_t *ebx,
-                     uint32_t *ecx, uint32_t *edx)
-    )
+static void dump_leaves(cpuid_count_fn_t cpuid_fn)
 {
     uint32_t leaf = 0, subleaf = ~0U;
 
