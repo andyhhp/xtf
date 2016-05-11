@@ -3,6 +3,7 @@
 #include <xtf/hypercall.h>
 #include <xtf/extable.h>
 
+#include <arch/x86/cpuid.h>
 #include <arch/x86/desc.h>
 #include <arch/x86/lib.h>
 #include <arch/x86/mm.h>
@@ -15,6 +16,7 @@
  * boot_stack[page 1] Top of work stack
  */
 uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
+uint32_t x86_features[FSCAPINTS];
 
 const char *environment_description = ENVIRONMENT_DESCRIPTION;
 
@@ -22,6 +24,44 @@ const char *environment_description = ENVIRONMENT_DESCRIPTION;
 /* Filled in by head_pv.S */
 start_info_t *start_info = NULL;
 #endif
+
+static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
+{
+    unsigned int max, tmp;
+
+    cpuid_fn(0, 0, &max, &tmp, &tmp, &tmp);
+
+    if ( max >= 1 )
+        cpuid_fn(1, 0, &tmp, &tmp,
+                 &x86_features[FEATURESET_1c],
+                 &x86_features[FEATURESET_1d]);
+    if ( max >= 7 )
+        cpuid_fn(7, 0, &tmp,
+                 &x86_features[FEATURESET_7b0],
+                 &x86_features[FEATURESET_7c0],
+                 &tmp);
+    if ( max >= 0xd )
+        cpuid_fn(0xd, 0,
+                 &x86_features[FEATURESET_Da1],
+                 &tmp, &tmp, &tmp);
+
+    cpuid_fn(0x80000000, 0, &max, &tmp, &tmp, &tmp);
+
+    if ( (max >> 16) == 0x8000 )
+    {
+        if ( max >= 0x80000001 )
+            cpuid_fn(0x80000001, 0, &tmp, &tmp,
+                     &x86_features[FEATURESET_e1c],
+                     &x86_features[FEATURESET_e1d]);
+        if ( max >= 0x80000007 )
+            cpuid_fn(0x80000007, 0, &tmp, &tmp, &tmp,
+                     &x86_features[FEATURESET_e7d]);
+        if ( max >= 0x80000008 )
+            cpuid_fn(0x80000008, 0, &tmp,
+                     &x86_features[FEATURESET_e8b],
+                     &tmp, &tmp);
+    }
+}
 
 /*
  * PV guests should have hypercalls set up by the domain builder, due to the
@@ -110,6 +150,8 @@ void arch_setup(void)
         register_console_callback(qemu_console_write);
 
     register_console_callback(xen_console_write);
+
+    collect_cpuid(IS_DEFINED(CONFIG_PV) ? pv_cpuid_count : cpuid_count);
 
     arch_init_traps();
 
