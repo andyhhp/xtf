@@ -119,15 +119,15 @@ static bool __used ex_fail(struct cpu_regs *regs,
 /** Are both the Accessed and Dirty bits are set in a pagetable entry? */
 static bool test_ad(uint64_t pte)
 {
-    return (pte & (_PAGE_ACCESSED|_PAGE_DIRTY)) == (_PAGE_ACCESSED|_PAGE_DIRTY);
+    return (pte & _PAGE_AD) == _PAGE_AD;
 }
 
 static unsigned int invlpg_refill(void)
 {
     asm volatile ("mov %[zero], 0x1000;\n\t"   /* Force TLB fill. */
                   "mov %[zero], 0x2000;\n\t"
-                  "andb $0x9f, %[pte1];\n\t"   /* Clear A/D bits. */
-                  "andb $0x9f, %[pte2];\n\t"
+                  "andb $~%c[ad], %[pte1];\n\t" /* Clear A/D bits. */
+                  "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
                   "1: invlpg (0x1000); 2:\n\t" /* Invalidate one page only. */
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
@@ -135,6 +135,7 @@ static unsigned int invlpg_refill(void)
                   "mov %[zero], 0x2000;\n\t"   /* Expect no refill. */
                   :
                   : [zero] "q" (0),
+                    [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2])
                   : "memory");
@@ -147,8 +148,8 @@ static unsigned int invlpg_fs_refill(void)
 {
     asm volatile ("mov %[zero], 0x1000;\n\t"  /* Force TLB fill. */
                   "mov %[zero], 0x2000;\n\t"
-                  "andb $0x9f, %[pte1];\n\t"  /* Clear A/D bits. */
-                  "andb $0x9f, %[pte2];\n\t"
+                  "andb $~%c[ad], %[pte1];\n\t" /* Clear A/D bits. */
+                  "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
                   "1: invlpg %%fs:(0x1000); 2:\n\t" /* Invalidate one page only. */
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
@@ -156,6 +157,7 @@ static unsigned int invlpg_fs_refill(void)
                   "mov %[zero], 0x2000;\n\t"  /* depending on %fs base.*/
                   :
                   : [zero] "q" (0),
+                    [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2])
                   : "memory");
