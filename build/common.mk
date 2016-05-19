@@ -1,4 +1,3 @@
-ROOT := $(abspath $(CURDIR)/../..)
 DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
 CC ?= gcc
