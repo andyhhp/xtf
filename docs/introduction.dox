@@ -1,0 +1,161 @@
+/**
+@page test-introduction Introduction to tests
+@tableofcontents
+
+@section overview Overview
+
+A test has three important attributes.
+
+
+@subsection attr-name Name
+
+A tests name is unique identifier.  The directory `tests/<name>/` contains all
+files related to a specific test.
+
+
+@subsection attr-category Category
+
+A tests category is a broad delineation of its purpose.  All defined
+categories are:
+@dontinclude build/common.mk
+@skipline ALL_CATEGORIES
+
+- `xsa` are dedicated tests to confirm the presence or absence of a specific
+  security vulnerability.
+- `functional` are tests covering a specific area of functionality.
+- `utility` are not really tests, but exist to dump specific information about
+  the VM environment.
+- `special` covers the example and environment sanity checks.
+
+
+@subsection attr-envs Environments
+
+A test is built for one or more environments.  The environment encodes:
+
+- The Xen VM ABI in use (PV or HVM).
+- The compilation width (32bit or 64bit).
+- The primary paging mode (none, PSE, PAE).
+
+All available environments are:
+@skipline ALL_ENVIRONMENTS
+
+Some more specific collections for environments are also available:
+@skipline PV_ENVIRONMENTS
+@until 64BIT_ENVIRONMENTS
+
+An individual test, compiled for more than one environment, will end up with a
+individual microkernel binary for each specified environment.
+
+
+@section build Building
+
+
+@subsection build-create Creating a new test
+
+A helper script is provided to create the initial boilerplate.  It prompts for
+some information, and writes out some default files:
+
+    $ ./make-new-test.sh
+    Test name: example
+    Category [utility]: special
+    Environments [hvm32]: $(ALL_ENVIRONMENTS)
+    Extra xl.cfg? [y/N]: n
+    Writing default tests/example/Makefile
+    Writing default tests/example/main.c
+    $
+
+
+@subsection build-main Minimal main.c
+
+@dontinclude tests/example/main.c
+The minimum for main.c is to include the framework:
+
+@skipline <xtf.h>
+
+Implement test_main():
+
+@skipline main(
+@line {
+
+And make a call to xtf_success() somewhere before test_main() returns:
+
+@skipline xtf_success
+@line }
+
+
+@subsection build-build Building
+
+Building this will generate a number of files.
+
+    $ make -j4
+    ... <snip>
+    $ ls tests/example/
+    main.c
+    main-hvm32.d
+    main-hvm32.o
+    main-hvm32pae.d
+    main-hvm32pae.o
+    main-hvm32pse.d
+    main-hvm32pse.o
+    main-hvm64.d
+    main-hvm64.o
+    main-pv32pae.d
+    main-pv32pae.o
+    main-pv64.d
+    main-pv64.o
+    Makefile
+    test-hvm32-example
+    test-hvm32-example.cfg
+    test-hvm32pae-example
+    test-hvm32pae-example.cfg
+    test-hvm32pse-example
+    test-hvm32pse-example.cfg
+    test-hvm64-example
+    test-hvm64-example.cfg
+    test-info.json
+    test-pv32pae-example
+    test-pv32pae-example.cfg
+    test-pv64-example
+    test-pv64-example.cfg
+
+The `.o` and `.d` files are build artefacts, leading to the eventual
+`test-$ENV-$NAME` microkernel.  Individual `xl.cfg` files are generated for
+each microkernel.  `test-info.json` contains metadata about the test.
+
+
+@section install Installing
+
+If XTF in being built in dom0, all paths should be set up to run correctly.
+
+    # xl create tests/example/test-hvm64-example.cfg
+
+If XTF is built elsewhere, it should be installed:
+
+    $ make install PREFIX=/path DESTDIR=/path
+
+with paths appropriate for the system under test.
+
+
+@section running Running
+
+A test will by default write synchronously to all available consoles:
+
+    # xl create tests/example/test-hvm64-example.cfg
+    # cat /var/log/xen/console/guest-test-hvm64-example.log
+    --- Xen Test Framework ---
+    Environment: HVM 64bit (Long mode 4 levels)
+    Hello World
+    Test result: SUCCESS
+
+The result is covered by the report.h API.  In short, the options are:
+
+- Success
+    - The test passed.
+- Skip
+    - The test cannot be completed (likely a configuration issue).
+- Error
+    - An error in the environment or test code itself.
+- Failure
+    - An issue with the functional area under test.
+
+*/

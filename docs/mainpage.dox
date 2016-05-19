@@ -69,6 +69,9 @@ To run tests on a Xen host: (see @ref errata first)
 
 @section further Further Information
 
+@subsection test-intro Introduction to tests
+@subpage test-introduction
+
 @subsection test-idx Test Index
 @subpage test-index
 
