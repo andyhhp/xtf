@@ -29,6 +29,42 @@ static inline void cpuid(uint32_t leaf,
                   : "0" (leaf));
 }
 
+static inline uint32_t cpuid_eax(uint32_t leaf)
+{
+    uint32_t eax, tmp;
+
+    cpuid(leaf, &eax, &tmp, &tmp, &tmp);
+
+    return eax;
+}
+
+static inline uint32_t cpuid_ebx(uint32_t leaf)
+{
+    uint32_t ebx, tmp;
+
+    cpuid(leaf, &tmp, &ebx, &tmp, &tmp);
+
+    return ebx;
+}
+
+static inline uint32_t cpuid_ecx(uint32_t leaf)
+{
+    uint32_t ecx, tmp;
+
+    cpuid(leaf, &tmp, &tmp, &ecx, &tmp);
+
+    return ecx;
+}
+
+static inline uint32_t cpuid_edx(uint32_t leaf)
+{
+    uint32_t edx, tmp;
+
+    cpuid(leaf, &tmp, &tmp, &tmp, &edx);
+
+    return edx;
+}
+
 static inline void pv_cpuid(uint32_t leaf,
                             uint32_t *eax, uint32_t *ebx,
                             uint32_t *ecx, uint32_t *edx)
