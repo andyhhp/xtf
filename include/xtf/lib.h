@@ -4,6 +4,17 @@
 #include <xtf/compiler.h>
 #include <xtf/types.h>
 
+#if defined(__i386__)
+# define BYTES_PER_LONG 4
+#elif defined(__x86_64__)
+# define BYTES_PER_LONG 8
+#else
+# errror Bad width
+#endif
+
+#define BITS_PER_LONG (BYTES_PER_LONG * 8)
+
+
 #define ARRAY_SIZE(a)    (sizeof(a) / sizeof(*a))
 
 #define ACCESS_ONCE(x)   (*(volatile typeof(x) *)&(x))
