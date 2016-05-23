@@ -1,12 +1,22 @@
 /**
  * @file include/arch/x86/decode.h
  *
- * Helper routines for decoding x86 architectural state.
+ * Helper routines for decoding x86 state.
  */
 #ifndef XTF_X86_DECODE_H
 #define XTF_X86_DECODE_H
 
 #include <xtf/types.h>
+
+#include <arch/x86/cpuid.h>
+
+/**
+ * String of the indentified vendor @p v.
+ *
+ * @param v Vendor.
+ * @return String.
+ */
+const char *x86_vendor_name(enum x86_vendor v);
 
 /**
  * String abbreviation of @p ev.

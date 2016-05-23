@@ -9,6 +9,17 @@
 #include <arch/x86/decode.h>
 #include <arch/x86/processor.h>
 
+const char *x86_vendor_name(enum x86_vendor v)
+{
+    static const char *const names[] =
+    {
+        [X86_VENDOR_INTEL] = "Intel",
+        [X86_VENDOR_AMD]   = "AMD",
+    };
+
+    return (v < ARRAY_SIZE(names) && names[v]) ? names[v] : "Unknown";
+}
+
 const char *x86_exc_short_name(unsigned int exc)
 {
     static const char *const names[] =

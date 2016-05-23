@@ -17,6 +17,7 @@
  */
 uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
+enum x86_vendor x86_vendor;
 
 const char *environment_description = ENVIRONMENT_DESCRIPTION;
 
@@ -27,9 +28,22 @@ start_info_t *start_info = NULL;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 {
-    unsigned int max, tmp;
+    unsigned int max, tmp, ebx, ecx, edx;
 
-    cpuid_fn(0, 0, &max, &tmp, &tmp, &tmp);
+    cpuid_fn(0, 0, &max, &ebx, &ecx, &edx);
+
+    if ( ebx == 0x756e6547u &&      /* "GenuineIntel" */
+         ecx == 0x6c65746eu &&
+         edx == 0x49656e69u )
+        x86_vendor = X86_VENDOR_INTEL;
+
+    else if ( ebx == 0x68747541u && /* "AuthenticAMD" */
+              ecx == 0x444d4163u &&
+              edx == 0x69746e65u )
+        x86_vendor = X86_VENDOR_AMD;
+
+    else
+        x86_vendor = X86_VENDOR_UNKNOWN;
 
     if ( max >= 1 )
         cpuid_fn(1, 0, &tmp, &tmp,

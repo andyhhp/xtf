@@ -13,6 +13,24 @@ typedef void (*cpuid_count_fn_t)(uint32_t leaf, uint32_t subleaf,
                                  uint32_t *eax, uint32_t *ebx,
                                  uint32_t *ecx, uint32_t *edx);
 
+enum x86_vendor
+{
+    X86_VENDOR_UNKNOWN,
+    X86_VENDOR_INTEL,
+    X86_VENDOR_AMD,
+};
+
+extern enum x86_vendor x86_vendor;
+
+static inline bool vendor_is(enum x86_vendor v)
+{
+    return x86_vendor == v;
+}
+
+#define vendor_is_intel         vendor_is(X86_VENDOR_INTEL)
+#define vendor_is_amd           vendor_is(X86_VENDOR_AMD)
+
+
 #define cpufeat_word(idx)       ((idx) / 32)
 #define cpufeat_bit(idx)        ((idx) % 32)
 #define cpufeat_mask(idx)       (_AC(1, U) << cpufeat_bit(idx))
