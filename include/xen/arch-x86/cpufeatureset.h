@@ -147,6 +147,7 @@
 #define X86_FEATURE_UMIP          (6*32+ 2) /* User-Mode Instruction Prevention */
 #define X86_FEATURE_PKU           (6*32+ 3) /* Protection Keys for Userspace */
 #define X86_FEATURE_OSPKE         (6*32+ 4) /* OS Protection Keys Enable */
+#define X86_FEATURE_PKS           (6*32+31) /* Protection Keys for Supervisor */
 
 /* AMD-defined CPU features, CPUID level 0x80000007.edx, word 7 */
 #define X86_FEATURE_ITSC          (7*32+ 8) /* Invariant TSC */

@@ -32,6 +32,8 @@ and functionality.
 
 @subpage test-nmi-taskswitch-priv - Task Gate handling of interrupts.
 
+@subpage test-pagetable-emulation
+
 @subpage test-pv-fsgsbase - FSGSBASE behaviour for PV guests.
 
 @subpage test-pv-iopl - IOPL emulation for PV guests.

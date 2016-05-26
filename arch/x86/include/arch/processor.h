@@ -60,6 +60,8 @@
 #define X86_CR4_OSXSAVE         0x00040000  /* XSAVE/XRSTOR                   */
 #define X86_CR4_SMEP            0x00100000  /* SMEP                           */
 #define X86_CR4_SMAP            0x00200000  /* SMAP                           */
+#define X86_CR4_PKE             0x00400000  /* Protection Key Enable (user)   */
+#define X86_CR4_PKS             0x01000000  /* Protection Key Supervisor      */
 
 /*
  * CPU features in XCR0.

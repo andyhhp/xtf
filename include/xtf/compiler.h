@@ -11,6 +11,7 @@
 #define __packed              __attribute__((__packed__))
 #define __printf(f, v)        __attribute__((__format__(__printf__, f, v)))
 #define __maybe_unused        __attribute__((__unused__))
+#define __transparent         __attribute__((__transparent_union__))
 #define __used                __attribute__((__used__))
 #define __weak                __attribute__((__weak__))
 

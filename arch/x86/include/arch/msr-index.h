@@ -44,6 +44,8 @@
 
 #define MSR_A_PMC(n)                   (0x000004c1 + (n))
 
+#define MSR_PKRS                        0x000006e1
+
 #define MSR_X2APIC_REGS                 0x00000800
 
 #define MSR_EFER                        0xc0000080 /* Extended Feature Enable Register */

@@ -97,6 +97,7 @@ static inline bool cpu_has(unsigned int feature)
 
 #define cpu_has_umip            cpu_has(X86_FEATURE_UMIP)
 #define cpu_has_pku             cpu_has(X86_FEATURE_PKU)
+#define cpu_has_pks             cpu_has(X86_FEATURE_PKS)
 
 #endif /* XTF_X86_CPUID_H */
 
