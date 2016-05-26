@@ -213,7 +213,7 @@ static inline void write_ss(unsigned int ss)
 
 static inline unsigned int read_flags(void)
 {
-    unsigned int flags;
+    unsigned long flags;
 
     asm volatile ("pushf; pop %0" : "=rm" (flags));
 
@@ -391,6 +391,37 @@ static inline void write_xcr0(uint64_t xcr0)
 static inline void clflush(const void *ptr)
 {
     asm volatile ("clflush %0" :: "m" (*(const char *)ptr));
+}
+
+static inline uint64_t rdpkru(void)
+{
+    uint32_t low, high;
+
+    asm volatile (".byte 0x0f, 0x01, 0xee;"
+                  : "=a" (low), "=d" (high) : "c" (0));
+
+    return ((uint64_t)high << 32) | low;
+}
+
+static inline void wrpkru(uint64_t pkru)
+{
+    asm volatile (".byte 0x0f, 0x01, 0xef;"
+                  :
+                  : "a" ((uint32_t)pkru), "d" ((uint32_t)(pkru >> 32)),
+                    "c" (0));
+}
+
+static inline void flush_tlb(bool global_mappings)
+{
+    unsigned long cr4;
+
+    if ( global_mappings && ((cr4 = read_cr4()) & X86_CR4_PGE) )
+    {
+        write_cr4(cr4 & ~X86_CR4_PGE);
+        write_cr4(cr4);
+    }
+    else
+        write_cr3(read_cr3());
 }
 
 #endif /* XTF_X86_LIB_H */
