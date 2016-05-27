@@ -7,6 +7,8 @@
 
 #define DECL_REG(n)                             \
     union { uint32_t e ## n; unsigned long n; }
+#define _DECL_REG(n)                            \
+    union { uint32_t _e ## n; unsigned long _ ## n; }
 
 struct cpu_regs {
     DECL_REG(bp);
@@ -24,8 +26,8 @@ struct cpu_regs {
     DECL_REG(ip);
     uint16_t cs, _pad1[1];
     DECL_REG(flags);
-    DECL_REG(sp);          /* Won't be valid if stack */
-    uint16_t ss, _pad0[1]; /* switch didn't occur.    */
+    _DECL_REG(sp);          /* Won't be valid if stack */
+    uint16_t _ss, _pad0[1]; /* switch didn't occur.    */
 /* Top of stack. */
 };
 
@@ -33,6 +35,8 @@ struct cpu_regs {
 
 #define DECL_REG(n)                             \
     union { uint64_t r ## n; uint32_t e ## n; unsigned long n; }
+#define _DECL_REG(n)                                                \
+    union { uint64_t _r ## n; uint32_t _e ## n; unsigned long _ ## n; }
 
 struct cpu_regs {
     uint64_t r15;
@@ -58,8 +62,8 @@ struct cpu_regs {
     DECL_REG(ip);
     uint16_t cs, _pad1[3];
     DECL_REG(flags);
-    DECL_REG(sp);
-    uint16_t ss, _pad0[3];
+    _DECL_REG(sp);
+    uint16_t _ss, _pad0[3];
 /* Top of stack. */
 };
 
