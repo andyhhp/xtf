@@ -18,6 +18,7 @@
 uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
+unsigned int x86_family, x86_model, x86_stepping;
 
 const char *environment_description = ENVIRONMENT_DESCRIPTION;
 
@@ -28,7 +29,7 @@ start_info_t *start_info = NULL;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 {
-    unsigned int max, tmp, ebx, ecx, edx;
+    unsigned int max, tmp, eax, ebx, ecx, edx;
 
     cpuid_fn(0, 0, &max, &ebx, &ecx, &edx);
 
@@ -46,9 +47,22 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
         x86_vendor = X86_VENDOR_UNKNOWN;
 
     if ( max >= 1 )
-        cpuid_fn(1, 0, &tmp, &tmp,
+    {
+        cpuid_fn(1, 0, &eax, &tmp,
                  &x86_features[FEATURESET_1c],
                  &x86_features[FEATURESET_1d]);
+
+        x86_stepping = (eax >> 0) & 0xf;
+        x86_model    = (eax >> 4) & 0xf;
+        x86_family   = (eax >> 8) & 0xf;
+
+        if ( (x86_family == 0xf) ||
+             (x86_vendor == X86_VENDOR_INTEL && x86_family == 0x6) )
+            x86_model |= ((eax >> 16) & 0xf) << 4;
+
+        if ( x86_family == 0xf )
+            x86_family += (eax >> 20) & 0xff;
+    }
     if ( max >= 7 )
         cpuid_fn(7, 0, &tmp,
                  &x86_features[FEATURESET_7b0],
