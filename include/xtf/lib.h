@@ -30,6 +30,22 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
 #define BUILD_BUG_ON(cond)                              \
     _Static_assert(!cond, "!(" #cond ")")
 
+#define min(a, b)                                       \
+    ({                                                  \
+        const typeof(a) _a = (a);                       \
+        const typeof(b) _b = (b);                       \
+        (void)(&_a == &_b);                             \
+        _a < _b ? _a : _b;                              \
+    })
+
+#define max(a, b)                                       \
+    ({                                                  \
+        const typeof(a) _a = (a);                       \
+        const typeof(b) _b = (b);                       \
+        (void)(&_a == &_b);                             \
+        _a > _b ? _a : _b;                              \
+    })
+
 void heapsort(void *base, size_t nmemb, size_t size,
               int (*compar)(const void *, const void *),
               void (*swap)(void *, void *));
