@@ -1,9 +1,25 @@
 #ifndef XFT_X86_MSR_INDEX_H
 #define XFT_X86_MSR_INDEX_H
 
-#define MSR_EFER                        0xc0000080 /* Extended Feature register */
-#define _EFER_LME                       8  /* Long mode enable */
-#define EFER_LME                        (1<<_EFER_LME)
+#include <xtf/numbers.h>
+
+#define MSR_EFER                        0xc0000080 /* Extended Feature register. */
+#define _EFER_SCE                       0  /* SYSCALL Enable. */
+#define EFER_SCE                        (_AC(1, L) << _EFER_SCE)
+#define _EFER_LME                       8  /* Long mode enable. */
+#define EFER_LME                        (_AC(1, L) << _EFER_LME)
+#define _EFER_LMA                       10 /* Long mode Active. */
+#define EFER_LMA                        (_AC(1, L) << _EFER_LMA)
+#define _EFER_NXE                       11 /* No-Execute Enable. */
+#define EFER_NXE                        (_AC(1, L) << _EFER_NXE)
+#define _EFER_SVME                      12 /* Secure Virtual Machine Enable. */
+#define EFER_SVME                       (_AC(1, L) << _EFER_SVME)
+#define _EFER_LMSLE                     13 /* Long Mode Segment Limit Enable. */
+#define EFER_LMSLE                      (_AC(1, L) << _EFER_LMSLE)
+#define _EFER_FFXSR                     14 /* Fast FXSAVE/FXRSTOR. */
+#define EFER_FFXSR                      (_AC(1, L) << _EFER_FFXSR)
+#define _EFER_TCE                       15 /* Translation Cache Extension. */
+#define EFER_TCE                        (_AC(1, L) << _EFER_TCE)
 
 #define MSR_FS_BASE                     0xc0000100
 #define MSR_GS_BASE                     0xc0000101
