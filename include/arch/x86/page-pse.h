@@ -36,6 +36,16 @@ static inline unsigned int pse_l2_table_offset(unsigned long va)
     return (va >> PSE_L2_PT_SHIFT) & (PSE_L2_PT_ENTRIES - 1);
 }
 
+static inline uint32_t fold_pse36(uint64_t val)
+{
+    return (val & ~(0x1ffULL << 13)) | ((val & (0x1ffULL << 32)) >> (32 - 13));
+}
+
+static inline uint64_t unfold_pse36(uint32_t val)
+{
+    return (val & ~(0x1ffULL << 13)) | ((val & (0x1ffULL << 13)) << (32 - 13));
+}
+
 #endif /* __ASSEMBLY__ */
 #endif /* XTF_X86_PAGE_PSE_H */
 
