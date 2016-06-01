@@ -301,6 +301,11 @@ static inline void write_cr8(unsigned long cr8)
     asm volatile ("mov %0, %%cr8" :: "r" (cr8));
 }
 
+static inline void invlpg(const void *va)
+{
+    asm volatile ("invlpg (%0)" :: "r" (va));
+}
+
 #endif /* XTF_X86_LIB_H */
 
 /*
