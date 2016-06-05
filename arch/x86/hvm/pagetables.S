@@ -76,6 +76,18 @@ PAGETABLE_START(pae32_l3_identmap)
         .endr
 PAGETABLE_END(pae32_l3_identmap)
 
+
+        /* Aliases of the live tables (PAE or PSE as appropriate). */
+#if CONFIG_PAGING_LEVELS >= 3
+        .set l1_identmap, pae_l1_identmap
+        .set l2_identmap, pae_l2_identmap
+#else
+        .set l1_identmap, pse_l1_identmap
+        .set l2_identmap, pse_l2_identmap
+#endif
+        .global l1_identmap
+        .global l2_identmap
+
 /*
  * Local variables:
  * tab-width: 8

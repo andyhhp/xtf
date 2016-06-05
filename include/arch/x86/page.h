@@ -143,14 +143,22 @@ static inline paddr_t pte_to_paddr(intpte_t pte)
 
 #ifdef CONFIG_HVM
 
-extern uint64_t pae_l1_identmap[PAE_L1_PT_ENTRIES];
-extern uint64_t pae_l2_identmap[4 * PAE_L2_PT_ENTRIES];
-extern uint64_t pae_l3_identmap[PAE_L3_PT_ENTRIES];
-extern uint64_t pae_l4_identmap[PAE_L4_PT_ENTRIES];
-extern uint64_t pae32_l3_identmap[PAE32_L3_ENTRIES];
+extern pae_intpte_t pae_l1_identmap[PAE_L1_PT_ENTRIES];
+extern pae_intpte_t pae_l2_identmap[4 * PAE_L2_PT_ENTRIES];
+extern pae_intpte_t pae_l3_identmap[PAE_L3_PT_ENTRIES];
+extern pae_intpte_t pae_l4_identmap[PAE_L4_PT_ENTRIES];
+extern pae_intpte_t pae32_l3_identmap[PAE32_L3_ENTRIES];
 
-extern uint32_t pse_l1_identmap[PSE_L1_PT_ENTRIES];
-extern uint32_t pse_l2_identmap[PSE_L2_PT_ENTRIES];
+extern pse_intpte_t pse_l1_identmap[PSE_L1_PT_ENTRIES];
+extern pse_intpte_t pse_l2_identmap[PSE_L2_PT_ENTRIES];
+
+/* Aliases of the live tables (PAE or PSE as appropriate). */
+extern intpte_t l1_identmap[L1_PT_ENTRIES];
+#if CONFIG_PAGING_LEVELS >= 3
+extern intpte_t l2_identmap[4 *L2_PT_ENTRIES];
+#else
+extern intpte_t l2_identmap[L2_PT_ENTRIES];
+#endif
 
 #endif /* CONFIG_HVM */
 
