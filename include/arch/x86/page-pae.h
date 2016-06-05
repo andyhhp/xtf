@@ -31,14 +31,22 @@
 typedef uint64_t pae_intpte_t;
 
 static inline unsigned int pae_l1_table_offset(unsigned long va)
-{ return (va >> PAE_L1_PT_SHIFT) & (PAE_L1_PT_ENTRIES - 1); }
+{
+    return (va >> PAE_L1_PT_SHIFT) & (PAE_L1_PT_ENTRIES - 1);
+}
 static inline unsigned int pae_l2_table_offset(unsigned long va)
-{ return (va >> PAE_L2_PT_SHIFT) & (PAE_L2_PT_ENTRIES - 1); }
+{
+    return (va >> PAE_L2_PT_SHIFT) & (PAE_L2_PT_ENTRIES - 1);
+}
 static inline unsigned int pae_l3_table_offset(unsigned long va)
-{ return (va >> PAE_L3_PT_SHIFT) & (PAE_L3_PT_ENTRIES - 1); }
+{
+    return (va >> PAE_L3_PT_SHIFT) & (PAE_L3_PT_ENTRIES - 1);
+}
 #ifdef __x86_64__
 static inline unsigned int pae_l4_table_offset(unsigned long va)
-{ return (va >> PAE_L4_PT_SHIFT) & (PAE_L4_PT_ENTRIES - 1); }
+{
+    return (va >> PAE_L4_PT_SHIFT) & (PAE_L4_PT_ENTRIES - 1);
+}
 #endif /* __x86_64__ */
 
 #endif /* __ASSEMBLY__ */

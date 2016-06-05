@@ -24,9 +24,13 @@
 typedef uint32_t pse_intpte_t;
 
 static inline unsigned int pse_l1_table_offset(unsigned long va)
-{ return (va >> PSE_L1_PT_SHIFT) & (PSE_L1_PT_ENTRIES - 1); }
+{
+    return (va >> PSE_L1_PT_SHIFT) & (PSE_L1_PT_ENTRIES - 1);
+}
 static inline unsigned int pse_l2_table_offset(unsigned long va)
-{ return (va >> PSE_L2_PT_SHIFT) & (PSE_L2_PT_ENTRIES - 1); }
+{
+    return (va >> PSE_L2_PT_SHIFT) & (PSE_L2_PT_ENTRIES - 1);
+}
 
 #endif /* __ASSEMBLY__ */
 #endif /* XTF_X86_PAGE_PSE_H */
