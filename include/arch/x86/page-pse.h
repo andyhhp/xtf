@@ -25,6 +25,7 @@
 
 /** Integer representation of a PTE. */
 typedef uint32_t pse_intpte_t;
+#define PSE_PRIpte "08"PRIx32
 
 static inline unsigned int pse_l1_table_offset(unsigned long va)
 {

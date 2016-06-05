@@ -32,6 +32,7 @@
 
 /** Integer representation of a PTE. */
 typedef uint64_t pae_intpte_t;
+#define PAE_PRIpte "016"PRIx64
 
 static inline unsigned int pae_l1_table_offset(unsigned long va)
 {

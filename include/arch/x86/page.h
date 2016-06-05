@@ -78,6 +78,7 @@
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
 typedef pse_intpte_t intpte_t;
+#define PRIpte PSE_PRIpte
 
 static inline unsigned int l1_table_offset(unsigned long va)
 {
@@ -91,6 +92,7 @@ static inline unsigned int l2_table_offset(unsigned long va)
 #else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
 
 typedef pae_intpte_t intpte_t;
+#define PRIpte PAE_PRIpte
 
 static inline unsigned int l1_table_offset(unsigned long va)
 {
