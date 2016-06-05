@@ -11,6 +11,9 @@
 #define PAGE_SIZE               (_AC(1, L) << PAGE_SHIFT)
 #define PAGE_MASK               (~(PAGE_SIZE - 1))
 
+#define PADDR_BITS              52
+#define PADDR_MASK              ((_AC(1, ULL) << PADDR_BITS) - 1)
+
 #include "page-pae.h"
 #include "page-pse.h"
 
@@ -75,6 +78,12 @@
 
 #ifndef __ASSEMBLY__
 
+/*
+ * Always consider "physical" addresses to be 64bits wide, even in 32bit mode.
+ */
+typedef uint64_t paddr_t;
+#define PRIpaddr "016"PRIx64
+
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
 typedef pse_intpte_t intpte_t;
@@ -125,9 +134,9 @@ static inline unsigned int l4_table_offset(unsigned long va)
 
 #if CONFIG_PAGING_LEVELS > 0
 
-static inline uint64_t pte_to_paddr(intpte_t pte)
+static inline paddr_t pte_to_paddr(intpte_t pte)
 {
-    return pte & 0x000ffffffffff000ULL;
+    return pte & PADDR_MASK & PAGE_MASK;
 }
 
 #endif /* CONFIG_PAGING_LEVELS > 0 */
