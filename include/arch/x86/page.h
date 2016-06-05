@@ -16,6 +16,7 @@
 
 #define PAGE_ORDER_4K           0
 #define PAGE_ORDER_2M           9
+#define PAGE_ORDER_4M           10
 #define PAGE_ORDER_1G           18
 
 #define _PAGE_PRESENT           0x0001
@@ -35,13 +36,23 @@
 
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
+#define PT_ORDER PSE_PT_ORDER
+
 #define L1_PT_SHIFT PSE_L1_PT_SHIFT
 #define L2_PT_SHIFT PSE_L2_PT_SHIFT
 
+#define L1_PT_ENTRIES PSE_L1_PT_ENTRIES
+#define L2_PT_ENTRIES PSE_L2_PT_ENTRIES
+
 #else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
+
+#define PT_ORDER PAE_PT_ORDER
 
 #define L1_PT_SHIFT PAE_L1_PT_SHIFT
 #define L2_PT_SHIFT PAE_L2_PT_SHIFT
+
+#define L1_PT_ENTRIES PAE_L1_PT_ENTRIES
+#define L2_PT_ENTRIES PAE_L2_PT_ENTRIES
 
 #endif /* !CONFIG_PAGING_LEVELS == 2 */
 
@@ -49,11 +60,15 @@
 
 #define L3_PT_SHIFT PAE_L3_PT_SHIFT
 
+#define L3_PT_ENTRIES PAE_L3_PT_ENTRIES
+
 #endif /* CONFIG_PAGING_LEVELS >= 3 */
 
 #if CONFIG_PAGING_LEVELS >= 4 /* PAE Paging */
 
 #define L4_PT_SHIFT PAE_L4_PT_SHIFT
+
+#define L4_PT_ENTRIES PAE_L4_PT_ENTRIES
 
 #endif /* CONFIG_PAGING_LEVELS >= 4 */
 

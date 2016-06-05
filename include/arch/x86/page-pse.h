@@ -9,6 +9,9 @@
 /** PSE pagetable entries are 32 bits wide. */
 #define PSE_PTE_SZ 4
 
+/** PAE pagetables encode 10 bits of index. */
+#define PSE_PT_ORDER 10
+
 /** @{ */
 /** All PSE pagetables contain 1024 entries. */
 #define PSE_L1_PT_ENTRIES (PAGE_SIZE / PSE_PTE_SZ)

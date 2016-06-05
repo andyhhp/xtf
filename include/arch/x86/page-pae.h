@@ -9,6 +9,9 @@
 /** PAE pagetable entries are 64 bits wide. */
 #define PAE_PTE_SZ 8
 
+/** PAE pagetables encode 9 bits of index. */
+#define PAE_PT_ORDER     9
+
 /** @{ */
 /** All PAE pagetables contain 512 entries. */
 #define PAE_L1_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SZ)
