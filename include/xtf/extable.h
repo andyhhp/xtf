@@ -12,6 +12,7 @@
 
 #include <xtf/types.h>
 #include <xtf/asm_macros.h>
+#include <xtf/macro_magic.h>
 
 #ifdef __ASSEMBLY__
 
@@ -45,7 +46,7 @@
  */
 #define _ASM_EXTABLE(fault, fixup)              \
     ".pushsection .ex_table, \"a\";\n"          \
-    _WORD #fault ", " #fixup ", 0;\n"           \
+    _WORD STR(fault) ", " STR(fixup) ", 0;\n"   \
     ".popsection;\n"
 
 /**
@@ -54,9 +55,9 @@
  * @param fixup Fixup address.
  * @param handler Handler to call.
  */
-#define _ASM_EXTABLE_HANDLER(fault, fixup, handler) \
-    ".pushsection .ex_table, \"a\";\n"              \
-    _WORD #fault ", " #fixup ", " #handler ";\n"    \
+#define _ASM_EXTABLE_HANDLER(fault, fixup, handler)             \
+    ".pushsection .ex_table, \"a\";\n"                          \
+    _WORD STR(fault) ", " STR(fixup) ", " STR(handler) ";\n"    \
     ".popsection;\n"
 
 struct cpu_regs;

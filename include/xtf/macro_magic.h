@@ -7,6 +7,16 @@
 #define XTF_MACRO_MAGIC_H
 
 /**
+ * Stringise an expression, expanding preprocessor tokens.
+ *
+ * @param x Expression to stringise.
+ */
+/** @cond */
+#define _STR(x) #x
+/** @endcond */
+#define STR(x) _STR(x)
+
+/**
  * Count the number of varadic arguments provided.
  *
  * <pre>
