@@ -169,8 +169,71 @@ def run_test(test):
     return "ERROR"
 
 
-def run_tests(tests):
+def run_tests(args):
     """ Run tests """
+
+    all_test_info = open_test_info()
+    all_test_names = all_test_info.keys()
+
+    tests = []
+    # Interpret args as a list of tests
+    for arg in args:
+
+        # If arg is a recognised test name, run every environment
+        if arg in all_test_names:
+
+            info = all_test_info[arg]
+
+            for env in info["environments"]:
+                tests.append("test-%s-%s" % (env, arg))
+            continue
+
+        # If arg is a recognised category, run every included test
+        if arg in all_categories:
+
+            for name, info in all_test_info.iteritems():
+
+                if info["category"] == arg:
+
+                    for env in info["environments"]:
+                        tests.append("test-%s-%s" % (env, name))
+            continue
+
+        # If arg is a recognised environment, run every included test
+        if arg in all_environments:
+
+            for name, info in all_test_info.iteritems():
+
+                if arg in info["environments"]:
+                    tests.append("test-%s-%s" % (arg, name))
+            continue
+
+        parts = arg.split('-', 2)
+        parts_len = len(parts)
+
+        # If arg =~ test-$ENV-$NAME
+        if parts_len == 3 and parts[0] == "test":
+
+            # Recognised environment and test name?
+            if parts[1] in all_environments and parts[2] in all_test_names:
+                tests.append(arg)
+                continue
+
+            raise RunnerError("Unrecognised test '%s'" % (arg, ))
+
+        # If arg =~ $ENV-$NAME
+        if parts_len > 0 and parts[0] in all_environments:
+
+            name = "-".join(parts[1:])
+
+            if name in all_test_names:
+                tests.append("test-" + arg)
+                continue
+
+            raise RunnerError("Unrecognised test name '%s'" % (name, ))
+
+        # Otherwise, give up
+        raise RunnerError("Unrecognised test '%s'" % (arg, ))
 
     if not len(tests):
         raise RunnerError("No tests to run")
@@ -179,10 +242,6 @@ def run_tests(tests):
     results = []
 
     for test in tests:
-
-        parts = test.split('-', 2)
-        if len(parts) != 3:
-            raise RunnerError("Unexpected test '%s'" % (test, ))
 
         res = run_test(test)
         if res != "SUCCESS":
@@ -221,6 +280,11 @@ def main():
                   "    Combined test results:\n"
                   "    test-hvm32-example                       SUCCESS\n"
                   "    test-pv64-example                        SUCCESS\n"
+                  "    ./xtf-runner pv-iopl\n"
+                  "      <console ouput>\n"
+                  "    Combined test results:\n"
+                  "    test-pv64-pv-iopl                        SUCCESS\n"
+                  "    test-pv32pae-pv-iopl                     SUCCESS\n"
                   "\n"
                   "  Listing available tests:\n"
                   "    ./xtf-runner --list\n"
