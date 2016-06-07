@@ -10,10 +10,115 @@ Currently assumes the presence and availability of the `xl` toolstack.
 import sys, os, os.path as path
 
 from optparse import OptionParser
-from subprocess import Popen, PIPE, call as subproc_call
+from subprocess import Popen, PIPE, call as subproc_call, check_output
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+
+# All test categories and configurations
+all_categories   = ("special", "functional", "xsa", "utility")
+pv_environments  = ("pv64", "pv32pae")
+hvm_environments = ("hvm64", "hvm32pae", "hvm32pse", "hvm32")
+all_environments = pv_environments + hvm_environments
+
 
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
+
+def open_test_info():
+    """ Open and collate each test-info.json """
+
+    info = {}
+
+    for test in os.listdir("tests"):
+
+        test_info = None
+        test_json = {}
+        try:
+
+            # Ignore directories which don't have a test-info.json inside them
+            try:
+                test_info = open(path.join("tests", test, "test-info.json"))
+            except IOError:
+                continue
+
+            # Ignore tests which have bad JSON
+            try:
+                test_json = json.load(test_info)
+            except ValueError:
+                continue
+
+            # Sanity check JSON fields and types
+            if (not isinstance(test_json.get("name", None), basestring) or
+                not isinstance(test_json.get("category", None), basestring) or
+                not isinstance(test_json.get("environments", None), list)):
+                continue
+
+            # Sanity check JSON values
+            if test_json["name"] != test:
+                continue
+            if test_json["category"] not in all_categories:
+                continue
+            for test_env in test_json["environments"]:
+                if test_env not in all_environments:
+                    continue
+
+            info[test] = test_json
+
+        finally:
+            if test_info:
+                test_info.close()
+
+    return info
+
+
+def list_tests(args):
+    """ List tests """
+
+    cat = tuple(x for x in args if x in all_categories)
+    env = tuple(x for x in args if x in all_environments)
+
+    if "host" in args:
+
+        for line in check_output(['xl', 'info']).splitlines():
+            if not line.startswith("xen_caps"):
+                continue
+
+            host_envs = []
+            caps = line.split()[2:]
+
+            if "xen-3.0-x86_64" in caps:
+                host_envs.append("pv64")
+            if "xen-3.0-x86_32p" in caps:
+                host_envs.append("pv32pae")
+            for cap in caps:
+                if cap.startswith("hvm"):
+                    host_envs.extend(hvm_environments)
+                    break
+
+            env = tuple(host_envs)
+
+    all_test_info = open_test_info()
+
+    for name in sorted(all_test_info.keys()):
+
+        info = all_test_info[name]
+
+        if cat and info["category"] not in cat:
+            continue
+
+        if env:
+            for test_env in info["environments"]:
+                if test_env in env:
+                    break
+            else:
+                continue
+
+        print name
+
 
 def run_test(test):
     """ Run a specific test """
@@ -106,7 +211,7 @@ def main():
     OptionParser.format_epilog = lambda self, formatter: self.epilog
 
     parser = OptionParser(
-        usage = "%prog <TEST>*",
+        usage = "%prog <TEST>* | --list [<FILTER>*]",
         description = "Xen Test Framework enumeration and running tool",
         epilog = ("\n"
                   "Examples:\n"
@@ -116,12 +221,30 @@ def main():
                   "    Combined test results:\n"
                   "    test-hvm32-example                       SUCCESS\n"
                   "    test-pv64-example                        SUCCESS\n"
+                  "\n"
+                  "  Listing available tests:\n"
+                  "    ./xtf-runner --list\n"
+                  "       List all tests\n"
+                  "    ./xtf-runner --list host\n"
+                  "       List all tests applicable for the current host\n"
+                  "    ./xtf-runner --list functional special\n"
+                  "       List all 'functional' or 'special' tests\n"
+                  "    ./xtf-runner --list hvm64\n"
+                  "       List all 'hvm64' tests\n"
                   ),
     )
 
-    _, args = parser.parse_args()
+    parser.add_option("-l", "--list", action = "store_true",
+                      dest = "list_tests",
+                      help = "List available tests, optionally filtered",
+                      )
 
-    return run_tests(args)
+    opts, args = parser.parse_args()
+
+    if opts.list_tests:
+        return list_tests(args)
+    else:
+        return run_tests(args)
 
 
 if __name__ == "__main__":
