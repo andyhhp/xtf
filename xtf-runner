@@ -251,14 +251,15 @@ def run_tests(args):
     if not len(tests):
         raise RunnerError("No tests to run")
 
-    rc = 0
+    rc = all_results.index('SUCCESS')
     results = []
 
     for test in tests:
 
         res = run_test(test)
-        if res != "SUCCESS":
-            rc = 1
+        res_idx = all_results.index(res)
+        if res_idx > rc:
+            rc = res_idx
 
         results.append(res)
 
@@ -267,7 +268,7 @@ def run_tests(args):
     for test, res in zip(tests, results):
         print "%-40s %s" % (test, res)
 
-    return rc
+    return exit_code(all_results[rc])
 
 
 def main():
@@ -308,6 +309,13 @@ def main():
                   "       List all 'functional' or 'special' tests\n"
                   "    ./xtf-runner --list hvm64\n"
                   "       List all 'hvm64' tests\n"
+                  "\n"
+                  "  Exit code for this script:\n"
+                  "    0:    everything is ok\n"
+                  "    1,2:  reserved for python interpreter\n"
+                  "    3:    test(s) are skipped\n"
+                  "    4:    test(s) report error\n"
+                  "    5:    test(s) report failure\n"
                   ),
     )
 
