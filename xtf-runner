@@ -17,6 +17,9 @@ try:
 except ImportError:
     import simplejson as json
 
+# All results of a test, keep in sync with C code report.h.
+# Note that warning is not a result on its own.
+all_results = ('SUCCESS', 'SKIP', 'ERROR', 'FAILURE')
 
 # All test categories and configurations
 all_categories   = ("special", "functional", "xsa", "utility")
@@ -161,7 +164,7 @@ def run_test(test):
     if not "Test result:" in test_result:
         return "ERROR"
 
-    for res in ("SUCCESS", "SKIP", "FAILURE"):
+    for res in all_results:
 
         if res in test_result:
             return res
