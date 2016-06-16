@@ -65,7 +65,7 @@ unsigned long cpu_regs_sp(const struct cpu_regs *regs)
     if ( (regs->cs & 3) > (cs & 3) )
         return regs->_sp;
 
-    return (unsigned long)regs + offsetof(struct cpu_regs, _sp);
+    return _u(regs) + offsetof(struct cpu_regs, _sp);
 #endif
 }
 

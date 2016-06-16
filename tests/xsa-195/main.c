@@ -47,7 +47,7 @@ void test_main(void)
      * A vulnerable Xen mis-calculates the memory adjustment, meaning that it
      * will attempt to read from some other address.
      */
-    unsigned long va = (unsigned long)mem - mem_adjust;
+    unsigned long va = _u(mem) - mem_adjust;
 
     /*
      * Make all of the virtual address space readable, so Xen's data fetch

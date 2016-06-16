@@ -74,8 +74,7 @@ void test_main(void)
 
     user_desc ldt[1] = { gdt[__KERN_DS >> 3] };
 
-    gdt[GDTE_AVAIL0] =
-        (typeof(*gdt))INIT_GDTE((unsigned long)ldt, sizeof(ldt) - 1, 0x82);
+    gdt[GDTE_AVAIL0] = (typeof(*gdt))INIT_GDTE(_u(ldt), sizeof(ldt) - 1, 0x82);
     barrier();
 
     lldt(GDTE_AVAIL0 << 3);

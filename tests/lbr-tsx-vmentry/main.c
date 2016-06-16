@@ -65,8 +65,7 @@ void test_main(void)
         return xtf_skip("Skip: MSR_DEBUGCTL.LBR not available\n");
 
     /* Construct a function pointer to int3_stub() via its upper alias. */
-    void (*int3_stub_alias)(void) =
-        _p((unsigned long)&int3_stub | 0xffff800000000000);
+    void (*int3_stub_alias)(void) = _p(_u(int3_stub) | 0xffff800000000000);
 
     int3_stub_alias();
 

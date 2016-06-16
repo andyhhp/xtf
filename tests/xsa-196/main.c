@@ -83,7 +83,7 @@ void test_main(void)
 
     struct xtf_idte idte =
     {
-        .addr = (unsigned long)custom_doublefault_handler,
+        .addr = _u(custom_doublefault_handler),
         .cs   = __KERN_CS,
         .dpl  = 0,
     };

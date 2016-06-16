@@ -50,8 +50,7 @@ int memcmpzero(const void *buf, size_t sz)
 void test_main(void)
 {
     bool leak_detected = false;
-    uint32_t *size = _p(ROUNDUP((unsigned long)&_end[0],
-                                sizeof(unsigned long)));
+    uint32_t *size = _p(ROUNDUP(_u(_end), sizeof(unsigned long)));
     Elf32_Ehdr *ehdr = _p(size) + 4;
 
     if ( !(ehdr->e_ident[EI_MAG0] == ELFMAG0 &&

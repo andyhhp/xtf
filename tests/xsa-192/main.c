@@ -48,7 +48,7 @@ hw_tss vm86_tss __aligned(16) =
     .cs     = 0,
     .ss     = 0,
 
-    .esp0   = (unsigned long)&boot_stack[2 * PAGE_SIZE],
+    .esp0   = _u(&boot_stack[2 * PAGE_SIZE]),
     .ss0    = __KERN_DS,
     .ldtr   = 0,
 
@@ -81,7 +81,7 @@ void test_main(void)
 {
     struct xtf_idte idte =
     {
-        .addr = (unsigned long)ret_from_vm86,
+        .addr = _u(ret_from_vm86),
         .cs   = __KERN_CS,
         .dpl  = 3,
     };
@@ -90,8 +90,7 @@ void test_main(void)
     xtf_set_idte(X86_VEC_AVAIL, &idte);
 
     /* Create the vm86 TSS descriptor. */
-    gdt[GDTE_AVAIL0] =
-        (user_desc)INIT_GDTE((unsigned long)&vm86_tss, 0x67, 0x89);
+    gdt[GDTE_AVAIL0] = (user_desc)INIT_GDTE(_u(&vm86_tss), 0x67, 0x89);
 
     /* Copy a stub to somewhere vm86 can actually reach. */
     uint8_t insn_buf[] = { 0xcd, X86_VEC_AVAIL }; /* `int $X86_VEC_AVAIL` */

@@ -34,27 +34,27 @@ void entry_ret_to_kernel(void);
 
 struct xen_trap_info pv_default_trap_info[] =
 {
-    { X86_EXC_DE,  0|4, __KERN_CS, (unsigned long)&entry_DE  },
-    { X86_EXC_DB,  0|4, __KERN_CS, (unsigned long)&entry_DB  },
-    { X86_EXC_NMI, 0|4, __KERN_CS, (unsigned long)&entry_NMI },
-    { X86_EXC_BP,  3|4, __KERN_CS, (unsigned long)&entry_BP  },
-    { X86_EXC_OF,  3|4, __KERN_CS, (unsigned long)&entry_OF  },
-    { X86_EXC_BR,  0|4, __KERN_CS, (unsigned long)&entry_BR  },
-    { X86_EXC_UD,  0|4, __KERN_CS, (unsigned long)&entry_UD  },
-    { X86_EXC_NM,  0|4, __KERN_CS, (unsigned long)&entry_NM  },
-    { X86_EXC_DF,  0|4, __KERN_CS, (unsigned long)&entry_DF  },
-    { X86_EXC_TS,  0|4, __KERN_CS, (unsigned long)&entry_TS  },
-    { X86_EXC_NP,  0|4, __KERN_CS, (unsigned long)&entry_NP  },
-    { X86_EXC_SS,  0|4, __KERN_CS, (unsigned long)&entry_SS  },
-    { X86_EXC_GP,  0|4, __KERN_CS, (unsigned long)&entry_GP  },
-    { X86_EXC_PF,  0|4, __KERN_CS, (unsigned long)&entry_PF  },
-    { X86_EXC_MF,  0|4, __KERN_CS, (unsigned long)&entry_MF  },
-    { X86_EXC_AC,  0|4, __KERN_CS, (unsigned long)&entry_AC  },
-    { X86_EXC_MC,  0|4, __KERN_CS, (unsigned long)&entry_MC  },
-    { X86_EXC_XM,  0|4, __KERN_CS, (unsigned long)&entry_XM  },
-    { X86_EXC_VE,  0|4, __KERN_CS, (unsigned long)&entry_VE  },
+    { X86_EXC_DE,  0|4, __KERN_CS, _u(entry_DE)  },
+    { X86_EXC_DB,  0|4, __KERN_CS, _u(entry_DB)  },
+    { X86_EXC_NMI, 0|4, __KERN_CS, _u(entry_NMI) },
+    { X86_EXC_BP,  3|4, __KERN_CS, _u(entry_BP)  },
+    { X86_EXC_OF,  3|4, __KERN_CS, _u(entry_OF)  },
+    { X86_EXC_BR,  0|4, __KERN_CS, _u(entry_BR)  },
+    { X86_EXC_UD,  0|4, __KERN_CS, _u(entry_UD)  },
+    { X86_EXC_NM,  0|4, __KERN_CS, _u(entry_NM)  },
+    { X86_EXC_DF,  0|4, __KERN_CS, _u(entry_DF)  },
+    { X86_EXC_TS,  0|4, __KERN_CS, _u(entry_TS)  },
+    { X86_EXC_NP,  0|4, __KERN_CS, _u(entry_NP)  },
+    { X86_EXC_SS,  0|4, __KERN_CS, _u(entry_SS)  },
+    { X86_EXC_GP,  0|4, __KERN_CS, _u(entry_GP)  },
+    { X86_EXC_PF,  0|4, __KERN_CS, _u(entry_PF)  },
+    { X86_EXC_MF,  0|4, __KERN_CS, _u(entry_MF)  },
+    { X86_EXC_AC,  0|4, __KERN_CS, _u(entry_AC)  },
+    { X86_EXC_MC,  0|4, __KERN_CS, _u(entry_MC)  },
+    { X86_EXC_XM,  0|4, __KERN_CS, _u(entry_XM)  },
+    { X86_EXC_VE,  0|4, __KERN_CS, _u(entry_VE)  },
 
-    { X86_VEC_RET2KERN, 3|4, __KERN_CS, (unsigned long)&entry_ret_to_kernel },
+    { X86_VEC_RET2KERN, 3|4, __KERN_CS, _u(entry_ret_to_kernel) },
 
     { 0, 0, 0, 0 }, /* Sentinel. */
 };
@@ -224,8 +224,9 @@ void arch_init_traps(void)
             panic("Unable to remap user_stack with _PAGE_USER\n");
 
         extern const char __start_user_text[], __end_user_text[];
-        unsigned long va = (unsigned long)__start_user_text;
-        while ( va < (unsigned long)__end_user_text )
+        unsigned long va = _u(__start_user_text);
+
+        while ( va < _u(__end_user_text) )
         {
             nl1e = pte_from_virt(_p(va), PF_SYM(AD, U, RW, P));
 

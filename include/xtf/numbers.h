@@ -44,6 +44,11 @@
  */
 #define _p(v) ((void*)(unsigned long)(v))
 
+/**
+ * Express an arbitrary value @p v as unsigned long.
+ */
+#define _u(v) ((unsigned long)(v))
+
 #endif /* !__ASSEMBLY__ */
 #endif /* XTF_NUMBERS_H */
 

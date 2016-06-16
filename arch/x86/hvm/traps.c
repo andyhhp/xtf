@@ -33,13 +33,13 @@ hw_tss tss __aligned(16) =
 {
 #if defined(__i386__)
 
-    .esp0 = (unsigned long)&boot_stack[2 * PAGE_SIZE],
+    .esp0 = _u(&boot_stack[2 * PAGE_SIZE]),
     .ss0  = __KERN_DS,
 
 #elif defined(__x86_64__)
 
-    .rsp0 = (unsigned long)&boot_stack[2 * PAGE_SIZE],
-    .ist[0] = (unsigned long)&boot_stack[3 * PAGE_SIZE],
+    .rsp0 =   _u(&boot_stack[2 * PAGE_SIZE]),
+    .ist[0] = _u(&boot_stack[3 * PAGE_SIZE]),
 
 #endif
 
@@ -49,17 +49,17 @@ hw_tss tss __aligned(16) =
 #if defined(__i386__)
 static hw_tss tss_DF __aligned(16) =
 {
-    .esp  = (unsigned long)&boot_stack[3 * PAGE_SIZE],
+    .esp  = _u(&boot_stack[3 * PAGE_SIZE]),
     .ss   = __KERN_DS,
     .ds   = __KERN_DS,
     .es   = __KERN_DS,
     .fs   = __KERN_DS,
     .gs   = __KERN_DS,
 
-    .eip  = (unsigned long)&entry_DF,
+    .eip  = _u(entry_DF),
     .cs   = __KERN_CS,
 
-    .cr3  = (unsigned long)&cr3_target,
+    .cr3  = _u(cr3_target),
 
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
@@ -97,21 +97,20 @@ void pack_gate64(struct seg_gate64 *gate, unsigned type, uint64_t func,
 static void setup_gate(unsigned int entry, void *addr, unsigned int dpl)
 {
 #if defined(__i386__)
-    pack_gate32(&idt[entry], 14, (unsigned long)addr, dpl, __KERN_CS);
+    pack_gate32(&idt[entry], 14, _u(addr), dpl, __KERN_CS);
 #elif defined(__x86_64__)
-    pack_gate64(&idt[entry], 14, (unsigned long)addr, dpl, 0, __KERN_CS);
+    pack_gate64(&idt[entry], 14, _u(addr), dpl, 0, __KERN_CS);
 #endif
 }
 
 static void setup_doublefault(void)
 {
 #if defined(__i386__)
-    gdt[GDTE_TSS_DF] =
-        (typeof(*gdt))INIT_GDTE((unsigned long)&tss_DF, 0x67, 0x89);
+    gdt[GDTE_TSS_DF] = (typeof(*gdt))INIT_GDTE(_u(&tss_DF), 0x67, 0x89);
 
     pack_gate32(&idt[X86_EXC_DF], 5, 0, 0, GDTE_TSS_DF * 8);
 #elif defined(__x86_64__)
-    pack_gate64(&idt[X86_EXC_DF], 14, (unsigned long)entry_DF, 0, 1, __KERN_CS);
+    pack_gate64(&idt[X86_EXC_DF], 14, _u(entry_DF), 0, 1, __KERN_CS);
 #endif
 }
 
@@ -152,7 +151,7 @@ void arch_init_traps(void)
 
     lidt(&idt_ptr);
 
-    gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE((unsigned long)&tss, 0x67, 0x89);
+    gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE(_u(&tss), 0x67, 0x89);
     ltr(GDTE_TSS * 8);
 
     /*
@@ -177,7 +176,7 @@ void arch_init_traps(void)
         for ( gfn = virt_to_gfn(__start_user_text); gfn < end; ++gfn )
             l1_identmap[gfn] |= _PAGE_USER;
 
-        write_cr3((unsigned long)&cr3_target);
+        write_cr3(_u(cr3_target));
     }
 }
 

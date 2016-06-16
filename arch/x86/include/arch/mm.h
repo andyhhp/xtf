@@ -38,7 +38,7 @@ static inline void *pfn_to_virt(unsigned long pfn)
 
 static inline unsigned long virt_to_pfn(const void *va)
 {
-    return ((unsigned long)va) >> PAGE_SHIFT;
+    return _u(va) >> PAGE_SHIFT;
 }
 
 #if defined(CONFIG_PV)

@@ -1,3 +1,5 @@
+#include <xtf/numbers.h>
+
 #include <arch/desc.h>
 #include <arch/segment.h>
 #include <arch/symbolic-const.h>
@@ -19,7 +21,7 @@ user_desc gdt[NR_GDT_ENTRIES] =
 desc_ptr gdt_ptr =
 {
     .limit = sizeof(gdt) - 1,
-    .base = (unsigned long)&gdt,
+    .base = _u(&gdt),
 };
 
 #if defined(CONFIG_HVM)
@@ -29,7 +31,7 @@ gate_desc idt[256] = { };
 desc_ptr idt_ptr =
 {
     .limit = sizeof(idt) - 1,
-    .base = (unsigned long)&idt,
+    .base = _u(&idt),
 };
 
 #endif

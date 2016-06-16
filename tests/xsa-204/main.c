@@ -67,7 +67,7 @@ void test_main(void)
     /* Set up the MSRs. */
     wrmsr(MSR_STAR, ((((uint64_t)GDTE_AVAIL0 * 8 + 0) << 32) |
                      (((uint64_t)GDTE_AVAIL2 * 8 + 3) << 48)));
-    wrmsr(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);
+    wrmsr(MSR_LSTAR, _u(entry_SYSCALL_64));
     wrmsr(MSR_FMASK, X86_EFLAGS_TF);
 
     xtf_exlog_start();

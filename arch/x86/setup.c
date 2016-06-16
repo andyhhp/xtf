@@ -130,7 +130,7 @@ static void init_hypercalls(void)
             panic("Unable to locate Xen CPUID leaves\n");
 
         cpuid(base + 2, &eax, &ebx, &ecx, &edx);
-        wrmsr(ebx, (unsigned long)&hypercall_page);
+        wrmsr(ebx, _u(hypercall_page));
         barrier();
     }
 

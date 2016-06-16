@@ -269,7 +269,7 @@ static void test_no_fault(void)
     printk("Testing 'invlpg' in normally-faulting conditions\n");
 
     printk("  Test: Mapped address\n");
-    invlpg_checked((unsigned long)&test_main);
+    invlpg_checked(_u(test_main));
 
     printk("  Test: Unmapped address\n");
     invlpg_checked(0);

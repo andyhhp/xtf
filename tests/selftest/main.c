@@ -95,9 +95,7 @@ static void test_exlog(void)
 
     /* Check that one entry has now been logged. */
     if ( !check_nr_entries(1) ||
-         !check_exlog_entry(0, __KERN_CS,
-                            (unsigned long)&label_test_exlog_int3,
-                            X86_EXC_BP, 0) )
+         !check_exlog_entry(0, __KERN_CS, _u(label_test_exlog_int3), X86_EXC_BP, 0) )
         goto out;
 
     asm volatile ("label_test_exlog_ud2a: ud2a; 1:"
@@ -105,9 +103,7 @@ static void test_exlog(void)
 
     /* Check that two entries have now been logged. */
     if ( !check_nr_entries(2) ||
-         !check_exlog_entry(1, __KERN_CS,
-                            (unsigned long)&label_test_exlog_ud2a,
-                            X86_EXC_UD, 0) )
+         !check_exlog_entry(1, __KERN_CS, _u(label_test_exlog_ud2a), X86_EXC_UD, 0) )
         goto out;
 
     xtf_exlog_reset();
@@ -188,9 +184,7 @@ static void test_NULL_unmapped(void)
                   : "=q" (tmp) :: "memory");
 
     if ( check_nr_entries(1) )
-        check_exlog_entry(0, __KERN_CS,
-                          (unsigned long)&label_test_NULL_unmapped,
-                          X86_EXC_PF, 0);
+        check_exlog_entry(0, __KERN_CS, _u(label_test_NULL_unmapped), X86_EXC_PF, 0);
 
     xtf_exlog_stop();
 }
@@ -206,7 +200,7 @@ static bool local_unhandled_exception_hook(struct cpu_regs *regs)
         return false;
     }
 
-    regs->ip = (unsigned long)hook_fixup;
+    regs->ip = _u(hook_fixup);
     return true;
 }
 
@@ -266,7 +260,7 @@ static void test_custom_idte(void)
 {
     struct xtf_idte idte =
         {
-            .addr = (unsigned long)test_idte_handler,
+            .addr = _u(test_idte_handler),
             /* PV guests need DPL1, HVM need DPL0. */
             .dpl = IS_DEFINED(CONFIG_PV) ? 1 : 0,
             .cs = __KERN_CS,

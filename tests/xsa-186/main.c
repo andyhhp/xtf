@@ -81,7 +81,7 @@ void test_main(void)
 {
     struct xtf_idte idte =
     {
-        .addr = (unsigned long)test_int_handler,
+        .addr = _u(test_int_handler),
         .cs = __KERN_CS,
     };
 
