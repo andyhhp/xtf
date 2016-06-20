@@ -41,5 +41,7 @@ Coveres XSA-106 and XSA-156.
 
 @subpage test-cpuid - Print CPUID information.
 
+@subpage test-fep - Test availability of HVM Forced Emulation Prefix.
+
 @subpage test-msr - Print MSR information.
 */
