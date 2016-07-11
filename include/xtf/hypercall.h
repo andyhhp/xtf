@@ -45,6 +45,15 @@ static inline long hypercall_set_trap_table(const struct xen_trap_info *ti)
     return HYPERCALL1(long, __HYPERVISOR_set_trap_table, ti);
 }
 
+static inline long hypercall_mmu_update(const mmu_update_t reqs[],
+                                        unsigned int count,
+                                        unsigned int *done,
+                                        unsigned int foreigndom)
+{
+    return HYPERCALL4(long, __HYPERVISOR_mmu_update,
+                      reqs, count, done, foreigndom);
+}
+
 static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
 {
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);

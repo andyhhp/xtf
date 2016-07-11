@@ -122,6 +122,18 @@ struct start_info {
 typedef struct start_info start_info_t;
 #endif
 
+/* MMU UPDATE operations */
+#ifndef __ASSEMBLY__
+struct mmu_update {
+#define MMU_NORMAL_PT_UPDATE      0 /* checked '*ptr = val'. ptr is MA.      */
+#define MMU_MACHPHYS_UPDATE       1 /* ptr = MA of frame to modify entry for */
+#define MMU_PT_UPDATE_PRESERVE_AD 2 /* atomically: *ptr = val | (*ptr&(A|D)) */
+    uint64_t ptr;       /* Machine address of PTE. */
+    uint64_t val;       /* New contents of PTE.    */
+};
+typedef struct mmu_update mmu_update_t;
+#endif
+
 /*
  * MMU EXTENDED OPERATIONS
  *
