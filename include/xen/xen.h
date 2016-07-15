@@ -240,6 +240,21 @@ struct mmuext_op {
 typedef struct mmuext_op mmuext_op_t;
 #endif
 
+/* These are passed as 'flags' to update_va_mapping. They can be ORed. */
+/* When specifying UVMF_MULTI, also OR in a pointer to a CPU bitmap.   */
+/* UVMF_LOCAL is merely UVMF_MULTI with a NULL bitmap pointer.         */
+#ifndef __ASSEMBLY__
+enum XEN_UVMF {
+    UVMF_NONE             = 0 << 0, /* No flushing at all.   */
+    UVMF_TLB_FLUSH        = 1 << 0, /* Flush entire TLB(s).  */
+    UVMF_INVLPG           = 2 << 0, /* Flush only one entry. */
+    UVMF_FLUSHTYPE_MASK   = 3 << 0,
+    UVMF_MULTI            = 0 << 2, /* Flush subset of TLBs. */
+    UVMF_LOCAL            = 0 << 2, /* Flush local TLB.      */
+    UVMF_ALL              = 1 << 2, /* Flush all TLBs.       */
+};
+#endif
+
 #endif /* XEN_PUBLIC_XEN_H */
 
 /*

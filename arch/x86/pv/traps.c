@@ -75,7 +75,7 @@ void arch_init_traps(void)
     write_gs(__USER_DS);
 
     /* Unmap page at 0 to catch errors with NULL pointers. */
-    rc = hypercall_update_va_mapping(NULL, 0, 2);
+    rc = hypercall_update_va_mapping(NULL, 0, UVMF_INVLPG);
     if ( rc )
         panic("Failed to unmap page at NULL: %d\n", rc);
 
@@ -148,7 +148,8 @@ void arch_init_traps(void)
 
         if ( !(l1[i1] & _PAGE_USER) )
         {
-            rc = hypercall_update_va_mapping(_p(va), l1[i1] | _PAGE_USER, 2);
+            rc = hypercall_update_va_mapping(_p(va), l1[i1] | _PAGE_USER,
+                                             UVMF_INVLPG);
             if ( rc )
                 panic("update_va_mapping(%p, 0x%016"PRIx64") failed: %d\n",
                       _p(va), l1[i1] | _PAGE_USER, rc);

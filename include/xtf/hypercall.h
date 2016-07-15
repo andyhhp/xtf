@@ -70,7 +70,7 @@ static inline long hypercall_xen_version(unsigned cmd, void *arg)
 }
 
 static inline long hypercall_update_va_mapping(void *va, uint64_t npte,
-                                               unsigned int flags)
+                                               enum XEN_UVMF flags)
 {
 #ifdef __x86_64__
     return HYPERCALL3(long, __HYPERVISOR_update_va_mapping, va, npte, flags);
