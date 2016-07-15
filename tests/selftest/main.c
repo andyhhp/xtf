@@ -11,6 +11,7 @@
  */
 #include <xtf.h>
 
+#include <arch/x86/idt.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 
@@ -245,6 +246,52 @@ static void test_extable_handler(void)
         xtf_failure("Fail: Custom handler didn't run\n");
 }
 
+void test_idte_handler(void);
+asm ("test_idte_handler:;"
+#if defined (CONFIG_PV) && defined (CONFIG_64BIT)
+     "pop %rcx; pop %r11;"
+#endif
+     "mov $0x1e51c0de, %eax;"
+#if defined (CONFIG_HVM)
+#ifdef __x86_64__
+     "rex64 "
+#endif
+     "iret;"
+#else /* CONFIG_HVM */
+#ifdef __x86_64__
+     "push $0;"
+#endif
+     "jmp HYPERCALL_iret;"
+#endif
+    );
+
+static void test_custom_idte(void)
+{
+    struct xtf_idte idte =
+        {
+            .addr = (unsigned long)test_idte_handler,
+            /* PV guests need DPL1, HVM need DPL0. */
+            .dpl = IS_DEFINED(CONFIG_PV) ? 1 : 0,
+            .cs = __KERN_CS,
+        };
+
+    printk("Test: Custom IDT entry\n");
+
+    int rc = xtf_set_idte(X86_VEC_AVAIL, &idte);
+
+    if ( rc )
+        return xtf_failure("Fail: xtf_set_idte() returned %d\n", rc);
+
+    unsigned int res;
+    asm volatile ("int $%c[vec]"
+                  : "=a" (res)
+                  : "0" (0),
+                    [vec] "i" (X86_VEC_AVAIL));
+
+    if ( res != 0x1e51c0de )
+        xtf_failure("Fail: Unexpected result %#x\n", res);
+};
+
 void test_main(void)
 {
     printk("XTF Selftests\n");
@@ -257,6 +304,7 @@ void test_main(void)
         test_NULL_unmapped();
     test_unhandled_exception_hook();
     test_extable_handler();
+    test_custom_idte();
 
     xtf_success(NULL);
 }

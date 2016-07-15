@@ -59,6 +59,17 @@ struct xen_trap_info pv_default_trap_info[] =
     { 0, 0, 0, 0 }, /* Sentinel. */
 };
 
+int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
+{
+    struct xen_trap_info ti[2] =
+    {
+        { vector, idte->dpl | 4, idte->cs, idte->addr },
+        { 0, 0, 0, 0 }, /* Sentinel. */
+    };
+
+    return hypercall_set_trap_table(ti);
+}
+
 #ifdef __i386__
 static bool __used ex_pf_user(struct cpu_regs *regs,
                               const struct extable_entry *ex)

@@ -82,6 +82,17 @@ static void setup_gate(unsigned int entry, void *addr, unsigned int dpl)
 #endif
 }
 
+int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
+{
+#if defined(__i386__)
+    pack_gate32(&idt[vector], 14, idte->addr, idte->dpl, idte->cs);
+#elif defined(__x86_64__)
+    pack_gate64(&idt[vector], 14, idte->addr, idte->dpl, 0, idte->cs);
+#endif
+
+    return 0;
+}
+
 void arch_init_traps(void)
 {
     setup_gate(X86_EXC_DE,  &entry_DE,  0);

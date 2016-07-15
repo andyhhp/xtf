@@ -14,6 +14,36 @@
  */
 #define X86_VEC_RET2KERN 0x20
 
+/**
+ * Available for test use.
+ */
+#define X86_VEC_AVAIL    0x21
+
+
+#ifndef __ASSEMBLY__
+
+/** A guest agnostic represention of IDT information. */
+struct xtf_idte
+{
+    unsigned long addr;
+    unsigned int cs, dpl;
+};
+
+/**
+ * Set up an IDT Entry, in a guest agnostic way.
+ *
+ * Construct an IDT Entry at the specified @p vector, using configuration
+ * provided in @p idte.
+ *
+ * @param vector Vector to set up.
+ * @param idte Details to set up.
+ * @returns 0 for HVM guests, hypercall result for PV guests.
+ */
+int xtf_set_idte(unsigned int vector,
+                 struct xtf_idte *idte);
+
+#endif /* __ASSEMBLY__ */
+
 #endif /* XTF_X86_IDT_H */
 
 /*
