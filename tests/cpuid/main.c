@@ -7,7 +7,7 @@
  * Prints all CPUID information visible to the guest.  PV guests dump both
  * native and emulated CPUID.
  *
- * @sa tests/cpuid/main.c
+ * @see tests/cpuid/main.c
  */
 #include <xtf.h>
 

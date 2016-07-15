@@ -36,7 +36,7 @@
  *    kernel to have an cpl of 0, and the shadowed IOPL will be updated from
  *    the contents of iret frame during an iret hypercall.
  *
- * @sa tests/pv-iopl/main.c
+ * @see tests/pv-iopl/main.c
  */
 #include <xtf.h>
 

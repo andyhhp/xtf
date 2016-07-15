@@ -18,7 +18,7 @@
  * shadow paging implementation, but can identify a buggy shadow paging
  * implementation.
  *
- * @sa tests/xsa-173/main.c
+ * @see tests/xsa-173/main.c
  */
 #include <xtf.h>
 

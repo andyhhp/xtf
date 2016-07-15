@@ -23,7 +23,7 @@
  * host crash.  If Xen is not vulnerable, the hypercall should fail with
  * -EINVAL.
  *
- * @sa tests/xsa-167/main.c
+ * @see tests/xsa-167/main.c
  */
 #include <xtf.h>
 

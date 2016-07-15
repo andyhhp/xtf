@@ -27,7 +27,7 @@
  * with a @#GP fault.  If not, the test will exit cleanly.  The test is unable
  * to distinguish between a fixed Xen and a test misconfiguration.
  *
- * @sa tests/xsa-168/main.c
+ * @see tests/xsa-168/main.c
  */
 #include <xtf.h>
 

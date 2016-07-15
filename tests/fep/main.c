@@ -9,7 +9,7 @@
  *
  * Returns SUCCESS if FEP is available, FAILURE if not.
  *
- * @sa tests/fep/main.c
+ * @see tests/fep/main.c
  */
 #include <xtf.h>
 

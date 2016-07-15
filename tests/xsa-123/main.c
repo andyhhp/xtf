@@ -25,7 +25,7 @@
  * the x86 instruction emulator.  If the destination register doesn't match
  * the source register, hypervisor memory corruption has occurred.
  *
- * @sa tests/xsa-123/main.c
+ * @see tests/xsa-123/main.c
  */
 #include <xtf.h>
 

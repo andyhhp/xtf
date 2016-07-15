@@ -18,7 +18,7 @@
  * success if it is the first vcpu to run on a "fresh" pcpu after host reboot.
  * For added reliability, pin the PoC to a specific pcpu and run it twice.
  *
- * @sa tests/xsa-122/main.c
+ * @see tests/xsa-122/main.c
  */
 #include <xtf.h>
 

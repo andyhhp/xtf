@@ -9,7 +9,7 @@
  * @warning As this probes all MSR indicies, it can cause substantial logspam
  * in Xen from extable fixup, depending on log level.
  *
- * @sa tests/msr/main.c
+ * @see tests/msr/main.c
  */
 #include <xtf.h>
 

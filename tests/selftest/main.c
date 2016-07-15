@@ -7,7 +7,7 @@
  * Sanity tests for the framework environment and functionality.  Failure of
  * these tests tend to suggest bugs with the framework itself.
  *
- * @sa tests/selftest/main.c
+ * @see tests/selftest/main.c
  */
 #include <xtf.h>
 

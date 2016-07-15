@@ -6,7 +6,7 @@
  *
  * A Hello World XTF testcase.
  *
- * @sa tests/example/main.c
+ * @see tests/example/main.c
  */
 #include <xtf.h>
 

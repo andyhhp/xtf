@@ -81,7 +81,7 @@
  * @todo Come up with some sensible way of running this test in both shadow
  * and hap mode.
  *
- * @sa tests/invlpg/main.c
+ * @see tests/invlpg/main.c
  */
 #include <xtf.h>
 

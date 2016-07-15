@@ -88,7 +88,7 @@ cat <<EOF
  *
  * @page test-$NAME TODO
  *
- * @sa tests/$NAME/main.c
+ * @see tests/$NAME/main.c
  */
 #include <xtf.h>
 
