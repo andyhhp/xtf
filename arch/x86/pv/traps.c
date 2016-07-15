@@ -3,6 +3,7 @@
 #include <xtf/hypercall.h>
 #include <xtf/test.h>
 
+#include <arch/x86/idt.h>
 #include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
@@ -53,7 +54,7 @@ struct xen_trap_info pv_default_trap_info[] =
     { X86_EXC_XM,  0|4, __KERN_CS, (unsigned long)&entry_XM  },
     { X86_EXC_VE,  0|4, __KERN_CS, (unsigned long)&entry_VE  },
 
-    { 0x20, 3|4, __KERN_CS, (unsigned long)&entry_ret_to_kernel },
+    { X86_VEC_RET2KERN, 3|4, __KERN_CS, (unsigned long)&entry_ret_to_kernel },
 
     { 0, 0, 0, 0 }, /* Sentinel. */
 };

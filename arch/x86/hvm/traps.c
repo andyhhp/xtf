@@ -1,6 +1,7 @@
 #include <xtf/traps.h>
 #include <xtf/lib.h>
 
+#include <arch/x86/idt.h>
 #include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/desc.h>
@@ -103,7 +104,7 @@ void arch_init_traps(void)
     setup_gate(X86_EXC_XM,  &entry_XM,  0);
     setup_gate(X86_EXC_VE,  &entry_VE,  0);
 
-    setup_gate(0x20, &entry_ret_to_kernel, 3);
+    setup_gate(X86_VEC_RET2KERN, &entry_ret_to_kernel, 3);
 
     asm volatile ("lidt idt_ptr");
 

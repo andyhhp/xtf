@@ -1,3 +1,4 @@
+#include <arch/x86/idt.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 #include <xtf/asm_macros.h>
@@ -100,7 +101,7 @@ handle_exception:
 ENDFUNC(handle_exception)
 
 
-ENTRY(entry_ret_to_kernel)      /* int $0x20 (return to kernel) */
+ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
         env_ADJUST_FRAME
 
         mov 0*8(%rsp), %rax     /* Stash %rip from iret frame */
@@ -127,7 +128,7 @@ ENTRY(exec_user)                /* void (*fn)(void) */
 1:
         call *%rdi              /* fn() */
 
-        int $0x20               /* Return to kernel privilege. */
+        int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
         ret
 
 ENDFUNC(exec_user)
