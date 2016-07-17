@@ -2,6 +2,7 @@
 #define XTF_LIB_H
 
 #include <xtf/compiler.h>
+#include <xtf/console.h>
 #include <xtf/types.h>
 
 #if defined(__i386__)

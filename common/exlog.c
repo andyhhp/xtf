@@ -1,5 +1,4 @@
 #include <xtf/lib.h>
-#include <xtf/console.h>
 #include <xtf/exlog.h>
 #include <xtf/numbers.h>
 

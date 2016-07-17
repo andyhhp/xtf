@@ -7,6 +7,7 @@
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 #include <arch/x86/mm.h>
+#include <arch/x86/symbolic-const.h>
 
 /* Real entry points */
 void entry_DE(void);
@@ -57,6 +58,22 @@ struct xen_trap_info pv_default_trap_info[] =
     { 0, 0, 0, 0 }, /* Sentinel. */
 };
 
+#ifdef __i386__
+static bool __used ex_pf_user(struct cpu_regs *regs,
+                              const struct extable_entry *ex)
+{
+    if ( regs->entry_vector == X86_EXC_PF && read_cr2() == 0xfff )
+    {
+        regs->ax = true;
+        regs->ip = ex->fixup;
+
+        return true;
+    }
+
+    return false;
+}
+#endif
+
 void arch_init_traps(void)
 {
     /* PV equivalent of `lidt`. */
@@ -74,11 +91,6 @@ void arch_init_traps(void)
     write_es(__USER_DS);
     write_fs(__USER_DS);
     write_gs(__USER_DS);
-
-    /* Unmap page at 0 to catch errors with NULL pointers. */
-    rc = hypercall_update_va_mapping(NULL, 0, UVMF_INVLPG);
-    if ( rc )
-        panic("Failed to unmap page at NULL: %d\n", rc);
 
 #ifdef __x86_64__
     /*
@@ -101,22 +113,49 @@ void arch_init_traps(void)
     if ( test_wants_user_mappings )
     {
         /*
-         * Walk the live pagetables and set _PAGE_USER
-         *
          * XTF uses a shared user/kernel address space, and _PAGE_USER must be
          * set to permit cpl3 access to the virtual addresses without taking a
          * pagefault.
          *
-         * !!! WARNING !!!
-         *
-         * Because PV guests and Xen share CR4, Xen's setting of
-         * CR4.{SMEP,SMAP} interfere with 32bit PV guests.  For now, 32bit PV
-         * XTF tests require the hypervisor to be booted with "smep=0 smap=0".
-         *
-         * TODO - figure out how to work around this restriction while
-         * maintaining a shared user/kernel address space for the framework.
-         *
-         * !!! WARNING !!!
+         * PV guests and Xen share a virtual address space, and before Xen
+         * 4.7, Xen's setting of CR4.{SMEP,SMAP} leaked with 32bit PV guests.
+         * On hardware which supports SMEP/SMAP, older versions of Xen must be
+         * booted with 'smep=0 smap=0' for pv32pae tests to run.
+         */
+
+        /*
+         * First, probe whether Xen is leaking its SMEP/SMAP settings.
+         */
+        intpte_t nl1e = pte_from_gfn(pfn_to_mfn(0), PF_SYM(AD, U, RW, P));
+        bool leaked = false;
+
+        /* Remap the page at 0 with _PAGE_USER. */
+        rc = hypercall_update_va_mapping(NULL, nl1e, UVMF_INVLPG);
+        if ( rc )
+            panic("Failed to remap page at NULL with _PAGE_USER: %d\n", rc);
+
+        /*
+         * Write a `ret` instruction into the page at 0 (will be caught by
+         * leaked SMAP), then attempt to call at the `ret` instruction (will
+         * be caught by leaked SMEP).
+         */
+        asm volatile ("1: movb $0xc3, (%[ptr]);"
+                      "call *%[ptr];"
+                      "jmp 3f;"
+                      "2: ret;"
+                      "3:"
+                      _ASM_EXTABLE_HANDLER(1b,    3b, ex_pf_user)
+                      _ASM_EXTABLE_HANDLER(0xfff, 2b, ex_pf_user)
+                      : "+a" (leaked)
+                      : [ptr] "r" (0xfff));
+
+        if ( leaked )
+            panic("Xen's SMEP/SMAP settings leaked into guest context.\n"
+                  "Must boot this Xen with 'smep=0 smap=0' to run this test.\n");
+
+        /*
+         * If we have got this far, SMEP/SMAP are not leaking into guest
+         * context.  Proceed with remapping all mappings as _PAGE_USER.
          */
         uint64_t *l3 = _p(start_info->pt_base);
         unsigned long va = 0;
@@ -162,6 +201,11 @@ void arch_init_traps(void)
         }
     }
 #endif
+
+    /* Unmap page at 0 to catch errors with NULL pointers. */
+    rc = hypercall_update_va_mapping(NULL, 0, UVMF_INVLPG);
+    if ( rc )
+        panic("Failed to unmap page at NULL: %d\n", rc);
 }
 
 void __noreturn arch_crash_hard(void)

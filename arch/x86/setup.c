@@ -1,5 +1,4 @@
 #include <xtf/lib.h>
-#include <xtf/console.h>
 #include <xtf/hypercall.h>
 #include <xtf/extable.h>
 
@@ -181,11 +180,11 @@ void arch_setup(void)
 
     collect_cpuid(IS_DEFINED(CONFIG_PV) ? pv_cpuid_count : cpuid_count);
 
+    sort_extable();
+
     arch_init_traps();
 
     init_hypercalls();
-
-    sort_extable();
 
     setup_pv_console();
 }

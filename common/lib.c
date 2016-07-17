@@ -1,6 +1,5 @@
 #include <xtf/lib.h>
 #include <xtf/traps.h>
-#include <xtf/console.h>
 #include <xtf/hypercall.h>
 
 void __noreturn panic(const char *fmt, ...)

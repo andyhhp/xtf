@@ -19,7 +19,6 @@
 #include <xtf/test.h>
 
 /* Optional functionality */
-#include <xtf/console.h>
 #include <xtf/exlog.h>
 #include <xtf/hypercall.h>
 #include <xtf/traps.h>
