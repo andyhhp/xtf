@@ -24,9 +24,15 @@ static inline void *pfn_to_virt(unsigned long pfn)
     return (void *)(pfn << PAGE_SHIFT);
 }
 
+static inline unsigned long virt_to_pfn(const void *va)
+{
+    return ((unsigned long)va) >> PAGE_SHIFT;
+}
+
 #if defined(CONFIG_PV)
 
 #define m2p ((unsigned long *)MACH2PHYS_VIRT_START)
+extern struct start_info *start_info;
 
 static inline void *mfn_to_virt(unsigned long mfn)
 {
@@ -36,6 +42,18 @@ static inline void *mfn_to_virt(unsigned long mfn)
 static inline void *maddr_to_virt(uint64_t maddr)
 {
     return mfn_to_virt(maddr >> PAGE_SHIFT) + (maddr & ~PAGE_MASK);
+}
+
+static inline unsigned long pfn_to_mfn(unsigned long pfn)
+{
+    unsigned long *p2m = _p(start_info->mfn_list);
+
+    return p2m[pfn];
+}
+
+static inline unsigned long virt_to_mfn(const void *va)
+{
+    return pfn_to_mfn(virt_to_pfn(va));
 }
 
 #undef m2p
