@@ -37,6 +37,12 @@
 #define _PAGE_PSE_PAT           0x1000
 #define _PAGE_NX                (_AC(1, ULL) << 63)
 
+/* Shortened flags for use with PF_SYM(). */
+#define _PAGE_P                 _PAGE_PRESENT
+#define _PAGE_U                 _PAGE_USER
+#define _PAGE_A                 _PAGE_ACCESSED
+#define _PAGE_D                 _PAGE_DIRTY
+
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
 #define PTE_SIZE  PSE_PTE_SIZE
@@ -143,6 +149,16 @@ static inline unsigned int l4_table_offset(unsigned long va)
 static inline paddr_t pte_to_paddr(intpte_t pte)
 {
     return pte & PADDR_MASK & PAGE_MASK;
+}
+
+static inline intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags)
+{
+    return paddr | flags;
+}
+
+static inline intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags)
+{
+    return pte_from_paddr((paddr_t)gfn << PAGE_SHIFT, flags);
 }
 
 #endif /* CONFIG_PAGING_LEVELS > 0 */

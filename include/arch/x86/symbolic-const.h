@@ -87,6 +87,17 @@
 #define EXC_EC_SYM(exc, ...) \
     SEL_EC_SYM(((X86_EXC_ ## exc) << 3), IDT, ##__VA_ARGS__)
 
+/**
+ * Create pagetable entry flags based on mnemonics.
+ *
+ * @param ... Partial _PAGE_ tokens.
+ *
+ * Example usage:
+ * - PF_SYM(AD, U, RW, P)
+ *   - Accessed, Dirty, User, Writeable, Present.
+ */
+#define PF_SYM(...) TOK_OR(_PAGE_, ##__VA_ARGS__)
+
 #endif /* XTF_X86_SYMBOLIC_CONST_H */
 
 /*
