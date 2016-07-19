@@ -14,6 +14,8 @@
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 
+bool test_wants_user_mappings = true;
+
 static void test_int3_breakpoint(void)
 {
     printk("Test: int3 breakpoint\n");

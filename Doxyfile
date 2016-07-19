@@ -2032,6 +2032,7 @@ PREDEFINED             = __aligned(x)= \
                          __noinline \
                          __noreturn \
                          __used \
+                         __weak \
 
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

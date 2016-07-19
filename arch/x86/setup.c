@@ -214,6 +214,14 @@ void test_setup(void)
 }
 
 /*
+ * Default weak settings.
+ *
+ * test_wants_* indicates default settings for the framework, which may be
+ * overridden by individual tests by providing non-weak variables.
+ */
+bool __weak test_wants_user_mappings = false;
+
+/*
  * Local variables:
  * mode: C
  * c-file-style: "BSD"

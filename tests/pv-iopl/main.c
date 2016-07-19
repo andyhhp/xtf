@@ -42,6 +42,8 @@
 
 #include <arch/x86/processor.h>
 
+bool test_wants_user_mappings = true;
+
 /**
  * Execute @p fn at user privilege on the current stack, folding @p iopl into
  * the iret frame.

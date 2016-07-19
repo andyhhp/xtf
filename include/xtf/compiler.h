@@ -13,6 +13,8 @@
 #define __always_inline       __attribute__((__always_inline__))
 #endif
 
+#define __weak                __attribute__((weak))
+
 #define __noreturn            __attribute__((__noreturn__))
 #define unreachable()         __builtin_unreachable()
 

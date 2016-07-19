@@ -51,6 +51,8 @@
 
 #include "lowlevel.h"
 
+bool test_wants_user_mappings = true;
+
 /** Single stub's worth of information. */
 struct single
 {
