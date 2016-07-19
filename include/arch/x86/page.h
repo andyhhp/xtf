@@ -39,6 +39,9 @@
 
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
+#define PTE_SIZE  PSE_PTE_SIZE
+#define PTE_ORDER PSE_PTE_ORDER
+
 #define PT_ORDER PSE_PT_ORDER
 
 #define L1_PT_SHIFT PSE_L1_PT_SHIFT
@@ -48,6 +51,9 @@
 #define L2_PT_ENTRIES PSE_L2_PT_ENTRIES
 
 #else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
+
+#define PTE_SIZE  PAE_PTE_SIZE
+#define PTE_ORDER PAE_PTE_ORDER
 
 #define PT_ORDER PAE_PT_ORDER
 

@@ -11,8 +11,8 @@
 
 #define PAGE_COMMON _PAGE_DIRTY + _PAGE_ACCESSED + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT
 
-#define PAE_IDX(sym) ((. - (sym)) / PAE_PTE_SZ)
-#define PSE_IDX(sym) ((. - (sym)) / PSE_PTE_SZ)
+#define PAE_IDX(sym) ((. - (sym)) / PAE_PTE_SIZE)
+#define PSE_IDX(sym) ((. - (sym)) / PSE_PTE_SIZE)
 
         .data
         .p2align PAGE_SHIFT

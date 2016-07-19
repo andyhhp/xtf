@@ -7,15 +7,17 @@
 #define XTF_X86_PAGE_PSE_H
 
 /** PSE pagetable entries are 32 bits wide. */
-#define PSE_PTE_SZ 4
+#define PSE_PTE_SIZE 4
+/** PSE pagetable entries are 32 bits wide. */
+#define PSE_PTE_ORDER 2
 
 /** PAE pagetables encode 10 bits of index. */
 #define PSE_PT_ORDER 10
 
 /** @{ */
 /** All PSE pagetables contain 1024 entries. */
-#define PSE_L1_PT_ENTRIES (PAGE_SIZE / PSE_PTE_SZ)
-#define PSE_L2_PT_ENTRIES (PAGE_SIZE / PSE_PTE_SZ)
+#define PSE_L1_PT_ENTRIES (PAGE_SIZE / PSE_PTE_SIZE)
+#define PSE_L2_PT_ENTRIES (PAGE_SIZE / PSE_PTE_SIZE)
 /** @} */
 
 #define PSE_L1_PT_SHIFT 12

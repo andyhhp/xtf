@@ -7,17 +7,19 @@
 #define XTF_X86_PAGE_PAE_H
 
 /** PAE pagetable entries are 64 bits wide. */
-#define PAE_PTE_SZ 8
+#define PAE_PTE_SIZE 8
+/** PAE pagetable entries are 64 bits wide. */
+#define PAE_PTE_ORDER 3
 
 /** PAE pagetables encode 9 bits of index. */
 #define PAE_PT_ORDER     9
 
 /** @{ */
 /** All PAE pagetables contain 512 entries. */
-#define PAE_L1_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SZ)
-#define PAE_L2_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SZ)
-#define PAE_L3_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SZ)
-#define PAE_L4_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SZ)
+#define PAE_L1_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SIZE)
+#define PAE_L2_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SIZE)
+#define PAE_L3_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SIZE)
+#define PAE_L4_PT_ENTRIES (PAGE_SIZE / PAE_PTE_SIZE)
 
 /* Other than PAE32_L3, which has 4 entries. */
 #define PAE32_L3_ENTRIES 4
