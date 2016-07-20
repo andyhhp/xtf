@@ -2,9 +2,24 @@ MAKEFLAGS += -r
 ROOT := $(abspath $(CURDIR))
 export ROOT
 
+# $(xtfdir) defaults to $(ROOT) so development and testing can be done
+# straight out of the working tree.
+xtfdir  ?= $(ROOT)
 DESTDIR ?= $(ROOT)/dist
-PREFIX ?= $(ROOT)
-export DESTDIR PREFIX
+
+ifeq ($(filter /%,$(xtfdir)),)
+$(error $$(xtfdir) must be absolute, not '$(xtfdir)')
+endif
+
+ifneq ($(DESTDIR),)
+ifeq ($(filter /%,$(DESTDIR)),)
+$(error $$(DESTDIR) must be absolute, not '$(DESTDIR)')
+endif
+endif
+
+xtftestdir := $(xtfdir)/tests
+
+export DESTDIR xtfdir xtftestdir
 
 # Programs used
 CC              ?= $(CROSS_COMPILE)gcc
@@ -28,8 +43,8 @@ all:
 
 .PHONY: install
 install:
-	@$(INSTALL_DIR) $(DESTDIR)
-	$(INSTALL_PROGRAM) xtf-runner $(DESTDIR)
+	@$(INSTALL_DIR) $(DESTDIR)$(xtfdir)
+	$(INSTALL_PROGRAM) xtf-runner $(DESTDIR)$(xtfdir)
 	@set -e; for D in $(wildcard tests/*); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \

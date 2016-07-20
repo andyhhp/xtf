@@ -62,9 +62,9 @@ To run tests on a Xen host: (see @ref errata first)
 
 - For the paths of binaries, `xl` accepts either an absolute path, or certain
   relative paths (`/etc/xen/` or `$CWD` for `kernel=`, `$libdir/xen/boot` for
-  `firmware_override=`).  The default `PREFIX=` is configured correctly for
+  `firmware_override=`).  The default `xtfdir=` is configured correctly for
   running the tests out of the build working tree.  If the tests are running
-  elsewhere, use `make install DESTDIR=$X PREFIX=$Y` to configure absolute
+  elsewhere, use `make install DESTDIR=$X xtfdir=$Y` to configure absolute
   paths appropriately for the test system.
 
 

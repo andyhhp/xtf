@@ -31,8 +31,8 @@ test-info.json: $(ROOT)/build/mkinfo.py FORCE
 
 .PHONY: install install-each-env
 install: install-each-env test-info.json
-	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_DATA) test-info.json $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
+	$(INSTALL_DATA) test-info.json $(DESTDIR)$(xtftestdir)/$(NAME)
 
 define PERENV_build
 
@@ -54,7 +54,7 @@ test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
 	@{ cat $$< $(TEST-EXTRA-CFG) ;} | \
 	sed -e "s/@@NAME@@/$$(NAME)/g" \
 		-e "s/@@ENV@@/$(1)/g" \
-		-e "s!@@PREFIX@@!$$(PREFIX)!g" \
+		-e "s!@@XTFDIR@@!$$(xtfdir)!g" \
 		> $$@.tmp
 	@if ! cmp -s $$@ $$@.tmp; then mv -f $$@.tmp $$@; else rm -f $$@.tmp; fi
 
@@ -63,12 +63,12 @@ test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
 
 .PHONY: install-$(1) install-$(1).cfg
 install-$(1): test-$(1)-$(NAME)
-	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_PROGRAM) $$< $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
+	$(INSTALL_PROGRAM) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
 
 install-$(1).cfg: test-$(1)-$(NAME).cfg
-	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_DATA) $$< $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
+	$(INSTALL_DATA) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
 
 install-each-env: install-$(1) install-$(1).cfg
 

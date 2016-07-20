@@ -131,7 +131,7 @@ If XTF in being built in dom0, all paths should be set up to run correctly.
 
 If XTF is built elsewhere, it should be installed:
 
-    $ make install PREFIX=/path DESTDIR=/path
+    $ make install xtfdir=/path DESTDIR=/path
 
 with paths appropriate for the system under test.
 
