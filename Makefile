@@ -5,7 +5,7 @@ PREFIX ?= $(ROOT)
 
 .PHONY: all
 all:
-	@for D in $(wildcard tests/*); do \
+	@set -e; for D in $(wildcard tests/*); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D build; \
 	done
@@ -14,7 +14,7 @@ all:
 install:
 	@mkdir -p $(DESTDIR)
 	install -m775 xtf-runner $(DESTDIR)
-	@for D in $(wildcard tests/*); do \
+	@set -e; for D in $(wildcard tests/*); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \
 	done
