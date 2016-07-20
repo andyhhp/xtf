@@ -1,7 +1,10 @@
 MAKEFLAGS += -r
 ROOT := $(abspath $(CURDIR))
+export ROOT
+
 DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
+export DESTDIR PREFIX
 
 # Programs used
 CC              ?= $(CROSS_COMPILE)gcc

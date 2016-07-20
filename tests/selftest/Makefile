@@ -1,6 +1,3 @@
-MAKEFLAGS += -r
-ROOT := $(abspath $(CURDIR)/../..)
-
 include $(ROOT)/build/common.mk
 
 NAME      := selftest

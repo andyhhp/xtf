@@ -1,6 +1,3 @@
-MAKEFLAGS += -r
-ROOT := $(abspath $(CURDIR)/..)
-
 COMMON_CFLAGS := -Wall -Werror -Wextra -MMD -MP
 
 TESTS := test-vsnprintf32

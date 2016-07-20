@@ -48,9 +48,6 @@ fi
 echo "Writing default tests/$NAME/Makefile"
 {
 cat <<EOF
-MAKEFLAGS += -r
-ROOT := \$(abspath \$(CURDIR)/../..)
-
 include \$(ROOT)/build/common.mk
 
 NAME      := $NAME
