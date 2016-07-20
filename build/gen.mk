@@ -26,13 +26,13 @@ build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
 build: test-info.json
 
 test-info.json: $(ROOT)/build/mkinfo.py FORCE
-	@python $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
+	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
 	@if ! cmp -s $@ $@.tmp; then mv -f $@.tmp $@; else rm -f $@.tmp; fi
 
 .PHONY: install install-each-env
 install: install-each-env test-info.json
 	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	install -m664 -p test-info.json $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_DATA) -p test-info.json $(DESTDIR)/tests/$(NAME)
 
 define PERENV_build
 
@@ -64,11 +64,11 @@ test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
 .PHONY: install-$(1) install-$(1).cfg
 install-$(1): test-$(1)-$(NAME)
 	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	install -m775 -p $$< $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_PROGRAM) -p $$< $(DESTDIR)/tests/$(NAME)
 
 install-$(1).cfg: test-$(1)-$(NAME).cfg
 	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	install -m664 -p $$< $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_DATA) -p $$< $(DESTDIR)/tests/$(NAME)
 
 install-each-env: install-$(1) install-$(1).cfg
 

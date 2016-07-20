@@ -1,6 +1,5 @@
 MAKEFLAGS += -r
 ROOT := $(abspath $(CURDIR)/..)
-CC = gcc
 
 COMMON_CFLAGS := -Wall -Werror -Wextra -MMD -MP
 

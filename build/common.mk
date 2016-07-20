@@ -1,7 +1,5 @@
 DESTDIR ?= $(ROOT)/dist
 PREFIX ?= $(ROOT)
-CC ?= gcc
-OBJCOPY ?= objcopy
 
 ALL_CATEGORIES     := special functional xsa utility
 
@@ -87,7 +85,7 @@ endif
 
 # Generate .lds with approprate flags
 %/link-$(1).lds: %/link.lds.S
-	$$(CC) -E $$(AFLAGS_$(1)) -P -C $$< -o $$@
+	$$(CPP) $$(AFLAGS_$(1)) -P -C $$< -o $$@
 
 # Generate a per-arch .o from .S
 %-$($(1)_arch).o: %.S
