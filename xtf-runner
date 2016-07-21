@@ -21,6 +21,16 @@ except ImportError:
 # Note that warning is not a result on its own.
 all_results = ('SUCCESS', 'SKIP', 'ERROR', 'FAILURE')
 
+# Return the exit code for different states.  Avoid using 1 and 2 because
+# python interpreter uses them -- see document for sys.exit.
+def exit_code(state):
+    """ Convert a test result to an xtf-runner exit code. """
+    return { "SUCCESS": 0,
+             "SKIP":    3,
+             "ERROR":   4,
+             "FAILURE": 5,
+    }.get(state, 4)
+
 # All test categories and configurations
 all_categories   = ("special", "functional", "xsa", "utility")
 pv_environments  = ("pv64", "pv32pae")
