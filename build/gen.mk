@@ -31,8 +31,8 @@ test-info.json: $(ROOT)/build/mkinfo.py FORCE
 
 .PHONY: install install-each-env
 install: install-each-env test-info.json
-	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_DATA) -p test-info.json $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_DATA) test-info.json $(DESTDIR)/tests/$(NAME)
 
 define PERENV_build
 
@@ -63,12 +63,12 @@ test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
 
 .PHONY: install-$(1) install-$(1).cfg
 install-$(1): test-$(1)-$(NAME)
-	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_PROGRAM) -p $$< $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_PROGRAM) $$< $(DESTDIR)/tests/$(NAME)
 
 install-$(1).cfg: test-$(1)-$(NAME).cfg
-	@mkdir -p $(DESTDIR)/tests/$(NAME)
-	$(INSTALL_DATA) -p $$< $(DESTDIR)/tests/$(NAME)
+	@$(INSTALL_DIR) $(DESTDIR)/tests/$(NAME)
+	$(INSTALL_DATA) $$< $(DESTDIR)/tests/$(NAME)
 
 install-each-env: install-$(1) install-$(1).cfg
 

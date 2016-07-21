@@ -10,13 +10,14 @@ export DESTDIR PREFIX
 CC              ?= $(CROSS_COMPILE)gcc
 CPP             ?= $(CC) -E
 INSTALL         ?= install
-INSTALL_DATA    ?= $(INSTALL) -m 644
-INSTALL_PROGRAM ?= $(INSTALL)
+INSTALL_DATA    ?= $(INSTALL) -m 644 -p
+INSTALL_DIR     ?= $(INSTALL) -d -p
+INSTALL_PROGRAM ?= $(INSTALL) -p
 LD              ?= $(CROSS_COMPILE)ld
 OBJCOPY         ?= $(CROSS_COMPILE)objcopy
 PYTHON          ?= python
 
-export CC CPP INSTALL INSTALL_DATA INSTALL_PROGRAM LD OBJCOPY PYTHON
+export CC CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM LD OBJCOPY PYTHON
 
 .PHONY: all
 all:
@@ -27,8 +28,8 @@ all:
 
 .PHONY: install
 install:
-	@mkdir -p $(DESTDIR)
-	$(INSTALL_PROGRAM) -p xtf-runner $(DESTDIR)
+	@$(INSTALL_DIR) $(DESTDIR)
+	$(INSTALL_PROGRAM) xtf-runner $(DESTDIR)
 	@set -e; for D in $(wildcard tests/*); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \
