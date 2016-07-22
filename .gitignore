@@ -3,6 +3,7 @@
 *.d
 *.pyc
 *.pyo
+*.swp
 /arch/x86/*.lds
 /cscope.*
 /dist/
