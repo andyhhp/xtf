@@ -42,7 +42,7 @@ class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
 
 def open_test_info():
-    """ Open and collate each test-info.json """
+    """ Open and collate each info.json """
 
     info = {}
 
@@ -52,9 +52,9 @@ def open_test_info():
         test_json = {}
         try:
 
-            # Ignore directories which don't have a test-info.json inside them
+            # Ignore directories which don't have a info.json inside them
             try:
-                test_info = open(path.join("tests", test, "test-info.json"))
+                test_info = open(path.join("tests", test, "info.json"))
             except IOError:
                 continue
 

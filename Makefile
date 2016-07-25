@@ -59,7 +59,7 @@ cscope:
 clean:
 	find . \( -name "*.o" -o -name "*.d" -o -name "*.lds" \) -delete
 	find tests/ \( -perm -a=x -name "test-*" -o -name "test-*.cfg" \
-		-o -name "test-info.json" \) -delete
+		-o -name "info.json" \) -delete
 
 .PHONY: distclean
 distclean: clean

@@ -90,6 +90,7 @@ Building this will generate a number of files.
     $ make -j4
     ... <snip>
     $ ls tests/example/
+    info.json
     main.c
     main-hvm32.d
     main-hvm32.o
@@ -112,7 +113,6 @@ Building this will generate a number of files.
     test-hvm32pse-example.cfg
     test-hvm64-example
     test-hvm64-example.cfg
-    test-info.json
     test-pv32pae-example
     test-pv32pae-example.cfg
     test-pv64-example
@@ -120,7 +120,7 @@ Building this will generate a number of files.
 
 The `.o` and `.d` files are build artefacts, leading to the eventual
 `test-$ENV-$NAME` microkernel.  Individual `xl.cfg` files are generated for
-each microkernel.  `test-info.json` contains metadata about the test.
+each microkernel.  `info.json` contains metadata about the test.
 
 
 @section install Installing

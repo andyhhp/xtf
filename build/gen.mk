@@ -23,16 +23,16 @@ endif
 
 .PHONY: build
 build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
-build: test-info.json
+build: info.json
 
-test-info.json: $(ROOT)/build/mkinfo.py FORCE
+info.json: $(ROOT)/build/mkinfo.py FORCE
 	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
 	@$(call move-if-changed,$@.tmp,$@)
 
 .PHONY: install install-each-env
-install: install-each-env test-info.json
+install: install-each-env info.json
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
-	$(INSTALL_DATA) test-info.json $(DESTDIR)$(xtftestdir)/$(NAME)
+	$(INSTALL_DATA) info.json $(DESTDIR)$(xtftestdir)/$(NAME)
 
 define PERENV_build
 
