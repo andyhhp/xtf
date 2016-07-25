@@ -54,6 +54,12 @@ SECTIONS
         }
 }
 
+/*
+ * Linker games to use virtual addresses at 0 without triggering NULL pointer
+ * "logic" and associated compiler optimisations.
+ */
+zeroptr = 0;
+
 ASSERT(IS_ALIGNED(hypercall_page, PAGE_SIZE), "hypercall_page misaligned");
 ASSERT(IS_ALIGNED(boot_stack, PAGE_SIZE), "boot_stack misaligned");
 

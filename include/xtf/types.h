@@ -1,3 +1,8 @@
+/**
+ * @file include/xtf/types.h
+ *
+ * Common declarations for all tests.
+ */
 #ifndef XTF_TYPES_H
 #define XTF_TYPES_H
 
@@ -8,6 +13,14 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <inttypes.h>
+
+/**
+ * An array which the linker resolves to 0.
+ *
+ * For use instead of NULL when access to 0 is really needed, without
+ * triggering NULL pointer logic in the compiler.
+ */
+extern char zeroptr[];
 
 #endif /* !__ASSEMBLY__ */
 
