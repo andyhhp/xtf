@@ -104,3 +104,6 @@ endef
 
 $(foreach env,$(ALL_ENVIRONMENTS),$(eval $(call PERENV_setup,$(env))))
 
+define move-if-changed
+	if ! cmp -s $(1) $(2); then mv -f $(1) $(2); else rm -f $(1); fi
+endef

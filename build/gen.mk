@@ -27,7 +27,7 @@ build: test-info.json
 
 test-info.json: $(ROOT)/build/mkinfo.py FORCE
 	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
-	@if ! cmp -s $@ $@.tmp; then mv -f $@.tmp $@; else rm -f $@.tmp; fi
+	@$(call move-if-changed,$@.tmp,$@)
 
 .PHONY: install install-each-env
 install: install-each-env test-info.json
@@ -56,7 +56,7 @@ test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
 		-e "s/@@ENV@@/$(1)/g" \
 		-e "s!@@XTFDIR@@!$$(xtfdir)!g" \
 		> $$@.tmp
-	@if ! cmp -s $$@ $$@.tmp; then mv -f $$@.tmp $$@; else rm -f $$@.tmp; fi
+	@$(call move-if-changed,$$@.tmp,$$@)
 
 -include $$(link-$(1):%.lds=%.d)
 -include $$(DEPS-$(1):%.o=%.d)
