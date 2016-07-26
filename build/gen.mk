@@ -50,12 +50,8 @@ endif
 
 cfg-$(1) ?= $(defcfg-$(1))
 
-test-$(1)-$(NAME).cfg: $$(cfg-$(1)) FORCE
-	@{ cat $$< $(TEST-EXTRA-CFG) ;} | \
-	sed -e "s/@@NAME@@/$$(NAME)/g" \
-		-e "s/@@ENV@@/$(1)/g" \
-		-e "s!@@XTFDIR@@!$$(xtfdir)!g" \
-		> $$@.tmp
+test-$(1)-$(NAME).cfg: $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
+	@$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)"
 	@$(call move-if-changed,$$@.tmp,$$@)
 
 -include $$(link-$(1):%.lds=%.d)
