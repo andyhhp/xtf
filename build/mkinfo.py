@@ -3,13 +3,16 @@
 
 import sys, os, json
 
+# Usage: mkcfg.py $OUT $NAME $CATEGORY $ENVS
+_, out, name, cat, envs = sys.argv
+
 template = {
-    "name": sys.argv[2],
-    "category": sys.argv[3],
-    "environments": sys.argv[4].split(" "),
+    "name": name,
+    "category": cat,
+    "environments": envs.split(" "),
     }
 
-open(sys.argv[1], "w").write(
+open(out, "w").write(
     json.dumps(template, indent=4, separators=(',', ': '))
     + "\n"
     )
