@@ -8,11 +8,17 @@ substitue variables appropriately.
 
 import sys, os
 
-# Usage: mkcfg.py $OUT $DEFAULT-CFG $EXTRA-CFG
-_, out, defcfg, extracfg = sys.argv
+# Usage: mkcfg.py $OUT $DEFAULT-CFG $EXTRA-CFG $VARY-CFG
+_, out, defcfg, extracfg, varycfg = sys.argv
 
 # Evaluate environment and name from $OUT
 _, env, name = out.split('.')[0].split('-', 2)
+
+# Possibly split apart the variation suffix
+variation = ''
+if '~' in name:
+    parts = name.split('~', 1)
+    name, variation = parts[0], '~' + parts[1]
 
 def expand(text):
     """ Expand certain variables in text """
@@ -20,6 +26,7 @@ def expand(text):
             .replace("@@NAME@@",   name)
             .replace("@@ENV@@",    env)
             .replace("@@XTFDIR@@", os.environ["xtfdir"])
+            .replace("@@VARIATION@@", variation)
         )
 
 config = open(defcfg).read()
@@ -27,6 +34,10 @@ config = open(defcfg).read()
 if extracfg:
     config += "\n# Test Extra Configuration:\n"
     config += open(extracfg).read()
+
+if varycfg:
+    config += "\n# Test Variation Configuration:\n"
+    config += open(varycfg).read()
 
 cfg = expand(config)
 

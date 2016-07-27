@@ -50,10 +50,14 @@ class TestInstance(object):
 
     def __init__(self, arg):
         """ Parse and verify 'arg' as a test instance. """
-        self.env, self.name = parse_test_instance_string(arg)
+        self.env, self.name, self.variation = parse_test_instance_string(arg)
 
         if self.env is None:
             raise RunnerError("No environment for '%s'" % (arg, ))
+
+        if self.variation is None and get_all_test_info()[self.name].variations:
+            raise RunnerError("Test '%s' has variations, but none specified"
+                              % (self.name, ))
 
     def vm_name(self):
         """ Return the VM name as `xl` expects it. """
@@ -64,7 +68,10 @@ class TestInstance(object):
         return path.join("tests", self.name, repr(self) + ".cfg")
 
     def __repr__(self):
-        return "test-%s-%s" % (self.env, self.name)
+        if not self.variation:
+            return "test-%s-%s" % (self.env, self.name)
+        else:
+            return "test-%s-%s~%s" % (self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -107,7 +114,13 @@ class TestInfo(object):
                 raise ValueError("Unknown environments '%s'" % (env, ))
         self.envs = envs
 
-    def all_instances(self, env_filter = None):
+        variations = test_json["variations"]
+        if not isinstance(variations, list):
+            raise TypeError("Expected list for 'variations', got '%s'"
+                            % (type(variations), ))
+        self.variations = variations
+
+    def all_instances(self, env_filter = None, vary_filter = None):
         """Return a list of TestInstances, for each supported environment.
         Optionally filtered by env_filter.  May return an empty list if
         the filter doesn't match any supported environment.
@@ -118,7 +131,21 @@ class TestInfo(object):
         else:
             envs = self.envs
 
-        return [ TestInstance("test-%s-%s" % (env, self.name)) for env in envs ]
+        if vary_filter:
+            variations = set(vary_filter).intersection(self.variations)
+        else:
+            variations = self.variations
+
+        res = []
+        if variations:
+            for env in envs:
+                for vary in variations:
+                    res.append(TestInstance("test-%s-%s~%s"
+                                            % (env, self.name, vary)))
+        else:
+            res = [ TestInstance("test-%s-%s" % (env, self.name))
+                    for env in envs ]
+        return res
 
     def __repr__(self):
         return "TestInfo(%s)" % (self.name, )
@@ -127,20 +154,26 @@ class TestInfo(object):
 def parse_test_instance_string(arg):
     """Parse a test instance string.
 
-    Has the form: '[[test-]$ENV-]$NAME'
+    Has the form: '[[test-]$ENV-]$NAME[~$VARIATION]'
 
     Optional 'test-' prefix
     Optional $ENV environment part
     Mandatory $NAME
+    Optional ~$VARIATION suffix
 
     Verifies:
       - $NAME is valid
       - if $ENV, it is valid for $NAME
+      - if $VARIATION, it is valid for $NAME
 
-    Returns: tuple($ENV or None, $NAME)
+    Returns: tuple($ENV or None, $NAME, $VARIATION or None)
     """
 
     all_tests = get_all_test_info()
+
+    variation = None
+    if '~' in arg:
+        arg, variation = arg.split('~', 1)
 
     parts = arg.split('-', 2)
     parts_len = len(parts)
@@ -174,7 +207,15 @@ def parse_test_instance_string(arg):
         raise RunnerError("Test '%s' has no environment '%s'"
                           % (name, env))
 
-    return env, name
+    # If a variation has been given, check it is valid
+    if variation is not None:
+        if not info.variations:
+            raise RunnerError("Test '%s' has no variations" % (name, ))
+        elif not variation in info.variations:
+            raise RunnerError("No variation '%s' for test '%s'"
+                              % (variation, name))
+
+    return env, name, variation
 
 
 # Cached test json from disk
@@ -319,10 +360,11 @@ def interpret_selection(opts):
 
     # Second, sanity check others as full or partial test names
     for arg in others:
-        env, name = parse_test_instance_string(arg)
+        env, name, vary = parse_test_instance_string(arg)
 
         instances = all_tests[name].all_instances(
             env_filter = env and [env] or None,
+            vary_filter = vary and [vary] or None,
         )
 
         if not instances:

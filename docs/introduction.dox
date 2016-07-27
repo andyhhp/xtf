@@ -4,13 +4,17 @@
 
 @section overview Overview
 
-A test has three important attributes.
+A test has several important attributes, and are often referred to in the form:
 
+    test-$ENVIRONMENT-$NAME[~$VARIATION]
+
+This identifies a single test instance, with the purpose of executing and
+providing a single result (See @ref running).
 
 @subsection attr-name Name
 
-A tests name is unique identifier.  The directory `tests/<name>/` contains all
-files related to a specific test.
+A tests name is a unique identifier.  The directory `tests/$NAME/` contains
+all files related to a specific test.  A test has one or more test instances.
 
 
 @subsection attr-category Category
@@ -45,6 +49,14 @@ Some more specific collections for environments are also available:
 
 An individual test, compiled for more than one environment, will end up with a
 individual microkernel binary for each specified environment.
+
+@subsection Variations
+
+Variations are optional.  Some tests may only want to run the binary once, but
+some tests want to run the same binary multiple times in different
+configurations, reporting separate results.
+
+The variation suffix (if present) is arbitrary and defined by the test itself.
 
 
 @section build Building

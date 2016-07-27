@@ -1,4 +1,4 @@
-name="test-@@ENV@@-@@NAME@@"
+name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
 builder="hvm"
 memory=128
 firmware_override="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"

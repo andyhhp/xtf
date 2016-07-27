@@ -21,12 +21,18 @@ ifneq ($(filter-out $(ALL_CATEGORIES),$(CATEGORY)),)
 $(error Unrecognised category '$(filter-out $(ALL_CATEGORIES),$(CATEGORY))')
 endif
 
+ifneq ($(VARY-CFG),)
+TEST-CFGS := $(foreach env,$(TEST-ENVS),$(foreach vary,$(VARY-CFG),test-$(env)-$(NAME)~$(vary).cfg))
+else
+TEST-CFGS := $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME).cfg)
+endif
+
 .PHONY: build
-build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
+build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME)) $(TEST-CFGS)
 build: info.json
 
 info.json: $(ROOT)/build/mkinfo.py FORCE
-	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)"
+	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)" "$(VARY-CFG)"
 	@$(call move-if-changed,$@.tmp,$@)
 
 .PHONY: install install-each-env
@@ -50,8 +56,18 @@ endif
 
 cfg-$(1) ?= $(defcfg-$(1))
 
-test-$(1)-$(NAME).cfg: $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
-	@$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)"
+cfg-default-deps := $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
+
+test-$(1)-$(NAME).cfg: $$(cfg-default-deps)
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" ""
+	@$(call move-if-changed,$$@.tmp,$$@)
+
+test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) %.cfg.in
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" "$$*.cfg.in"
+	@$(call move-if-changed,$$@.tmp,$$@)
+
+test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) $(ROOT)/config/%.cfg.in
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" "$(ROOT)/config/$$*.cfg.in"
 	@$(call move-if-changed,$$@.tmp,$$@)
 
 -include $$(link-$(1):%.lds=%.d)
@@ -62,7 +78,7 @@ install-$(1): test-$(1)-$(NAME)
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
 	$(INSTALL_PROGRAM) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
 
-install-$(1).cfg: test-$(1)-$(NAME).cfg
+install-$(1).cfg: $(TEST-CFGS)
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
 	$(INSTALL_DATA) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
 
@@ -74,7 +90,7 @@ $(foreach env,$(TEST-ENVS),$(eval $(call PERENV_build,$(env))))
 .PHONY: clean
 clean:
 	find $(ROOT) \( -name "*.o" -o -name "*.d" \) -delete
-	rm -f $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME).cfg)
+	rm -f $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME) test-$(env)-$(NAME)*.cfg)
 
 .PHONY: %var
 %var:
