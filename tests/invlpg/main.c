@@ -78,9 +78,6 @@
  * crashes the domain if it finds an invlpg instruction while in hap mode,
  * which is unhelpful when trying to test behaviour.
  *
- * @todo Come up with some sensible way of running this test in both shadow
- * and hap mode.
- *
  * @see tests/invlpg/main.c
  */
 #include <xtf.h>
