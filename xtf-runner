@@ -41,26 +41,31 @@ all_environments = pv_environments + hvm_environments
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
 
-def open_test_info():
+# Cached test json from disk
+_all_test_info = {}
+
+def get_all_test_info():
     """ Open and collate each info.json """
 
-    info = {}
+    # Short circuit if already cached
+    if _all_test_info:
+        return _all_test_info
 
     for test in os.listdir("tests"):
 
-        test_info = None
+        info_file = None
         test_json = {}
         try:
 
             # Ignore directories which don't have a info.json inside them
             try:
-                test_info = open(path.join("tests", test, "info.json"))
+                info_file = open(path.join("tests", test, "info.json"))
             except IOError:
                 continue
 
             # Ignore tests which have bad JSON
             try:
-                test_json = json.load(test_info)
+                test_json = json.load(info_file)
             except ValueError:
                 continue
 
@@ -79,13 +84,13 @@ def open_test_info():
                 if test_env not in all_environments:
                     continue
 
-            info[test] = test_json
+            _all_test_info[test] = test_json
 
         finally:
-            if test_info:
-                test_info.close()
+            if info_file:
+                info_file.close()
 
-    return info
+    return _all_test_info
 
 
 def list_tests(opts):
@@ -115,7 +120,7 @@ def list_tests(opts):
 
             env = tuple(host_envs)
 
-    all_test_info = open_test_info()
+    all_test_info = get_all_test_info()
 
     for name in sorted(all_test_info.keys()):
 
@@ -187,7 +192,7 @@ def run_tests(opts):
     """ Run tests """
 
     args = opts.args
-    all_test_info = open_test_info()
+    all_test_info = get_all_test_info()
     all_test_names = all_test_info.keys()
 
     tests = []
