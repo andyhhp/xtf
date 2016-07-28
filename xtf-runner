@@ -88,13 +88,14 @@ def open_test_info():
     return info
 
 
-def list_tests(args):
+def list_tests(opts):
     """ List tests """
 
+    args = opts.args
     cat = tuple(x for x in args if x in all_categories)
     env = tuple(x for x in args if x in all_environments)
 
-    if "host" in args:
+    if opts.host:
 
         for line in check_output(['xl', 'info']).splitlines():
             if not line.startswith("xen_caps"):
@@ -182,9 +183,10 @@ def run_test(test):
     return "ERROR"
 
 
-def run_tests(args):
+def run_tests(opts):
     """ Run tests """
 
+    args = opts.args
     all_test_info = open_test_info()
     all_test_names = all_test_info.keys()
 
@@ -303,7 +305,7 @@ def main():
                   "  Listing available tests:\n"
                   "    ./xtf-runner --list\n"
                   "       List all tests\n"
-                  "    ./xtf-runner --list host\n"
+                  "    ./xtf-runner --list --host\n"
                   "       List all tests applicable for the current host\n"
                   "    ./xtf-runner --list functional special\n"
                   "       List all 'functional' or 'special' tests\n"
@@ -323,13 +325,18 @@ def main():
                       dest = "list_tests",
                       help = "List available tests, optionally filtered",
                       )
+    parser.add_option("--host", action = "store_true",
+                      dest = "host", help = "Restrict selection to applicable"
+                      " tests for the current host",
+                      )
 
     opts, args = parser.parse_args()
+    opts.args = args
 
     if opts.list_tests:
-        return list_tests(args)
+        return list_tests(opts)
     else:
-        return run_tests(args)
+        return run_tests(opts)
 
 
 if __name__ == "__main__":
