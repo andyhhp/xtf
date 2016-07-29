@@ -31,11 +31,15 @@ def exit_code(state):
              "FAILURE": 5,
     }.get(state, 4)
 
-# All test categories and configurations
-all_categories   = ("special", "functional", "xsa", "utility")
-pv_environments  = ("pv64", "pv32pae")
-hvm_environments = ("hvm64", "hvm32pae", "hvm32pse", "hvm32")
-all_environments = pv_environments + hvm_environments
+# All test categories
+default_categories     = {"functional", "xsa"}
+non_default_categories = {"special", "utility"}
+all_categories         = default_categories | non_default_categories
+
+# All test environments
+pv_environments        = {"pv64", "pv32pae"}
+hvm_environments       = {"hvm64", "hvm32pae", "hvm32pse", "hvm32"}
+all_environments       = pv_environments | hvm_environments
 
 
 class RunnerError(Exception):
@@ -104,7 +108,7 @@ class TestInfo(object):
         self.envs = envs
 
     def all_instances(self, env_filter = None):
-        """Return a list of test instances, for each supported environment.
+        """Return a list of TestInstances, for each supported environment.
         Optionally filtered by env_filter.  May return an empty list if
         the filter doesn't match any supported environment.
         """
@@ -114,7 +118,7 @@ class TestInfo(object):
         else:
             envs = self.envs
 
-        return [ "test-%s-%s" % (env, self.name) for env in envs ]
+        return [ TestInstance("test-%s-%s" % (env, self.name)) for env in envs ]
 
     def __repr__(self):
         return "TestInfo(%s)" % (self.name, )
@@ -213,20 +217,131 @@ def get_all_test_info():
     return _all_test_info
 
 
-def list_tests(opts):
-    """ List tests """
+def tests_from_selection(cats, envs, tests):
+    """Given a selection of possible categories, environment and tests, return
+    all tests within the provided parameters.
 
-    args = opts.args
-    cat = tuple(x for x in args if x in all_categories)
-    env = tuple(x for x in args if x in all_environments)
+    Multiple entries for each individual parameter are combined or-wise.
+    e.g. cats=['special', 'functional'] chooses all tests which are either
+    special or functional.  envs=['hvm64', 'pv64'] chooses all tests which are
+    either pv64 or hvm64.
 
-    if opts.host:
+    Multiple parameter are combined and-wise, taking the intersection rather
+    than the union.  e.g. cats=['functional'], envs=['pv64'] gets the tests
+    which are both part of the functional category and the pv64 environment.
+
+    By default, not all categories are available.  Selecting envs=['pv64']
+    alone does not include the non-default categories, as this is most likely
+    not what the author intended.  Any reference to non-default categories in
+    cats[] or tests[] turns them all back on, so non-default categories are
+    available when explicitly referenced.
+    """
+
+    all_tests = get_all_test_info()
+    all_test_info = all_tests.values()
+    res = []
+
+    if cats:
+        # If a selection of categories have been requested, start with all test
+        # instances in any of the requested categories.
+        for info in all_test_info:
+            if info.cat in cats:
+                res.extend(info.all_instances())
+
+    if envs:
+        # If a selection of environments have been requested, reduce the
+        # category selection to requested environments, or pick all suitable
+        # tests matching the environments request.
+        if res:
+            res = [ x for x in res if x.env in envs ]
+        else:
+            # Work out whether to include non-default categories or not.
+            categories = default_categories
+            if non_default_categories & set(cats):
+                categories = all_categories
+
+            elif tests:
+                sel_test_names = set(x.name           for x in tests)
+                sel_test_cats  = set(all_tests[x].cat for x in sel_test_names)
+
+                if non_default_categories & sel_test_cats:
+                    categories = all_categories
+
+            for info in all_test_info:
+                if info.cat in categories:
+                    res.extend(info.all_instances(env_filter = envs))
+
+    if tests:
+        # If a selection of tests has been requested, reduce the results so
+        # far to the requested tests (this is meaningful in the case that
+        # tests[] has been specified without a specific environment), or just
+        # take the tests verbatim.
+        if res:
+            res = [ x for x in res if x in tests ]
+        else:
+            res = tests
+
+    # Sort the results
+    res = sorted(res, key = lambda test: test.env)  # by environment second
+    res = sorted(res, key = lambda test: test.name) # by name first
+    return res
+
+
+def interpret_selection(opts):
+    """Interpret the argument list as a collection of categories, environments,
+    pseduo-environments and partial and complete test names.
+
+    Returns a list of all test instances within the selection.
+    """
+
+    args = set(opts.args)
+
+    # No input? No selection.
+    if not args:
+        return []
+
+    # First, filter into large buckets
+    cats   = all_categories   & args
+    envs   = all_environments & args
+    others = args - cats - envs
+
+    # Allow "pv" and "hvm" as a combination of environments
+    if "pv" in others:
+        envs |= pv_environments
+        others -= {"pv"}
+
+    if "hvm" in others:
+        envs |= hvm_environments
+        others -= {"hvm"}
+
+    all_tests = get_all_test_info()
+    tests = []
+
+    # Second, sanity check others as full or partial test names
+    for arg in others:
+        env, name = parse_test_instance_string(arg)
+
+        instances = all_tests[name].all_instances(
+            env_filter = env and [env] or None,
+        )
+
+        if not instances:
+            raise RunnerError("No appropriate instances for '%s' (env %s)"
+                              % (arg, env))
+
+        tests.extend(instances)
+
+    selection = tests_from_selection(cats, envs, set(tests))
+
+    # If the caller passed --host, filter out the unsupported environments
+    if selection and opts.host:
+
+        host_envs = []
 
         for line in check_output(['xl', 'info']).splitlines():
             if not line.startswith("xen_caps"):
                 continue
 
-            host_envs = []
             caps = line.split()[2:]
 
             if "xen-3.0-x86_64" in caps:
@@ -238,25 +353,23 @@ def list_tests(opts):
                     host_envs.extend(hvm_environments)
                     break
 
-            env = tuple(host_envs)
+            break
 
-    all_test_info = get_all_test_info()
+        selection = tests_from_selection(cats = {},
+                                         envs = set(host_envs),
+                                         tests = selection)
 
-    for name in sorted(all_test_info.keys()):
+    return selection
 
-        info = all_test_info[name]
 
-        if cat and info.cat not in cat:
-            continue
+def list_tests(opts):
+    """ List tests """
 
-        if env:
-            for test_env in info.envs:
-                if test_env in env:
-                    break
-            else:
-                continue
+    if not opts.selection:
+        raise RunnerError("No tests selected")
 
-        print name
+    for sel in opts.selection:
+        print sel
 
 
 def run_test(test):
@@ -306,59 +419,7 @@ def run_test(test):
 def run_tests(opts):
     """ Run tests """
 
-    args = opts.args
-    all_test_info = get_all_test_info()
-    all_test_names = all_test_info.keys()
-
-    tests = []
-    # Interpret args as a list of tests
-    for arg in args:
-
-        # If arg is a recognised test name, run every environment
-        if arg in all_test_names:
-            tests.extend(all_test_info[arg].all_instances())
-            continue
-
-        # If arg is a recognised category, run every included test
-        if arg in all_categories:
-            for info in all_test_info.values():
-                if info.cat == arg:
-                    tests.extend(info.all_instances())
-            continue
-
-        # If arg is a recognised environment, run every included test
-        if arg in all_environments:
-            for info in all_test_info.values():
-                tests.extend(info.all_instances(env_filter = [arg]))
-            continue
-
-        parts = arg.split('-', 2)
-        parts_len = len(parts)
-
-        # If arg =~ test-$ENV-$NAME
-        if parts_len == 3 and parts[0] == "test":
-
-            # Recognised environment and test name?
-            if parts[1] in all_environments and parts[2] in all_test_names:
-                tests.append(arg)
-                continue
-
-            raise RunnerError("Unrecognised test '%s'" % (arg, ))
-
-        # If arg =~ $ENV-$NAME
-        if parts_len > 0 and parts[0] in all_environments:
-
-            name = "-".join(parts[1:])
-
-            if name in all_test_names:
-                tests.append("test-" + arg)
-                continue
-
-            raise RunnerError("Unrecognised test name '%s'" % (name, ))
-
-        # Otherwise, give up
-        raise RunnerError("Unrecognised test '%s'" % (arg, ))
-
+    tests = opts.selection
     if not len(tests):
         raise RunnerError("No tests to run")
 
@@ -367,7 +428,7 @@ def run_tests(opts):
 
     for test in tests:
 
-        res = run_test(TestInstance(test))
+        res = run_test(test)
         res_idx = all_results.index(res)
         if res_idx > rc:
             rc = res_idx
@@ -395,31 +456,56 @@ def main():
     OptionParser.format_epilog = lambda self, formatter: self.epilog
 
     parser = OptionParser(
-        usage = "%prog <TEST>* | --list [<FILTER>*]",
+        usage = "%prog [--list] <SELECTION> [options]",
         description = "Xen Test Framework enumeration and running tool",
         epilog = ("\n"
+                  "Overview:\n"
+                  "  Running with --list will print the entire selection\n"
+                  "  to the console.  Running without --list will execute\n"
+                  "  all tests in the selection, printing a summary of their\n"
+                  "  results at the end.\n"
+                  "\n"
+                  "Selections:\n"
+                  "  A selection is zero or more of any of the following\n"
+                  "  parameters: Categories, Environments and Tests.\n"
+                  "  Multiple instances of the same type of parameter are\n"
+                  "  unioned while the end result in intersected across\n"
+                  "  types.  e.g.\n"
+                  "\n"
+                  "    'functional xsa'\n"
+                  "       All tests in the functional and xsa categories\n"
+                  "\n"
+                  "    'functional xsa hvm32'\n"
+                  "       All tests in the functional and xsa categories\n"
+                  "       which are implemented for the hvm32 environment\n"
+                  "\n"
+                  "    'invlpg example'\n"
+                  "       The invlpg and example tests in all implemented\n"
+                  "       environments\n"
+                  "\n"
+                  "    'invlpg example pv'\n"
+                  "       The pv environments of the invlpg and example tests\n"
+                  "\n"
+                  "    'pv32pae-pv-iopl'\n"
+                  "       The pv32pae environment of the pv-iopl test only\n"
+                  "\n"
+                  "  Additionally, --host may be passed to restrict the\n"
+                  "  selection to tests applicable to the current host.\n"
+                  "\n"
+
                   "Examples:\n"
-                  "  Running tests:\n"
-                  "    ./xtf-runner test-hvm32-example test-pv64-example\n"
-                  "      <console ouput>\n"
-                  "    Combined test results:\n"
-                  "    test-hvm32-example                       SUCCESS\n"
-                  "    test-pv64-example                        SUCCESS\n"
+                  "  Listing all tests implemented for hvm32 environment:\n"
+                  "    ./xtf-runner --list hvm32\n"
+                  "\n"
+                  "  Listing all functional tests appropriate for this host:\n"
+                  "    ./xtf-runner --list functional --host\n"
+                  "\n"
+                  "  Running all the pv-iopl tests:\n"
                   "    ./xtf-runner pv-iopl\n"
                   "      <console ouput>\n"
                   "    Combined test results:\n"
                   "    test-pv64-pv-iopl                        SUCCESS\n"
                   "    test-pv32pae-pv-iopl                     SUCCESS\n"
-                  "\n"
-                  "  Listing available tests:\n"
-                  "    ./xtf-runner --list\n"
-                  "       List all tests\n"
-                  "    ./xtf-runner --list --host\n"
-                  "       List all tests applicable for the current host\n"
-                  "    ./xtf-runner --list functional special\n"
-                  "       List all 'functional' or 'special' tests\n"
-                  "    ./xtf-runner --list hvm64\n"
-                  "       List all 'hvm64' tests\n"
                   "\n"
                   "  Exit code for this script:\n"
                   "    0:    everything is ok\n"
@@ -432,7 +518,7 @@ def main():
 
     parser.add_option("-l", "--list", action = "store_true",
                       dest = "list_tests",
-                      help = "List available tests, optionally filtered",
+                      help = "List tests in the selection",
                       )
     parser.add_option("--host", action = "store_true",
                       dest = "host", help = "Restrict selection to applicable"
@@ -441,6 +527,8 @@ def main():
 
     opts, args = parser.parse_args()
     opts.args = args
+
+    opts.selection = interpret_selection(opts)
 
     if opts.list_tests:
         return list_tests(opts)
