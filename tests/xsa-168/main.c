@@ -13,10 +13,10 @@
  * for non-canonical addresses.  When using HAP, the instructions are not
  * intercepted, and dealt with by hardware.
  *
- * However with shadow paging, the instructions are intercepted to prevent
- * @#PF's from not-yet-populated shadows.  On VT-x hardware, this ends up
- * turning into a `invvpid` in Xen, which does suffer a @#GP on a
- * non-canonical address.
+ * However with shadow paging, the instructions are intercepted to allow the
+ * shadow subsystem to performance maintenance of the shadows themselves.  On
+ * VT-x hardware, this ends up turning into a `invvpid` in Xen, which does
+ * suffer a @#GP on a non-canonical address.
  *
  * To cause Xen to execute an `invvpid` instruction, the address (omitting the
  * sign extension) must be a small page.  This is covered in XTF because the

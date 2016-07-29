@@ -74,9 +74,9 @@
  *
  * This part of the test is applicable to non-paged environments.
  *
- * @todo Find a better way dealing with forced emulation.  Xen currently
- * crashes the domain if it finds an invlpg instruction while in hap mode,
- * which is unhelpful when trying to test behaviour.
+ * @todo Find a better way dealing with forced emulation.  Versions of Xen
+ * older than 4.7 crash the domain if they find an invlpg instruction while in
+ * hap mode, which is unhelpful when trying to test behaviour.
  *
  * @see tests/invlpg/main.c
  */

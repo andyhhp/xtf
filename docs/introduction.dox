@@ -152,12 +152,18 @@ with paths appropriate for the system under test.
 
 A test will by default write synchronously to all available consoles:
 
-    # xl create tests/example/test-hvm64-example.cfg
-    # cat /var/log/xen/console/guest-test-hvm64-example.log
+    # ./xtf-runner test-hvm64-example
+    Executing 'xl create -p tests/example/test-hvm64-example.cfg'
+    Parsing config from tests/example/test-hvm64-example.cfg
+    Executing 'xl console test-hvm64-example'
+    Executing 'xl unpause test-hvm64-example'
     --- Xen Test Framework ---
     Environment: HVM 64bit (Long mode 4 levels)
     Hello World
     Test result: SUCCESS
+
+    Combined test results:
+    test-hvm64-example                       SUCCESS
 
 The result is covered by the report.h API.  In short, the options are:
 
