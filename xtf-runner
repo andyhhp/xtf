@@ -41,6 +41,57 @@ all_environments = pv_environments + hvm_environments
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
 
+class TestInfo(object):
+    """ Object representing a tests info.json, in a more convenient form. """
+
+    def __init__(self, test_json):
+        """Parse and verify 'test_json'.
+
+        May raise KeyError, TypeError or ValueError.
+        """
+
+        name = test_json["name"]
+        if not isinstance(name, basestring):
+            raise TypeError("Expected string for 'name', got '%s'"
+                            % (type(name), ))
+        self.name = name
+
+        cat = test_json["category"]
+        if not isinstance(cat, basestring):
+            raise TypeError("Expected string for 'category', got '%s'"
+                            % (type(cat), ))
+        if not cat in all_categories:
+            raise ValueError("Unknown category '%s'" % (cat, ))
+        self.cat = cat
+
+        envs = test_json["environments"]
+        if not isinstance(envs, list):
+            raise TypeError("Expected list for 'environments', got '%s'"
+                            % (type(envs), ))
+        if not envs:
+            raise ValueError("Expected at least one environment")
+        for env in envs:
+            if not env in all_environments:
+                raise ValueError("Unknown environments '%s'" % (env, ))
+        self.envs = envs
+
+    def all_instances(self, env_filter = None):
+        """Return a list of test instances, for each supported environment.
+        Optionally filtered by env_filter.  May return an empty list if
+        the filter doesn't match any supported environment.
+        """
+
+        if env_filter:
+            envs = set(env_filter).intersection(self.envs)
+        else:
+            envs = self.envs
+
+        return [ "test-%s-%s" % (env, self.name) for env in envs ]
+
+    def __repr__(self):
+        return "TestInfo(%s)" % (self.name, )
+
+
 # Cached test json from disk
 _all_test_info = {}
 
@@ -54,7 +105,6 @@ def get_all_test_info():
     for test in os.listdir("tests"):
 
         info_file = None
-        test_json = {}
         try:
 
             # Ignore directories which don't have a info.json inside them
@@ -65,26 +115,15 @@ def get_all_test_info():
 
             # Ignore tests which have bad JSON
             try:
-                test_json = json.load(info_file)
-            except ValueError:
-                continue
+                test_info = TestInfo(json.load(info_file))
 
-            # Sanity check JSON fields and types
-            if (not isinstance(test_json.get("name", None), basestring) or
-                not isinstance(test_json.get("category", None), basestring) or
-                not isinstance(test_json.get("environments", None), list)):
-                continue
-
-            # Sanity check JSON values
-            if test_json["name"] != test:
-                continue
-            if test_json["category"] not in all_categories:
-                continue
-            for test_env in test_json["environments"]:
-                if test_env not in all_environments:
+                if test_info.name != test:
                     continue
 
-            _all_test_info[test] = test_json
+            except (ValueError, KeyError, TypeError):
+                continue
+
+            _all_test_info[test] = test_info
 
         finally:
             if info_file:
@@ -126,11 +165,11 @@ def list_tests(opts):
 
         info = all_test_info[name]
 
-        if cat and info["category"] not in cat:
+        if cat and info.cat not in cat:
             continue
 
         if env:
-            for test_env in info["environments"]:
+            for test_env in info.envs:
                 if test_env in env:
                     break
             else:
@@ -201,31 +240,20 @@ def run_tests(opts):
 
         # If arg is a recognised test name, run every environment
         if arg in all_test_names:
-
-            info = all_test_info[arg]
-
-            for env in info["environments"]:
-                tests.append("test-%s-%s" % (env, arg))
+            tests.extend(all_test_info[arg].all_instances())
             continue
 
         # If arg is a recognised category, run every included test
         if arg in all_categories:
-
-            for name, info in all_test_info.iteritems():
-
-                if info["category"] == arg:
-
-                    for env in info["environments"]:
-                        tests.append("test-%s-%s" % (env, name))
+            for info in all_test_info.values():
+                if info.cat == arg:
+                    tests.extend(info.all_instances())
             continue
 
         # If arg is a recognised environment, run every included test
         if arg in all_environments:
-
-            for name, info in all_test_info.iteritems():
-
-                if arg in info["environments"]:
-                    tests.append("test-%s-%s" % (arg, name))
+            for info in all_test_info.values():
+                tests.extend(info.all_instances(env_filter = [arg]))
             continue
 
         parts = arg.split('-', 2)
