@@ -1,0 +1,6 @@
+# C/C++ files
+*.[hc] diff=cpp
+
+# Python files
+*.py diff=python
+xtf-runner diff=python
