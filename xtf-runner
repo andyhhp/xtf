@@ -41,6 +41,34 @@ all_environments = pv_environments + hvm_environments
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
 
+class TestInstance(object):
+    """ Object representing a single test. """
+
+    def __init__(self, arg):
+        """ Parse and verify 'arg' as a test instance. """
+        self.env, self.name = parse_test_instance_string(arg)
+
+        if self.env is None:
+            raise RunnerError("No environment for '%s'" % (arg, ))
+
+    def vm_name(self):
+        """ Return the VM name as `xl` expects it. """
+        return repr(self)
+
+    def cfg_path(self):
+        """ Return the path to the `xl` config file for this test. """
+        return path.join("tests", self.name, repr(self) + ".cfg")
+
+    def __repr__(self):
+        return "test-%s-%s" % (self.env, self.name)
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __cmp__(self, other):
+        return cmp(repr(self), repr(other))
+
+
 class TestInfo(object):
     """ Object representing a tests info.json, in a more convenient form. """
 
@@ -90,6 +118,59 @@ class TestInfo(object):
 
     def __repr__(self):
         return "TestInfo(%s)" % (self.name, )
+
+
+def parse_test_instance_string(arg):
+    """Parse a test instance string.
+
+    Has the form: '[[test-]$ENV-]$NAME'
+
+    Optional 'test-' prefix
+    Optional $ENV environment part
+    Mandatory $NAME
+
+    Verifies:
+      - $NAME is valid
+      - if $ENV, it is valid for $NAME
+
+    Returns: tuple($ENV or None, $NAME)
+    """
+
+    all_tests = get_all_test_info()
+
+    parts = arg.split('-', 2)
+    parts_len = len(parts)
+
+    # If arg =~ test-$ENV-$NAME
+    if parts_len == 3 and parts[0] == "test" and parts[1] in all_environments:
+        _, env, name = parts
+
+    # If arg =~ $ENV-$NAME
+    elif parts_len > 0 and parts[0] in all_environments:
+        env, name = parts[0], "-".join(parts[1:])
+
+    # If arg =~ $NAME
+    elif arg in all_tests:
+        env, name = None, arg
+
+    # Otherwise, give up
+    else:
+        raise RunnerError("Unrecognised test '%s'" % (arg, ))
+
+    # At this point, 'env' has always been checked for plausibility.  'name'
+    # might not be
+
+    if name not in all_tests:
+        raise RunnerError("Unrecognised test name '%s' for '%s'"
+                          % (name, arg))
+
+    info = all_tests[name]
+
+    if env and env not in info.envs:
+        raise RunnerError("Test '%s' has no environment '%s'"
+                          % (name, env))
+
+    return env, name
 
 
 # Cached test json from disk
@@ -181,22 +262,17 @@ def list_tests(opts):
 def run_test(test):
     """ Run a specific test """
 
-    _, _, name = test.split('-', 2)
-
-    cfg = path.join("tests", name, test + ".cfg")
-
-    cmd = ['xl', 'create', '-p', cfg]
-
+    cmd = ['xl', 'create', '-p', test.cfg_path()]
     print "Executing '%s'" % (" ".join(cmd), )
     rc = subproc_call(cmd)
     if rc:
         raise RunnerError("Failed to create VM")
 
-    cmd = ['xl', 'console', test]
+    cmd = ['xl', 'console', test.vm_name()]
     print "Executing '%s'" % (" ".join(cmd), )
     console = Popen(cmd, stdout = PIPE)
 
-    cmd = ['xl', 'unpause', test]
+    cmd = ['xl', 'unpause', test.vm_name()]
     print "Executing '%s'" % (" ".join(cmd), )
     rc = subproc_call(cmd)
     if rc:
@@ -291,7 +367,7 @@ def run_tests(opts):
 
     for test in tests:
 
-        res = run_test(test)
+        res = run_test(TestInstance(test))
         res_idx = all_results.index(res)
         if res_idx > rc:
             rc = res_idx
