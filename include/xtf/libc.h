@@ -15,12 +15,14 @@
  */
 
 #define strlen(s)                   __builtin_strlen(s)
+#define strcmp(s1, s2)              __builtin_strcmp(s1, s2)
 #define memset(d, c, n)             __builtin_memset(d, c, n)
 #define memcpy(d, s, n)             __builtin_memcpy(d, s, n)
 #define memcmp(s1, s2, n)           __builtin_memcmp(s1, s2, n)
 
 size_t strlen(const char *str);
 size_t strnlen(const char *str, size_t max);
+int strcmp(const char *s1, const char *s2);
 void *memset(void *s, int c, size_t n);
 void *memcpy(void *dst, const void *src, size_t n);
 int memcmp(const void *s1, const void *s2, size_t n);

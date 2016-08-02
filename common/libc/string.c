@@ -1,4 +1,4 @@
-#include <string.h>
+#include <xtf/libc.h>
 
 size_t strlen(const char *str)
 {
@@ -18,6 +18,18 @@ size_t strnlen(const char *str, size_t max)
         ++s;
 
     return s - str;
+}
+
+int strcmp(const char *_s1, const char *_s2)
+{
+    char s1, s2;
+
+    do {
+        s1 = *_s1++;
+        s2 = *_s2++;
+    } while ( s1 && s1 == s2 );
+
+    return (s1 < s2) ? -1 : (s1 > s2);
 }
 
 void *memset(void *s, int c, size_t n)
