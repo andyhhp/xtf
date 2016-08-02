@@ -145,6 +145,8 @@ static void run_test(const struct test *t)
 {
     unsigned int i, iopl;
 
+    xtf_exlog_start();
+
     for ( iopl = 0; iopl <= 3; ++iopl )
     {
         /* vIOPL 2 is not interesting to test. */
@@ -169,6 +171,8 @@ static void run_test(const struct test *t)
             check();
         }
     }
+
+    xtf_exlog_stop();
 }
 
 static void hypercall_set_iopl(unsigned int iopl)
@@ -242,21 +246,33 @@ static const struct test vmassist =
 
 void test_main(void)
 {
+    const struct test *test;
+
     printk("PV IOPL emulation\n");
 
-    xtf_exlog_start();
+    /**
+     * @todo Implement better command line infrastructure, but this will do
+     * for now.
+     */
+    if ( !strcmp((char *)start_info->cmd_line, "hypercall") )
+    {
+        printk("Test: PHYSDEVOP_set_iopl\n");
+        test = &hypercall;
+    }
+    else if ( !strcmp((char *)start_info->cmd_line, "vmassist") )
+    {
+        if ( hypercall_vm_assist(VMASST_CMD_enable,
+                                 VMASST_TYPE_architectural_iopl) )
+            return xtf_skip("VMASST_TYPE_architectural_iopl not detected\n");
 
-    printk("Test: PHYSDEVOP_set_iopl\n");
-    run_test(&hypercall);
+        printk("Test: VMASST_TYPE_architectural_iopl\n");
+        test = &vmassist;
+    }
+    else
+        return xtf_error("Unknown test to run\n");
 
-    if ( hypercall_vm_assist(VMASST_CMD_enable,
-                             VMASST_TYPE_architectural_iopl) )
-        return xtf_skip("VMASST_TYPE_architectural_iopl not detected\n");
-
-    printk("Test: VMASST_TYPE_architectural_iopl\n");
-    run_test(&vmassist);
-
-    xtf_exlog_stop();
+    /* Run the chosen test. */
+    run_test(test);
     xtf_success(NULL);
 }
 

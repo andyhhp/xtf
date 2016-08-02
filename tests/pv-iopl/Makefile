@@ -4,6 +4,8 @@ NAME      := pv-iopl
 CATEGORY  := functional
 TEST-ENVS := $(PV_ENVIRONMENTS)
 
+VARY-CFG  := hypercall vmassist
+
 obj-perenv += main.o asm.o
 
 include $(ROOT)/build/gen.mk
