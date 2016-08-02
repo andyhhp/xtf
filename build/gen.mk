@@ -78,9 +78,9 @@ install-$(1): test-$(1)-$(NAME)
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
 	$(INSTALL_PROGRAM) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
 
-install-$(1).cfg: $(TEST-CFGS)
+install-$(1).cfg: $(filter test-$(1)-%,$(TEST-CFGS))
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
-	$(INSTALL_DATA) $$< $(DESTDIR)$(xtftestdir)/$(NAME)
+	$(INSTALL_DATA) $$^ $(DESTDIR)$(xtftestdir)/$(NAME)
 
 install-each-env: install-$(1) install-$(1).cfg
 
