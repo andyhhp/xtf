@@ -9,9 +9,14 @@ _, out, name, cat, envs, variations = sys.argv
 template = {
     "name": name,
     "category": cat,
-    "environments": envs.split(" "),
-    "variations": variations.split(" "),
+    "environments": [],
+    "variations": [],
     }
+
+if envs:
+    template["environments"] = envs.split(" ")
+if variations:
+    template["variations"] = variations.split(" ")
 
 open(out, "w").write(
     json.dumps(template, indent=4, separators=(',', ': '))
