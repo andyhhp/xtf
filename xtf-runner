@@ -337,14 +337,16 @@ def interpret_selection(opts):
 
     args = set(opts.args)
 
-    # No input? No selection.
-    if not args:
-        return []
-
     # First, filter into large buckets
     cats   = all_categories   & args
     envs   = all_environments & args
     others = args - cats - envs
+
+    # Add all categories if --all or --non-default is passed
+    if opts.all:
+        cats |= default_categories
+    if opts.non_default:
+        cats |= non_default_categories
 
     # Allow "pv" and "hvm" as a combination of environments
     if "pv" in others:
@@ -354,6 +356,10 @@ def interpret_selection(opts):
     if "hvm" in others:
         envs |= hvm_environments
         others -= {"hvm"}
+
+    # No input? No selection.
+    if not cats and not envs and not others:
+        return []
 
     all_tests = get_all_test_info()
     tests = []
@@ -533,8 +539,10 @@ def main():
                   "\n"
                   "  Additionally, --host may be passed to restrict the\n"
                   "  selection to tests applicable to the current host.\n"
+                  "  --all may be passed to choose all default categories\n"
+                  "  without needing to explicitly name them.  --non-default\n"
+                  "  is available to obtain the non-default categories.\n"
                   "\n"
-
                   "Examples:\n"
                   "  Listing all tests implemented for hvm32 environment:\n"
                   "    ./xtf-runner --list hvm32\n"
@@ -561,6 +569,14 @@ def main():
     parser.add_option("-l", "--list", action = "store_true",
                       dest = "list_tests",
                       help = "List tests in the selection",
+                      )
+    parser.add_option("-a", "--all", action = "store_true",
+                      dest = "all",
+                      help = "Select all default categories",
+                      )
+    parser.add_option("--non-default", action = "store_true",
+                      dest = "non_default",
+                      help = "Select all non default categories",
                       )
     parser.add_option("--host", action = "store_true",
                       dest = "host", help = "Restrict selection to applicable"
