@@ -8,6 +8,18 @@
 #include <xen/xen.h>
 
 /*
+ * Terminology (inherited from Xen):
+ *
+ *   GFN - Guest Frame Number
+ *           What a guest writes into its pagetables.
+ *   MFN - Machine Frame Number
+ *           What Xen writes into its pagetables.
+ *   PFN - Pseudophysical Frame Number
+ *           A linear idea of a guests physical address space.
+ *
+ * For HVM, PFN == GFN, and MFN is strictly irrelevent.
+ * For PV,  MFN == GFN != PFN.
+ *
  * XTF memory layout.
  *
  * Wherever possible, identity layout for simplicity.
@@ -59,6 +71,24 @@ static inline unsigned long virt_to_mfn(const void *va)
 #undef m2p
 
 #endif /* CONFIG_PV */
+
+static inline void *gfn_to_virt(unsigned long gfn)
+{
+#if defined(CONFIG_PV)
+    return mfn_to_virt(gfn);
+#else
+    return pfn_to_virt(gfn);
+#endif
+}
+
+static inline unsigned long virt_to_gfn(const void *va)
+{
+#if defined(CONFIG_PV)
+    return virt_to_mfn(va);
+#else
+    return virt_to_pfn(va);
+#endif
+}
 
 #endif /* XTF_X86_MM_H */
 

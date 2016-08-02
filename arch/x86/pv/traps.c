@@ -6,7 +6,7 @@
 #include <arch/x86/lib.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
-#include <arch/x86/mm.h>
+#include <arch/x86/pagetable.h>
 #include <arch/x86/symbolic-const.h>
 
 /* Real entry points */

@@ -144,25 +144,6 @@ static inline unsigned int l4_table_offset(unsigned long va)
 
 #endif /* CONFIG_PAGING_LEVELS >= 4 */
 
-#if CONFIG_PAGING_LEVELS > 0
-
-static inline paddr_t pte_to_paddr(intpte_t pte)
-{
-    return pte & PADDR_MASK & PAGE_MASK;
-}
-
-static inline intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags)
-{
-    return paddr | flags;
-}
-
-static inline intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags)
-{
-    return pte_from_paddr((paddr_t)gfn << PAGE_SHIFT, flags);
-}
-
-#endif /* CONFIG_PAGING_LEVELS > 0 */
-
 #ifdef CONFIG_HVM
 
 extern pae_intpte_t pae_l1_identmap[PAE_L1_PT_ENTRIES];
