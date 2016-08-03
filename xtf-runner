@@ -413,6 +413,12 @@ def interpret_selection(opts):
 def list_tests(opts):
     """ List tests """
 
+    if opts.environments:
+        # The caller only wants the environment list
+        for env in sorted(all_environments):
+            print env
+        return
+
     if not opts.selection:
         raise RunnerError("No tests selected")
 
@@ -543,6 +549,10 @@ def main():
                   "  without needing to explicitly name them.  --non-default\n"
                   "  is available to obtain the non-default categories.\n"
                   "\n"
+                  "  The special parameter --environments may be passed to\n"
+                  "  get the full list of environments.  This option does not\n"
+                  "  make sense combined with a selection.\n"
+                  "\n"
                   "Examples:\n"
                   "  Listing all tests implemented for hvm32 environment:\n"
                   "    ./xtf-runner --list hvm32\n"
@@ -577,6 +587,10 @@ def main():
     parser.add_option("--non-default", action = "store_true",
                       dest = "non_default",
                       help = "Select all non default categories",
+                      )
+    parser.add_option("--environments", action = "store_true",
+                      dest = "environments",
+                      help = "List all the known environments",
                       )
     parser.add_option("--host", action = "store_true",
                       dest = "host", help = "Restrict selection to applicable"
