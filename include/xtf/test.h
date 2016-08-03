@@ -33,6 +33,12 @@ extern bool xtf_has_fep;
  */
 extern bool test_wants_user_mappings;
 
+/**
+ * Boolean indicating whether the test is entirely predicated on the available
+ * of the Force Emulation Prefix.
+ */
+extern bool test_needs_fep;
+
 #endif /* XTF_TEST_H */
 
 /*

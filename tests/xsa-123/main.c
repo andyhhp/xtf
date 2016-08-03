@@ -29,14 +29,13 @@
  */
 #include <xtf.h>
 
+bool test_needs_fep = true;
+
 void test_main(void)
 {
     unsigned long src = 0x1234, dest = 0;
 
     printk("XSA-123 PoC\n");
-
-    if ( !xtf_has_fep )
-        return xtf_error("Error: FEP not available\n");
 
     asm volatile(_ASM_XEN_FEP
                  /* Explicit %cs segment override. */

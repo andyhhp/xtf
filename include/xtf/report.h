@@ -67,6 +67,11 @@ void xtf_failure(const char *fmt, ...) __printf(1, 2);
  */
 void xtf_report_status(void);
 
+/**
+ * Query whether a status has already been reported.
+ */
+bool xtf_status_reported(void);
+
 #endif /* XTF_REPORT_H */
 
 /*

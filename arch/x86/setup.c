@@ -1,6 +1,7 @@
 #include <xtf/lib.h>
 #include <xtf/hypercall.h>
 #include <xtf/extable.h>
+#include <xtf/report.h>
 
 #include <arch/x86/cpuid.h>
 #include <arch/x86/desc.h>
@@ -197,6 +198,18 @@ void arch_setup(void)
  */
 bool xtf_has_fep = false;
 
+/*
+ * Default weak settings.
+ *
+ * test_wants_* indicates default settings for the framework, which may be
+ * overridden by individual tests by providing non-weak variables.
+ *
+ * test_needs_* indicates options required by the test, without which the test
+ * isn't worth running.
+ */
+bool __weak test_wants_user_mappings = false;
+bool __weak test_needs_fep = false;
+
 void test_setup(void)
 {
     /*
@@ -204,21 +217,15 @@ void test_setup(void)
      * xtf_has_fep to the value of 1.  Use the exception table to compensate
      * for the #UD exception if FEP is not available.
      */
-    asm volatile ("xor %0, %0;"
-                  "1:" _ASM_XEN_FEP
-                  "mov $1, %0;"
+    asm volatile ("1:" _ASM_XEN_FEP "mov $1, %[fep];"
                   "2:"
                   _ASM_EXTABLE(1b, 2b)
-                  : "=q" (xtf_has_fep));
-}
+                  : [fep] "=q" (xtf_has_fep)
+                  : "0" (false));
 
-/*
- * Default weak settings.
- *
- * test_wants_* indicates default settings for the framework, which may be
- * overridden by individual tests by providing non-weak variables.
- */
-bool __weak test_wants_user_mappings = false;
+    if ( test_needs_fep && !xtf_has_fep )
+        return xtf_skip("FEP unavailable, but needed by test\n");
+}
 
 /*
  * Local variables:

@@ -116,6 +116,11 @@ void xtf_report_status(void)
            " with warnings" : "");
 }
 
+bool xtf_status_reported(void)
+{
+    return status != STATUS_RUNNING;
+}
+
 /*
  * Local variables:
  * mode: C

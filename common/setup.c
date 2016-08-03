@@ -26,7 +26,10 @@ void __noreturn xtf_main(void)
 
     test_setup();
 
-    test_main();
+    if ( !xtf_status_reported() )
+    {
+        test_main();
+    }
 
     xtf_report_status();
 
