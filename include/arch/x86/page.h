@@ -96,6 +96,8 @@
 typedef uint64_t paddr_t;
 #define PRIpaddr "016"PRIx64
 
+#if CONFIG_PAGING_LEVELS > 0 /* Some form of pagetables. */
+
 #if CONFIG_PAGING_LEVELS == 2 /* PSE Paging */
 
 typedef pse_intpte_t intpte_t;
@@ -143,6 +145,14 @@ static inline unsigned int l4_table_offset(unsigned long va)
 }
 
 #endif /* CONFIG_PAGING_LEVELS >= 4 */
+
+#else /* CONFIG_PAGING_LEVELS > 0 */
+
+/* Enough compatibility to compile in unpaged environments. */
+typedef unsigned long intpte_t;
+#define PRIpte "08lx"
+
+#endif
 
 #ifdef CONFIG_HVM
 

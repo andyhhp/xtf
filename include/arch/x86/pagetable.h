@@ -25,7 +25,15 @@ static inline intpte_t pte_from_virt(const void *va, uint64_t flags)
     return pte_from_paddr((paddr_t)virt_to_gfn(va) << PAGE_SHIFT, flags);
 }
 
-#endif /* CONFIG_PAGING_LEVELS > 0 */
+#else /* CONFIG_PAGING_LEVELS > 0 */
+
+/* Enough compatibility to compile in unpaged environments. */
+extern paddr_t pte_to_paddr(intpte_t pte);
+extern intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags);
+extern intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags);
+extern intpte_t pte_from_virt(const void *va, uint64_t flags);
+
+#endif
 
 #endif /* XTF_X86_PAGETABLE_H */
 

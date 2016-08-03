@@ -16,6 +16,7 @@
 #if defined(CONFIG_ENV_pv64)
 
 #define CONFIG_PV 1
+#define CONFIG_64BIT 1
 #define CONFIG_PAGING_LEVELS 4
 #define ENVIRONMENT_DESCRIPTION "PV 64bit (Long mode 4 levels)"
 
@@ -24,6 +25,7 @@
 #elif defined(CONFIG_ENV_pv32pae)
 
 #define CONFIG_PV 1
+#define CONFIG_32BIT 1
 #define CONFIG_PAGING_LEVELS 3
 #define ENVIRONMENT_DESCRIPTION "PV 32bit (PAE 3 levels)"
 
@@ -32,6 +34,7 @@
 #elif defined(CONFIG_ENV_hvm64)
 
 #define CONFIG_HVM 1
+#define CONFIG_64BIT 1
 #define CONFIG_PAGING_LEVELS 4
 #define ENVIRONMENT_DESCRIPTION "HVM 64bit (Long mode 4 levels)"
 
@@ -40,6 +43,7 @@
 #elif defined(CONFIG_ENV_hvm32pae)
 
 #define CONFIG_HVM 1
+#define CONFIG_32BIT 1
 #define CONFIG_PAGING_LEVELS 3
 #define ENVIRONMENT_DESCRIPTION "HVM 32bit (PAE 3 levels)"
 
@@ -48,6 +52,7 @@
 #elif defined(CONFIG_ENV_hvm32pse)
 
 #define CONFIG_HVM 1
+#define CONFIG_32BIT 1
 #define CONFIG_PAGING_LEVELS 2
 #define ENVIRONMENT_DESCRIPTION "HVM 32bit (PSE 2 levels)"
 
@@ -56,6 +61,7 @@
 #elif defined(CONFIG_ENV_hvm32)
 
 #define CONFIG_HVM 1
+#define CONFIG_32BIT 1
 #define CONFIG_PAGING_LEVELS 0
 #define ENVIRONMENT_DESCRIPTION "HVM 32bit (No paging)"
 
