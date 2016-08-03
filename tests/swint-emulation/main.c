@@ -370,8 +370,12 @@ void test_main(void)
 {
     printk("Trap emulation\n");
 
+    /*
+     * Even if FEP is unavailable, run the tests against real hardware to
+     * check the algorithm, but don't claim overall success.
+     */
     if ( !xtf_has_fep )
-        xtf_warning("Warning: FEP support not detected - some tests will be skipped\n");
+        xtf_skip("FEP support not detected - some tests will be skipped\n");
 
     /* Setup.  Hook unhandled exceptions for debugging purposes. */
     xtf_unhandled_exception_hook = unhandled_exception;

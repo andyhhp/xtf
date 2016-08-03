@@ -16,8 +16,9 @@
  *  - Failure
  *
  * 'Success' indicates that everything went well, while 'Skip' indicates that
- * the test cannot be completed.  'Error' indicates a bug in the test code or
- * environment itself, while 'Failure' indicates a bug in the code under test.
+ * the test cannot be completed for configuration reasons.  'Error' indicates
+ * a bug in the test code or environment itself, while 'Failure' indicates a
+ * bug in the code under test.
  *
  * If multiple statuses are reported, the most severe is the one which is
  * kept.

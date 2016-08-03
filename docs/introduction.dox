@@ -170,7 +170,7 @@ The result is covered by the report.h API.  In short, the options are:
 - Success
     - The test passed.
 - Skip
-    - The test cannot be completed (likely a configuration issue).
+    - The test cannot be completed for configuration reasons.
 - Error
     - An error in the environment or test code itself.
 - Failure
