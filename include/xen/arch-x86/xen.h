@@ -52,6 +52,7 @@ struct xen_trap_info {
 #define _ASM_XEN_FEP ud2a; .ascii "xen";
 #else
 #define _ASM_XEN_FEP "ud2a; .ascii \"xen\";"
+#define _BIN_XEN_FEP "\x0f\x0bxen"
 #endif
 
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_H */
