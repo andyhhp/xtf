@@ -41,6 +41,9 @@ Coveres XSA-106 and XSA-156.
 @subpage test-xsa-183 - x86: Missing SMAP whitelisting in 32-bit exception /
 event delivery.
 
+@subpage test-xsa-185 - x86: Disallow L3 recursive pagetable for 32-bit PV
+guests.
+
 @subpage test-xsa-186 - x86: Mishandling of instruction pointer truncation
 during emulation.
 
