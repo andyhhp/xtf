@@ -1,4 +1,4 @@
-#include <xtf/libc.h>
+#include <xtf/types.h>
 
 size_t strlen(const char *str)
 {
