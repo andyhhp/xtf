@@ -426,8 +426,8 @@ def list_tests(opts):
         print sel
 
 
-def run_test(test):
-    """ Run a specific test """
+def run_test_console(_, test):
+    """ Run a specific, obtaining results via xenconsole """
 
     cmd = ['xl', 'create', '-p', test.cfg_path()]
     print "Executing '%s'" % (" ".join(cmd), )
@@ -470,6 +470,50 @@ def run_test(test):
     return "ERROR"
 
 
+def run_test_logfile(opts, test):
+    """ Run a specific test, obtaining results from a logfile """
+
+    logpath = path.join(opts.logfile_dir,
+                        opts.logfile_pattern.replace("%s", str(test)))
+
+    print "Using logfile '%s'" % (logpath, )
+
+    fd = os.open(logpath, os.O_CREAT | os.O_RDONLY, 0644)
+    logfile = os.fdopen(fd)
+    logfile.seek(0, os.SEEK_END)
+
+    cmd = ['xl', 'create', '-F', test.cfg_path()]
+    print "Executing '%s'" % (" ".join(cmd), )
+    guest = Popen(cmd, stdout = PIPE, stderr = PIPE)
+
+    _, stderr = guest.communicate()
+
+    if guest.returncode:
+        print stderr
+        raise RunnerError("Failed to run test")
+
+    line = ""
+    for line in logfile.readlines():
+
+        line = line.rstrip()
+        print line
+
+        if "Test result:" in line:
+            break
+
+    logfile.close()
+
+    if not "Test result:" in line:
+        return "ERROR"
+
+    for res in all_results:
+
+        if res in line:
+            return res
+
+    return "ERROR"
+
+
 def run_tests(opts):
     """ Run tests """
 
@@ -477,12 +521,19 @@ def run_tests(opts):
     if not len(tests):
         raise RunnerError("No tests to run")
 
+    run_test = { "console": run_test_console,
+                 "logfile": run_test_logfile,
+    }.get(opts.results_mode, None)
+
+    if run_test is None:
+        raise RunnerError("Unknown mode '%s'" % (opts.mode, ))
+
     rc = all_results.index('SUCCESS')
     results = []
 
     for test in tests:
 
-        res = run_test(test)
+        res = run_test(opts, test)
         res_idx = all_results.index(res)
         if res_idx > rc:
             rc = res_idx
@@ -518,6 +569,17 @@ def main():
                   "  to the console.  Running without --list will execute\n"
                   "  all tests in the selection, printing a summary of their\n"
                   "  results at the end.\n"
+                  "\n"
+                  "  To determine how runner should get output from Xen, use\n"
+                  '  --results-mode option. The default value is "console", \n'
+                  "  which means using xenconsole program to extract output.\n"
+                  '  The other supported value is "logfile", which\n'
+                  "  means to get output from log file.\n"
+                  "\n"
+                  '  The "logfile" mode requires users to configure\n'
+                  "  xenconsoled to log guest console output. This mode\n"
+                  "  is useful for Xen version < 4.8. Also see --logfile-dir\n"
+                  "  and --logfile-pattern options.\n"
                   "\n"
                   "Selections:\n"
                   "  A selection is zero or more of any of the following\n"
@@ -595,6 +657,22 @@ def main():
     parser.add_option("--host", action = "store_true",
                       dest = "host", help = "Restrict selection to applicable"
                       " tests for the current host",
+                      )
+    parser.add_option("-m", "--results-mode", action = "store",
+                      dest = "results_mode", default = "console",
+                      type = "choice", choices = ("console", "logfile"),
+                      help = "Control how xtf-runner gets its test results")
+    parser.add_option("--logfile-dir", action = "store",
+                      dest = "logfile_dir", default = "/var/log/xen/console/",
+                      type = "string",
+                      help = ('Specify the directory to look for console logs, '
+                              'defaults to "/var/log/xen/console/"'),
+                      )
+    parser.add_option("--logfile-pattern", action = "store",
+                      dest = "logfile_pattern", default = "guest-%s.log",
+                      type = "string",
+                      help = ('Specify the log file name pattern, '
+                              'defaults to "guest-%s.log"'),
                       )
 
     opts, args = parser.parse_args()
