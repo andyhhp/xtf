@@ -5,7 +5,9 @@
 @section intro Introduction
 
 This is both a framework for creating microkernel-based tests, and a suite of
-tests built using the framework.
+tests built using the framework.  (This is not the Xen Project's CI /
+Continuous Integration / automated push gate system.  For that, see
+[OSSTest](https://wiki.xenproject.org/wiki/Osstest).)
 
 The microkernel boots, runs a set of related tests, and report the overall
 status on the configured consoles.  Automating a suite of tests simply
@@ -38,7 +40,7 @@ Requirements:
 
 To obtain and build:
 
-    $ git clone git://xenbits.xen.org/people/andrewcoop/xen-test-framework.git
+    $ git clone git://xenbits.xen.org/xtf.git
     $ cd xen-test-framework
     $ make -j4
 
