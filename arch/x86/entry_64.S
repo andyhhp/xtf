@@ -110,7 +110,7 @@ ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
 
 ENDFUNC(entry_ret_to_kernel)
 
-ENTRY(exec_user)                /* void (*fn)(void) */
+ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
 
         push $__USER_DS         /* SS */
         push %rsp
@@ -126,11 +126,17 @@ ENTRY(exec_user)                /* void (*fn)(void) */
 
         env_IRETQ               /* Drop to user privilege. */
 1:
-        call *%rdi              /* fn() */
+        xchg %rdi, %rsi         /* Swap p1 to be first parameter to fn(). */
+        call *%rsi              /* fn(p1) */
 
         int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
         ret
 
+ENDFUNC(exec_user_param)
+
+ENTRY(exec_user)                /* ulong (*fn)(ulong) */
+        mov $0xdead0000, %esi   /* Poison unused p1. */
+        jmp exec_user_param
 ENDFUNC(exec_user)
 
 /*

@@ -67,6 +67,10 @@ static inline void exec_user_void(void (*fn)(void))
     exec_user((void *)fn);
 }
 
+/* Execute fn(p1) at user privilege. */
+unsigned long exec_user_param(unsigned long (*fn)(unsigned long),
+                              unsigned long p1);
+
 /**
  * Probe for the SYSCTL_INTERFACE_VERSION in use by the hypervisor
  * @returns version, or -1 on failure.

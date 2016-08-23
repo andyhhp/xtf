@@ -109,7 +109,12 @@ ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
 
 ENDFUNC(entry_ret_to_kernel)
 
-ENTRY(exec_user)                /* void (*fn)(void) */
+ENTRY(exec_user_param)
+        /*
+         * 2*4(%esp) ulong p1
+         * 1*4(%esp) ulong (*fn)(ulong)
+         * 0*4(%esp) return address
+         */
 
         push $__USER_DS         /* SS */
         push %esp
@@ -125,11 +130,25 @@ ENTRY(exec_user)                /* void (*fn)(void) */
 
         env_IRET                /* Drop to user privilege. */
 1:
-        call *4(%esp)           /* fn() */
+        push 2*4(%esp)          /* Re-push p1 for fn()'s call frame. */
+        call *(1+1)*4(%esp)     /* fn(p1) */
+        add $1*4, %esp          /* Pop p1. */
 
         int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
         ret
 
+ENDFUNC(exec_user_param)
+
+ENTRY(exec_user)
+        /*
+         * 1*4(%esp) ulong (*fn)(ulong)
+         * 0*4(%esp) return address
+         */
+        push $0xdead0000        /* Poison unused p1. */
+        push (1+1)*4(%esp)      /* Re-push fn for exec_user_param()'s call frame. */
+        call exec_user_param
+        add $2*4, %esp          /* Pop fn/p1. */
+        ret
 ENDFUNC(exec_user)
 
 /*
