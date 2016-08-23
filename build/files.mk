@@ -16,6 +16,7 @@ obj-perarch += $(ROOT)/common/setup.o
 
 obj-perenv += $(ROOT)/arch/x86/decode.o
 obj-perenv += $(ROOT)/arch/x86/desc.o
+obj-perenv += $(ROOT)/arch/x86/extable.o
 obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
 obj-perenv += $(ROOT)/arch/x86/setup.o
 obj-perenv += $(ROOT)/arch/x86/traps.o
