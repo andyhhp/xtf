@@ -17,6 +17,25 @@
 
 #define __HYPERVISOR_VIRT_START_PAE 0xF5800000UL
 
+#ifndef __ASSEMBLY__
+
+/*
+ * Page-directory addresses above 4GB do not fit into architectural %cr3.
+ * When accessing %cr3, or equivalent field in vcpu_guest_context, guests
+ * must use the following accessor macros to pack/unpack valid MFNs.
+ */
+static inline unsigned int xen_pfn_to_cr3(unsigned int pfn)
+{
+    return pfn << 12 | pfn >> 20;
+}
+
+static inline unsigned int xen_cr3_to_pfn(unsigned int cr3)
+{
+    return cr3 >> 12 | cr3 << 20;
+}
+
+#endif /* __ASSEMBLY__ */
+
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_X86_32_H */
 
 /*
