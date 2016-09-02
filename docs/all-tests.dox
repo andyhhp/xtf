@@ -39,6 +39,8 @@ Coveres XSA-106 and XSA-156.
 @subpage test-xsa-183 - x86: Missing SMAP whitelisting in 32-bit exception /
 event delivery.
 
+@subpage test-xsa-188 - use after free in FIFO event channel code.
+
 
 @section index-utility Utilities
 
