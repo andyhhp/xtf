@@ -10,7 +10,7 @@ Currently assumes the presence and availability of the `xl` toolstack.
 import sys, os, os.path as path
 
 from optparse import OptionParser
-from subprocess import Popen, PIPE, call as subproc_call, check_output
+from subprocess import Popen, PIPE, call as subproc_call
 
 try:
     import json
@@ -19,7 +19,7 @@ except ImportError:
 
 # All results of a test, keep in sync with C code report.h.
 # Note that warning is not a result on its own.
-all_results = ('SUCCESS', 'SKIP', 'ERROR', 'FAILURE')
+all_results = ['SUCCESS', 'SKIP', 'ERROR', 'FAILURE']
 
 # Return the exit code for different states.  Avoid using 1 and 2 because
 # python interpreter uses them -- see document for sys.exit.
@@ -32,13 +32,13 @@ def exit_code(state):
     }.get(state, 4)
 
 # All test categories
-default_categories     = {"functional", "xsa"}
-non_default_categories = {"special", "utility"}
+default_categories     = set(("functional", "xsa"))
+non_default_categories = set(("special", "utility"))
 all_categories         = default_categories | non_default_categories
 
 # All test environments
-pv_environments        = {"pv64", "pv32pae"}
-hvm_environments       = {"hvm64", "hvm32pae", "hvm32pse", "hvm32"}
+pv_environments        = set(("pv64", "pv32pae"))
+hvm_environments       = set(("hvm64", "hvm32pae", "hvm32pse", "hvm32"))
 all_environments       = pv_environments | hvm_environments
 
 
@@ -351,11 +351,11 @@ def interpret_selection(opts):
     # Allow "pv" and "hvm" as a combination of environments
     if "pv" in others:
         envs |= pv_environments
-        others -= {"pv"}
+        others -= set(("pv", ))
 
     if "hvm" in others:
         envs |= hvm_environments
-        others -= {"hvm"}
+        others -= set(("hvm", ))
 
     # No input? No selection.
     if not cats and not envs and not others:
@@ -386,7 +386,10 @@ def interpret_selection(opts):
 
         host_envs = []
 
-        for line in check_output(['xl', 'info']).splitlines():
+        cmd = Popen(['xl', 'info'], stdout = PIPE)
+        stdout, _ = cmd.communicate()
+
+        for line in stdout.splitlines():
             if not line.startswith("xen_caps"):
                 continue
 
@@ -403,7 +406,7 @@ def interpret_selection(opts):
 
             break
 
-        selection = tests_from_selection(cats = {},
+        selection = tests_from_selection(cats = set(),
                                          envs = set(host_envs),
                                          tests = selection)
 
@@ -563,79 +566,84 @@ def main():
     parser = OptionParser(
         usage = "%prog [--list] <SELECTION> [options]",
         description = "Xen Test Framework enumeration and running tool",
-        epilog = ("\n"
-                  "Overview:\n"
-                  "  Running with --list will print the entire selection\n"
-                  "  to the console.  Running without --list will execute\n"
-                  "  all tests in the selection, printing a summary of their\n"
-                  "  results at the end.\n"
-                  "\n"
-                  "  To determine how runner should get output from Xen, use\n"
-                  '  --results-mode option. The default value is "console", \n'
-                  "  which means using xenconsole program to extract output.\n"
-                  '  The other supported value is "logfile", which\n'
-                  "  means to get output from log file.\n"
-                  "\n"
-                  '  The "logfile" mode requires users to configure\n'
-                  "  xenconsoled to log guest console output. This mode\n"
-                  "  is useful for Xen version < 4.8. Also see --logfile-dir\n"
-                  "  and --logfile-pattern options.\n"
-                  "\n"
-                  "Selections:\n"
-                  "  A selection is zero or more of any of the following\n"
-                  "  parameters: Categories, Environments and Tests.\n"
-                  "  Multiple instances of the same type of parameter are\n"
-                  "  unioned while the end result in intersected across\n"
-                  "  types.  e.g.\n"
-                  "\n"
-                  "    'functional xsa'\n"
-                  "       All tests in the functional and xsa categories\n"
-                  "\n"
-                  "    'functional xsa hvm32'\n"
-                  "       All tests in the functional and xsa categories\n"
-                  "       which are implemented for the hvm32 environment\n"
-                  "\n"
-                  "    'invlpg example'\n"
-                  "       The invlpg and example tests in all implemented\n"
-                  "       environments\n"
-                  "\n"
-                  "    'invlpg example pv'\n"
-                  "       The pv environments of the invlpg and example tests\n"
-                  "\n"
-                  "    'pv32pae-pv-iopl'\n"
-                  "       The pv32pae environment of the pv-iopl test only\n"
-                  "\n"
-                  "  Additionally, --host may be passed to restrict the\n"
-                  "  selection to tests applicable to the current host.\n"
-                  "  --all may be passed to choose all default categories\n"
-                  "  without needing to explicitly name them.  --non-default\n"
-                  "  is available to obtain the non-default categories.\n"
-                  "\n"
-                  "  The special parameter --environments may be passed to\n"
-                  "  get the full list of environments.  This option does not\n"
-                  "  make sense combined with a selection.\n"
-                  "\n"
-                  "Examples:\n"
-                  "  Listing all tests implemented for hvm32 environment:\n"
-                  "    ./xtf-runner --list hvm32\n"
-                  "\n"
-                  "  Listing all functional tests appropriate for this host:\n"
-                  "    ./xtf-runner --list functional --host\n"
-                  "\n"
-                  "  Running all the pv-iopl tests:\n"
-                  "    ./xtf-runner pv-iopl\n"
-                  "      <console ouput>\n"
-                  "    Combined test results:\n"
-                  "    test-pv64-pv-iopl                        SUCCESS\n"
-                  "    test-pv32pae-pv-iopl                     SUCCESS\n"
-                  "\n"
-                  "  Exit code for this script:\n"
-                  "    0:    everything is ok\n"
-                  "    1,2:  reserved for python interpreter\n"
-                  "    3:    test(s) are skipped\n"
-                  "    4:    test(s) report error\n"
-                  "    5:    test(s) report failure\n"
-                  ),
+        )
+
+    # Python 2.4 doesn't support epilog.  Avoid the error when calling the
+    # constructor by monkeypatching it into the object instead.  It will
+    # simply be omitted from the --help text on older versions of Python.
+    parser.epilog = (
+        "\n"
+        "Overview:\n"
+        "  Running with --list will print the entire selection\n"
+        "  to the console.  Running without --list will execute\n"
+        "  all tests in the selection, printing a summary of their\n"
+        "  results at the end.\n"
+        "\n"
+        "  To determine how runner should get output from Xen, use\n"
+        '  --results-mode option. The default value is "console", \n'
+        "  which means using xenconsole program to extract output.\n"
+        '  The other supported value is "logfile", which\n'
+        "  means to get output from log file.\n"
+        "\n"
+        '  The "logfile" mode requires users to configure\n'
+        "  xenconsoled to log guest console output. This mode\n"
+        "  is useful for Xen version < 4.8. Also see --logfile-dir\n"
+        "  and --logfile-pattern options.\n"
+        "\n"
+        "Selections:\n"
+        "  A selection is zero or more of any of the following\n"
+        "  parameters: Categories, Environments and Tests.\n"
+        "  Multiple instances of the same type of parameter are\n"
+        "  unioned while the end result in intersected across\n"
+        "  types.  e.g.\n"
+        "\n"
+        "    'functional xsa'\n"
+        "       All tests in the functional and xsa categories\n"
+        "\n"
+        "    'functional xsa hvm32'\n"
+        "       All tests in the functional and xsa categories\n"
+        "       which are implemented for the hvm32 environment\n"
+        "\n"
+        "    'invlpg example'\n"
+        "       The invlpg and example tests in all implemented\n"
+        "       environments\n"
+        "\n"
+        "    'invlpg example pv'\n"
+        "       The pv environments of the invlpg and example tests\n"
+        "\n"
+        "    'pv32pae-pv-iopl'\n"
+        "       The pv32pae environment of the pv-iopl test only\n"
+        "\n"
+        "  Additionally, --host may be passed to restrict the\n"
+        "  selection to tests applicable to the current host.\n"
+        "  --all may be passed to choose all default categories\n"
+        "  without needing to explicitly name them.  --non-default\n"
+        "  is available to obtain the non-default categories.\n"
+        "\n"
+        "  The special parameter --environments may be passed to\n"
+        "  get the full list of environments.  This option does not\n"
+        "  make sense combined with a selection.\n"
+        "\n"
+        "Examples:\n"
+        "  Listing all tests implemented for hvm32 environment:\n"
+        "    ./xtf-runner --list hvm32\n"
+        "\n"
+        "  Listing all functional tests appropriate for this host:\n"
+        "    ./xtf-runner --list functional --host\n"
+        "\n"
+        "  Running all the pv-iopl tests:\n"
+        "    ./xtf-runner pv-iopl\n"
+        "      <console ouput>\n"
+        "    Combined test results:\n"
+        "    test-pv64-pv-iopl                        SUCCESS\n"
+        "    test-pv32pae-pv-iopl                     SUCCESS\n"
+        "\n"
+        "  Exit code for this script:\n"
+        "    0:    everything is ok\n"
+        "    1,2:  reserved for python interpreter\n"
+        "    3:    test(s) are skipped\n"
+        "    4:    test(s) report error\n"
+        "    5:    test(s) report failure\n"
     )
 
     parser.add_option("-l", "--list", action = "store_true",
