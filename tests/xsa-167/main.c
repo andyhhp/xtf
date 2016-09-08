@@ -43,6 +43,7 @@ void test_main(void)
     switch ( rc )
     {
     case -ENOSYS:
+    case -EOPNOTSUPP:
         return xtf_skip("PV superpage support not detected\n");
 
     case -EINVAL:

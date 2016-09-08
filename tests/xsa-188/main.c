@@ -41,8 +41,9 @@ void test_main(void)
     expand_array.array_gfn = virt_to_gfn(array_page);
 
     ret = hypercall_event_channel_op(EVTCHNOP_expand_array, &expand_array);
-    if ( ret != -ENOSYS )
-        xtf_failure("EVTCHNOP_expand_array returned %d (!= %d)\n", ret, -ENOSYS);
+    if ( ret != -ENOSYS && ret != -EOPNOTSUPP )
+        xtf_failure("EVTCHNOP_expand_array returned %d (!= %d or %d)\n",
+                    ret, -ENOSYS, -EOPNOTSUPP);
 
     xtf_success(NULL);
 }
