@@ -12,7 +12,8 @@ static inline paddr_t pte_to_paddr(intpte_t pte)
 
 static inline intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags)
 {
-    return paddr | flags;
+    return ((paddr &  (PADDR_MASK & PAGE_MASK)) |
+            (flags & ~(PADDR_MASK & PAGE_MASK)));
 }
 
 static inline intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags)
