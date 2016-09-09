@@ -2,7 +2,7 @@
  * @file tests/xsa-186/main.c
  * @ref test-xsa-186
  *
- * @page test-xsa-186 XSA-167
+ * @page test-xsa-186 XSA-186
  *
  * Advisory: [XSA-186](http://xenbits.xen.org/xsa/advisory-186.html)
  *
