@@ -50,10 +50,18 @@ install:
 		$(MAKE) -C $$D install; \
 	done
 
+define all_sources
+	find include/ arch/ common/ tests/ -name "*.[hcsS]"
+endef
+
 .PHONY: cscope
 cscope:
-	find include/ arch/ common/ tests/ -name "*.[hcsS]" > cscope.files
+	$(all_sources) > cscope.files
 	cscope -b -q -k
+
+.PHONY: gtags
+gtags:
+	$(all_sources) | gtags -f -
 
 .PHONY: clean
 clean:
