@@ -1,15 +1,23 @@
 #!/bin/sh -e
 
-[ $# -ne 0 ] && { echo "Interactive script to create new XTF tests"; exit 1; }
+fail () { echo "$1"; exit 1; }
+
+[ $# -gt 1 ] && fail "Interactive script to create new XTF tests\n  Usage: $0 [\$NAME]"
 
 cd $(dirname $(readlink -f $0))
 
 # Test name
-echo -n "Test name: "
-read NAME
+if [ $# -eq 1 ]
+then
+    NAME=$1
+    echo "Test name: $NAME"
+else
+    echo -n "Test name: "
+    read NAME
+fi
 
-[ -z "$NAME" ] && { echo "No name given"; exit 1; }
-[ -e tests/$NAME ] && { echo "Test $NAME already exists"; exit 1; }
+[ -z "$NAME" ] && fail "No name given"
+[ -e tests/$NAME ] && fail "Test $NAME already exists"
 mkdir -p tests/$NAME
 
 # Category
