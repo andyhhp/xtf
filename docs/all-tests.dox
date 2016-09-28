@@ -16,6 +16,8 @@ and functionality.
 
 @section index-functional Functional tests
 
+@subpage test-fpu-exception-emulation - FPU Exception Emulation.  Covers XSA-190.
+
 @subpage test-invlpg - `invlpg` instruction behaviour.
 
 @subpage test-pv-iopl - IOPL emulation for PV guests.

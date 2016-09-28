@@ -55,6 +55,7 @@ static inline bool cpu_has(unsigned int feature)
     return x86_features[cpufeat_word(feature)] & cpufeat_mask(feature);
 }
 
+#define cpu_has_fpu             cpu_has(X86_FEATURE_FPU)
 #define cpu_has_vme             cpu_has(X86_FEATURE_VME)
 #define cpu_has_de              cpu_has(X86_FEATURE_DE)
 #define cpu_has_pse             cpu_has(X86_FEATURE_PSE)
@@ -65,6 +66,7 @@ static inline bool cpu_has(unsigned int feature)
 #define cpu_has_mca             cpu_has(X86_FEATURE_MCA)
 #define cpu_has_pat             cpu_has(X86_FEATURE_PAT)
 #define cpu_has_pse36           cpu_has(X86_FEATURE_PSE36)
+#define cpu_has_mmx             cpu_has(X86_FEATURE_MMX)
 #define cpu_has_fxsr            cpu_has(X86_FEATURE_FXSR)
 
 #define cpu_has_sse             cpu_has(X86_FEATURE_SSE)
