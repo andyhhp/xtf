@@ -15,28 +15,28 @@ else
     echo -n "Test name: "
     read NAME
 fi
+NAME_UC=$(echo $NAME | tr a-z A-Z)
 
 [ -z "$NAME" ] && fail "No name given"
 [ -e tests/$NAME ] && fail "Test $NAME already exists"
 mkdir -p tests/$NAME
 
-# Category
-echo -n "Category [utility]: "
-read CATEGORY
-
-if [ -z "$CATEGORY" ];
+# Category - Select default based on test name
+if [ ${NAME#xsa-} != ${NAME} ];
 then
-    CATEGORY="utility"
+    DEF_CATEGORY="xsa"
+else
+    DEF_CATEGORY="utility"
 fi
+
+echo -n "Category [$DEF_CATEGORY]: "
+read CATEGORY
+CATEGORY=${CATEGORY:-$DEF_CATEGORY}
 
 # Environments
 echo -n "Environments [hvm32]: "
 read ENVS
-
-if [ -z "$ENVS" ];
-then
-    ENVS="hvm32"
-fi
+ENVS=${ENVS:-"hvm32"}
 
 # Optional extra config
 echo -n "Extra xl.cfg? [y/N]: "
@@ -89,9 +89,26 @@ echo "Writing default tests/$NAME/main.c"
 cat <<EOF
 /**
  * @file tests/$NAME/main.c
- * @ref test-$NAME - TODO.
+ * @ref test-$NAME
  *
- * @page test-$NAME TODO
+EOF
+
+if [ $CATEGORY != "xsa" ]
+then
+    cat <<EOF
+ * @page test-$NAME $NAME
+EOF
+else
+    cat <<EOF
+ * @page test-$NAME $NAME_UC
+ *
+ * Advisory: [$NAME_UC](http://xenbits.xen.org/xsa/advisory-${NAME#XSA-}.html)
+EOF
+fi
+
+cat <<EOF
+ *
+ * @todo Docs for test-$NAME
  *
  * @see tests/$NAME/main.c
  */
@@ -99,7 +116,11 @@ cat <<EOF
 
 void test_main(void)
 {
-    printk("Test $NAME\n");
+EOF
+[ $CATEGORY != "xsa" ] && \
+    echo '    printk("Test '$NAME'\\n");' || \
+    echo '    printk("'$NAME_UC' PoC\\n");'
+cat <<EOF
 
     xtf_success(NULL);
 }
