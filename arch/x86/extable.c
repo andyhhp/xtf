@@ -6,6 +6,7 @@
 #include <xtf/lib.h>
 #include <xtf/extable.h>
 
+#include <arch/x86/exinfo.h>
 #include <arch/x86/regs.h>
 
 /**
@@ -20,7 +21,7 @@
  */
 bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex)
 {
-    regs->ax = (uint32_t)(regs->entry_vector << 16) | regs->error_code;
+    regs->ax = EXINFO(regs->entry_vector, regs->error_code);
     regs->ip = ex->fixup;
 
     return true;
@@ -38,7 +39,7 @@ bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex)
  */
 bool ex_record_fault_edi(struct cpu_regs *regs, const struct extable_entry *ex)
 {
-    regs->di = (uint32_t)(regs->entry_vector << 16) | regs->error_code;
+    regs->di = EXINFO(regs->entry_vector, regs->error_code);
     regs->ip = ex->fixup;
 
     return true;

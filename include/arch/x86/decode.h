@@ -9,6 +9,7 @@
 #include <xtf/types.h>
 
 #include <arch/x86/cpuid.h>
+#include <arch/x86/exinfo.h>
 
 /**
  * String of the indentified vendor @p v.
@@ -37,6 +38,16 @@ const char *x86_exc_short_name(unsigned int ev);
  */
 int x86_exc_decode_ec(char *buf, size_t bufsz,
                       unsigned int ev, unsigned int ec);
+
+/**
+ * Decodes an exinfo_t into a readable form.
+ *
+ * @param buf Buffer to fill.
+ * @param bufsz Size of @p buf.
+ * @param info exinfo_t value.
+ * @return snprintf(buf, bufsz, ...)
+ */
+int x86_decode_exinfo(char *buf, size_t bufsz, exinfo_t info);
 
 #endif /* XTF_X86_DECODE_H */
 

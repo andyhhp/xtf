@@ -37,18 +37,17 @@
 #include <xtf.h>
 
 #include <arch/x86/decode.h>
+#include <arch/x86/exinfo.h>
 #include <arch/x86/processor.h>
 #include <arch/x86/symbolic-const.h>
 
 #define CR0_SYM(...) TOK_OR(X86_CR0_, ##__VA_ARGS__)
 #define CR0_MASK CR0_SYM(EM, MP, TS)
 
-#define EXC_SYM(vec, ec) ((X86_EXC_ ## vec) << 16 | ec)
-
 struct test_cfg
 {
     unsigned long cr0;
-    unsigned long fault;
+    exinfo_t fault;
 };
 
 static unsigned long zero;
@@ -61,18 +60,18 @@ static unsigned long default_cr0;
 static const struct test_cfg x87[] =
 {
     { CR0_SYM(          ), 0 },
-    { CR0_SYM(        TS), EXC_SYM(NM, 0) },
+    { CR0_SYM(        TS), EXINFO_SYM(NM, 0) },
     { CR0_SYM(    MP    ), 0 },
-    { CR0_SYM(    MP, TS), EXC_SYM(NM, 0) },
-    { CR0_SYM(EM        ), EXC_SYM(NM, 0) },
-    { CR0_SYM(EM,     TS), EXC_SYM(NM, 0) },
-    { CR0_SYM(EM, MP    ), EXC_SYM(NM, 0) },
-    { CR0_SYM(EM, MP, TS), EXC_SYM(NM, 0) },
+    { CR0_SYM(    MP, TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM        ), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM,     TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM, MP    ), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM, MP, TS), EXINFO_SYM(NM, 0) },
 };
 
-unsigned int probe_x87(bool force)
+exinfo_t probe_x87(bool force)
 {
-    unsigned int fault = 0;
+    exinfo_t fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
@@ -96,16 +95,16 @@ static const struct test_cfg x87_wait[] =
     { CR0_SYM(          ), 0 },
     { CR0_SYM(        TS), 0 },
     { CR0_SYM(    MP    ), 0 },
-    { CR0_SYM(    MP, TS), EXC_SYM(NM, 0) },
+    { CR0_SYM(    MP, TS), EXINFO_SYM(NM, 0) },
     { CR0_SYM(EM        ), 0 },
     { CR0_SYM(EM,     TS), 0 },
     { CR0_SYM(EM, MP    ), 0 },
-    { CR0_SYM(EM, MP, TS), EXC_SYM(NM, 0) },
+    { CR0_SYM(EM, MP, TS), EXINFO_SYM(NM, 0) },
 };
 
-unsigned int probe_x87_wait(bool force)
+exinfo_t probe_x87_wait(bool force)
 {
-    unsigned int fault = 0;
+    exinfo_t fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
@@ -125,18 +124,18 @@ unsigned int probe_x87_wait(bool force)
 static const struct test_cfg mmx_sse[] =
 {
     { CR0_SYM(          ), 0 },
-    { CR0_SYM(        TS), EXC_SYM(NM, 0) },
+    { CR0_SYM(        TS), EXINFO_SYM(NM, 0) },
     { CR0_SYM(    MP    ), 0 },
-    { CR0_SYM(    MP, TS), EXC_SYM(NM, 0) },
-    { CR0_SYM(EM        ), EXC_SYM(UD, 0) },
-    { CR0_SYM(EM,     TS), EXC_SYM(UD, 0) },
-    { CR0_SYM(EM, MP    ), EXC_SYM(UD, 0) },
-    { CR0_SYM(EM, MP, TS), EXC_SYM(UD, 0) },
+    { CR0_SYM(    MP, TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM        ), EXINFO_SYM(UD, 0) },
+    { CR0_SYM(EM,     TS), EXINFO_SYM(UD, 0) },
+    { CR0_SYM(EM, MP    ), EXINFO_SYM(UD, 0) },
+    { CR0_SYM(EM, MP, TS), EXINFO_SYM(UD, 0) },
 };
 
-unsigned int probe_mmx(bool force)
+exinfo_t probe_mmx(bool force)
 {
-    unsigned int fault = 0;
+    exinfo_t fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
@@ -150,9 +149,9 @@ unsigned int probe_mmx(bool force)
     return fault;
 }
 
-unsigned int probe_sse(bool force)
+exinfo_t probe_sse(bool force)
 {
-    unsigned int fault = 0;
+    exinfo_t fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
@@ -167,31 +166,32 @@ unsigned int probe_sse(bool force)
 }
 
 void run_sequence(const struct test_cfg *seq, unsigned int nr,
-                  unsigned int (*fn)(bool), bool force, unsigned int override)
+                  unsigned int (*fn)(bool), bool force, exinfo_t override)
 {
     unsigned int i;
 
     for ( i = 0; i < nr; ++i )
     {
         const struct test_cfg *t = &seq[i];
-        unsigned int res, exp = override ?: t->fault;
+        exinfo_t res, exp = override ?: t->fault;
 
         write_cr0((default_cr0 & ~CR0_MASK) | t->cr0);
         res = fn(force);
 
         if ( res != exp )
         {
-            char buf[24];
+            char expstr[12], gotstr[12], cr0str[12];
 
-            snprintf(buf, sizeof(buf), "%s%s%s",
+            x86_decode_exinfo(expstr, ARRAY_SIZE(expstr), exp);
+            x86_decode_exinfo(gotstr, ARRAY_SIZE(gotstr), res);
+
+            snprintf(cr0str, sizeof(cr0str), "%s%s%s",
                      t->cr0 & X86_CR0_EM ? " EM" : "",
                      t->cr0 & X86_CR0_MP ? " MP" : "",
                      t->cr0 & X86_CR0_TS ? " TS" : "");
 
             xtf_failure("  Expected %s, got %s (cr0:%s)\n",
-                        exp ? x86_exc_short_name(exp >> 16) : "none",
-                        res ? x86_exc_short_name(res >> 16) : "none",
-                        buf[0] ? buf : " - ");
+                        expstr, gotstr, cr0str[0] ? cr0str : " - ");
         }
     }
 }
@@ -219,7 +219,8 @@ void run_tests(bool force)
 
         printk("Testing%s SSE\n", force ? " emulated" : "");
         write_cr4(cr4 & ~X86_CR4_OSFXSR);
-        run_sequence(mmx_sse, ARRAY_SIZE(mmx_sse), probe_sse, force, EXC_SYM(UD, 0));
+        run_sequence(mmx_sse, ARRAY_SIZE(mmx_sse), probe_sse, force,
+                     EXINFO_SYM(UD, 0));
 
         printk("Testing%s SSE (CR4.OSFXSR)\n", force ? " emulated" : "");
         write_cr4(cr4 | X86_CR4_OSFXSR);

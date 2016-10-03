@@ -68,6 +68,25 @@ int x86_exc_decode_ec(char *buf, size_t bufsz, unsigned int ev, unsigned int ec)
     }
 }
 
+int x86_decode_exinfo(char *buf, size_t bufsz, exinfo_t info)
+{
+    if ( !info )
+        return snprintf(buf, bufsz, "nothing");
+
+    unsigned int vec = exinfo_vec(info), ec = exinfo_ec(info);
+
+    if ( ec || ((vec < 32) && ((1u << vec) & X86_EXC_HAVE_EC)) )
+    {
+        char ecstr[16];
+
+        x86_exc_decode_ec(ecstr, ARRAY_SIZE(ecstr), vec, ec);
+
+        return snprintf(buf, bufsz, "%s[%s]", x86_exc_short_name(vec), ecstr);
+    }
+    else
+        return snprintf(buf, bufsz, "%s", x86_exc_short_name(vec));
+}
+
 /*
  * Local variables:
  * mode: C

@@ -21,12 +21,11 @@
  */
 #include <xtf.h>
 
+#include <arch/x86/exinfo.h>
 #include <arch/x86/msr-index.h>
 #include <arch/x86/processor.h>
 
 bool test_wants_user_mappings = true;
-
-#define EXC_SYM(vec, ec) ((X86_EXC_ ## vec) << 16 | ec)
 
 unsigned long stub_cpuid(void)
 {
@@ -72,7 +71,7 @@ static void test_cpuid(bool exp_faulting)
     /*
      * User cpuids should raise #GP[0] if faulting is enabled.
      */
-    unsigned long exp = exp_faulting ? EXC_SYM(GP, 0) : 0;
+    unsigned long exp = exp_faulting ? EXINFO_SYM(GP, 0) : 0;
     const char *exp_fail_str = exp_faulting ? "didn't fault" : "faulted";
 
     if ( exec_user(stub_cpuid) != exp )
