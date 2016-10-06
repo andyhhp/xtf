@@ -146,6 +146,17 @@
 #define X86_PFEC_INSN     (1U << 4)
 #define X86_PFEC_PK       (1U << 5)
 
+/*
+ * Selector mnemonics.
+ */
+/* Architecturally defined. */
+#define X86_SEL_TI        (1U << 2) /* Table Indicator. */
+
+/* Supplemental constants. */
+#define X86_SEL_RPL_MASK  3         /* RPL is the bottom two bits. */
+#define X86_SEL_GDT       0
+#define X86_SEL_LDT       X86_SEL_TI
+
 #endif /* XTF_X86_PROCESSOR_H */
 
 /*
