@@ -117,10 +117,10 @@ void arch_init_traps(void)
 
     setup_gate(X86_VEC_RET2KERN, &entry_ret_to_kernel, 3);
 
-    asm volatile ("lidt idt_ptr");
+    lidt(&idt_ptr);
 
     gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE((unsigned long)&tss, 0x67, 0x89);
-    asm volatile ("ltr %w0" :: "rm" (GDTE_TSS * 8));
+    ltr(GDTE_TSS * 8);
 }
 
 void __noreturn arch_crash_hard(void)

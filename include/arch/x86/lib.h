@@ -3,6 +3,7 @@
 
 #include <xtf/types.h>
 #include <xen/arch-x86/xen.h>
+#include <arch/x86/desc.h>
 
 static inline uint64_t rdmsr(uint32_t idx)
 {
@@ -304,6 +305,54 @@ static inline void write_cr8(unsigned long cr8)
 static inline void invlpg(const void *va)
 {
     asm volatile ("invlpg (%0)" :: "r" (va));
+}
+
+static inline void lgdt(const desc_ptr *gdtr)
+{
+    asm volatile ("lgdt %0" :: "m" (*gdtr));
+}
+
+static inline void lidt(const desc_ptr *idtr)
+{
+    asm volatile ("lidt %0" :: "m" (*idtr));
+}
+
+static inline void lldt(unsigned int sel)
+{
+    asm volatile ("lldt %w0" :: "rm" (sel));
+}
+
+static inline void ltr(unsigned int sel)
+{
+    asm volatile ("ltr %w0" :: "rm" (sel));
+}
+
+static inline void sgdt(desc_ptr *gdtr)
+{
+    asm volatile ("sgdt %0" : "=m" (*gdtr));
+}
+
+static inline void sidt(desc_ptr *idtr)
+{
+    asm volatile ("sidt %0" : "=m" (*idtr));
+}
+
+static inline unsigned int sldt(void)
+{
+    unsigned int sel;
+
+    asm volatile ("sldt %0" : "=r" (sel));
+
+    return sel;
+}
+
+static inline unsigned int str(void)
+{
+    unsigned int sel;
+
+    asm volatile ("str %0" : "=r" (sel));
+
+    return sel;
 }
 
 #endif /* XTF_X86_LIB_H */
