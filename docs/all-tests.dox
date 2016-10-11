@@ -28,9 +28,13 @@ Coveres XSA-106 and XSA-156.
 
 @section index-xsa XSA Proof-of-Concept tests
 
+XSA-106 - See @ref test-swint-emulation
+
 @subpage test-xsa-122 - Hypervisor stack leak via xen_version() hypercall.
 
 @subpage test-xsa-123 - Hypervisor memory corruption due to x86 emulator flaw.
+
+XSA-156 - See @ref test-swint-emulation
 
 @subpage test-xsa-167 - PV superpage sanity checks.
 
@@ -50,6 +54,8 @@ guests.
 during emulation.
 
 @subpage test-xsa-188 - use after free in FIFO event channel code.
+
+XSA-190 - See @ref test-fpu-exception-emulation
 
 
 @section index-utility Utilities
