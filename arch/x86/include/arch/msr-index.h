@@ -11,6 +11,10 @@
 #define _MSR_MISC_FEATURES_CPUID_FAULTING        0
 #define MSR_MISC_FEATURES_CPUID_FAULTING         (1ULL << _MSR_MISC_FEATURES_CPUID_FAULTING)
 
+#define MSR_DEBUGCTL                    0x000001d9
+#define _MSR_DEBUGCTL_LBR               0 /* Last Branch Record. */
+#define MSR_DEBUGCTL_LBR                (_AC(1, L) << _MSR_DEBUGCTL_LBR)
+
 #define MSR_EFER                        0xc0000080 /* Extended Feature register. */
 #define _EFER_SCE                       0  /* SYSCALL Enable. */
 #define EFER_SCE                        (_AC(1, L) << _EFER_SCE)
