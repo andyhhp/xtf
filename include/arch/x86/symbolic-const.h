@@ -26,15 +26,18 @@
  * </pre>
  */
 /** @cond */
-#define TOK_OR0(t)         (0)
-#define TOK_OR1(t, x)      (t ## x)
-#define TOK_OR2(t, x, ...) (t ## x | TOK_OR1(t, ##__VA_ARGS__))
-#define TOK_OR3(t, x, ...) (t ## x | TOK_OR2(t, ##__VA_ARGS__))
-#define TOK_OR4(t, x, ...) (t ## x | TOK_OR3(t, ##__VA_ARGS__))
-#define TOK_OR5(t, x, ...) (t ## x | TOK_OR4(t, ##__VA_ARGS__))
-#define TOK_OR6(t, x, ...) (t ## x | TOK_OR5(t, ##__VA_ARGS__))
-#define TOK_OR7(t, x, ...) (t ## x | TOK_OR6(t, ##__VA_ARGS__))
-#define TOK_OR8(t, x, ...) (t ## x | TOK_OR7(t, ##__VA_ARGS__))
+#define TOK_OR0(t)          (0)
+#define TOK_OR1(t, x)       (t ## x)
+#define TOK_OR2(t, x, ...)  (t ## x | TOK_OR1(t, ##__VA_ARGS__))
+#define TOK_OR3(t, x, ...)  (t ## x | TOK_OR2(t, ##__VA_ARGS__))
+#define TOK_OR4(t, x, ...)  (t ## x | TOK_OR3(t, ##__VA_ARGS__))
+#define TOK_OR5(t, x, ...)  (t ## x | TOK_OR4(t, ##__VA_ARGS__))
+#define TOK_OR6(t, x, ...)  (t ## x | TOK_OR5(t, ##__VA_ARGS__))
+#define TOK_OR7(t, x, ...)  (t ## x | TOK_OR6(t, ##__VA_ARGS__))
+#define TOK_OR8(t, x, ...)  (t ## x | TOK_OR7(t, ##__VA_ARGS__))
+#define TOK_OR9(t, x, ...)  (t ## x | TOK_OR8(t, ##__VA_ARGS__))
+#define TOK_OR10(t, x, ...) (t ## x | TOK_OR9(t, ##__VA_ARGS__))
+#define TOK_OR11(t, x, ...) (t ## x | TOK_OR10(t, ##__VA_ARGS__))
 /** @endcond */
 #define TOK_OR(t, ...)     VAR_MACRO_C1(TOK_OR, t, ##__VA_ARGS__)
 
