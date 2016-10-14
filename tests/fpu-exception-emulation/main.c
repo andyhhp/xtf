@@ -72,16 +72,15 @@ static const struct test_cfg x87[] =
 
 unsigned int probe_x87(bool force)
 {
-    unsigned int fault;
+    unsigned int fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: fild %[ptr]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault)
-                  : "=a" (fault)
-                  : "0" (0),
-                    [ptr] "m" (zero),
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  : "+a" (fault)
+                  : [ptr] "m" (zero),
                     [fep] "q" (force));
 
     return fault;
@@ -106,16 +105,15 @@ static const struct test_cfg x87_wait[] =
 
 unsigned int probe_x87_wait(bool force)
 {
-    unsigned int fault;
+    unsigned int fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: wait; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault)
-                  : "=a" (fault)
-                  : "0" (0),
-                    [fep] "q" (force));
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  : "+a" (fault)
+                  : [fep] "q" (force));
 
     return fault;
 }
@@ -138,16 +136,15 @@ static const struct test_cfg mmx_sse[] =
 
 unsigned int probe_mmx(bool force)
 {
-    unsigned int fault;
+    unsigned int fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: movq %[ptr], %%mm0; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault)
-                  : "=a" (fault)
-                  : "0" (0),
-                    [ptr] "m" (zero),
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  : "+a" (fault)
+                  : [ptr] "m" (zero),
                     [fep] "q" (force));
 
     return fault;
@@ -155,16 +152,15 @@ unsigned int probe_mmx(bool force)
 
 unsigned int probe_sse(bool force)
 {
-    unsigned int fault;
+    unsigned int fault = 0;
 
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: movups %[ptr], %%xmm0; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault)
-                  : "=a" (fault)
-                  : "0" (0),
-                    [ptr] "m" (zero),
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  : "+a" (fault)
+                  : [ptr] "m" (zero),
                     [fep] "q" (force));
 
     return fault;

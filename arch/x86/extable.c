@@ -14,11 +14,11 @@
  * Sample usage:
  * <pre>
  *   asm volatile ("1: $INSN; 2:"
- *                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault)
+ *                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
  *                 : "=a" (fault) : "0" (0));
  * </pre>
  */
-bool ex_record_fault(struct cpu_regs *regs, const struct extable_entry *ex)
+bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex)
 {
     regs->ax = (uint32_t)(regs->entry_vector << 16) | regs->error_code;
     regs->ip = ex->fixup;
