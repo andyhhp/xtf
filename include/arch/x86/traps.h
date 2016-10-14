@@ -23,7 +23,7 @@ void __noreturn arch_crash_hard(void);
 unsigned long cpu_regs_sp(const struct cpu_regs *regs);
 unsigned int  cpu_regs_ss(const struct cpu_regs *regs);
 
-extern uint8_t boot_stack[2 * PAGE_SIZE];
+extern uint8_t boot_stack[3 * PAGE_SIZE];
 
 #if defined(CONFIG_PV)
 #include <xen/xen.h>

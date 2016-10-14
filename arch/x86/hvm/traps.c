@@ -38,11 +38,31 @@ hw_tss tss __aligned(16) =
 #elif defined(__x86_64__)
 
     .rsp0 = (unsigned long)&boot_stack[2 * PAGE_SIZE],
+    .ist[0] = (unsigned long)&boot_stack[3 * PAGE_SIZE],
 
 #endif
 
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
+
+#if defined(__i386__)
+static hw_tss tss_DF __aligned(16) =
+{
+    .esp  = (unsigned long)&boot_stack[3 * PAGE_SIZE],
+    .ss   = __KERN_DS,
+    .ds   = __KERN_DS,
+    .es   = __KERN_DS,
+    .fs   = __KERN_DS,
+    .gs   = __KERN_DS,
+
+    .eip  = (unsigned long)&entry_DF,
+    .cs   = __KERN_CS,
+
+    .cr3  = (unsigned long)&cr3_target,
+
+    .iopb = X86_TSS_INVALID_IO_BITMAP,
+};
+#endif
 
 void pack_gate32(struct seg_gate32 *gate, unsigned type, uint32_t func,
                  unsigned dpl, unsigned seg)
@@ -82,6 +102,18 @@ static void setup_gate(unsigned int entry, void *addr, unsigned int dpl)
 #endif
 }
 
+static void setup_doublefault(void)
+{
+#if defined(__i386__)
+    gdt[GDTE_TSS_DF] =
+        (typeof(*gdt))INIT_GDTE((unsigned long)&tss_DF, 0x67, 0x89);
+
+    pack_gate32(&idt[X86_EXC_DF], 5, 0, 0, GDTE_TSS_DF * 8);
+#elif defined(__x86_64__)
+    pack_gate64(&idt[X86_EXC_DF], 14, (unsigned long)entry_DF, 0, 1, __KERN_CS);
+#endif
+}
+
 int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
 {
 #if defined(__i386__)
@@ -103,7 +135,7 @@ void arch_init_traps(void)
     setup_gate(X86_EXC_BR,  &entry_BR,  0);
     setup_gate(X86_EXC_UD,  &entry_UD,  0);
     setup_gate(X86_EXC_NM,  &entry_NM,  0);
-    setup_gate(X86_EXC_DF,  &entry_DF,  0);
+    setup_doublefault();
     setup_gate(X86_EXC_TS,  &entry_TS,  0);
     setup_gate(X86_EXC_NP,  &entry_NP,  0);
     setup_gate(X86_EXC_SS,  &entry_SS,  0);

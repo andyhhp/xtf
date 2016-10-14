@@ -16,7 +16,8 @@
  *  4 - 64bit userspace code
  *  5 - 32bit userspace code
  *  6 - 32bit userspace data
- *  7 - TSS (two slots in long mode)
+ *  7/8 - TSS (two slots in long mode)
+ *  8 - DF TSS (32bit only)
  *
  *  9-12 - Available for test use
  */
@@ -29,6 +30,7 @@
 #define GDTE_DS32_DPL3 6
 
 #define GDTE_TSS 7
+#define GDTE_TSS_DF 8
 
 #define GDTE_AVAIL0     9
 #define GDTE_AVAIL1    10

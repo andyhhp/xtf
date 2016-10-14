@@ -12,10 +12,11 @@
 /*
  * XTF Stack layout:
  *
+ * boot_stack[page 3] Emergency entrypoint
  * boot_stack[page 2] Exception entrypoints
  * boot_stack[page 1] Top of work stack
  */
-uint8_t boot_stack[2 * PAGE_SIZE] __aligned(PAGE_SIZE);
+uint8_t boot_stack[3 * PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
 unsigned int x86_family, x86_model, x86_stepping;
