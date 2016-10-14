@@ -27,6 +27,24 @@ bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex)
 }
 
 /**
+ * Record the current fault in @%edi
+ *
+ * Sample usage:
+ * <pre>
+ *   asm volatile ("1: $INSN; 2:"
+ *                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+ *                 : "=D" (fault) : "0" (0));
+ * </pre>
+ */
+bool ex_record_fault_edi(struct cpu_regs *regs, const struct extable_entry *ex)
+{
+    regs->di = (uint32_t)(regs->entry_vector << 16) | regs->error_code;
+    regs->ip = ex->fixup;
+
+    return true;
+}
+
+/**
  * Fixup from a rdmsr fault
  *
  * Clobber the MSR index to signify error, and zero output.

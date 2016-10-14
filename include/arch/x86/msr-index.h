@@ -3,6 +3,14 @@
 
 #include <xtf/numbers.h>
 
+#define MSR_INTEL_PLATFORM_INFO         0x000000ce
+#define _MSR_PLATFORM_INFO_CPUID_FAULTING       31
+#define MSR_PLATFORM_INFO_CPUID_FAULTING        (1ULL << _MSR_PLATFORM_INFO_CPUID_FAULTING)
+
+#define MSR_INTEL_MISC_FEATURES_ENABLES 0x00000140
+#define _MSR_MISC_FEATURES_CPUID_FAULTING        0
+#define MSR_MISC_FEATURES_CPUID_FAULTING         (1ULL << _MSR_MISC_FEATURES_CPUID_FAULTING)
+
 #define MSR_EFER                        0xc0000080 /* Extended Feature register. */
 #define _EFER_SCE                       0  /* SYSCALL Enable. */
 #define EFER_SCE                        (_AC(1, L) << _EFER_SCE)
