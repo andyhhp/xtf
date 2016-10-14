@@ -104,9 +104,9 @@ ENDFUNC(handle_exception)
 ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
         env_ADJUST_FRAME
 
-        mov 0*8(%rsp), %rax     /* Stash %rip from iret frame */
+        mov 0*8(%rsp), %rdi     /* Stash %rip from iret frame */
         mov 3*8(%rsp), %rsp     /* Load %esp from iret frame  */
-        jmp *%rax               /* Jump back                  */
+        jmp *%rdi               /* Jump back                  */
 
 ENDFUNC(entry_ret_to_kernel)
 

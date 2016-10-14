@@ -51,8 +51,19 @@ void heapsort(void *base, size_t nmemb, size_t size,
               int (*compar)(const void *, const void *),
               void (*swap)(void *, void *));
 
-/* Execute fn() at user privilege on the current stack. */
-void exec_user(void (*fn)(void));
+/*
+ * Execute fn() at user privilege on the current stack, passing its return
+ * value back.
+ */
+unsigned long exec_user(unsigned long (*fn)(void));
+
+/*
+ * Wrapper around exec_user() which calls a void function.
+ */
+static inline void exec_user_void(void (*fn)(void))
+{
+    exec_user((void *)fn);
+}
 
 #endif /* XTF_LIB_H */
 

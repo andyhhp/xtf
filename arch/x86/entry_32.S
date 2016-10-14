@@ -91,9 +91,9 @@ ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
 
         /* User required to ensure this is called from CPL > KERNEL_RPL */
 
-        mov 0*4(%esp), %eax     /* Stash %eip from iret frame */
+        mov 0*4(%esp), %ecx     /* Stash %eip from iret frame */
         mov 3*4(%esp), %esp     /* Load %esp from iret frame  */
-        jmp *%eax               /* Jump back                  */
+        jmp *%ecx               /* Jump back                  */
 
 ENDFUNC(entry_ret_to_kernel)
 

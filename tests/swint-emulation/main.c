@@ -237,7 +237,7 @@ void test_seq(struct sequence *seq, unsigned int vector,
                fault ? s->fault : s->trap,
                vector, error);
 
-        user ? exec_user(s->fn) : s->fn();
+        user ? exec_user_void(s->fn) : s->fn();
 
         check();
 

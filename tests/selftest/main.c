@@ -139,40 +139,37 @@ static void test_exlog(void)
     xtf_exlog_stop();
 }
 
-static enum {
+enum {
     USER_not_seen,
     USER_seen,
     USER_bad_cs,
-} seen_from_userspace = USER_not_seen;
+};
 
-static void test_exec_user_cpl3(void)
+static unsigned long test_exec_user_cpl3(void)
 {
-    unsigned int cs = read_cs();
-
-    if ( (cs & 3) == 3 )
-        seen_from_userspace = USER_seen;
-    else
-        seen_from_userspace = USER_bad_cs;
+    return ((read_cs() & 3) == 3) ? USER_seen : USER_bad_cs;
 }
 
 static void test_exec_user(void)
 {
+    unsigned int res;
+
     printk("Test: Userspace execution\n");
 
-    exec_user(test_exec_user_cpl3);
+    res = exec_user(test_exec_user_cpl3);
 
-    switch ( seen_from_userspace )
+    switch ( res )
     {
     case USER_seen:
         /* Success */
         break;
 
-    case USER_not_seen:
-        xtf_failure("Fail: Did not execute function\n");
-        break;
-
     case USER_bad_cs:
         xtf_failure("Fail: Not at cpl3\n");
+        break;
+
+    default:
+        xtf_failure("Fail: Did not execute function\n");
         break;
     }
 }
