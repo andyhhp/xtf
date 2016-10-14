@@ -189,6 +189,17 @@ static inline unsigned int read_ss(void)
     return ss;
 }
 
+static inline void write_cs(unsigned int cs)
+{
+    asm volatile ("push %0;"
+                  "push $1f;"
+#if __x86_64__
+                  "rex64 "
+#endif
+                  "lret; 1:"
+                  :: "qI" (cs));
+}
+
 static inline void write_ds(unsigned int ds)
 {
     asm volatile ("mov %0, %%ds" :: "r" (ds));
