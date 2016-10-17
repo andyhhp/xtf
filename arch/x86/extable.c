@@ -26,6 +26,33 @@ bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex)
     return true;
 }
 
+/**
+ * Fixup from a rdmsr fault
+ *
+ * Clobber the MSR index to signify error, and zero output.
+ */
+bool ex_rdmsr_safe(struct cpu_regs *regs, const struct extable_entry *ex)
+{
+    regs->ax = regs->dx = 0;
+    regs->cx = -1u;
+    regs->ip = ex->fixup;
+
+    return true;
+}
+
+/**
+ * Fixup from a wrmsr fault
+ *
+ * Clobber the MSR index to signify error.
+ */
+bool ex_wrmsr_safe(struct cpu_regs *regs, const struct extable_entry *ex)
+{
+    regs->cx = -1u;
+    regs->ip = ex->fixup;
+
+    return true;
+}
+
 /*
  * Local variables:
  * mode: C
