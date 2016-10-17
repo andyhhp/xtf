@@ -173,6 +173,9 @@ extern intpte_t l2_identmap[4 *L2_PT_ENTRIES];
 extern intpte_t l2_identmap[L2_PT_ENTRIES];
 #endif
 
+/* Alias of the pagetable %cr3 points at. */
+extern intpte_t cr3_target[];
+
 #endif /* CONFIG_HVM */
 
 #endif /* !__ASSEMBLY__ */

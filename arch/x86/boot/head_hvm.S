@@ -10,25 +10,6 @@ GLOBAL(_start)                  /* HVM common setup. */
 
 #if CONFIG_PAGING_LEVELS > 0    /* Paging setup for CR3 and CR4 */
 
-#if CONFIG_PAGING_LEVELS == 4   /* 64bit PAE, 4 levels */
-
-        mov $X86_CR4_PAE, %eax
-        mov $pae_l4_identmap, %ebx
-
-#elif CONFIG_PAGING_LEVELS == 3 /* 32bit PAE, 3 levels */
-
-        mov $X86_CR4_PAE, %eax
-        mov $pae32_l3_identmap, %ebx
-
-#elif CONFIG_PAGING_LEVELS == 2 /* 32bit PSE, 2 levels */
-
-        mov $X86_CR4_PSE, %eax
-        mov $pse_l2_identmap, %ebx
-
-#else
-# error Bad paging mode
-#endif
-
         /* Set _PAGE_USER on leaf mappings if a test wants them. */
         cmpb $0, test_wants_user_mappings
         je .Lskip_user
@@ -44,7 +25,16 @@ GLOBAL(_start)                  /* HVM common setup. */
         loop .Lnext_pte
 .Lskip_user:
 
+#if CONFIG_PAGING_LEVELS == 2
+        mov $X86_CR4_PSE, %eax
+#elif CONFIG_PAGING_LEVELS == 3 || CONFIG_PAGING_LEVELS == 4
+        mov $X86_CR4_PAE, %eax
+#else
+# error Bad paging mode
+#endif
         mov %eax, %cr4
+
+        mov $cr3_target, %ebx
         mov %ebx, %cr3
 #endif /* CONFIG_PAGING_LEVELS > 0 */
 

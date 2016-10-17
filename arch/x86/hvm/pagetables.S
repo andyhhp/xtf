@@ -95,6 +95,24 @@ PAGETABLE_END(pae32_l3_identmap)
         .global l2_identmap
         .global l2_identmap_end
 
+        /* Alias of the pagetable %cr3 points at. */
+#if CONFIG_PAGING_LEVELS > 0
+
+#if CONFIG_PAGING_LEVELS == 2
+        .set cr3_target, pse_l2_identmap
+#elif CONFIG_PAGING_LEVELS == 3
+        .set cr3_target, pae32_l3_identmap
+#elif CONFIG_PAGING_LEVELS == 4
+        .set cr3_target, pae_l4_identmap
+#else
+# error Bad paging mode
+#endif
+
+#else
+        .set cr3_target, 0
+#endif
+        .global cr3_target
+
 /*
  * Local variables:
  * tab-width: 8
