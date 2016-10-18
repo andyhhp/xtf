@@ -61,9 +61,9 @@ void nop_slide(void)
 
 void test_main(void)
 {
-    static intpte_t nl2t[L2_PT_ENTRIES] __aligned(PAGE_SIZE);
-    static intpte_t nl1t[L1_PT_ENTRIES] __aligned(PAGE_SIZE);
-    static uint8_t  buffer[PAGE_SIZE] __aligned(PAGE_SIZE);
+    static intpte_t nl2t[L2_PT_ENTRIES] __page_aligned_bss;
+    static intpte_t nl1t[L1_PT_ENTRIES] __page_aligned_bss;
+    static uint8_t  buffer[PAGE_SIZE] __page_aligned_bss;
 
     printk("  Executing user wild jump\n");
     exec_user_void(wild_jump);

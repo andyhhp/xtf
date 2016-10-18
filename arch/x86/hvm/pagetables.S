@@ -16,7 +16,7 @@
 #define PAE_IDX(sym) ((. - (sym)) / PAE_PTE_SIZE)
 #define PSE_IDX(sym) ((. - (sym)) / PSE_PTE_SIZE)
 
-        .data
+        .section ".data.page_aligned", "aw"
         .p2align PAGE_SHIFT
 
 /* PAE mappings of first 2M of memory in 4k pages. Uses 1x 4k page. */
@@ -72,6 +72,8 @@ PAGETABLE_START(pse_l2_identmap)
 PAGETABLE_END(pse_l2_identmap)
 .Lpse_l2_identmap_end:
 
+        .data
+        .align 32
 /* PAE l3 32bit quad.  Contains 4 64bit entries. */
 PAGETABLE_START(pae32_l3_identmap)
         .rept PAE32_L3_ENTRIES

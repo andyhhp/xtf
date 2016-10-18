@@ -22,6 +22,8 @@
 
 /* Convenience wrappers. */
 #define __user_text           __section(".text.user")
+#define __page_aligned_data   __section(".data.page_aligned") __aligned(4096)
+#define __page_aligned_bss    __section(".bss.page_aligned")  __aligned(4096)
 
 #endif /* XTF_COMPILER_H */
 

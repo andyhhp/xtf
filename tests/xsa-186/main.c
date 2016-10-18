@@ -97,8 +97,8 @@ void test_main(void)
 
     if ( IS_DEFINED(CONFIG_64BIT) )
     {
-        static intpte_t nl1t[L1_PT_ENTRIES] __aligned(PAGE_SIZE);
-        static intpte_t nl2t[L2_PT_ENTRIES] __aligned(PAGE_SIZE);
+        static intpte_t nl1t[L1_PT_ENTRIES] __page_aligned_bss;
+        static intpte_t nl2t[L2_PT_ENTRIES] __page_aligned_bss;
 
         /*
          * The manuals say we can't `iretq` to a compat mode code segment with

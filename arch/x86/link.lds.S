@@ -47,6 +47,9 @@ SECTIONS
 
         .data : {
                 *(.data)
+        . = ALIGN(PAGE_SIZE);
+                *(.data.page_aligned)
+        . = ALIGN(PAGE_SIZE);
         }
 
         .rodata : {
@@ -66,6 +69,9 @@ SECTIONS
 
         .bss : {
                 *(.bss)
+        . = ALIGN(PAGE_SIZE);
+                *(.bss.page_aligned)
+        . = ALIGN(PAGE_SIZE);
         }
 
         _end = .;

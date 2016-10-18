@@ -2,8 +2,9 @@
 #include <xtf/asm_macros.h>
 #include <xen/xen.h>
 
-.data
-.align PAGE_SIZE
+        .section ".data.page_aligned", "aw"
+        .p2align PAGE_SHIFT
+
 GLOBAL(hypercall_page)
          /* Poisoned with `ret` for safety before hypercalls are set up. */
         .fill PAGE_SIZE, 1, 0xc3

@@ -20,7 +20,7 @@
 
 const char test_title[] = "XSA-188 PoC";
 
-static uint8_t array_page[PAGE_SIZE] __aligned(PAGE_SIZE);
+static uint8_t array_page[PAGE_SIZE] __page_aligned_bss;
 
 void test_main(void)
 {

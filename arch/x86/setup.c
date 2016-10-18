@@ -16,8 +16,9 @@
  * boot_stack[page 2] Exception entrypoints
  * boot_stack[page 1] Top of work stack
  */
-uint8_t boot_stack[3 * PAGE_SIZE] __aligned(PAGE_SIZE);
-uint8_t user_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
+uint8_t boot_stack[3 * PAGE_SIZE] __page_aligned_bss;
+uint8_t user_stack[PAGE_SIZE] __page_aligned_bss;
+
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
 unsigned int max_leaf, max_extd_leaf;
