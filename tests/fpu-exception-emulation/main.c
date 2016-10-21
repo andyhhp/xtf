@@ -77,7 +77,7 @@ unsigned int probe_x87(bool force)
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
-                  "1: fild %[ptr]; 2:"
+                  "1: fildq %[ptr]; 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
                   : "+a" (fault)
                   : [ptr] "m" (zero),
