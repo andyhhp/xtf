@@ -54,17 +54,12 @@ int x86_exc_decode_ec(char *buf, size_t bufsz, unsigned int ev, unsigned int ec)
     case X86_EXC_GP: case X86_EXC_AC:
         if ( ec != 0 )
         {
-            if ( ec & X86_EC_IDT )
-                return snprintf(buf, bufsz,
-                                "IDT vec %u%s",
-                                ec >> X86_EC_SEL_SHIFT,
-                                ec & X86_EC_EXT ? " EXT" : "");
-            else
-                return snprintf(buf, bufsz,
-                                "%cDT sel %#x%s",
-                                ec & X86_EC_TI ? 'L' : 'G',
-                                ec & X86_EC_SEL_MASK,
-                                ec & X86_EC_EXT ? " EXT" : "");
+            return snprintf(buf, bufsz,
+                            "%cDT[%u]%s",
+                            ec & X86_EC_IDT ? 'I' :
+                            (ec & X86_EC_TI ? 'L' : 'G'),
+                            ec >> X86_EC_SEL_SHIFT,
+                            ec & X86_EC_EXT ? ",EXT" : "");
         }
 
         /* Fallthrough */
