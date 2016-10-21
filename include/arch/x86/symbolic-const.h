@@ -65,10 +65,10 @@
  * @param ... Partial X86_EC_ tokens.
  *
  * Example usage:
- * - EXC_EC_SYM(0, GDT)
+ * - SEL_EC_SYM(0, GDT)
  *   - Uses @ref X86_EC_GDT.
  *
- * - EXC_EC_SYM(0, IDT, EXT)
+ * - SEL_EC_SYM(0, IDT, EXT)
  *   - Uses @ref X86_EC_IDT and @ref X86_EC_EXT.
  */
 #define SEL_EC_SYM(sel, ...) (sel | TOK_OR(X86_EC_, ##__VA_ARGS__))
