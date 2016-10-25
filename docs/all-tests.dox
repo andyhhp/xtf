@@ -68,6 +68,9 @@ XSA-190 - See @ref test-fpu-exception-emulation.
 
 @subpage test-xsa-192 - x86: Task switch to VM86 mode mis-handled.
 
+@subpage test-xsa-193 - x86: Segment base write emulation lacking canonical
+address checks.
+
 
 @section index-utility Utilities
 
