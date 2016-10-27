@@ -76,6 +76,18 @@ handle_exception:
 
         SAVE_ALL
 
+#if defined(CONFIG_HVM)
+        testl $X86_EFLAGS_VM, 11*4(%esp)
+        jz 1f
+
+        mov $__KERN_DS, %eax    /* Restore data segments if leaving vm86 mode. */
+        mov %eax, %ds
+        mov %eax, %es
+        mov %eax, %fs
+        mov %eax, %gs
+1:
+#endif
+
         push %esp               /* struct cpu_regs * */
         call do_exception
         add $4, %esp

@@ -66,6 +66,8 @@ XSA-190 - See @ref test-fpu-exception-emulation.
 
 @subpage test-xsa-191 - x86: Null segments not always treated as unusable.
 
+@subpage test-xsa-192 - x86: Task switch to VM86 mode mis-handled.
+
 
 @section index-utility Utilities
 
