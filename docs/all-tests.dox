@@ -75,6 +75,8 @@ address checks.
 
 @subpage test-xsa-195 - x86: 64-bit bit test instruction emulation broken.
 
+@subpage test-xsa-196 - x86: Software interrupt injection mis-handled.
+
 
 @section index-utility Utilities
 
