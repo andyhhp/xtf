@@ -144,6 +144,29 @@ void test_main(void)
     memcpy(stub, insn_buf_start, insn_buf_end - insn_buf_start);
 
     /*
+     * Work around suspected Broadwell TLB Erratum
+     *
+     * Occasionally, this test failes with:
+     *
+     *   --- Xen Test Framework ---
+     *   Environment: HVM 64bit (Long mode 4 levels)
+     *   XSA-186 PoC
+     *   ******************************
+     *   PANIC: Unhandled exception at 0008:fffffffffffffffa
+     *   Vec 14 #PF[-I-sr-] %cr2 fffffffffffffffa
+     *   ******************************
+     *
+     * on Broadwell hardware.  The mapping is definitely present as the
+     * memcpy() has already succeeded.  Inserting an invlpg resolves the
+     * issue, sugguesting that there is a race conditon between dTLB/iTLB
+     * handling.
+     *
+     * Work around the issue for now, to avoid intermittent OSSTest failures
+     * from blocking pushes of unrelated changes.
+     */
+    invlpg(stub);
+
+    /*
      * Execute the stub.
      *
      * Intel CPUs are happy doing this for 32 and 64bit.  AMD CPUs are happy
