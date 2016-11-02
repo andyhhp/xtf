@@ -73,6 +73,8 @@ address checks.
 
 @subpage test-xsa-194 - Guest 32-bit ELF symbol table load leaking host data.
 
+@subpage test-xsa-195 - x86: 64-bit bit test instruction emulation broken.
+
 
 @section index-utility Utilities
 
