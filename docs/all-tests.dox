@@ -64,6 +64,8 @@ during emulation.
 
 XSA-190 - See @ref test-fpu-exception-emulation.
 
+@subpage test-xsa-191 - x86: Null segments not always treated as unusable.
+
 
 @section index-utility Utilities
 
