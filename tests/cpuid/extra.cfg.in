@@ -1,0 +1,2 @@
+# Enable viridian for HVM domains
+viridian = 1
