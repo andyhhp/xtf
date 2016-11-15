@@ -4,6 +4,8 @@
 #include <arch/x86/cpuid.h>
 #include <arch/x86/lib.h>
 
+extern char _end[];
+
 #endif /* XTF_X86_XTF_H */
 
 /*

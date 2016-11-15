@@ -12,6 +12,7 @@
 #define XEN_ELFNOTE_LOADER         8
 #define XEN_ELFNOTE_PAE_MODE       9
 #define XEN_ELFNOTE_FEATURES      10
+#define XEN_ELFNOTE_BSD_SYMTAB    11
 
 #endif /* XEN_PUBLIC_ELFNOTE_H */
 

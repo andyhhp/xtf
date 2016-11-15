@@ -71,6 +71,8 @@ XSA-190 - See @ref test-fpu-exception-emulation.
 @subpage test-xsa-193 - x86: Segment base write emulation lacking canonical
 address checks.
 
+@subpage test-xsa-194 - Guest 32-bit ELF symbol table load leaking host data.
+
 
 @section index-utility Utilities
 

@@ -38,6 +38,10 @@ SECTIONS
                 *(.text)
         } :load = 0x9090
 
+        .data : {
+                *(.data)
+        }
+
         .rodata : {
                 *(.rodata)
                 *(.rodata.*)
@@ -52,6 +56,12 @@ SECTIONS
                 *(.note)
                 *(.note.*)
         }
+
+        .bss : {
+                *(.bss)
+        }
+
+        _end = .;
 }
 
 /*

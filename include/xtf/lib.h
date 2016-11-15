@@ -47,6 +47,8 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
         _a > _b ? _a : _b;                              \
     })
 
+#define ROUNDUP(x, a) (((x) + (a) - 1) & ~((a) - 1))
+
 void heapsort(void *base, size_t nmemb, size_t size,
               int (*compar)(const void *, const void *),
               void (*swap)(void *, void *));

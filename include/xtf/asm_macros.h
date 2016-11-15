@@ -73,6 +73,20 @@ name:
 4:.align 4                                        ; \
     .popsection
 
+#else
+
+#define ELFNOTE(name, type, desc)                \
+    asm (".pushsection .note." #name ";"         \
+    ".align 4;"                                  \
+    ".long 2f - 1f;"       /* namesz */          \
+    ".long 4f - 3f;"       /* descsz */          \
+    ".long " STR(type) ";" /* type   */          \
+    "1: .asciz \"" #name "\";" /* name   */      \
+    "2:.align 4;"                                \
+    "3: " desc ";"         /* desc   */          \
+    "4:.align 4;"                                \
+    ".popsection;")
+
 #endif /* __ASSEMBLY__ */
 
 #endif /* XTF_ASM_MACROS_H */
