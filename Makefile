@@ -81,3 +81,5 @@ doxygen: Doxyfile
 .PHONY: pylint
 pylint:
 	-pylint --rcfile=.pylintrc xtf-runner
+
+-include Makefile.local
