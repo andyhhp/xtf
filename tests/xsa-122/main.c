@@ -22,6 +22,8 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "XSA-122 PoC";
+
 /*
  * Check a buffer of a specified size for non-NUL bytes following the string
  * NUL terminator.
@@ -47,8 +49,6 @@ static void check_buffer(const char *ref, const char *buf, size_t buf_sz)
 void test_main(void)
 {
     long rc;
-
-    printk("XSA-122 PoC\n");
 
     printk("XENVER_extraversion:\n");
     {

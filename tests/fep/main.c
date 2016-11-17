@@ -13,10 +13,10 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "Test availability of HVM forced emulation prefix";
+
 void test_main(void)
 {
-    printk("Test availability of HVM forced emulation prefix\n");
-
     if ( xtf_has_fep )
         xtf_success(NULL);
     else

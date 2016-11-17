@@ -10,9 +10,11 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "Hello World";
+
 void test_main(void)
 {
-    xtf_success("Hello World\n");
+    xtf_success(NULL);
 }
 
 /*

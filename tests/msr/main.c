@@ -13,12 +13,12 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "Guest MSR information";
+
 void test_main(void)
 {
     unsigned int idx = 0;
     uint64_t val;
-
-    printk("Guest MSR information\n");
 
     do {
         if ( !rdmsr_safe(idx, &val) )

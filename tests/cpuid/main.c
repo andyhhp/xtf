@@ -11,6 +11,8 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "Guest cpuid information";
+
 static void dump_leaves(cpuid_count_fn_t cpuid_fn)
 {
     uint32_t leaf = 0, subleaf = ~0U;
@@ -134,8 +136,6 @@ static void dump_leaves(cpuid_count_fn_t cpuid_fn)
 
 void test_main(void)
 {
-    printk("Guest cpuid information\n");
-
     printk("Native cpuid:\n");
     dump_leaves(cpuid_count);
 

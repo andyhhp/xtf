@@ -36,6 +36,8 @@
 #include <arch/x86/pagetable.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "XSA-186 PoC";
+
 bool test_needs_fep = true;
 
 /* Test-local `int` handler. */
@@ -77,8 +79,6 @@ bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
 
 void test_main(void)
 {
-    printk("XSA-186 PoC\n");
-
     struct xtf_idte idte =
     {
         .addr = (unsigned long)test_int_handler,

@@ -14,6 +14,11 @@
 void test_main(void);
 
 /**
+ * The title of the test.
+ */
+extern const char test_title[];
+
+/**
  * Boolean indicating whether generic Force Emulation Prefix support is
  * available for the test to use.
  */

@@ -42,6 +42,8 @@
 
 #include <arch/x86/processor.h>
 
+const char test_title[] = "PV IOPL emulation";
+
 bool test_wants_user_mappings = true;
 
 /**
@@ -247,8 +249,6 @@ static const struct test vmassist =
 void test_main(void)
 {
     const struct test *test;
-
-    printk("PV IOPL emulation\n");
 
     /**
      * @todo Implement better command line infrastructure, but this will do

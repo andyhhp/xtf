@@ -87,6 +87,8 @@
 #include <arch/x86/msr-index.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "Invlpg tests";
+
 /* Swizzle to easily change all invlpg instructions to being emulated. */
 #if 0
 #define _ASM_MAYBE_XEN_FEP _ASM_XEN_FEP

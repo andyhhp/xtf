@@ -38,10 +38,10 @@
 #include <arch/x86/pagetable.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "XSA-185 PoC";
+
 void test_main(void)
 {
-    printk("XSA-185 PoC\n");
-
     paddr_t cr3_paddr = (paddr_t)xen_cr3_to_pfn(read_cr3()) << PAGE_SHIFT;
 
      /*

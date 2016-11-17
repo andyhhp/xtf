@@ -29,13 +29,13 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "XSA-123 PoC";
+
 bool test_needs_fep = true;
 
 void test_main(void)
 {
     unsigned long src = 0x1234, dest = 0;
-
-    printk("XSA-123 PoC\n");
 
     asm volatile(_ASM_XEN_FEP
                  /* Explicit %cs segment override. */

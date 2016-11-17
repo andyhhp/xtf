@@ -51,6 +51,8 @@
 
 #include "lowlevel.h"
 
+const char test_title[] = "Software interrupt emulation";
+
 bool test_wants_user_mappings = true;
 
 /** Single stub's worth of information. */
@@ -368,8 +370,6 @@ void cpl0_tests(void)
 
 void test_main(void)
 {
-    printk("Trap emulation\n");
-
     /*
      * Even if FEP is unavailable, run the tests against real hardware to
      * check the algorithm, but don't claim overall success.

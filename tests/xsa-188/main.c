@@ -18,6 +18,8 @@
 #include <xtf.h>
 #include <arch/x86/mm.h>
 
+const char test_title[] = "XSA-188 PoC";
+
 static uint8_t array_page[PAGE_SIZE] __aligned(PAGE_SIZE);
 
 void test_main(void)
@@ -25,8 +27,6 @@ void test_main(void)
     struct evtchn_init_control init_control;
     struct evtchn_expand_array expand_array;
     int ret;
-
-    printk("XSA-188 PoC\n");
 
     /* 1. EVTCHNOP_init_control with bad GFN. */
     init_control.control_gfn = (uint64_t)-2;

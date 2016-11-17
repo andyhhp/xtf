@@ -26,6 +26,8 @@
 #include <arch/x86/processor.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "XSA-173 PoC";
+
 /* New L2 pagetable for the test to manipulate. */
 uint64_t nl2[PAE_L2_PT_ENTRIES] __aligned(PAGE_SIZE);
 
@@ -49,8 +51,6 @@ bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
 void test_main(void)
 {
     uint64_t *ptr, val;
-
-    printk("XSA-173 PoC\n");
 
     /* Hook nl2 into the existing l3, just above the 4GB boundary. */
     pae_l3_identmap[4] = pte_from_virt(nl2, PF_SYM(U, RW, P));

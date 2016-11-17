@@ -84,6 +84,10 @@ The minimum for main.c is to include the framework:
 
 @skipline <xtf.h>
 
+Choose a suitable title:
+
+@skipline const char test_title
+
 Implement test_main():
 
 @skipline main(

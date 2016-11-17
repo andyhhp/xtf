@@ -23,6 +23,7 @@ void __noreturn xtf_main(void)
 
     printk("--- Xen Test Framework ---\n");
     printk("Environment: %s\n", environment_description);
+    printk("%s\n", test_title);
 
     test_setup();
 

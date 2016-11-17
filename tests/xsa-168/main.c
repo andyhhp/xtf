@@ -31,10 +31,10 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "XSA-168 PoC";
+
 void test_main(void)
 {
-    printk("XSA-168 PoC\n");
-
     /**
      * At the time of writing, Xen doesn't correctly handle `invlpg` while
      * running in shadow mode on AMD Gen1 hardware lacking decode assistance.

@@ -27,10 +27,10 @@
  */
 #include <xtf.h>
 
+const char test_title[] = "XSA-167 PoC";
+
 void test_main(void)
 {
-    printk("XSA-167 PoC\n");
-
     mmuext_op_t op =
     {
         .cmd = MMUEXT_MARK_SUPER,

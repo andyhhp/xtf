@@ -29,10 +29,10 @@
 #include <arch/x86/pagetable.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "XSA-182 PoC";
+
 void test_main(void)
 {
-    printk("XSA-182 PoC\n");
-
     unsigned long cr3 = read_cr3();
     intpte_t nl1e = pte_from_paddr(cr3, PF_SYM(AD, U, P));
     intpte_t *l4 = _p(KB(4));

@@ -25,6 +25,8 @@
 #include <arch/x86/msr-index.h>
 #include <arch/x86/processor.h>
 
+const char test_title[] = "Guest CPUID Faulting support";
+
 bool test_wants_user_mappings = true;
 
 unsigned long stub_cpuid(void)
@@ -87,8 +89,6 @@ static void test_cpuid(bool exp_faulting)
 void test_main(void)
 {
     uint64_t platform_info, features_enable;
-
-    printk("Guest CPUID Faulting support\n");
 
     if ( IS_DEFINED(CONFIG_HVM) && !xtf_has_fep )
         xtf_skip("FEP support not detected - some tests will be skipped\n");

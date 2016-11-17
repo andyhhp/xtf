@@ -114,14 +114,14 @@ cat <<EOF
  */
 #include <xtf.h>
 
-void test_main(void)
-{
 EOF
 [ $CATEGORY != "xsa" ] && \
-    echo '    printk("Test '$NAME'\\n");' || \
-    echo '    printk("'$NAME_UC' PoC\\n");'
+    echo 'const char test_title[] = "Test '$NAME'";' || \
+    echo 'const char test_title[] = "'$NAME_UC' PoC";'
 cat <<EOF
 
+void test_main(void)
+{
     xtf_success(NULL);
 }
 

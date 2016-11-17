@@ -41,6 +41,8 @@
 #include <arch/x86/processor.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "FPU Exception Emulation";
+
 #define CR0_SYM(...) TOK_OR(X86_CR0_, ##__VA_ARGS__)
 #define CR0_MASK CR0_SYM(EM, MP, TS)
 
@@ -232,8 +234,6 @@ void run_tests(bool force)
 
 void test_main(void)
 {
-    printk("FPU Exception Emulation:\n");
-
     default_cr0 = read_cr0();
 
     run_tests(false);

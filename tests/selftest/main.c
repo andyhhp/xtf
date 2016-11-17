@@ -15,6 +15,8 @@
 #include <arch/x86/processor.h>
 #include <arch/x86/segment.h>
 
+const char test_title[] = "XTF Selftests";
+
 bool test_wants_user_mappings = true;
 
 static void test_int3_breakpoint(void)
@@ -291,8 +293,6 @@ static void test_custom_idte(void)
 
 void test_main(void)
 {
-    printk("XTF Selftests\n");
-
     test_int3_breakpoint();
     test_extable();
     test_exlog();

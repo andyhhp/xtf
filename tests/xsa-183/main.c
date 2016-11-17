@@ -40,14 +40,14 @@
 #include <arch/x86/pagetable.h>
 #include <arch/x86/symbolic-const.h>
 
+const char test_title[] = "XSA-183 PoC";
+
 uint8_t user_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
 
 void test_main(void)
 {
     unsigned long curr_stk, discard;
     intpte_t nl1e = pte_from_virt(user_stack, PF_SYM(AD, U, RW, P));
-
-    printk("XSA-183 PoC\n");
 
     /* Remap user_stack with _PAGE_USER. */
     if ( hypercall_update_va_mapping(user_stack, nl1e, UVMF_INVLPG) )
