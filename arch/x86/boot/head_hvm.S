@@ -46,10 +46,14 @@ GLOBAL(_start)                  /* HVM common setup. */
 #endif /* __x86_64__ */
 
 #if CONFIG_PAGING_LEVELS > 0    /* CR0.PG = 1 */
-        mov %cr0, %eax
-        or $X86_CR0_PG, %eax
-        mov %eax, %cr0
+# define MAYBE_PG X86_CR0_PG
+#else
+# define MAYBE_PG 0
 #endif /* CONFIG_PAGING_LEVELS > 0 */
+
+        mov %cr0, %eax
+        or $(X86_CR0_WP | MAYBE_PG), %eax
+        mov %eax, %cr0
 
         lgdt gdt_ptr
 
