@@ -255,6 +255,15 @@ enum XEN_UVMF {
 };
 #endif
 
+#ifndef __ASSEMBLY__
+typedef struct {
+    union {
+        void *p;
+        uint64_t __aligned(8) q;
+    };
+} guest_handle_64_t;
+#endif
+
 #endif /* XEN_PUBLIC_XEN_H */
 
 /*

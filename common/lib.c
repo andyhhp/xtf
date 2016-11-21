@@ -19,6 +19,21 @@ void __noreturn panic(const char *fmt, ...)
     arch_crash_hard();
 }
 
+int xtf_probe_sysctl_interface_version(void)
+{
+    int i;
+    xen_sysctl_t op = { .cmd = 0 };
+
+    for ( i = 0; i < 128; i++ )
+    {
+        op.interface_version = i;
+        if ( hypercall_sysctl(&op) != -EACCES )
+            return i;
+    }
+
+    return -1;
+}
+
 /*
  * Local variables:
  * mode: C

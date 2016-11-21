@@ -34,6 +34,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 #include <xen/physdev.h>
 #include <xen/memory.h>
 #include <xen/version.h>
+#include <xen/sysctl.h>
 #include <xen/hvm/hvm_op.h>
 #include <xen/hvm/params.h>
 
@@ -112,6 +113,11 @@ static inline long hypercall_physdev_op(unsigned int cmd, void *arg)
 static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, __HYPERVISOR_hvm_op, cmd, arg);
+}
+
+static inline long hypercall_sysctl(xen_sysctl_t *arg)
+{
+    return HYPERCALL1(long, __HYPERVISOR_sysctl, arg);
 }
 
 /*

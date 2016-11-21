@@ -65,6 +65,12 @@ static inline void exec_user_void(void (*fn)(void))
     exec_user((void *)fn);
 }
 
+/**
+ * Probe for the SYSCTL_INTERFACE_VERSION in use by the hypervisor
+ * @returns version, or -1 on failure.
+ */
+int xtf_probe_sysctl_interface_version(void);
+
 #endif /* XTF_LIB_H */
 
 /*
