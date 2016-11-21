@@ -22,7 +22,7 @@ and functionality.
 
 @subpage test-invlpg - `invlpg` instruction behaviour.
 
-@subpage test-livepatch-priv-check - Live Patch Privilege Check
+@subpage test-livepatch-priv-check - Live Patch Privilege Check.
 
 @subpage test-pv-iopl - IOPL emulation for PV guests.
 
@@ -32,13 +32,13 @@ Coveres XSA-106 and XSA-156.
 
 @section index-xsa XSA Proof-of-Concept tests
 
-XSA-106 - See @ref test-swint-emulation
+XSA-106 - See @ref test-swint-emulation.
 
 @subpage test-xsa-122 - Hypervisor stack leak via xen_version() hypercall.
 
 @subpage test-xsa-123 - Hypervisor memory corruption due to x86 emulator flaw.
 
-XSA-156 - See @ref test-swint-emulation
+XSA-156 - See @ref test-swint-emulation.
 
 @subpage test-xsa-167 - PV superpage sanity checks.
 
@@ -62,7 +62,7 @@ during emulation.
 
 @subpage test-xsa-188 - use after free in FIFO event channel code.
 
-XSA-190 - See @ref test-fpu-exception-emulation
+XSA-190 - See @ref test-fpu-exception-emulation.
 
 
 @section index-utility Utilities
