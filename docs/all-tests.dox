@@ -77,6 +77,9 @@ address checks.
 
 @subpage test-xsa-196 - x86: Software interrupt injection mis-handled.
 
+@subpage test-xsa-200 - x86: CMPXCHG8B emulation fails to ignore operand size
+override.
+
 
 @section index-utility Utilities
 
