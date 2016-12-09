@@ -80,6 +80,8 @@ address checks.
 @subpage test-xsa-200 - x86: CMPXCHG8B emulation fails to ignore operand size
 override.
 
+@subpage test-xsa-203 - x86: missing NULL pointer check in VMFUNC emulation.
+
 
 @section index-utility Utilities
 
