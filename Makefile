@@ -1,4 +1,4 @@
-MAKEFLAGS += -r
+MAKEFLAGS += -rR
 ROOT := $(abspath $(CURDIR))
 export ROOT
 
@@ -22,15 +22,15 @@ xtftestdir := $(xtfdir)/tests
 export DESTDIR xtfdir xtftestdir
 
 # Programs used
-CC              ?= $(CROSS_COMPILE)gcc
-CPP             ?= $(CC) -E
-INSTALL         ?= install
-INSTALL_DATA    ?= $(INSTALL) -m 644 -p
-INSTALL_DIR     ?= $(INSTALL) -d -p
-INSTALL_PROGRAM ?= $(INSTALL) -p
-LD              ?= $(CROSS_COMPILE)ld
-OBJCOPY         ?= $(CROSS_COMPILE)objcopy
-PYTHON          ?= python
+CC              := $(CROSS_COMPILE)gcc
+CPP             := $(CC) -E
+INSTALL         := install
+INSTALL_DATA    := $(INSTALL) -m 644 -p
+INSTALL_DIR     := $(INSTALL) -d -p
+INSTALL_PROGRAM := $(INSTALL) -p
+LD              := $(CROSS_COMPILE)ld
+OBJCOPY         := $(CROSS_COMPILE)objcopy
+PYTHON          := python
 
 export CC CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM LD OBJCOPY PYTHON
 
