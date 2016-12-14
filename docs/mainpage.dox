@@ -38,6 +38,13 @@ Requirements:
     - Clang may be used, via `CC="clang"`
 - Python
 
+Optionally:
+- A toolchain with x32 support.
+    - `hvm64` tests would prefer to use the `elf32-x86-64` format, so they
+      both load and disassemble correctly.  In the absence of x32 support,
+      `elf32-i386` will be used which will load correctly, but disassemble
+      incorrectly.
+
 To obtain and build:
 
     $ git clone git://xenbits.xen.org/xtf.git
