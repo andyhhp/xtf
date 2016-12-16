@@ -25,6 +25,7 @@ void check(const char *func, exinfo_t got, exinfo_t exp);
 
 /* VMX instruction stubs, wrapped to return exinfo_t information. */
 exinfo_t stub_vmxon(uint64_t paddr);
+exinfo_t stub_vmxon_user(uint64_t paddr);
 
 /* Test routines. */
 void test_msr_vmx(void);
