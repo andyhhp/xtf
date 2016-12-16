@@ -126,6 +126,19 @@ static void test_vmxon_novmcs_in_root_cpl0(void)
     check(__func__, ex, VMERR_INVALID);
 }
 
+/**
+ * vmxon in VMX root w/ CPL = 3 and w/o current VMCS
+ *
+ * Expect: @#GP(0)
+ */
+static void test_vmxon_novmcs_in_root_user(void)
+{
+    clear_vmcs(vmxon_region_unused, vmcs_revid);
+    exinfo_t ex = exec_user(vmxon_in_user);
+
+    check(__func__, ex, EXINFO_SYM(GP, 0));
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
@@ -150,6 +163,7 @@ void test_vmxon(void)
     /* Test should now be operating in VMX Root mode. */
 
     test_vmxon_novmcs_in_root_cpl0();
+    test_vmxon_novmcs_in_root_user();
 }
 
 /*
