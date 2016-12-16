@@ -8,9 +8,9 @@
  *
  * @see tests/vvmx/main.c
  */
-#include <xtf.h>
+#include "test.h"
 
-const char test_title[] = "Test vvmx";
+const char test_title[] = "Nested VT-x testing";
 
 void test_main(void)
 {
@@ -19,6 +19,8 @@ void test_main(void)
 
     if ( !vendor_is_intel )
         xtf_warning("Warning: VT-x found on non-Intel processor\n");
+
+    test_msr_vmx();
 
     xtf_success(NULL);
 }

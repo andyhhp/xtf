@@ -8,6 +8,8 @@
 #define MSR_APICBASE_EXTD               (_AC(1, L) << 10)
 #define MSR_APICBASE_ENABLE             (_AC(1, L) << 11)
 
+#define MSR_FEATURE_CONTROL             0x0000003a
+
 #define MSR_PMC(n)                     (0x000000c1 + (n))
 
 #define MSR_INTEL_PLATFORM_INFO         0x000000ce
@@ -61,6 +63,19 @@
 #define MSR_GS_BASE                     0xc0000101
 #define MSR_SHADOW_GS_BASE              0xc0000102
 
+#ifndef __ASSEMBLY__
+#include <xtf/types.h>
+
+typedef union msr_feature_control {
+    uint64_t raw;
+    struct {
+        bool lock:1,
+            vmxon_inside_smx:1,
+            vmxon_outside_smx:1;
+    };
+} msr_feature_control_t;
+
+#endif /* !__ASSEMBLY__ */
 #endif /* XFT_X86_MSR_INDEX_H */
 
 /*
