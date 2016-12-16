@@ -23,6 +23,22 @@
  */
 void check(const char *func, exinfo_t got, exinfo_t exp);
 
+extern uint32_t vmcs_revid; /**< Hardware VMCS Revision ID. */
+
+/**
+ * Collect real information about the VT-x environment, for use by test.
+ */
+void vmx_collect_data(void);
+
+/* Clear a VMCS, and set a specific revision id. */
+static inline void clear_vmcs(void *_vmcs, uint32_t rev)
+{
+    uint32_t *vmcs = _vmcs;
+
+    memset(vmcs, 0, PAGE_SIZE);
+    vmcs[0] = rev;
+}
+
 /* VMX instruction stubs, wrapped to return exinfo_t information. */
 exinfo_t stub_vmxon(uint64_t paddr);
 exinfo_t stub_vmxon_user(uint64_t paddr);

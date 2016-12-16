@@ -52,6 +52,15 @@ void check(const char *func, exinfo_t got, exinfo_t exp)
                 func, exp, expstr, got, gotstr);
 }
 
+uint32_t vmcs_revid;
+
+void vmx_collect_data(void)
+{
+    msr_vmx_basic_t basic = { rdmsr(MSR_VMX_BASIC) };
+
+    vmcs_revid = basic.vmcs_rev_id;
+}
+
 /*
  * Read the VM Instruction Error code from the VMCS.  It is the callers
  * responsibility to ensure that the VMCS is valid in context.
