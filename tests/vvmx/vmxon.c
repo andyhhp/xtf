@@ -84,6 +84,19 @@ static void test_vmxon_mismatched_revid(void)
     check(__func__, ex, VMERR_INVALID);
 }
 
+/**
+ * vmxon with VMCS revision ID[31] set
+ *
+ * Expect: VMfailInvalid
+ */
+static void test_vmxon_revid_bit31(void)
+{
+    clear_vmcs(vmxon_region_unused, vmcs_revid | (1UL << 31));
+    exinfo_t ex = stub_vmxon(_u(vmxon_region_unused));
+
+    check(__func__, ex, VMERR_INVALID);
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
@@ -102,6 +115,7 @@ void test_vmxon(void)
     test_vmxon_overly_wide_paddr();
     test_vmxon_unaligned_paddr();
     test_vmxon_mismatched_revid();
+    test_vmxon_revid_bit31();
 }
 
 /*
