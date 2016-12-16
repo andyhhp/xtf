@@ -3,6 +3,9 @@
 /* vmxon region which shouldn't be latched in the hardware vmxon pointer. */
 static uint8_t vmxon_region_unused[PAGE_SIZE] __page_aligned_bss;
 
+/* vmxon region which gets latched in hardware. */
+static uint8_t vmxon_region_real[PAGE_SIZE] __page_aligned_bss;
+
 /**
  * vmxon with CR4.VMXE cleared
  *
@@ -97,6 +100,19 @@ static void test_vmxon_revid_bit31(void)
     check(__func__, ex, VMERR_INVALID);
 }
 
+/**
+ * vmxon expected to succeed
+ *
+ * Expect: Success
+ */
+static void test_vmxon_correct(void)
+{
+    clear_vmcs(vmxon_region_real, vmcs_revid);
+    exinfo_t ex = stub_vmxon(_u(vmxon_region_real));
+
+    check(__func__, ex, VMERR_SUCCESS);
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
@@ -116,6 +132,9 @@ void test_vmxon(void)
     test_vmxon_unaligned_paddr();
     test_vmxon_mismatched_revid();
     test_vmxon_revid_bit31();
+    test_vmxon_correct();
+
+    /* Test should now be operating in VMX Root mode. */
 }
 
 /*
