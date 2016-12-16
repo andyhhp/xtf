@@ -53,6 +53,45 @@ void check(const char *func, exinfo_t got, exinfo_t exp)
 }
 
 /*
+ * Read the VM Instruction Error code from the VMCS.  It is the callers
+ * responsibility to ensure that the VMCS is valid in context.
+ */
+static exinfo_t get_vmx_insn_err(void)
+{
+    unsigned long err;
+
+    asm ("vmread %[field], %[value]"
+         : [value] "=rm" (err)
+         : [field] "r" (VMCS_VM_INSN_ERR + 0ul));
+
+    return VMERR_VALID(err);
+}
+
+exinfo_t stub_vmxon(uint64_t paddr)
+{
+    exinfo_t ex = 0;
+    bool fail_valid = false, fail_invalid = false;
+
+    asm volatile ("1: vmxon %[paddr];"
+                  ASM_FLAG_OUT(, "setc %[fail_invalid];")
+                  ASM_FLAG_OUT(, "setz %[fail_valid];")
+                  "2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  : "+D" (ex),
+                    ASM_FLAG_OUT("=@ccc", [fail_invalid] "+rm") (fail_invalid),
+                    ASM_FLAG_OUT("=@ccz", [fail_valid]   "+rm") (fail_valid)
+                  : [paddr] "m" (paddr),
+                    "X" (ex_record_fault_edi));
+
+    if ( fail_invalid )
+        return VMERR_INVALID;
+    else if ( fail_valid )
+        return get_vmx_insn_err();
+    else
+        return ex;
+}
+
+/*
  * Local variables:
  * mode: C
  * c-file-style: "BSD"

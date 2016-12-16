@@ -36,6 +36,10 @@
 /* 27 not specified. */
 #define VMERR_BAD_INV_OPERAND                       28
 
+
+/* VMCS field encodings. */
+#define VMCS_VM_INSN_ERR                        0x4400
+
 #endif /* XTF_X86_X86_VMX_H */
 
 /*

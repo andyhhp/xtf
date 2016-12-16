@@ -21,6 +21,7 @@ void test_main(void)
         xtf_warning("Warning: VT-x found on non-Intel processor\n");
 
     test_msr_vmx();
+    test_vmxon();
 
     xtf_success(NULL);
 }
