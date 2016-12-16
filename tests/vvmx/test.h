@@ -41,6 +41,7 @@ static inline void clear_vmcs(void *_vmcs, uint32_t rev)
 
 /* VMX instruction stubs, wrapped to return exinfo_t information. */
 exinfo_t stub_vmxon(uint64_t paddr);
+exinfo_t stub_vmptrld(uint64_t paddr);
 exinfo_t stub_vmxon_user(uint64_t paddr);
 
 /* Test routines. */

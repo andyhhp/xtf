@@ -6,6 +6,9 @@ static uint8_t vmxon_region_unused[PAGE_SIZE] __page_aligned_bss;
 /* vmxon region which gets latched in hardware. */
 static uint8_t vmxon_region_real[PAGE_SIZE] __page_aligned_bss;
 
+/* Loaded VMCS, to recover VM Instruction Errors. */
+static uint8_t vmcs[PAGE_SIZE] __page_aligned_bss;
+
 /**
  * vmxon with CR4.VMXE cleared
  *
@@ -139,9 +142,23 @@ static void test_vmxon_novmcs_in_root_user(void)
     check(__func__, ex, EXINFO_SYM(GP, 0));
 }
 
+/**
+ * vmxon in VMX root w/ CPL = 0 and w/ current VMCS
+ *
+ * Expect: VMfailvalid()
+ */
+static void test_vmxon_in_root_cpl0(void)
+{
+    clear_vmcs(vmxon_region_unused, vmcs_revid);
+    exinfo_t ex = stub_vmxon(_u(vmxon_region_unused));
+
+    check(__func__, ex, VMERR_VALID(VMERR_VMXON_IN_ROOT));
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
+    exinfo_t ex;
 
     if ( cr4 & X86_CR4_VMXE )
         write_cr4(cr4 &= ~X86_CR4_VMXE);
@@ -164,6 +181,14 @@ void test_vmxon(void)
 
     test_vmxon_novmcs_in_root_cpl0();
     test_vmxon_novmcs_in_root_user();
+
+    /* Load a real VMCS to recover VM Instruction Errors. */
+    clear_vmcs(vmcs, vmcs_revid);
+    ex = stub_vmptrld(_u(vmcs));
+    if ( ex )
+        return xtf_failure("Fail: unexpected vmptrld failure %08x\n", ex);
+
+    test_vmxon_in_root_cpl0();
 }
 
 /*

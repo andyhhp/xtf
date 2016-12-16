@@ -100,6 +100,30 @@ exinfo_t stub_vmxon(uint64_t paddr)
         return ex;
 }
 
+exinfo_t stub_vmptrld(uint64_t paddr)
+{
+    exinfo_t ex = 0;
+    bool fail_valid = false, fail_invalid = false;
+
+    asm volatile ("1: vmptrld %[paddr];"
+                  ASM_FLAG_OUT(, "setc %[fail_invalid];")
+                  ASM_FLAG_OUT(, "setz %[fail_valid];")
+                  "2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  : "+D" (ex),
+                    ASM_FLAG_OUT("=@ccc", [fail_invalid] "+rm") (fail_invalid),
+                    ASM_FLAG_OUT("=@ccz", [fail_valid]   "+rm") (fail_valid)
+                  : [paddr] "m" (paddr),
+                    "X" (ex_record_fault_edi));
+
+    if ( fail_invalid )
+        return VMERR_INVALID;
+    else if ( fail_valid )
+        return get_vmx_insn_err();
+    else
+        return ex;
+}
+
 exinfo_t __user_text stub_vmxon_user(uint64_t paddr)
 {
     exinfo_t ex = 0;
