@@ -32,6 +32,9 @@
 #define MSR_PERF_GLOBAL_STATUS          0x0000038e
 #define MSR_PERF_GLOBAL_CTRL            0x0000038f
 #define MSR_PERF_GLOBAL_OVF_CTRL        0x00000390
+
+#define MSR_VMX_BASIC                   0x00000480
+
 #define MSR_A_PMC(n)                   (0x000004c1 + (n))
 
 #define MSR_X2APIC_REGS                 0x00000800
@@ -74,6 +77,21 @@ typedef union msr_feature_control {
             vmxon_outside_smx:1;
     };
 } msr_feature_control_t;
+
+typedef union msr_vmx_basic {
+    uint64_t raw;
+    struct {
+        uint32_t      vmcs_rev_id:31;
+        bool                  mbz:1;
+        uint32_t        vmcs_size:13;
+        uint32_t                 :3;
+        bool          paddr_32bit:1;
+        bool             smm_dual:1;
+        uint32_t    vmcs_mem_type:4;
+        bool     inouts_exit_info:1;
+        bool            true_ctls:1;
+    };
+} msr_vmx_basic_t;
 
 #endif /* !__ASSEMBLY__ */
 #endif /* XFT_X86_MSR_INDEX_H */

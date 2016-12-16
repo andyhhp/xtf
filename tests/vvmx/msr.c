@@ -28,11 +28,35 @@ static void test_msr_feature_control(void)
         xtf_failure("Fail: Successfully wrote to MSR_FEATURE_CONTROL\n");
 }
 
+static void test_msr_vmx_basic(void)
+{
+    msr_vmx_basic_t basic;
+
+    if ( rdmsr_safe(MSR_VMX_BASIC, &basic.raw) )
+        return xtf_failure("Fail: Fault when reading MSR_VMX_BASIC\n");
+
+    if ( basic.mbz )
+        xtf_failure("Fail: MSR_VMX_BASIC[31] is not 0\n");
+
+    if ( basic.vmcs_size == 0 )
+        xtf_failure("Fail: VMCS size reported as 0\n");
+    else if ( basic.vmcs_size > 4096 )
+        xtf_failure("Fail: VMCS size (%u) exceeds 4096 limit\n",
+                    basic.vmcs_size);
+
+    if ( cpu_has_lm && basic.paddr_32bit )
+        xtf_failure("Fail: Physical address width limited to 32 bits\n");
+
+    if ( !wrmsr_safe(MSR_VMX_BASIC, basic.raw) )
+        xtf_failure("Fail: Successfully wrote to MSR_VMX_BASIC\n");
+}
+
 void test_msr_vmx(void)
 {
     printk("Test: MSRs\n");
 
     test_msr_feature_control();
+    test_msr_vmx_basic();
 }
 
 /*
