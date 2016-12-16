@@ -47,6 +47,18 @@ static void test_vmxon_in_user(void)
     check(__func__, ex, EXINFO_SYM(GP, 0));
 }
 
+/**
+ * vmxon with a physical address that exceeds the maximum address width
+ *
+ * Expect: VMfailInvalid
+ */
+static void test_vmxon_overly_wide_paddr(void)
+{
+    exinfo_t ex = stub_vmxon(1ULL << maxphysaddr);
+
+    check(__func__, ex, VMERR_INVALID);
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
@@ -62,6 +74,7 @@ void test_vmxon(void)
     write_cr4(cr4 |= X86_CR4_VMXE);
 
     test_vmxon_in_user();
+    test_vmxon_overly_wide_paddr();
 }
 
 /*
