@@ -59,6 +59,18 @@ static void test_vmxon_overly_wide_paddr(void)
     check(__func__, ex, VMERR_INVALID);
 }
 
+/**
+ * vmxon with an unaligned physical address
+ *
+ * Expect: VMfailInvalid
+ */
+static void test_vmxon_unaligned_paddr(void)
+{
+    exinfo_t ex = stub_vmxon(_u(vmxon_region_unused) | 0xff);
+
+    check(__func__, ex, VMERR_INVALID);
+}
+
 void test_vmxon(void)
 {
     unsigned long cr4 = read_cr4();
@@ -75,6 +87,7 @@ void test_vmxon(void)
 
     test_vmxon_in_user();
     test_vmxon_overly_wide_paddr();
+    test_vmxon_unaligned_paddr();
 }
 
 /*
