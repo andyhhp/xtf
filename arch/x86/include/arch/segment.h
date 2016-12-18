@@ -19,7 +19,7 @@
  *  7/8 - TSS (two slots in long mode)
  *  8 - DF TSS (32bit only)
  *
- *  9-12 - Available for test use
+ *  9-14 - Available for test use
  */
 
 #define GDTE_CS64_DPL0 1
@@ -36,8 +36,10 @@
 #define GDTE_AVAIL1    10
 #define GDTE_AVAIL2    11
 #define GDTE_AVAIL3    12
+#define GDTE_AVAIL4    13
+#define GDTE_AVAIL5    14
 
-#define NR_GDT_ENTRIES 13
+#define NR_GDT_ENTRIES 15
 
 /*
  * HVM guests use the GDT directly.

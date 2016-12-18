@@ -82,6 +82,9 @@ override.
 
 @subpage test-xsa-203 - x86: missing NULL pointer check in VMFUNC emulation.
 
+@subpage test-xsa-204 - x86: Mishandling of SYSCALL singlestep during
+emulation.
+
 
 @section index-utility Utilities
 
