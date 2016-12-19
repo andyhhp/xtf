@@ -4,7 +4,7 @@
  *
  * @page test-xsa-193 XSA-193
  *
- * Advisory: [XSA-193](http://xenbits.xen.org/xsa/advisory-xsa-193.html)
+ * Advisory: [XSA-193](http://xenbits.xen.org/xsa/advisory-193.html)
  *
  * Xen change [c42494acb2](http://xenbits.xen.org/gitweb/
  * ?p=xen.git;a=commitdiff;h=c42494acb2f7f31e561d38f06c59a50ee4198f36)

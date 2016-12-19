@@ -4,7 +4,7 @@
  *
  * @page test-xsa-192 XSA-192
  *
- * Advisory: [XSA-192](http://xenbits.xen.org/xsa/advisory-xsa-192.html)
+ * Advisory: [XSA-192](http://xenbits.xen.org/xsa/advisory-192.html)
  *
  * Before XSA-192, a bug existed with Xen's handling of task switches into
  * vm86 mode, whereby LDTR got loaded with vm86 attributes.
