@@ -52,7 +52,6 @@ struct test_cfg
     exinfo_t fault;
 };
 
-static unsigned long zero;
 static unsigned long default_cr0;
 
 /**
@@ -78,11 +77,10 @@ exinfo_t probe_x87(bool force)
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
-                  "1: fildq %[ptr]; 2:"
+                  "1: fnop; 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
                   : "+a" (fault)
-                  : [ptr] "m" (zero),
-                    [fep] "q" (force));
+                  : [fep] "q" (force));
 
     return fault;
 }
@@ -142,11 +140,10 @@ exinfo_t probe_mmx(bool force)
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
-                  "1: movq %[ptr], %%mm0; 2:"
+                  "1: movq %%mm0, %%mm0; 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
                   : "+a" (fault)
-                  : [ptr] "m" (zero),
-                    [fep] "q" (force));
+                  : [fep] "q" (force));
 
     return fault;
 }
@@ -158,11 +155,10 @@ exinfo_t probe_sse(bool force)
     asm volatile ("test %[fep], %[fep];"
                   "jz 1f;"
                   _ASM_XEN_FEP
-                  "1: movups %[ptr], %%xmm0; 2:"
+                  "1: movups %%xmm0, %%xmm0; 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
                   : "+a" (fault)
-                  : [ptr] "m" (zero),
-                    [fep] "q" (force));
+                  : [fep] "q" (force));
 
     return fault;
 }
