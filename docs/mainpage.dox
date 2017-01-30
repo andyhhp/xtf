@@ -85,6 +85,12 @@ To run tests on a Xen host: (see @ref errata first)
   elsewhere, use `make install DESTDIR=$X xtfdir=$Y` to configure absolute
   paths appropriately for the test system.
 
+- Some tests require the Xen Force Emulation Prefix to function.  FEP
+  deliberately opens the x86 instruction emulator to arbitrary testing, and
+  should not be enabled in production.  These tests must be run on a
+  hypervisor configured with `CONFIG_HVM_FEP` and booted with `'hvm_fep'` to
+  enable the runtime use of FEP.  These tests will detect if FEP is
+  unavailable and exit with an error.
 
 @section further Further Information
 

@@ -229,7 +229,10 @@ void test_setup(void)
                   : "0" (false));
 
     if ( test_needs_fep && !xtf_has_fep )
-        return xtf_skip("FEP unavailable, but needed by test\n");
+    {
+        printk("FEP unavailable, but needed by test. (Is Xen support\n");
+        return xtf_skip("compiled in, and booted with 'hvm_fep'?)\n");
+    }
 }
 
 /*
