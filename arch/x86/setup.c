@@ -20,6 +20,7 @@ uint8_t boot_stack[3 * PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
 unsigned int x86_family, x86_model, x86_stepping;
+unsigned int maxphysaddr, maxvirtaddr;
 
 const char *environment_description = ENVIRONMENT_DESCRIPTION;
 
@@ -30,7 +31,7 @@ start_info_t *start_info = NULL;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 {
-    unsigned int max, tmp, eax, ebx, ecx, edx;
+    unsigned int max, tmp, eax, ebx, ecx, edx, addr = 0;
 
     cpuid_fn(0, 0, &max, &ebx, &ecx, &edx);
 
@@ -86,10 +87,13 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
             cpuid_fn(0x80000007, 0, &tmp, &tmp, &tmp,
                      &x86_features[FEATURESET_e7d]);
         if ( max >= 0x80000008 )
-            cpuid_fn(0x80000008, 0, &tmp,
+            cpuid_fn(0x80000008, 0, &addr,
                      &x86_features[FEATURESET_e8b],
                      &tmp, &tmp);
     }
+
+    maxphysaddr = (addr & 0xff) ?: 36;
+    maxvirtaddr = ((addr >> 8) & 0xff) ?: 32;
 }
 
 /*

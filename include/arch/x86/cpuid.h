@@ -22,6 +22,7 @@ enum x86_vendor
 
 extern enum x86_vendor x86_vendor;
 extern unsigned int x86_family, x86_model, x86_stepping;
+extern unsigned int maxphysaddr, maxvirtaddr;
 
 static inline bool vendor_is(enum x86_vendor v)
 {
