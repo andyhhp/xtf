@@ -50,6 +50,13 @@ obj-perarch :=
 obj-perenv  :=
 include $(ROOT)/build/files.mk
 
+
+cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -S -o /dev/null -x c - 2>&1`" ]; \
+			then echo y; else echo n; fi)
+
+# Disable PIE, but need to check if compiler supports it
+LDFLAGS-$(call cc-option,-no-pie) += -no-pie
+
 # Run once per environment to set up some common bits & pieces
 define PERENV_setup
 
@@ -61,7 +68,7 @@ CFLAGS_$(1) := $$(CFLAGS_$($(1)_arch)) $$(COMMON_CFLAGS-$(1)) -DCONFIG_ENV_$(1) 
 
 link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
-LDFLAGS_$(1) := -Wl,-T,$$(link-$(1)) -nostdlib
+LDFLAGS_$(1) := -Wl,-T,$$(link-$(1)) -nostdlib $(LDFLAGS-y)
 
 # Needs to pick up test-provided obj-perenv and obj-perarch
 DEPS-$(1) = $(head-$(1)) \
