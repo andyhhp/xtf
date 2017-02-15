@@ -17,6 +17,7 @@
  * - x87 `wait`
  * - MMX
  * - SSE
+ * - AVX
  *
  * checking that appropriate exceptions are raised (@#NM or @#UD), or that no
  * exception is raised.
@@ -29,8 +30,6 @@
  *
  * @todo Extend to include unmasked pending exceptions.  There is definitely
  * work required in the instruction emulator to support this properly.
- *
- * @todo Extend to include xsave-based FPU instruction sets.
  *
  * @see tests/fpu-exception-emulation/main.c
  */
@@ -163,6 +162,37 @@ exinfo_t probe_sse(bool force)
     return fault;
 }
 
+/**
+ * AVX instructions.  The emulation flag is meaningless,
+ * but @#NM should be raised if the task has been switched.
+ */
+static const struct test_cfg avx[] =
+{
+    { CR0_SYM(          ), 0 },
+    { CR0_SYM(        TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(    MP    ), 0 },
+    { CR0_SYM(    MP, TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM        ), 0 },
+    { CR0_SYM(EM,     TS), EXINFO_SYM(NM, 0) },
+    { CR0_SYM(EM, MP    ), 0 },
+    { CR0_SYM(EM, MP, TS), EXINFO_SYM(NM, 0) },
+};
+
+static exinfo_t probe_avx(bool force)
+{
+    exinfo_t fault = 0;
+
+    asm volatile ("test %[fep], %[fep];"
+                  "jz 1f;"
+                  _ASM_XEN_FEP
+                  "1: vmovups %%xmm0, %%xmm0; 2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  : "+a" (fault)
+                  : [fep] "q" (force));
+
+    return fault;
+}
+
 void run_sequence(const struct test_cfg *seq, unsigned int nr,
                   unsigned int (*fn)(bool), bool force, exinfo_t override)
 {
@@ -224,6 +254,31 @@ void run_tests(bool force)
         write_cr4(cr4 | X86_CR4_OSFXSR);
         run_sequence(mmx_sse, ARRAY_SIZE(mmx_sse), probe_sse, force, 0);
 
+        write_cr4(cr4);
+    }
+
+    if ( cpu_has_avx )
+    {
+        unsigned long cr4 = read_cr4();
+        unsigned long xcr0;
+
+        printk("Testing%s AVX\n", force ? " emulated" : "");
+        write_cr4(cr4 & ~X86_CR4_OSXSAVE);
+        run_sequence(avx, ARRAY_SIZE(avx), probe_avx, force,
+                     EXINFO_SYM(UD, 0));
+
+        printk("Testing%s AVX (CR4.OSXSAVE)\n", force ? " emulated" : "");
+        write_cr4(cr4 | X86_CR4_OSXSAVE);
+        xcr0 = read_xcr0();
+        write_xcr0(xcr0 & ~XSTATE_YMM);
+        run_sequence(avx, ARRAY_SIZE(avx), probe_avx, force,
+                     EXINFO_SYM(UD, 0));
+
+        printk("Testing%s AVX (CR4.OSXSAVE+XCR0.YMM)\n", force ? " emulated" : "");
+        write_xcr0(xcr0 | XSTATE_SSE | XSTATE_YMM);
+        run_sequence(avx, ARRAY_SIZE(avx), probe_avx, force, 0);
+
+        write_xcr0(xcr0);
         write_cr4(cr4);
     }
 }

@@ -72,6 +72,30 @@
 #define X86_DR6_BT              (1u << 15)  /* Task switch             */
 
 /*
+ * CPU features in XCR0.
+ */
+#define _XSTATE_FP                0
+#define XSTATE_FP                 (1ULL << _XSTATE_FP)
+#define _XSTATE_SSE               1
+#define XSTATE_SSE                (1ULL << _XSTATE_SSE)
+#define _XSTATE_YMM               2
+#define XSTATE_YMM                (1ULL << _XSTATE_YMM)
+#define _XSTATE_BNDREGS           3
+#define XSTATE_BNDREGS            (1ULL << _XSTATE_BNDREGS)
+#define _XSTATE_BNDCSR            4
+#define XSTATE_BNDCSR             (1ULL << _XSTATE_BNDCSR)
+#define _XSTATE_OPMASK            5
+#define XSTATE_OPMASK             (1ULL << _XSTATE_OPMASK)
+#define _XSTATE_ZMM               6
+#define XSTATE_ZMM                (1ULL << _XSTATE_ZMM)
+#define _XSTATE_HI_ZMM            7
+#define XSTATE_HI_ZMM             (1ULL << _XSTATE_HI_ZMM)
+#define _XSTATE_PKRU              9
+#define XSTATE_PKRU               (1ULL << _XSTATE_PKRU)
+#define _XSTATE_LWP               62
+#define XSTATE_LWP                (1ULL << _XSTATE_LWP)
+
+/*
  * Exception mnemonics.
  */
 #define X86_EXC_DE             0 /* Divide Error. */

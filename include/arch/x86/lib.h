@@ -396,6 +396,33 @@ static inline unsigned int str(void)
     return sel;
 }
 
+static inline uint64_t xgetbv(uint32_t index)
+{
+    uint32_t feat_lo;
+    uint64_t feat_hi;
+
+    asm volatile ("xgetbv" : "=a" (feat_lo), "=d" (feat_hi)
+                           :  "c" (index) );
+
+    return feat_lo | (feat_hi << 32);
+}
+
+static inline void xsetbv(uint32_t index, uint64_t value)
+{
+    asm volatile ("xsetbv" :: "a" ((uint32_t)value), "d" (value >> 32),
+                              "c" (index) );
+}
+
+static inline uint64_t read_xcr0(void)
+{
+    return xgetbv(0);
+}
+
+static inline void write_xcr0(uint64_t xcr0)
+{
+    xsetbv(0, xcr0);
+}
+
 #endif /* XTF_X86_LIB_H */
 
 /*
