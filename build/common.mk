@@ -7,12 +7,13 @@ HVM_ENVIRONMENTS   := $(filter hvm%,$(ALL_ENVIRONMENTS))
 32BIT_ENVIRONMENTS := $(filter pv32% hvm32%,$(ALL_ENVIRONMENTS))
 64BIT_ENVIRONMENTS := $(filter pv64% hvm64%,$(ALL_ENVIRONMENTS))
 
-pv64_arch     := x86_64
-pv32pae_arch  := x86_32
-hvm64_arch    := x86_64
-hvm32pae_arch := x86_32
-hvm32pse_arch := x86_32
-hvm32_arch    := x86_32
+# $(env)_guest => pv or hvm mapping
+$(foreach env,$(PV_ENVIRONMENTS),$(eval $(env)_guest := pv))
+$(foreach env,$(HVM_ENVIRONMENTS),$(eval $(env)_guest := hvm))
+
+# $(env)_arch => x86_32/64 mapping
+$(foreach env,$(32BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_32))
+$(foreach env,$(64BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_64))
 
 COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 
@@ -38,13 +39,6 @@ head-hvm32    := $(ROOT)/arch/x86/boot/head_hvm32.o
 
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
 defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
-
-defcfg-pv64     := $(defcfg-pv)
-defcfg-pv32pae  := $(defcfg-pv)
-defcfg-hvm64    := $(defcfg-hvm)
-defcfg-hvm32pae := $(defcfg-hvm)
-defcfg-hvm32pse := $(defcfg-hvm)
-defcfg-hvm32    := $(defcfg-hvm)
 
 obj-perarch :=
 obj-perenv  :=

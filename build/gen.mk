@@ -56,7 +56,7 @@ test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
 	rm -f $$@.tmp
 endif
 
-cfg-$(1) ?= $(defcfg-$(1))
+cfg-$(1) ?= $(defcfg-$($(1)_guest))
 
 cfg-default-deps := $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
 
