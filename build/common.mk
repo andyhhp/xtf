@@ -30,13 +30,6 @@ COMMON_AFLAGS-x86_64 := -m64
 COMMON_CFLAGS-x86_32 := -m32
 COMMON_CFLAGS-x86_64 := -m64
 
-head-pv64     := $(ROOT)/arch/x86/boot/head_pv64.o
-head-pv32pae  := $(ROOT)/arch/x86/boot/head_pv32pae.o
-head-hvm64    := $(ROOT)/arch/x86/boot/head_hvm64.o
-head-hvm32pae := $(ROOT)/arch/x86/boot/head_hvm32pae.o
-head-hvm32pse := $(ROOT)/arch/x86/boot/head_hvm32pse.o
-head-hvm32    := $(ROOT)/arch/x86/boot/head_hvm32.o
-
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
 defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
 
@@ -60,26 +53,15 @@ CFLAGS_$($(1)_arch) := $$(COMMON_CFLAGS) $$(COMMON_CFLAGS-$($(1)_arch))
 AFLAGS_$(1) := $$(AFLAGS_$($(1)_arch)) $$(COMMON_AFLAGS-$(1)) -DCONFIG_ENV_$(1) -include arch/config.h
 CFLAGS_$(1) := $$(CFLAGS_$($(1)_arch)) $$(COMMON_CFLAGS-$(1)) -DCONFIG_ENV_$(1) -include arch/config.h
 
+head-$(1) := $(ROOT)/arch/x86/$($(1)_guest)/head-$(1).o
 link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
 LDFLAGS_$(1) := -Wl,-T,$$(link-$(1)) -nostdlib $(LDFLAGS-y)
 
 # Needs to pick up test-provided obj-perenv and obj-perarch
-DEPS-$(1) = $(head-$(1)) \
+DEPS-$(1) = $$(head-$(1)) \
 	$$(obj-perarch:%.o=%-$($(1)_arch).o) \
 	$$(obj-$(1):%.o=%-$(1).o) $$(obj-perenv:%.o=%-$(1).o)
-
-# Generate head with approprate flags
-ifneq ($(findstring $(1),$(PV_ENVIRONMENTS)),)
-# PV guests generate head_$(env).o from head_pv.S
-%/head_$(1).o: %/head_pv.S
-	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
-endif
-ifneq ($(findstring $(1),$(HVM_ENVIRONMENTS)),)
-# HVM guests generate head_$(env).o from head_hvm.S
-%/head_$(1).o: %/head_hvm.S
-	$$(CC) $$(AFLAGS_$(1)) -c $$< -o $$@
-endif
 
 # Generate .lds with approprate flags
 %/link-$(1).lds: %/link.lds.S
