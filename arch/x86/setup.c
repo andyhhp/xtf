@@ -22,7 +22,7 @@ enum x86_vendor x86_vendor;
 unsigned int x86_family, x86_model, x86_stepping;
 unsigned int maxphysaddr, maxvirtaddr;
 
-const char *environment_description = ENVIRONMENT_DESCRIPTION;
+const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 
 #ifdef CONFIG_PV
 /* Filled in by head_pv.S */

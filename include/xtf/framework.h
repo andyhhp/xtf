@@ -6,7 +6,7 @@ void arch_setup(void);
 void test_setup(void);
 
 /* Single line summary of execution environment. */
-extern const char *environment_description;
+extern const char environment_description[];
 
 #endif /* XTF_FRAMEWORK_H */
 
