@@ -144,6 +144,7 @@
 
 /* Intel-defined CPU features, CPUID level 0x00000007:0.ecx, word 6 */
 #define X86_FEATURE_PREFETCHWT1   (6*32+ 0) /* PREFETCHWT1 instruction */
+#define X86_FEATURE_UMIP          (6*32+ 2) /* User-Mode Instruction Prevention */
 #define X86_FEATURE_PKU           (6*32+ 3) /* Protection Keys for Userspace */
 #define X86_FEATURE_OSPKE         (6*32+ 4) /* OS Protection Keys Enable */
 

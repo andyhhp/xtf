@@ -52,6 +52,7 @@
 #define X86_CR4_PCE             0x00000100  /* Performance counters at ipl 3  */
 #define X86_CR4_OSFXSR          0x00000200  /* Fast FPU save and restore      */
 #define X86_CR4_OSXMMEXCPT      0x00000400  /* Unmasked SSE exceptions        */
+#define X86_CR4_UMIP            0x00000800  /* UMIP                           */
 #define X86_CR4_VMXE            0x00002000  /* VMX                            */
 #define X86_CR4_SMXE            0x00004000  /* SMX                            */
 #define X86_CR4_FSGSBASE        0x00010000  /* {rd,wr}{fs,gs}base             */
