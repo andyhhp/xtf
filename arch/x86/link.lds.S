@@ -72,6 +72,7 @@ zeroptr = 0;
 
 ASSERT(IS_ALIGNED(hypercall_page, PAGE_SIZE), "hypercall_page misaligned");
 ASSERT(IS_ALIGNED(boot_stack, PAGE_SIZE), "boot_stack misaligned");
+ASSERT(IS_ALIGNED(user_stack, PAGE_SIZE), "user_stack misaligned");
 
 #ifdef CONFIG_HVM
 

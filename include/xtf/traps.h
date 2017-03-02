@@ -2,6 +2,7 @@
 #define XTF_TRAPS_H
 
 #include <xtf/extable.h>
+#include <xtf/test.h>
 
 #include <arch/traps.h>
 

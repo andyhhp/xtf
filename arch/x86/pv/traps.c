@@ -212,6 +212,17 @@ void arch_init_traps(void)
             va += 1UL << L1_PT_SHIFT;
         }
     }
+    else
+    {
+        /*
+         * If we haven't applied blanket PAGE_USER mappings, remap the
+         * structures which specifically want to be user.
+         */
+        intpte_t nl1e = pte_from_virt(user_stack, PF_SYM(AD, U, RW, P));
+
+        if ( hypercall_update_va_mapping(user_stack, nl1e, UVMF_INVLPG) )
+            panic("Unable to remap user_stack with _PAGE_USER\n");
+    }
 #endif
 
     /* Unmap page at 0 to catch errors with NULL pointers. */

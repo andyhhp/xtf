@@ -17,6 +17,7 @@
  * boot_stack[page 1] Top of work stack
  */
 uint8_t boot_stack[3 * PAGE_SIZE] __aligned(PAGE_SIZE);
+uint8_t user_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
 unsigned int x86_family, x86_model, x86_stepping;

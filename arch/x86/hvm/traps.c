@@ -3,6 +3,7 @@
 
 #include <arch/idt.h>
 #include <arch/lib.h>
+#include <arch/mm.h>
 #include <arch/processor.h>
 #include <arch/desc.h>
 
@@ -153,6 +154,22 @@ void arch_init_traps(void)
 
     gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE((unsigned long)&tss, 0x67, 0x89);
     ltr(GDTE_TSS * 8);
+
+    /*
+     * If we haven't applied blanket PAGE_USER mappings, remap the structures
+     * which specifically want to be user.
+     */
+    if ( !test_wants_user_mappings )
+    {
+        unsigned long gfn = virt_to_gfn(user_stack);
+
+        if ( gfn >= ARRAY_SIZE(l1_identmap) )
+            panic("user_stack[] outside of l1_identmap[]\n");
+
+        l1_identmap[gfn] |= _PAGE_USER;
+
+        write_cr3((unsigned long)&cr3_target);
+    }
 }
 
 void __noreturn arch_crash_hard(void)
