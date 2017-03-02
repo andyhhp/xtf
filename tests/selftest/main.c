@@ -17,8 +17,6 @@
 
 const char test_title[] = "XTF Selftests";
 
-bool test_wants_user_mappings = true;
-
 static void test_int3_breakpoint(void)
 {
     printk("Test: int3 breakpoint\n");
@@ -147,7 +145,7 @@ enum {
     USER_bad_cs,
 };
 
-static unsigned long test_exec_user_cpl3(void)
+static unsigned long __user_text test_exec_user_cpl3(void)
 {
     return ((read_cs() & 3) == 3) ? USER_seen : USER_bad_cs;
 }
@@ -293,6 +291,23 @@ static void test_custom_idte(void)
 
 void test_main(void)
 {
+    /*
+     * Wherever possible, enable SMEP and SMAP to test the safety of the
+     * exec_user infrastructure.
+     */
+    if ( IS_DEFINED(CONFIG_HVM) )
+    {
+        unsigned long cr4 = read_cr4(), ocr4 = cr4;
+
+        if ( cpu_has_smep )
+            cr4 |= X86_CR4_SMEP;
+        if ( cpu_has_smap )
+            cr4 |= X86_CR4_SMAP;
+
+        if ( cr4 != ocr4 )
+            write_cr4(cr4);
+    }
+
     test_int3_breakpoint();
     test_extable();
     test_exlog();
