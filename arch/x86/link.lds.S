@@ -36,7 +36,7 @@ SECTIONS
 
         .text : {
                 *(.text)
-        } :load = 0x9090
+        } :load = 0
 
         .data : {
                 *(.data)
