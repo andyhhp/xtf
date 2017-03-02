@@ -1,4 +1,5 @@
 #include <arch/idt.h>
+#include <arch/page.h>
 #include <arch/processor.h>
 #include <arch/segment.h>
 #include <xtf/asm_macros.h>
@@ -104,17 +105,21 @@ ENDFUNC(handle_exception)
 ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
         env_ADJUST_FRAME
 
-        mov 0*8(%rsp), %rdi     /* Stash %rip from iret frame */
-        mov 3*8(%rsp), %rsp     /* Load %esp from iret frame  */
-        jmp *%rdi               /* Jump back                  */
-
+        mov %rbp, %rsp          /* Restore %rsp to exec_user_param()'s context. */
+        ret
 ENDFUNC(entry_ret_to_kernel)
 
 ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
+        push %rbp
 
+        /* Prepare to "call" exec_user_stub(). */
+        push $1f                /* Fake return addr as if we'd called exec_user_stub(). */
+        mov %rsp, %rbp          /* Stash %rsp for entry_ret_to_kernel(). */
+
+        /* Prepare an IRET frame. */
         push $__USER_DS         /* SS */
-        push %rsp
-        addq $8, (%rsp)         /* RSP */
+                                /* RSP */
+        push $user_stack + PAGE_SIZE
         pushf                   /* RFLAGS */
 
 #if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
@@ -122,17 +127,24 @@ ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
 #endif
 
         push $__USER_CS         /* CS */
-        push $1f                /* RIP */
+        push $exec_user_stub    /* RIP */
 
         env_IRETQ               /* Drop to user privilege. */
-1:
+
+1:      /* entry_ret_to_kernel() returns here with a sensible stack. */
+        pop %rbp
+        ret
+
+ENDFUNC(exec_user_param)
+
+.pushsection .text.user, "ax", @progbits
+ENTRY(exec_user_stub)
         xchg %rdi, %rsi         /* Swap p1 to be first parameter to fn(). */
         call *%rsi              /* fn(p1) */
 
         int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
-        ret
-
-ENDFUNC(exec_user_param)
+ENDFUNC(exec_user_stub)
+.popsection
 
 /*
  * Local variables:

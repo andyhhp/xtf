@@ -222,6 +222,18 @@ void arch_init_traps(void)
 
         if ( hypercall_update_va_mapping(user_stack, nl1e, UVMF_INVLPG) )
             panic("Unable to remap user_stack with _PAGE_USER\n");
+
+        extern const char __start_user_text[], __end_user_text[];
+        unsigned long va = (unsigned long)__start_user_text;
+        while ( va < (unsigned long)__end_user_text )
+        {
+            nl1e = pte_from_virt(_p(va), PF_SYM(AD, U, RW, P));
+
+            if ( hypercall_update_va_mapping(_p(va), nl1e, UVMF_INVLPG) )
+                panic("Unable to remap user_text with _PAGE_USER\n");
+
+            va += PAGE_SIZE;
+        }
     }
 #endif
 

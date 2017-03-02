@@ -55,6 +55,8 @@ void heapsort(void *base, size_t nmemb, size_t size,
 
 /**
  * Execute fn(p1) at user privilege, passing its return value back.
+ *
+ * fn() is executed on user_stack[], and is non-reentrant.
  */
 unsigned long exec_user_param(unsigned long (*fn)(unsigned long),
                               unsigned long p1);

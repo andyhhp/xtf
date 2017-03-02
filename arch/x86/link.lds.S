@@ -36,6 +36,13 @@ SECTIONS
 
         .text : {
                 *(.text)
+
+	. = ALIGN(PAGE_SIZE);
+        __start_user_text = .;
+                *(.text.user)
+	. = ALIGN(PAGE_SIZE);
+        __end_user_text = .;
+
         } :load = 0
 
         .data : {
@@ -73,6 +80,9 @@ zeroptr = 0;
 ASSERT(IS_ALIGNED(hypercall_page, PAGE_SIZE), "hypercall_page misaligned");
 ASSERT(IS_ALIGNED(boot_stack, PAGE_SIZE), "boot_stack misaligned");
 ASSERT(IS_ALIGNED(user_stack, PAGE_SIZE), "user_stack misaligned");
+
+ASSERT(IS_ALIGNED(__start_user_text, PAGE_SIZE), "__start_user_text misaligned");
+ASSERT(IS_ALIGNED(__end_user_text,   PAGE_SIZE), "__end_user_text misaligned");
 
 #ifdef CONFIG_HVM
 

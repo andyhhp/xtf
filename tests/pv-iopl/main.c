@@ -47,8 +47,7 @@ const char test_title[] = "PV IOPL emulation";
 bool test_wants_user_mappings = true;
 
 /**
- * Execute @p fn at user privilege on the current stack, folding @p iopl into
- * the iret frame.
+ * Execute @p fn at user privilege, folding @p iopl into the iret frame.
  */
 void exec_user_with_iopl(void (*fn)(void), unsigned int iopl);
 

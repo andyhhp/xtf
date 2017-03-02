@@ -1,4 +1,5 @@
 #include <arch/idt.h>
+#include <arch/page.h>
 #include <arch/processor.h>
 #include <arch/segment.h>
 #include <xtf/asm_macros.h>
@@ -100,13 +101,8 @@ ENDFUNC(handle_exception)
 
 
 ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
-
-        /* User required to ensure this is called from CPL > KERNEL_RPL */
-
-        mov 0*4(%esp), %ecx     /* Stash %eip from iret frame */
-        mov 3*4(%esp), %esp     /* Load %esp from iret frame  */
-        jmp *%ecx               /* Jump back                  */
-
+        mov %ebp, %esp          /* Restore %esp to exec_user_param()'s context. */
+        ret
 ENDFUNC(entry_ret_to_kernel)
 
 ENTRY(exec_user_param)
@@ -115,10 +111,18 @@ ENTRY(exec_user_param)
          * 1*4(%esp) ulong (*fn)(ulong)
          * 0*4(%esp) return address
          */
+        push %ebp
 
+        /* Prepare to "call" exec_user_stub(). */
+        mov (1+1)*4(%esp), %eax /* Pass fn() in %eax */
+        mov (1+2)*4(%esp), %ecx /* Pass p1 in %ecx */
+        push $1f                /* Fake return addr as if we'd called exec_user_stub(). */
+        mov %esp, %ebp          /* Stash %esp for entry_ret_to_kernel(). */
+
+        /* Prepare an IRET frame. */
         push $__USER_DS         /* SS */
-        push %esp
-        addl $4, (%esp)         /* ESP */
+                                /* ESP */
+        push $user_stack + PAGE_SIZE
         pushf                   /* EFLAGS */
 
 #if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
@@ -126,18 +130,28 @@ ENTRY(exec_user_param)
 #endif
 
         push $__USER_CS         /* CS */
-        push $1f                /* EIP */
+        push $exec_user_stub    /* EIP */
 
         env_IRET                /* Drop to user privilege. */
-1:
-        push 2*4(%esp)          /* Re-push p1 for fn()'s call frame. */
-        call *(1+1)*4(%esp)     /* fn(p1) */
-        add $1*4, %esp          /* Pop p1. */
 
-        int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
+1:      /* entry_ret_to_kernel() returns here with a sensible stack. */
+        pop %ebp
         ret
 
 ENDFUNC(exec_user_param)
+
+.pushsection .text.user, "ax", @progbits
+ENTRY(exec_user_stub)
+        /*
+         * For SMEP/SMAP safety, no shared stack can be used, so all
+         * parameters are passed in registers.
+         */
+        push %ecx               /* Push p1 for fn()'s call frame. */
+        call *%eax              /* fn(p1) */
+
+        int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
+ENDFUNC(exec_user_stub)
+.popsection
 
 /*
  * Local variables:
