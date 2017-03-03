@@ -139,18 +139,6 @@ ENTRY(exec_user_param)
 
 ENDFUNC(exec_user_param)
 
-ENTRY(exec_user)
-        /*
-         * 1*4(%esp) ulong (*fn)(ulong)
-         * 0*4(%esp) return address
-         */
-        push $0xdead0000        /* Poison unused p1. */
-        push (1+1)*4(%esp)      /* Re-push fn for exec_user_param()'s call frame. */
-        call exec_user_param
-        add $2*4, %esp          /* Pop fn/p1. */
-        ret
-ENDFUNC(exec_user)
-
 /*
  * Local variables:
  * tab-width: 8

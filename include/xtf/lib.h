@@ -53,11 +53,20 @@ void heapsort(void *base, size_t nmemb, size_t size,
               int (*compar)(const void *, const void *),
               void (*swap)(void *, void *));
 
-/*
- * Execute fn() at user privilege on the current stack, passing its return
- * value back.
+/**
+ * Execute fn(p1) at user privilege, passing its return value back.
  */
-unsigned long exec_user(unsigned long (*fn)(void));
+unsigned long exec_user_param(unsigned long (*fn)(unsigned long),
+                              unsigned long p1);
+
+/*
+ * Wrapper around exec_user_param(), calling a function which takes no
+ * parameters.  p1 is poisioned to catch misuses.
+ */
+static inline unsigned long exec_user(unsigned long (*fn)(void))
+{
+    return exec_user_param((void *)fn, 0xdead0000);
+}
 
 /*
  * Wrapper around exec_user() which calls a void function.
@@ -66,10 +75,6 @@ static inline void exec_user_void(void (*fn)(void))
 {
     exec_user((void *)fn);
 }
-
-/* Execute fn(p1) at user privilege. */
-unsigned long exec_user_param(unsigned long (*fn)(unsigned long),
-                              unsigned long p1);
 
 /**
  * Probe for the SYSCTL_INTERFACE_VERSION in use by the hypervisor

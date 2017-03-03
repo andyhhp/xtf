@@ -134,11 +134,6 @@ ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
 
 ENDFUNC(exec_user_param)
 
-ENTRY(exec_user)                /* ulong (*fn)(ulong) */
-        mov $0xdead0000, %esi   /* Poison unused p1. */
-        jmp exec_user_param
-ENDFUNC(exec_user)
-
 /*
  * Local variables:
  * tab-width: 8
