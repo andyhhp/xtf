@@ -21,9 +21,9 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/desc.h>
-#include <arch/x86/exinfo.h>
-#include <arch/x86/idt.h>
+#include <arch/desc.h>
+#include <arch/exinfo.h>
+#include <arch/idt.h>
 
 const char test_title[] = "XSA-192 PoC";
 

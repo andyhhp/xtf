@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/desc.h
+ * @file arch/x86/include/arch/desc.h
  *
  * %x86 segment descriptor infrastructure.
  */
@@ -10,7 +10,7 @@
 #include <xtf/types.h>
 #include <xtf/compiler.h>
 
-#include <arch/x86/segment.h>
+#include <arch/segment.h>
 
 /** 8 byte user segment descriptor (GDT/LDT entries with .s = 1) */
 struct __packed seg_desc32 {

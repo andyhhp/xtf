@@ -19,7 +19,7 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/msr-index.h>
+#include <arch/msr-index.h>
 
 const char test_title[] = "XSA-193 PoC";
 

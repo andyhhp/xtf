@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/config.h
+ * @file arch/x86/include/arch/config.h
  * Logic to split an environment into finer-grain @#define's
  *
  * Converts `CONFIG_ENV_$foo` into:

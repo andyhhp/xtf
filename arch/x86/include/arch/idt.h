@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/idt.h
+ * @file arch/x86/include/arch/idt.h
  *
  * %x86 IDT vector infrastructure.
  */

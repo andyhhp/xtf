@@ -6,8 +6,8 @@
 #include <xtf/lib.h>
 #include <xtf/extable.h>
 
-#include <arch/x86/exinfo.h>
-#include <arch/x86/regs.h>
+#include <arch/exinfo.h>
+#include <arch/regs.h>
 
 /**
  * Record the current fault in @%eax

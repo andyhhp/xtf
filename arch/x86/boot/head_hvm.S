@@ -1,9 +1,9 @@
 #include <xtf/asm_macros.h>
 
-#include <arch/x86/page.h>
-#include <arch/x86/processor.h>
-#include <arch/x86/msr-index.h>
-#include <arch/x86/segment.h>
+#include <arch/page.h>
+#include <arch/processor.h>
+#include <arch/msr-index.h>
+#include <arch/segment.h>
 
         .code32                 /* Always starts in 32bit flat mode. */
 GLOBAL(_start)                  /* HVM common setup. */

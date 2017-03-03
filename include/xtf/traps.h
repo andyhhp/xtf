@@ -3,7 +3,7 @@
 
 #include <xtf/extable.h>
 
-#include <arch/x86/traps.h>
+#include <arch/traps.h>
 
 /**
  * Function pointer to allow tests to install an unhandled exception hook.

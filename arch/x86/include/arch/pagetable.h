@@ -1,7 +1,7 @@
 #ifndef XTF_X86_PAGETABLE_H
 #define XTF_X86_PAGETABLE_H
 
-#include <arch/x86/mm.h>
+#include <arch/mm.h>
 
 #if CONFIG_PAGING_LEVELS > 0
 

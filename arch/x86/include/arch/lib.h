@@ -3,7 +3,7 @@
 
 #include <xtf/types.h>
 #include <xen/arch-x86/xen.h>
-#include <arch/x86/desc.h>
+#include <arch/desc.h>
 
 static inline uint64_t rdmsr(uint32_t idx)
 {

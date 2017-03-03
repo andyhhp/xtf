@@ -1,4 +1,4 @@
-#include <arch/x86/div.h>
+#include <arch/div.h>
 #include <xtf/libc.h>
 #include <xtf/compiler.h>
 

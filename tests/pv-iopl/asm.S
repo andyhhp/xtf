@@ -1,5 +1,5 @@
-#include <arch/x86/processor.h>
-#include <arch/x86/segment.h>
+#include <arch/processor.h>
+#include <arch/segment.h>
 #include <xtf/asm_macros.h>
 
 ENTRY(exec_user_with_iopl)      /* void (*fn)(void), unsigned int iopl */

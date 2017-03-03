@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/page-pae.h
+ * @file arch/x86/include/arch/page-pae.h
  *
  * Definitions and helpers for PAE pagetable handling.
  */

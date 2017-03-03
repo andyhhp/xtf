@@ -40,7 +40,7 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/processor.h>
+#include <arch/processor.h>
 
 const char test_title[] = "PV IOPL emulation";
 

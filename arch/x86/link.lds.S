@@ -3,7 +3,7 @@
  */
 
 #include <xtf/numbers.h>
-#include <arch/x86/page.h>
+#include <arch/page.h>
 
 /* Don't clobber the ld directive */
 #undef i386

@@ -1,6 +1,6 @@
 #include <xtf/asm_macros.h>
 
-#include <arch/x86/page.h>
+#include <arch/page.h>
 
 #define PAGETABLE_START(sym)   \
         GLOBAL(sym)

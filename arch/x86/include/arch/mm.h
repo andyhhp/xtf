@@ -3,7 +3,7 @@
 
 #include <xtf/types.h>
 
-#include <arch/x86/page.h>
+#include <arch/page.h>
 
 #include <xen/xen.h>
 

@@ -2,7 +2,7 @@
 #define XTF_BARRIER_H
 
 #if defined(__x86_64__) || defined (__i386__)
-# include <arch/x86/barrier.h>
+# include <arch/barrier.h>
 #else
 # error Bad architecture
 #endif

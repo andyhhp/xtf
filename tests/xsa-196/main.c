@@ -24,10 +24,10 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/exinfo.h>
-#include <arch/x86/idt.h>
-#include <arch/x86/processor.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/exinfo.h>
+#include <arch/idt.h>
+#include <arch/processor.h>
+#include <arch/symbolic-const.h>
 
 const char test_title[] = "XSA-196 PoC";
 

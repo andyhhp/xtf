@@ -2,8 +2,8 @@
 #define XTF_X86_TRAPS_H
 
 #include <xtf/compiler.h>
-#include <arch/x86/regs.h>
-#include <arch/x86/page.h>
+#include <arch/regs.h>
+#include <arch/page.h>
 
 /*
  * Arch-specific function to initialise the exception entry points, etc.

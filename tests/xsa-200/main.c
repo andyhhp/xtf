@@ -24,7 +24,7 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/exinfo.h>
+#include <arch/exinfo.h>
 
 const char test_title[] = "XSA-200 PoC";
 

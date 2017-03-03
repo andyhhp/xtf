@@ -16,7 +16,7 @@
  * @see tests/xsa-188/main.c
  */
 #include <xtf.h>
-#include <arch/x86/mm.h>
+#include <arch/mm.h>
 
 const char test_title[] = "XSA-188 PoC";
 

@@ -22,8 +22,8 @@
 
 #include <xtf.h>
 
-#include <arch/x86/pagetable.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/pagetable.h>
+#include <arch/symbolic-const.h>
 
 const char test_title[] = "XSA-170 PoC";
 

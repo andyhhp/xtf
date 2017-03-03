@@ -3,11 +3,11 @@
 #include <xtf/extable.h>
 #include <xtf/report.h>
 
-#include <arch/x86/cpuid.h>
-#include <arch/x86/desc.h>
-#include <arch/x86/lib.h>
-#include <arch/x86/mm.h>
-#include <arch/x86/traps.h>
+#include <arch/cpuid.h>
+#include <arch/desc.h>
+#include <arch/lib.h>
+#include <arch/mm.h>
+#include <arch/traps.h>
 
 /*
  * XTF Stack layout:

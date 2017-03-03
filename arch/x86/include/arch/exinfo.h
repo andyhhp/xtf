@@ -1,12 +1,12 @@
 /**
- * @file include/arch/x86/exinfo.h
+ * @file arch/x86/include/arch/exinfo.h
  *
  * An encapsulation of an x86 exception with error code
  */
 #ifndef XTF_X86_EXINFO_H
 #define XTF_X86_EXINFO_H
 
-#include <arch/x86/processor.h>
+#include <arch/processor.h>
 
 /**
  * Packed exception and error code information

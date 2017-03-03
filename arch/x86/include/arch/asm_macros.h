@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/asm_macros.h
+ * @file arch/x86/include/arch/asm_macros.h
  *
  * Macros for use in x86 assembly files.
  */

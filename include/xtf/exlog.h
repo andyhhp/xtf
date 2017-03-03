@@ -2,7 +2,7 @@
 #define XTF_EXLOG_H
 
 #include <xtf/types.h>
-#include <arch/x86/regs.h>
+#include <arch/regs.h>
 
 void xtf_exlog_start(void);
 void xtf_exlog_reset(void);

@@ -1,6 +1,6 @@
 #include <xtf/asm_macros.h>
 
-#include <arch/x86/page.h>
+#include <arch/page.h>
 
 #include <xen/elfnote.h>
 

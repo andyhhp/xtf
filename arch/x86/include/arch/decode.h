@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/decode.h
+ * @file arch/x86/include/arch/decode.h
  *
  * Helper routines for decoding x86 state.
  */
@@ -8,8 +8,8 @@
 
 #include <xtf/types.h>
 
-#include <arch/x86/cpuid.h>
-#include <arch/x86/exinfo.h>
+#include <arch/cpuid.h>
+#include <arch/exinfo.h>
 
 /**
  * String of the indentified vendor @p v.

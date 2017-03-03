@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/page-pse.h
+ * @file arch/x86/include/arch/page-pse.h
  *
  * Definitions and helpers for PSE pagetable handling.
  */

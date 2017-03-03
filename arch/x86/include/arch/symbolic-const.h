@@ -1,5 +1,5 @@
 /**
- * @file include/arch/x86/symbolic-const.h
+ * @file arch/x86/include/arch/symbolic-const.h
  *
  * Macros for creating constants using mnemonics.
  */
@@ -8,8 +8,8 @@
 
 #include <xtf/macro_magic.h>
 
-#include <arch/x86/desc.h>
-#include <arch/x86/processor.h>
+#include <arch/desc.h>
+#include <arch/processor.h>
 
 /**
  * Tokenise and OR together.

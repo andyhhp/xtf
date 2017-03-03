@@ -8,7 +8,7 @@
 
 #include <xtf/numbers.h>
 
-#include <arch/x86/asm_macros.h>
+#include <arch/asm_macros.h>
 
 #ifdef __ASSEMBLY__
 

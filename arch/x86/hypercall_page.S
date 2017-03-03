@@ -1,4 +1,4 @@
-#include <arch/x86/page.h>
+#include <arch/page.h>
 #include <xtf/asm_macros.h>
 #include <xen/xen.h>
 

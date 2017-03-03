@@ -6,8 +6,8 @@
 #include <xtf/lib.h>
 #include <xtf/libc.h>
 
-#include <arch/x86/decode.h>
-#include <arch/x86/processor.h>
+#include <arch/decode.h>
+#include <arch/processor.h>
 
 const char *x86_vendor_name(enum x86_vendor v)
 {

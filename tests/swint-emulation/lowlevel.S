@@ -1,7 +1,7 @@
 #include <xtf/extable.h>
 #include <xtf/asm_macros.h>
 #include <xen/arch-x86/xen.h>
-#include <arch/x86/processor.h>
+#include <arch/processor.h>
 
         /* Macro to generate a single test function. */
         /* See lowlevel.h for a description of nomenclature. */

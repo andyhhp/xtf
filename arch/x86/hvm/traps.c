@@ -1,10 +1,10 @@
 #include <xtf/traps.h>
 #include <xtf/lib.h>
 
-#include <arch/x86/idt.h>
-#include <arch/x86/lib.h>
-#include <arch/x86/processor.h>
-#include <arch/x86/desc.h>
+#include <arch/idt.h>
+#include <arch/lib.h>
+#include <arch/processor.h>
+#include <arch/desc.h>
 
 /* Real entry points */
 void entry_DE(void);

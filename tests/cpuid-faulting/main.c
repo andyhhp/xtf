@@ -21,9 +21,9 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/exinfo.h>
-#include <arch/x86/msr-index.h>
-#include <arch/x86/processor.h>
+#include <arch/exinfo.h>
+#include <arch/msr-index.h>
+#include <arch/processor.h>
 
 const char test_title[] = "Guest CPUID Faulting support";
 

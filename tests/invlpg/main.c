@@ -82,10 +82,10 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/decode.h>
-#include <arch/x86/desc.h>
-#include <arch/x86/msr-index.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/decode.h>
+#include <arch/desc.h>
+#include <arch/msr-index.h>
+#include <arch/symbolic-const.h>
 
 const char test_title[] = "Invlpg tests";
 

@@ -1,6 +1,6 @@
-#include <arch/x86/desc.h>
-#include <arch/x86/segment.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/desc.h>
+#include <arch/segment.h>
+#include <arch/symbolic-const.h>
 
 user_desc gdt[NR_GDT_ENTRIES] =
 {

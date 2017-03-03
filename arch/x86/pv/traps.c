@@ -3,12 +3,12 @@
 #include <xtf/hypercall.h>
 #include <xtf/test.h>
 
-#include <arch/x86/idt.h>
-#include <arch/x86/lib.h>
-#include <arch/x86/processor.h>
-#include <arch/x86/segment.h>
-#include <arch/x86/pagetable.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/idt.h>
+#include <arch/lib.h>
+#include <arch/processor.h>
+#include <arch/segment.h>
+#include <arch/pagetable.h>
+#include <arch/symbolic-const.h>
 
 /* Real entry points */
 void entry_DE(void);

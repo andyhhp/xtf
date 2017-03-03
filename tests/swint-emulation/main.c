@@ -46,8 +46,8 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/processor.h>
-#include <arch/x86/symbolic-const.h>
+#include <arch/processor.h>
+#include <arch/symbolic-const.h>
 
 #include "lowlevel.h"
 

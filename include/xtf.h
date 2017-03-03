@@ -24,7 +24,7 @@
 #include <xtf/traps.h>
 
 /* Arch specific headers. */
-#include <arch/x86/xtf.h>
+#include <arch/xtf.h>
 
 #endif /* XTF_H */
 

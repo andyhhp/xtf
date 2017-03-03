@@ -11,9 +11,9 @@
  */
 #include <xtf.h>
 
-#include <arch/x86/idt.h>
-#include <arch/x86/processor.h>
-#include <arch/x86/segment.h>
+#include <arch/idt.h>
+#include <arch/processor.h>
+#include <arch/segment.h>
 
 const char test_title[] = "XTF Selftests";
 
