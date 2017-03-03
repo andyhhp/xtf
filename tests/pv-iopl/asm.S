@@ -15,13 +15,12 @@ ENTRY(exec_user_with_iopl)      /* void (*fn)(void), unsigned int iopl */
         pushf                   /* EFLAGS */
 
                                 /* PV guests see the real interrupt flag. Clobber it. */
+        andl $~(X86_EFLAGS_IOPL | X86_EFLAGS_IF), (%_ASM_SP)
 #ifdef __i386__
-        andl $~(X86_EFLAGS_IOPL | X86_EFLAGS_IF), (%esp)
         mov  5*4(%esp), %eax
         shl  $12, %eax
         or   %eax, (%esp)
 #else
-        andl $~(X86_EFLAGS_IOPL | X86_EFLAGS_IF), (%rsp)
         shl  $12, %esi
         or   %esi, (%rsp)
 #endif

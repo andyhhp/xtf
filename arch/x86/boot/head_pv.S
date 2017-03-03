@@ -28,11 +28,7 @@ ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
 GLOBAL(_start)
 
         /* Stash start_info_t pointer from domain build. */
-#ifdef __x86_64__
-        mov %rsi, start_info
-#else
-        mov %esi, start_info
-#endif
+        mov %_ASM_SI, start_info
 
         /* Move onto own stack. */
         mov $boot_stack + PAGE_SIZE, %esp

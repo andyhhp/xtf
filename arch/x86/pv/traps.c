@@ -228,11 +228,7 @@ void __noreturn arch_crash_hard(void)
      * the domain.
      */
     asm volatile(
-#ifdef __i386__
-        "mov %0, %%esp;"
-#else
-        "movabs %0, %%rsp;"
-#endif
+        "mov %0, %%" _ASM_SP ";"
         "pushf"
         ::
 #ifdef __i386__

@@ -6,20 +6,36 @@
 #ifndef XTF_X86_ASM_MACROS_H
 #define XTF_X86_ASM_MACROS_H
 
+/* Generate code fragments appropriately for Assembly or C. */
 #ifdef __ASSEMBLY__
-/* Declare data at the architectures width. */
-# if defined(__x86_64__)
-#  define _WORD .quad
-# elif defined(__i386__)
-#  define _WORD .long
-# endif
+# define __ASM_CODE(x)     x
+# define __ASM_CODE_RAW(x) x
 #else
-# if defined(__x86_64__)
-#  define _WORD ".quad "
-# elif defined(__i386__)
-#  define _WORD ".long "
-# endif
+# define __ASM_CODE(x)     " " #x " "
+# define __ASM_CODE_RAW(x) #x
 #endif
+
+/* Select between two variations based on compat or long mode. */
+#ifdef __i386__
+# define __ASM_SEL(c, l)     __ASM_CODE(c)
+# define __ASM_SEL_RAW(c, l) __ASM_CODE_RAW(c)
+#else
+# define __ASM_SEL(c, l)     __ASM_CODE(l)
+# define __ASM_SEL_RAW(c, l) __ASM_CODE_RAW(l)
+#endif
+
+#define _WORD __ASM_SEL(.long, .quad)
+
+#define __ASM_REG(reg) __ASM_SEL_RAW(e ## reg, r ## reg)
+
+#define _ASM_AX __ASM_REG(ax)
+#define _ASM_CX __ASM_REG(cx)
+#define _ASM_DX __ASM_REG(dx)
+#define _ASM_BX __ASM_REG(bx)
+#define _ASM_SP __ASM_REG(sp)
+#define _ASM_BP __ASM_REG(bp)
+#define _ASM_SI __ASM_REG(si)
+#define _ASM_DI __ASM_REG(di)
 
 #ifdef __ASSEMBLY__
 
