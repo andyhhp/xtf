@@ -155,30 +155,25 @@ void arch_init_traps(void)
     gdt[GDTE_TSS] = (typeof(*gdt))INIT_GDTE((unsigned long)&tss, 0x67, 0x89);
     ltr(GDTE_TSS * 8);
 
-    /*
-     * If we haven't applied blanket PAGE_USER mappings, remap the structures
-     * which specifically want to be user.
-     */
-    if ( !test_wants_user_mappings )
-    {
-        unsigned long gfn = virt_to_gfn(user_stack);
+    /* Remap user areas with _PAGE_USER. */
+    unsigned long gfn = virt_to_gfn(user_stack);
 
-        if ( gfn >= ARRAY_SIZE(l1_identmap) )
-            panic("user_stack[] outside of l1_identmap[]\n");
+    if ( gfn >= ARRAY_SIZE(l1_identmap) )
+        panic("user_stack[] outside of l1_identmap[]\n");
 
+    l1_identmap[gfn] |= _PAGE_USER;
+
+    extern const char __start_user_text[], __end_user_text[];
+    unsigned long end = virt_to_gfn(__end_user_text);
+
+    if ( gfn >= ARRAY_SIZE(l1_identmap) )
+        panic("__{start,end}_user_text[] outside of l1_identmap[]\n");
+
+    for ( gfn = virt_to_gfn(__start_user_text); gfn < end; ++gfn )
         l1_identmap[gfn] |= _PAGE_USER;
 
-        extern const char __start_user_text[], __end_user_text[];
-        unsigned long end = virt_to_gfn(__end_user_text);
-
-        if ( gfn >= ARRAY_SIZE(l1_identmap) )
-            panic("__{start,end}_user_text[] outside of l1_identmap[]\n");
-
-        for ( gfn = virt_to_gfn(__start_user_text); gfn < end; ++gfn )
-            l1_identmap[gfn] |= _PAGE_USER;
-
+    if ( CONFIG_PAGING_LEVELS > 0 )
         write_cr3((unsigned long)&cr3_target);
-    }
 }
 
 void __noreturn arch_crash_hard(void)
