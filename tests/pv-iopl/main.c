@@ -44,8 +44,6 @@
 
 const char test_title[] = "PV IOPL emulation";
 
-bool test_wants_user_mappings = true;
-
 /**
  * Execute @p fn at user privilege, folding @p iopl into the iret frame.
  */
@@ -53,6 +51,13 @@ void exec_user_with_iopl(void (*fn)(void), unsigned int iopl);
 
 /** Stub CLI instruction with @#GP fixup. */
 static void stub_cli(void)
+{
+    asm volatile ("1: cli; 2:"
+                  _ASM_EXTABLE(1b, 2b));
+}
+
+/** Stub CLI instruction with @#GP fixup. */
+static void __user_text stub_user_cli(void)
 {
     asm volatile ("1: cli; 2:"
                   _ASM_EXTABLE(1b, 2b));
@@ -66,15 +71,24 @@ static void stub_outb(void)
                   :: "a" (0));
 }
 
+/** Stub OUTB instruction with @#GP fixup. */
+static void __user_text stub_user_outb(void)
+{
+    asm volatile ("1: outb %b0, $0x80; 2:"
+                  _ASM_EXTABLE(1b, 2b)
+                  :: "a" (0));
+}
+
 static const struct insn
 {
     const char *name;
     void (*fn)(void);
+    void (*user_fn)(void);
 } /** Sequence of instructions to run. */
     insn_sequence[] =
 {
-    { "cli",  stub_cli,  },
-    { "outb", stub_outb, },
+    { "cli",  stub_cli,  stub_user_cli,  },
+    { "outb", stub_outb, stub_user_outb, },
 };
 
 static struct expectation
@@ -168,7 +182,7 @@ static void run_test(const struct test *t)
 
             /* Run insn in userspace. */
             expect(seq->name, 1, t->should_fault(1, iopl));
-            exec_user_with_iopl(seq->fn, iopl);
+            exec_user_with_iopl(seq->user_fn, iopl);
             check();
         }
     }
@@ -213,7 +227,7 @@ static const struct test hypercall =
     .should_fault = hypercall_should_fault,
 };
 
-static void nop(void){}
+static void __user_text nop(void){}
 static void vmassist_set_iopl(unsigned int iopl)
 {
     /*

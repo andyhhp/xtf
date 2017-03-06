@@ -27,10 +27,9 @@
 
 const char test_title[] = "XSA-170 PoC";
 
-bool test_wants_user_mappings = true;
 bool test_needs_fep = true;
 
-void wild_jump(void)
+void __user_text wild_jump(void)
 {
     /*
      * After XSA-170, Xen's instruction emulator was improved to perform a
@@ -45,7 +44,7 @@ void wild_jump(void)
                   :: "qI" (0x8000000000000000ULL));
 }
 
-void nop_slide(void)
+void __user_text nop_slide(void)
 {
     /*
      * AMD hardware can correctly re-enter the guest with a non-canonical

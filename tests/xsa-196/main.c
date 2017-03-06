@@ -31,7 +31,6 @@
 
 const char test_title[] = "XSA-196 PoC";
 
-bool test_wants_user_mappings = true;
 bool test_needs_fep = true;
 
 void custom_doublefault_handler(void);
@@ -42,7 +41,7 @@ asm(".align 16;"
     "iretq;"
     );
 
-unsigned long compat_userspace(void)
+static unsigned long __user_text compat_userspace(void)
 {
     exinfo_t fault = 0;
 

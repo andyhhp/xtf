@@ -8,6 +8,8 @@
  *   - Stub function executing instruction `$X` with prefix `$Y`.
  * - `label_$X_$Y_{trap, fault}:`
  *   - Labels for where `$X` is expected to trap or fault.
+ * - `{stub,label}_user_*`
+ *   - Stubs/labels in user mappings.
  *
  * Instructions `$X`:
  * - int3
@@ -78,6 +80,51 @@ extern unsigned long label_into_reg_trap[], label_into_reg_fault[];
 extern unsigned long label_into_red_trap[], label_into_red_fault[];
 extern unsigned long label_into_force_trap[], label_into_force_fault[];
 extern unsigned long label_into_forcered_trap[], label_into_forcered_fault[];
+
+void stub_user_int3_reg(void);
+void stub_user_int3_red(void);
+void stub_user_int3_force(void);
+void stub_user_int3_forcered(void);
+extern unsigned long label_user_int3_reg_trap[], label_user_int3_reg_fault[];
+extern unsigned long label_user_int3_red_trap[], label_user_int3_red_fault[];
+extern unsigned long label_user_int3_force_trap[], label_user_int3_force_fault[];
+extern unsigned long label_user_int3_forcered_trap[], label_user_int3_forcered_fault[];
+
+void stub_user_int_0x3_reg(void);
+void stub_user_int_0x3_red(void);
+void stub_user_int_0x3_force(void);
+void stub_user_int_0x3_forcered(void);
+extern unsigned long label_user_int_0x3_reg_trap[], label_user_int_0x3_reg_fault[];
+extern unsigned long label_user_int_0x3_red_trap[], label_user_int_0x3_red_fault[];
+extern unsigned long label_user_int_0x3_force_trap[], label_user_int_0x3_force_fault[];
+extern unsigned long label_user_int_0x3_forcered_trap[], label_user_int_0x3_forcered_fault[];
+
+void stub_user_icebp_reg(void);
+void stub_user_icebp_red(void);
+void stub_user_icebp_force(void);
+void stub_user_icebp_forcered(void);
+extern unsigned long label_user_icebp_reg_trap[], label_user_icebp_reg_fault[];
+extern unsigned long label_user_icebp_red_trap[], label_user_icebp_red_fault[];
+extern unsigned long label_user_icebp_force_trap[], label_user_icebp_force_fault[];
+extern unsigned long label_user_icebp_forcered_trap[], label_user_icebp_forcered_fault[];
+
+void stub_user_int_0x1_reg(void);
+void stub_user_int_0x1_red(void);
+void stub_user_int_0x1_force(void);
+void stub_user_int_0x1_forcered(void);
+extern unsigned long label_user_int_0x1_reg_trap[], label_user_int_0x1_reg_fault[];
+extern unsigned long label_user_int_0x1_red_trap[], label_user_int_0x1_red_fault[];
+extern unsigned long label_user_int_0x1_force_trap[], label_user_int_0x1_force_fault[];
+extern unsigned long label_user_int_0x1_forcered_trap[], label_user_int_0x1_forcered_fault[];
+
+void stub_user_into_reg(void);
+void stub_user_into_red(void);
+void stub_user_into_force(void);
+void stub_user_into_forcered(void);
+extern unsigned long label_user_into_reg_trap[], label_user_into_reg_fault[];
+extern unsigned long label_user_into_red_trap[], label_user_into_red_fault[];
+extern unsigned long label_user_into_force_trap[], label_user_into_force_fault[];
+extern unsigned long label_user_into_forcered_trap[], label_user_into_forcered_fault[];
 
 #endif /* __LOWLEVEL_H__ */
 

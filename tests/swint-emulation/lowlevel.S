@@ -5,10 +5,10 @@
 
         /* Macro to generate a single test function. */
         /* See lowlevel.h for a description of nomenclature. */
-.macro GEN_SINGLE insn, type
+.macro GEN_SINGLE name, insn, type
 
         /* Function label.  e.g. stub_int3_red(). */
-ENTRY(stub_\insn\()_\type)
+ENTRY(stub_\name\()_\type)
 
         .ifc \insn, into
             /* Ensure the overflow flag is set, to trigger 'into'. */
@@ -29,7 +29,7 @@ ENTRY(stub_\insn\()_\type)
         .endif
 
         /* Label where a fault should occur.  e.g. label_int3_red_fault. */
-GLOBAL(label_\insn\()_\type\()_fault)
+GLOBAL(label_\name\()_\type\()_fault)
 
         /*
          * Possibly insert a redundant prefix.
@@ -62,24 +62,24 @@ GLOBAL(label_\insn\()_\type\()_fault)
         .endif
 
         /* Label where a trap should occur.  e.g. label_int3_red_trap. */
-GLOBAL(label_\insn\()_\type\()_trap)
+GLOBAL(label_\name\()_\type\()_trap)
 
         /* Function return. */
         ret
 
         /* Fixup from fault label to trap label. */
-        _ASM_EXTABLE(label_\insn\()_\type\()_fault,
-                     label_\insn\()_\type\()_trap)
+        _ASM_EXTABLE(label_\name\()_\type\()_fault,
+                     label_\name\()_\type\()_trap)
 
-ENDFUNC(stub_\insn\()_\type)
+ENDFUNC(stub_\name\()_\type)
 .endm
 
         /* For a single instruction, generate each test variant. */
 .macro GEN_SEQUENCE insn
-        GEN_SINGLE \insn reg
-        GEN_SINGLE \insn red
-        GEN_SINGLE \insn force
-        GEN_SINGLE \insn forcered
+        GEN_SINGLE \insn \insn reg
+        GEN_SINGLE \insn \insn red
+        GEN_SINGLE \insn \insn force
+        GEN_SINGLE \insn \insn forcered
 .endm
 
         /* Generate test sequences for each instruction. */
@@ -88,6 +88,25 @@ GEN_SEQUENCE int_0x3
 GEN_SEQUENCE icebp
 GEN_SEQUENCE int_0x1
 GEN_SEQUENCE into
+
+.pushsection .text.user, "ax", @progbits
+
+        /* For a single instruction, generate each user test variant. */
+.macro GEN_SEQUENCE_USER insn
+        GEN_SINGLE user_\insn \insn reg
+        GEN_SINGLE user_\insn \insn red
+        GEN_SINGLE user_\insn \insn force
+        GEN_SINGLE user_\insn \insn forcered
+.endm
+
+        /* Generate user test sequences for each instruction. */
+GEN_SEQUENCE_USER int3
+GEN_SEQUENCE_USER int_0x3
+GEN_SEQUENCE_USER icebp
+GEN_SEQUENCE_USER int_0x1
+GEN_SEQUENCE_USER into
+
+.popsection
 
 /*
  * Local variables:
