@@ -53,15 +53,14 @@
 
 const char test_title[] = "Software interrupt emulation";
 
+bool test_wants_user_mappings = true;
+
 /** Single stub's worth of information. */
 struct single
 {
     const char *type;
     void (*fn)(void);
     void *trap, *fault;
-
-    void (*user_fn)(void);
-    void *user_trap, *user_fault;
 };
 
 /** A collection of subs for an instruction. */
@@ -76,32 +75,16 @@ struct sequence int3 =
 { "int3",
   {
       {"regular", stub_int3_reg,
-       label_int3_reg_trap, label_int3_reg_fault,
-
-       stub_user_int3_reg,
-       label_user_int3_reg_trap, label_user_int3_reg_fault,
-      },
+       label_int3_reg_trap, label_int3_reg_fault},
 
       {"redundant", stub_int3_red,
-       label_int3_red_trap, label_int3_red_fault,
-
-       stub_user_int3_red,
-       label_user_int3_red_trap, label_user_int3_red_fault,
-      },
+       label_int3_red_trap, label_int3_red_fault},
 
       {"forced", stub_int3_force,
-       label_int3_force_trap, label_int3_force_fault,
-
-       stub_user_int3_force,
-       label_user_int3_force_trap, label_user_int3_force_fault,
-      },
+       label_int3_force_trap, label_int3_force_fault},
 
       {"forced redundant", stub_int3_forcered,
-       label_int3_forcered_trap, label_int3_forcered_fault,
-
-       stub_user_int3_forcered,
-       label_user_int3_forcered_trap, label_user_int3_forcered_fault,
-      },
+       label_int3_forcered_trap, label_int3_forcered_fault},
   },
 };
 
@@ -110,32 +93,16 @@ struct sequence int_0x3 =
 { "int $3",
   {
       {"regular", stub_int_0x3_reg,
-       label_int_0x3_reg_trap, label_int_0x3_reg_fault,
-
-       stub_user_int_0x3_reg,
-       label_user_int_0x3_reg_trap, label_user_int_0x3_reg_fault,
-      },
+       label_int_0x3_reg_trap, label_int_0x3_reg_fault},
 
       {"redundant", stub_int_0x3_red,
-       label_int_0x3_red_trap, label_int_0x3_red_fault,
-
-       stub_user_int_0x3_red,
-       label_user_int_0x3_red_trap, label_user_int_0x3_red_fault,
-      },
+       label_int_0x3_red_trap, label_int_0x3_red_fault},
 
       {"forced", stub_int_0x3_force,
-       label_int_0x3_force_trap, label_int_0x3_force_fault,
-
-       stub_user_int_0x3_force,
-       label_user_int_0x3_force_trap, label_user_int_0x3_force_fault,
-      },
+       label_int_0x3_force_trap, label_int_0x3_force_fault},
 
       {"forced redundant", stub_int_0x3_forcered,
-       label_int_0x3_forcered_trap, label_int_0x3_forcered_fault,
-
-       stub_user_int_0x3_forcered,
-       label_user_int_0x3_forcered_trap, label_user_int_0x3_forcered_fault,
-      },
+       label_int_0x3_forcered_trap, label_int_0x3_forcered_fault},
   },
 };
 
@@ -144,32 +111,16 @@ struct sequence icebp =
 { "icebp",
   {
       {"regular", stub_icebp_reg,
-       label_icebp_reg_trap, label_icebp_reg_fault,
-
-       stub_user_icebp_reg,
-       label_user_icebp_reg_trap, label_user_icebp_reg_fault,
-      },
+       label_icebp_reg_trap, label_icebp_reg_fault},
 
       {"redundant", stub_icebp_red,
-       label_icebp_red_trap, label_icebp_red_fault,
-
-       stub_user_icebp_red,
-       label_user_icebp_red_trap, label_user_icebp_red_fault,
-      },
+       label_icebp_red_trap, label_icebp_red_fault},
 
       {"forced", stub_icebp_force,
-       label_icebp_force_trap, label_icebp_force_fault,
-
-       stub_user_icebp_force,
-       label_user_icebp_force_trap, label_user_icebp_force_fault,
-      },
+       label_icebp_force_trap, label_icebp_force_fault},
 
       {"forced redundant", stub_icebp_forcered,
-       label_icebp_forcered_trap, label_icebp_forcered_fault,
-
-       stub_user_icebp_forcered,
-       label_user_icebp_forcered_trap, label_user_icebp_forcered_fault,
-      },
+       label_icebp_forcered_trap, label_icebp_forcered_fault},
   },
 };
 
@@ -178,32 +129,16 @@ struct sequence int_0x1 =
 { "int $1",
   {
       {"regular", stub_int_0x1_reg,
-       label_int_0x1_reg_trap, label_int_0x1_reg_fault,
-
-       stub_user_int_0x1_reg,
-       label_user_int_0x1_reg_trap, label_user_int_0x1_reg_fault
-      },
+       label_int_0x1_reg_trap, label_int_0x1_reg_fault},
 
       {"redundant", stub_int_0x1_red,
-       label_int_0x1_red_trap, label_int_0x1_red_fault,
-
-       stub_user_int_0x1_red,
-       label_user_int_0x1_red_trap, label_user_int_0x1_red_fault,
-      },
+       label_int_0x1_red_trap, label_int_0x1_red_fault},
 
       {"forced", stub_int_0x1_force,
-       label_int_0x1_force_trap, label_int_0x1_force_fault,
-
-       stub_user_int_0x1_force,
-       label_user_int_0x1_force_trap, label_user_int_0x1_force_fault,
-      },
+       label_int_0x1_force_trap, label_int_0x1_force_fault},
 
       {"forced redundant", stub_int_0x1_forcered,
-       label_int_0x1_forcered_trap, label_int_0x1_forcered_fault,
-
-       stub_user_int_0x1_forcered,
-       label_user_int_0x1_forcered_trap, label_user_int_0x1_forcered_fault,
-      },
+       label_int_0x1_forcered_trap, label_int_0x1_forcered_fault},
   },
 };
 
@@ -212,32 +147,16 @@ struct sequence into =
 { "into",
   {
       {"regular", stub_into_reg,
-       label_into_reg_trap, label_into_reg_fault,
-
-       stub_user_into_reg,
-       label_user_into_reg_trap, label_user_into_reg_fault,
-      },
+       label_into_reg_trap, label_into_reg_fault},
 
       {"redundant", stub_into_red,
-       label_into_red_trap, label_into_red_fault,
-
-       stub_user_into_red,
-       label_user_into_red_trap, label_user_into_red_fault,
-      },
+       label_into_red_trap, label_into_red_fault},
 
       {"forced", stub_into_force,
-       label_into_force_trap, label_into_force_fault,
-
-       stub_user_into_force,
-       label_user_into_force_trap, label_user_into_force_fault,
-      },
+       label_into_force_trap, label_into_force_fault},
 
       {"forced redundant", stub_into_forcered,
-       label_into_forcered_trap, label_into_forcered_fault,
-
-       stub_user_into_forcered,
-       label_user_into_forcered_trap, label_user_into_forcered_fault,
-      },
+       label_into_forcered_trap, label_into_forcered_fault},
   },
 };
 
@@ -315,16 +234,12 @@ void test_seq(struct sequence *seq, unsigned int vector,
     for ( i = 0; i < ARRAY_SIZE(seq->tests); ++i )
     {
         struct single *s = &seq->tests[i];
-        void *addr;
 
-        if ( user )
-            addr = fault ? s->user_fault : s->user_trap;
-        else
-            addr = fault ? s->fault : s->trap;
+        expect(s->type,
+               fault ? s->fault : s->trap,
+               vector, error);
 
-        expect(s->type, addr, vector, error);
-
-        user ? exec_user_void(s->user_fn) : s->fn();
+        user ? exec_user_void(s->fn) : s->fn();
 
         check();
 

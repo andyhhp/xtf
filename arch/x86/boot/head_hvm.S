@@ -10,6 +10,21 @@ GLOBAL(_start)                  /* HVM common setup. */
 
 #if CONFIG_PAGING_LEVELS > 0    /* Paging setup for CR3 and CR4 */
 
+        /* Set _PAGE_USER on leaf mappings if a test wants them. */
+        cmpb $0, test_wants_user_mappings
+        je .Lskip_user
+
+        mov $l1_identmap, %edx
+        mov $l2_identmap_end, %ecx
+        sub %edx, %ecx
+        shr $PTE_ORDER, %ecx
+        add $PTE_SIZE, %edx /* Avoid setting _PAGE_USER in the NULL entry. */
+.Lnext_pte:
+        orb $_PAGE_USER, (%edx)
+        add $PTE_SIZE, %edx
+        loop .Lnext_pte
+.Lskip_user:
+
 #if CONFIG_PAGING_LEVELS == 2
         mov $X86_CR4_PSE, %eax
 #elif CONFIG_PAGING_LEVELS == 3 || CONFIG_PAGING_LEVELS == 4

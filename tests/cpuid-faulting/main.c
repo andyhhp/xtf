@@ -27,6 +27,8 @@
 
 const char test_title[] = "Guest CPUID Faulting support";
 
+bool test_wants_user_mappings = true;
+
 unsigned long stub_cpuid(void)
 {
     unsigned int fault = 0, tmp;
@@ -40,34 +42,7 @@ unsigned long stub_cpuid(void)
     return fault;
 }
 
-unsigned long __user_text stub_user_cpuid(void)
-{
-    unsigned int fault = 0, tmp;
-
-    asm volatile("1: cpuid; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
-                 : "=a" (tmp), "+D" (fault)
-                 : "a" (0)
-                 : "ebx", "ecx", "edx");
-
-    return fault;
-}
-
 unsigned long stub_fep_cpuid(void)
-{
-    unsigned int fault = 0, tmp;
-
-    asm volatile(_ASM_XEN_FEP
-                 "1: cpuid; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
-                 : "=a" (tmp), "+D" (fault)
-                 : "a" (0)
-                 : "ebx", "ecx", "edx");
-
-    return fault;
-}
-
-unsigned long __user_text stub_user_fep_cpuid(void)
 {
     unsigned int fault = 0, tmp;
 
@@ -101,13 +76,13 @@ static void test_cpuid(bool exp_faulting)
     unsigned long exp = exp_faulting ? EXINFO_SYM(GP, 0) : 0;
     const char *exp_fail_str = exp_faulting ? "didn't fault" : "faulted";
 
-    if ( exec_user(stub_user_cpuid) != exp )
+    if ( exec_user(stub_cpuid) != exp )
         xtf_failure("Fail: user cpuid %s\n", exp_fail_str);
 
-    if ( IS_DEFINED(CONFIG_PV) && exec_user(stub_user_fep_cpuid) != exp )
+    if ( IS_DEFINED(CONFIG_PV) && exec_user(stub_fep_cpuid) != exp )
         xtf_failure("Fail: user pv cpuid %s\n", exp_fail_str);
 
-    if ( xtf_has_fep && exec_user(stub_user_fep_cpuid) != exp )
+    if ( xtf_has_fep && exec_user(stub_fep_cpuid) != exp )
         xtf_failure("Fail: user emulated cpuid %s\n", exp_fail_str);
 }
 
