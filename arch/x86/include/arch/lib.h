@@ -398,18 +398,18 @@ static inline unsigned int str(void)
 
 static inline uint64_t xgetbv(uint32_t index)
 {
-    uint32_t feat_lo;
-    uint64_t feat_hi;
+    uint32_t feat_lo, feat_hi;
 
     asm volatile ("xgetbv" : "=a" (feat_lo), "=d" (feat_hi)
                            :  "c" (index) );
 
-    return feat_lo | (feat_hi << 32);
+    return feat_lo | ((uint64_t)feat_hi << 32);
 }
 
 static inline void xsetbv(uint32_t index, uint64_t value)
 {
-    asm volatile ("xsetbv" :: "a" ((uint32_t)value), "d" (value >> 32),
+    asm volatile ("xsetbv" :: "a" ((uint32_t)value),
+                              "d" ((uint32_t)(value >> 32)),
                               "c" (index) );
 }
 
