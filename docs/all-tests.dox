@@ -87,6 +87,9 @@ override.
 @subpage test-xsa-204 - x86: Mishandling of SYSCALL singlestep during
 emulation.
 
+@subpage test-xsa-212 - x86: broken check in memory_exchange() permits PV
+guest breakout.
+
 
 @section index-utility Utilities
 

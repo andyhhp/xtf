@@ -17,6 +17,14 @@ struct xen_memory_reservation {
     domid_t domid;
 };
 
+#define XENMEM_exchange             11
+
+struct xen_memory_exchange {
+    struct xen_memory_reservation in;
+    struct xen_memory_reservation out;
+    unsigned long nr_exchanged;
+};
+
 #define XENMEM_maximum_gpfn         14
 
 #endif /* XEN_PUBLIC_MEMORY_H */
