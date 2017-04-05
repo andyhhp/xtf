@@ -90,6 +90,8 @@ emulation.
 @subpage test-xsa-212 - x86: broken check in memory_exchange() permits PV
 guest breakout.
 
+@subpage test-xsa-213 - multicall: deal with early exit conditions.
+
 
 @section index-utility Utilities
 
