@@ -29,7 +29,7 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
     } while ( 0 )
 
 #define BUILD_BUG_ON(cond)                              \
-    _Static_assert(!cond, "!(" #cond ")")
+    _Static_assert(!(cond), "!(" #cond ")")
 
 #define min(a, b)                                       \
     ({                                                  \
