@@ -18,8 +18,11 @@ except ImportError:
     import simplejson as json
 
 # All results of a test, keep in sync with C code report.h.
-# Note that warning is not a result on its own.
-all_results = ['SUCCESS', 'SKIP', 'ERROR', 'FAILURE']
+# Notes:
+#  - WARNING is not a result on its own.
+#  - CRASH isn't known to the C code, but covers all cases where a valid
+#    result was not found.
+all_results = ['SUCCESS', 'SKIP', 'ERROR', 'FAILURE', 'CRASH']
 
 # Return the exit code for different states.  Avoid using 1 and 2 because
 # python interpreter uses them -- see document for sys.exit.
@@ -29,7 +32,8 @@ def exit_code(state):
              "SKIP":    3,
              "ERROR":   4,
              "FAILURE": 5,
-    }.get(state, 4)
+             "CRASH":   6,
+    }[state]
 
 # All test categories
 default_categories     = set(("functional", "xsa"))
@@ -429,6 +433,19 @@ def list_tests(opts):
         print sel
 
 
+def interpret_result(logline):
+    """ Interpret the final log line of a guest for a result """
+
+    if not "Test result:" in logline:
+        return "CRASH"
+
+    for res in all_results:
+        if res in logline:
+            return res
+
+    return "CRASH"
+
+
 def run_test_console(_, test):
     """ Run a specific, obtaining results via xenconsole """
 
@@ -459,18 +476,9 @@ def run_test_console(_, test):
         print "\n".join(lines)
 
     else:
-        return "ERROR"
+        return "CRASH"
 
-    test_result = lines[-1]
-    if not "Test result:" in test_result:
-        return "ERROR"
-
-    for res in all_results:
-
-        if res in test_result:
-            return res
-
-    return "ERROR"
+    return interpret_result(lines[-1])
 
 
 def run_test_logfile(opts, test):
@@ -506,15 +514,7 @@ def run_test_logfile(opts, test):
 
     logfile.close()
 
-    if not "Test result:" in line:
-        return "ERROR"
-
-    for res in all_results:
-
-        if res in line:
-            return res
-
-    return "ERROR"
+    return interpret_result(line)
 
 
 def run_tests(opts):
@@ -644,6 +644,8 @@ def main():
         "    3:    test(s) are skipped\n"
         "    4:    test(s) report error\n"
         "    5:    test(s) report failure\n"
+        "    6:    test(s) crashed\n"
+        "\n"
     )
 
     parser.add_option("-l", "--list", action = "store_true",
