@@ -52,7 +52,7 @@ Optionally:
 To obtain and build:
 
     $ git clone git://xenbits.xen.org/xtf.git
-    $ cd xen-test-framework
+    $ cd xtf
     $ make -j4
 
 To run tests on a Xen host: (see @ref errata first)
