@@ -56,7 +56,7 @@ unsigned long compat_userspace(void)
                   "start_32bit:;"
                   _ASM_XEN_FEP
                   "1: int $%c[df]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
 
                   /* Return to 64bit. */
                   "ljmpl $%c[cs], $1f;"
@@ -66,7 +66,8 @@ unsigned long compat_userspace(void)
                   : "+a" (fault)
                   : [df]   "i" (X86_EXC_DF),
                     [cs32] "i" (GDTE_CS32_DPL3 * 8 + 3),
-                    [cs]   "i" (__USER_CS));
+                    [cs]   "i" (__USER_CS),
+                    [ex]   "i" (ex_record_fault_eax));
 
     return fault;
 }

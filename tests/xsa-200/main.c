@@ -45,10 +45,10 @@ void test_main(void)
     {
         /* Poke the emulator. */
         asm volatile (_ASM_XEN_FEP "1: .byte 0x66; cmpxchg8b %[ptr]; 2:"
-                      _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                      _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                       : "=A" (prev), [ptr] "+m" (mem), "+D" (fault)
                       : "c" ((uint32_t)(new >> 32)), "b" ((uint32_t)new),
-                        "0" (old));
+                        "0" (old), [ex] "i" (ex_record_fault_edi));
 
         if ( fault == EXINFO_SYM(UD, 0) )
             return xtf_success("Success: Not vulnerable to XSA-200\n");

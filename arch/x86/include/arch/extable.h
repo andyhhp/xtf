@@ -15,8 +15,8 @@
  * Sample usage:
  * <pre>
  *   asm volatile ("1: $INSN; 2:"
- *                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
- *                 : "=a" (fault) : "0" (0));
+ *                 _ASM_EXTABLE_HANDLER(1b, 2b, @%c[ex])
+ *                 : "=a" (fault) : "0" (0), [ex] "i" (ex_record_fault_eax));
  * </pre>
  */
 bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex);
@@ -27,8 +27,8 @@ bool ex_record_fault_eax(struct cpu_regs *regs, const struct extable_entry *ex);
  * Sample usage:
  * <pre>
  *   asm volatile ("1: $INSN; 2:"
- *                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
- *                 : "=D" (fault) : "0" (0));
+ *                 _ASM_EXTABLE_HANDLER(1b, 2b, @%c[ex])
+ *                 : "=D" (fault) : "0" (0), [ex] "i" (ex_record_fault_edi));
  * </pre>
  */
 bool ex_record_fault_edi(struct cpu_regs *regs, const struct extable_entry *ex);

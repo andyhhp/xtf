@@ -33,7 +33,7 @@ uint64_t nl2[PAE_L2_PT_ENTRIES] __aligned(PAGE_SIZE);
 
 static bool seen_fault;
 
-bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
+static bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
 {
     /* Expect to see #PF indicating that a reserved bits was set. */
     if ( regs->entry_vector == X86_EXC_PF &&
@@ -66,9 +66,10 @@ void test_main(void)
     ptr = _p((4ULL << PAE_L3_PT_SHIFT) + MB(1));
 
     asm volatile ("1:mov (%[ptr]), %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fault)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : [val] "=q" (val)
-                  : [ptr] "r" (ptr)
+                  : [ptr] "r" (ptr),
+                    [ex]  "i" (ex_fault)
                   : "memory");
 
     if ( seen_fault )

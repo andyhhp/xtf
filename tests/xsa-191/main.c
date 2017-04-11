@@ -44,10 +44,11 @@ void test_main(void)
     write_fs(0);
     asm volatile (_ASM_XEN_FEP
                   "1: mov %%fs:0, %[dst]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "=D" (fault),
                     [dst] "=r" (tmp)
-                  : "D" (0));
+                  : "D" (0),
+                    [ex] "i" (ex_record_fault_edi));
 
     switch ( fault )
     {
@@ -82,10 +83,11 @@ void test_main(void)
 
     asm volatile (_ASM_XEN_FEP
                   "1: mov %[sel], %%fs; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "=a" (fault)
                   : "a" (0),
-                    [sel] "r" (4));
+                    [sel] "r" (4),
+                    [ex]  "i" (ex_record_fault_eax));
 
     switch ( fault )
     {

@@ -61,7 +61,7 @@ asm(".align 16;"
     "insn_stub_end:;"
     );
 
-bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
+static bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
 {
     if ( regs->entry_vector == X86_EXC_GP && regs->error_code == 0 )
     {
@@ -178,10 +178,11 @@ void test_main(void)
      * instructions don't get lost.
      */
     asm volatile ("call *%[ptr];"
-                  _ASM_EXTABLE_HANDLER(-1, 0, ex_fault)
+                  _ASM_EXTABLE_HANDLER(-1, 0, %c[ex])
                   : "=a" (res)
                   : "0" (0),
-                    [ptr] "r" (stub)
+                    [ptr] "r" (stub),
+                    [ex]  "i" (ex_fault)
                   : "memory");
 
     if ( res != 0xc0de )

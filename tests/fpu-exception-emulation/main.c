@@ -77,9 +77,10 @@ exinfo_t probe_x87(bool force)
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: fnop; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "+a" (fault)
-                  : [fep] "q" (force));
+                  : [fep] "q" (force),
+                    [ex]  "i" (ex_record_fault_eax));
 
     return fault;
 }
@@ -109,9 +110,10 @@ exinfo_t probe_x87_wait(bool force)
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: wait; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "+a" (fault)
-                  : [fep] "q" (force));
+                  : [fep] "q" (force),
+                    [ex]  "i" (ex_record_fault_eax));
 
     return fault;
 }
@@ -140,9 +142,10 @@ exinfo_t probe_mmx(bool force)
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: movq %%mm0, %%mm0; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "+a" (fault)
-                  : [fep] "q" (force));
+                  : [fep] "q" (force),
+                    [ex]  "i" (ex_record_fault_eax));
 
     return fault;
 }
@@ -155,9 +158,10 @@ exinfo_t probe_sse(bool force)
                   "jz 1f;"
                   _ASM_XEN_FEP
                   "1: movups %%xmm0, %%xmm0; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
                   : "+a" (fault)
-                  : [fep] "q" (force));
+                  : [fep] "q" (force),
+                    [ex]  "i" (ex_record_fault_eax));
 
     return fault;
 }
