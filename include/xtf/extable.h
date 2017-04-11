@@ -96,6 +96,8 @@ void sort_extable(void);
  */
 const struct extable_entry *search_extable(unsigned long addr);
 
+#include <arch/extable.h>
+
 #endif /* __ASSEMBLY__ */
 
 #endif /* XTF_EXTABLE_H */
