@@ -34,6 +34,12 @@ static inline unsigned int xen_cr3_to_pfn(unsigned int cr3)
     return cr3 >> 12 | cr3 << 20;
 }
 
+struct xen_callback {
+    unsigned long cs;
+    unsigned long eip;
+};
+typedef struct xen_callback xen_callback_t;
+
 #endif /* __ASSEMBLY__ */
 
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_X86_32_H */

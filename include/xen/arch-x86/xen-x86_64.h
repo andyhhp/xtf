@@ -17,6 +17,12 @@
 
 #define MACH2PHYS_VIRT_START 0xFFFF800000000000UL
 
+#ifndef __ASSEMBLY__
+
+typedef unsigned long xen_callback_t;
+
+#endif /* __ASSEMBLY__ */
+
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_X86_64_H */
 
 /*

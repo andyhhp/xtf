@@ -29,6 +29,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 /* All Xen ABI for includers convenience .*/
 #include <xen/xen.h>
 #include <xen/sched.h>
+#include <xen/callback.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
 #include <xen/physdev.h>
@@ -100,6 +101,11 @@ static inline long hypercall_sched_op(unsigned int cmd, void *arg)
     return HYPERCALL2(long, __HYPERVISOR_sched_op, cmd, arg);
 }
 
+static inline long hypercall_callback_op(unsigned int cmd, const void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_callback_op, cmd, arg);
+}
+
 static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, __HYPERVISOR_event_channel_op, cmd, arg);
@@ -136,6 +142,11 @@ static inline long hypercall_shutdown(unsigned int reason)
 static inline void hypercall_yield(void)
 {
     hypercall_sched_op(SCHEDOP_yield, NULL);
+}
+
+static inline int hypercall_register_callback(const xen_callback_register_t *arg)
+{
+    return hypercall_callback_op(CALLBACKOP_register, arg);
 }
 
 static inline int hypercall_evtchn_send(evtchn_port_t port)
