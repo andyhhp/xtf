@@ -21,6 +21,7 @@ enum x86_vendor
 };
 
 extern enum x86_vendor x86_vendor;
+extern unsigned int max_leaf, max_extd_leaf;
 extern unsigned int x86_family, x86_model, x86_stepping;
 extern unsigned int maxphysaddr, maxvirtaddr;
 

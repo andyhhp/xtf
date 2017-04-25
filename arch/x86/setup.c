@@ -20,6 +20,7 @@ uint8_t boot_stack[3 * PAGE_SIZE] __aligned(PAGE_SIZE);
 uint8_t user_stack[PAGE_SIZE] __aligned(PAGE_SIZE);
 uint32_t x86_features[FSCAPINTS];
 enum x86_vendor x86_vendor;
+unsigned int max_leaf, max_extd_leaf;
 unsigned int x86_family, x86_model, x86_stepping;
 unsigned int maxphysaddr, maxvirtaddr;
 
@@ -32,9 +33,9 @@ start_info_t *start_info = NULL;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 {
-    unsigned int max, tmp, eax, ebx, ecx, edx, addr = 0;
+    unsigned int tmp, eax, ebx, ecx, edx, addr = 0;
 
-    cpuid_fn(0, 0, &max, &ebx, &ecx, &edx);
+    cpuid_fn(0, 0, &max_leaf, &ebx, &ecx, &edx);
 
     if ( ebx == 0x756e6547u &&      /* "GenuineIntel" */
          ecx == 0x6c65746eu &&
@@ -49,7 +50,7 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
     else
         x86_vendor = X86_VENDOR_UNKNOWN;
 
-    if ( max >= 1 )
+    if ( max_leaf >= 1 )
     {
         cpuid_fn(1, 0, &eax, &tmp,
                  &x86_features[FEATURESET_1c],
@@ -66,28 +67,28 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
         if ( x86_family == 0xf )
             x86_family += (eax >> 20) & 0xff;
     }
-    if ( max >= 7 )
+    if ( max_leaf >= 7 )
         cpuid_fn(7, 0, &tmp,
                  &x86_features[FEATURESET_7b0],
                  &x86_features[FEATURESET_7c0],
                  &tmp);
-    if ( max >= 0xd )
+    if ( max_leaf >= 0xd )
         cpuid_fn(0xd, 0,
                  &x86_features[FEATURESET_Da1],
                  &tmp, &tmp, &tmp);
 
-    cpuid_fn(0x80000000, 0, &max, &tmp, &tmp, &tmp);
+    cpuid_fn(0x80000000, 0, &max_extd_leaf, &tmp, &tmp, &tmp);
 
-    if ( (max >> 16) == 0x8000 )
+    if ( (max_extd_leaf >> 16) == 0x8000 )
     {
-        if ( max >= 0x80000001 )
+        if ( max_extd_leaf >= 0x80000001 )
             cpuid_fn(0x80000001, 0, &tmp, &tmp,
                      &x86_features[FEATURESET_e1c],
                      &x86_features[FEATURESET_e1d]);
-        if ( max >= 0x80000007 )
+        if ( max_extd_leaf >= 0x80000007 )
             cpuid_fn(0x80000007, 0, &tmp, &tmp, &tmp,
                      &x86_features[FEATURESET_e7d]);
-        if ( max >= 0x80000008 )
+        if ( max_extd_leaf >= 0x80000008 )
             cpuid_fn(0x80000008, 0, &addr,
                      &x86_features[FEATURESET_e8b],
                      &tmp, &tmp);
