@@ -136,3 +136,10 @@ void test_main(void)
  */
 EOF
 } > tests/$NAME/main.c
+
+# Update docs/all-tests.dox with a placeholder
+echo "Adding placeholder to docs/all-tests.dox"
+cat >> docs/all-tests.dox <<EOF
+# Placeholder: Merge into the appropriate location above
+@subpage test-$NAME - @todo title
+EOF
