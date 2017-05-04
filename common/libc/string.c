@@ -1,6 +1,6 @@
-#include <xtf/types.h>
+#include <xtf/libc.h>
 
-size_t strlen(const char *str)
+size_t (strlen)(const char *str)
 {
     const char *s = str;
 
@@ -20,7 +20,7 @@ size_t strnlen(const char *str, size_t max)
     return s - str;
 }
 
-int strcmp(const char *_s1, const char *_s2)
+int (strcmp)(const char *_s1, const char *_s2)
 {
     char s1, s2;
 
@@ -32,7 +32,7 @@ int strcmp(const char *_s1, const char *_s2)
     return (s1 < s2) ? -1 : (s1 > s2);
 }
 
-void *memset(void *s, int c, size_t n)
+void *(memset)(void *s, int c, size_t n)
 {
     char *p = s;
 
@@ -42,7 +42,7 @@ void *memset(void *s, int c, size_t n)
     return s;
 }
 
-void *memcpy(void *_d, const void *_s, size_t n)
+void *(memcpy)(void *_d, const void *_s, size_t n)
 {
     char *d = _d;
     const char *s = _s;
@@ -53,7 +53,7 @@ void *memcpy(void *_d, const void *_s, size_t n)
     return _d;
 }
 
-int memcmp(const void *s1, const void *s2, size_t n)
+int (memcmp)(const void *s1, const void *s2, size_t n)
 {
     const unsigned char *u1 = s1, *u2 = s2;
     int res = 0;
