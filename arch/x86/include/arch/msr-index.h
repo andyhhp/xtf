@@ -3,6 +3,8 @@
 
 #include <xtf/numbers.h>
 
+#define MSR_PMC(n)                     (0x000000c1 + (n))
+
 #define MSR_INTEL_PLATFORM_INFO         0x000000ce
 #define _MSR_PLATFORM_INFO_CPUID_FAULTING       31
 #define MSR_PLATFORM_INFO_CPUID_FAULTING        (1ULL << _MSR_PLATFORM_INFO_CPUID_FAULTING)
@@ -11,9 +13,19 @@
 #define _MSR_MISC_FEATURES_CPUID_FAULTING        0
 #define MSR_MISC_FEATURES_CPUID_FAULTING         (1ULL << _MSR_MISC_FEATURES_CPUID_FAULTING)
 
+#define MSR_PERFEVTSEL(n)              (0x00000186 + (n))
+
 #define MSR_DEBUGCTL                    0x000001d9
 #define _MSR_DEBUGCTL_LBR               0 /* Last Branch Record. */
 #define MSR_DEBUGCTL_LBR                (_AC(1, L) << _MSR_DEBUGCTL_LBR)
+
+#define MSR_FIXED_CTR(n)               (0x00000309 + (n))
+#define MSR_PERF_CAPABILITIES           0x00000345
+#define MSR_FIXED_CTR_CTRL              0x0000038d
+#define MSR_PERF_GLOBAL_STATUS          0x0000038e
+#define MSR_PERF_GLOBAL_CTRL            0x0000038f
+#define MSR_PERF_GLOBAL_OVF_CTRL        0x00000390
+#define MSR_A_PMC(n)                   (0x000004c1 + (n))
 
 #define MSR_EFER                        0xc0000080 /* Extended Feature register. */
 #define _EFER_SCE                       0  /* SYSCALL Enable. */
