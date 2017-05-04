@@ -30,18 +30,8 @@ int memcmp(const void *s1, const void *s2, size_t n);
 int __printf(3, 0)
     vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
 
-static inline int __printf(3, 4)
-    snprintf(char *buf, size_t size, const char *fmt, ...)
-{
-    va_list args;
-    int rc;
-
-    va_start(args, fmt);
-    rc = vsnprintf(buf, size, fmt, args);
-    va_end(args);
-
-    return rc;
-}
+int __printf(3, 4)
+    snprintf(char *buf, size_t size, const char *fmt, ...);
 
 #endif /* XTF_LIBC_H */
 

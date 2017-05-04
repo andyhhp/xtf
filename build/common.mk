@@ -27,7 +27,7 @@ COMMON_CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
 COMMON_CFLAGS += -fno-common -fno-asynchronous-unwind-tables -fno-strict-aliasing
 COMMON_CFLAGS += -fno-stack-protector -ffreestanding
 COMMON_CFLAGS += -mno-red-zone -mno-sse
-COMMON_CFLAGS += -Wno-unused-parameter
+COMMON_CFLAGS += -Wno-unused-parameter -Winline
 
 COMMON_AFLAGS-x86_32 := -m32
 COMMON_AFLAGS-x86_64 := -m64

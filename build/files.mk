@@ -9,6 +9,7 @@ obj-perarch += $(ROOT)/common/exlog.o
 obj-perarch += $(ROOT)/common/extable.o
 obj-perarch += $(ROOT)/common/heapsort.o
 obj-perarch += $(ROOT)/common/lib.o
+obj-perarch += $(ROOT)/common/libc/stdio.o
 obj-perarch += $(ROOT)/common/libc/string.o
 obj-perarch += $(ROOT)/common/libc/vsnprintf.o
 obj-perarch += $(ROOT)/common/report.o
