@@ -1,4 +1,4 @@
-ALL_CATEGORIES     := special functional xsa utility
+ALL_CATEGORIES     := special functional xsa utility in-development
 
 ALL_ENVIRONMENTS   := pv64 pv32pae hvm64 hvm32pae hvm32pse hvm32
 

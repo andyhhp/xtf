@@ -33,7 +33,7 @@ def exit_code(state):
 
 # All test categories
 default_categories     = set(("functional", "xsa"))
-non_default_categories = set(("special", "utility"))
+non_default_categories = set(("special", "utility", "in-development"))
 all_categories         = default_categories | non_default_categories
 
 # All test environments

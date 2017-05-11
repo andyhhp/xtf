@@ -30,6 +30,8 @@ categories are:
 - `utility` are not really tests, but exist to dump specific information about
   the VM environment.
 - `special` covers the example and environment sanity checks.
+- `in-development` covers tests which aren't yet complete, and are not ready
+  to be run automatically yet.
 
 
 @subsection attr-envs Environments
