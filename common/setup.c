@@ -32,10 +32,8 @@ void __noreturn xtf_main(void)
         test_main();
     }
 
-    xtf_report_status();
-
-    hypercall_shutdown(SHUTDOWN_poweroff);
-    unreachable();
+    /* Report status and exit. */
+    xtf_exit();
 }
 
 /*

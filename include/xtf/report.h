@@ -73,6 +73,13 @@ void xtf_report_status(void);
  */
 bool xtf_status_reported(void);
 
+/**
+ * Exit the test early.
+ *
+ * Reports the current status.  Does not return.
+ */
+void __noreturn xtf_exit(void);
+
 #endif /* XTF_REPORT_H */
 
 /*

@@ -1,6 +1,6 @@
-#include <xtf/types.h>
+#include <xtf/lib.h>
 #include <xtf/report.h>
-#include <xtf/console.h>
+#include <xtf/hypercall.h>
 
 enum test_status {
     STATUS_RUNNING, /**< Test not yet completed.       */
@@ -119,6 +119,13 @@ void xtf_report_status(void)
 bool xtf_status_reported(void)
 {
     return status != STATUS_RUNNING;
+}
+
+void xtf_exit(void)
+{
+    xtf_report_status();
+    hypercall_shutdown(SHUTDOWN_poweroff);
+    panic("xtf_exit(): hypercall_shutdown(SHUTDOWN_poweroff) returned\n");
 }
 
 /*
