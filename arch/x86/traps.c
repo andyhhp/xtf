@@ -55,34 +55,6 @@ static bool is_trap_or_interrupt(const struct cpu_regs *regs)
     return true;
 }
 
-unsigned long cpu_regs_sp(const struct cpu_regs *regs)
-{
-#ifdef __x86_64__
-    return regs->_sp;
-#else
-    unsigned int cs = read_cs();
-
-    if ( (regs->cs & 3) > (cs & 3) )
-        return regs->_sp;
-
-    return _u(regs) + offsetof(struct cpu_regs, _sp);
-#endif
-}
-
-unsigned int cpu_regs_ss(const struct cpu_regs *regs)
-{
-#ifdef __x86_64__
-    return regs->_ss;
-#else
-    unsigned int cs = read_cs();
-
-    if ( (regs->cs & 3) > (cs & 3) )
-        return regs->_ss;
-
-    return read_ss();
-#endif
-}
-
 /*
  * C entry-point for exceptions, after the per-environment stubs have suitably
  * adjusted the stack.

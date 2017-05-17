@@ -3,6 +3,7 @@
 
 #include <xtf/compiler.h>
 #include <arch/regs.h>
+#include <arch/lib.h>
 #include <arch/page.h>
 
 /*
@@ -20,8 +21,33 @@ void __noreturn arch_crash_hard(void);
  * Return the correct %ss/%esp from an exception.  In 32bit if no stack switch
  * occurs, an exception frame doesn't contain this information.
  */
-unsigned long cpu_regs_sp(const struct cpu_regs *regs);
-unsigned int  cpu_regs_ss(const struct cpu_regs *regs);
+static inline unsigned long cpu_regs_sp(const struct cpu_regs *regs)
+{
+#ifdef __x86_64__
+    return regs->_sp;
+#else
+    unsigned int cs = read_cs();
+
+    if ( (regs->cs & 3) > (cs & 3) )
+        return regs->_sp;
+
+    return _u(regs) + offsetof(struct cpu_regs, _sp);
+#endif
+}
+
+static inline unsigned int cpu_regs_ss(const struct cpu_regs *regs)
+{
+#ifdef __x86_64__
+    return regs->_ss;
+#else
+    unsigned int cs = read_cs();
+
+    if ( (regs->cs & 3) > (cs & 3) )
+        return regs->_ss;
+
+    return read_ss();
+#endif
+}
 
 extern uint8_t boot_stack[3 * PAGE_SIZE];
 extern uint8_t user_stack[PAGE_SIZE];
