@@ -7,7 +7,7 @@
  * Checks that Xen prevents using all live patching operations and
  * sub-operations from an unprivileged guest.
  *
- * @see tests/livepatch-check-priv/main.c
+ * @see tests/livepatch-priv-check/main.c
  */
 #include <xtf.h>
 
