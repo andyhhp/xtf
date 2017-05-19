@@ -167,6 +167,75 @@ static char *number(char *str, char *end, long long val, unsigned base,
     return str;
 }
 
+static char *pointer(
+    char *str, char *end, const char **fmt_ptr, const void *arg,
+    int width, int precision, unsigned int flags)
+{
+    const char *fmt = *fmt_ptr;
+
+    switch ( fmt[1] )
+    {
+    case 'h': /* Raw buffer as hex string. */
+    {
+        const uint8_t *hex_buffer = arg;
+        char sep = ' ';
+
+        /* Consumed 'h' from the format string. */
+        ++*fmt_ptr;
+
+        /* Bound user count from %* to between 0 and 128 bytes. */
+        if ( width <= 0 )
+            return str;
+        if ( width > 128 )
+            width = 128;
+
+        /*
+         * Peek ahead in the format string to see if a recognised separator
+         * modifier is present.
+         */
+        switch ( fmt[2] )
+        {
+        case 'C': /* Colons. */
+            ++*fmt_ptr;
+            sep = ':';
+            break;
+
+        case 'D': /* Dashes. */
+            ++*fmt_ptr;
+            sep = '-';
+            break;
+
+        case 'N': /* No separator. */
+            ++*fmt_ptr;
+            sep = 0;
+            break;
+        }
+
+        for ( int i = 0; ; )
+        {
+            /* Each byte: 2 chars, 0-padded, base 16, no hex prefix. */
+            str = number(str, end, hex_buffer[i], 16, 2, -1, ZERO);
+
+            if ( ++i == width )
+                return str;
+
+            if ( sep )
+                PUT(sep);
+        }
+    }
+    break;
+    }
+
+    /* Fall back to plain 32/64bit hex integer. */
+    if ( width == -1 )
+    {
+        width = 2 * sizeof(arg);
+        flags |= ZERO;
+    }
+
+    return number(str, end, (unsigned long)arg, 16, width, precision, flags);
+}
+
 int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
 {
     char *str = buf, *end = buf + size;
@@ -300,20 +369,9 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
         }
 
         case 'p': /* Pointer. */
-        {
-            const void *p = va_arg(args, const void *);
-
-            if ( width == -1 )
-            {
-                width = 2 * sizeof(p);
-                flags |= ZERO;
-            }
-
-            str = number(str, end, (unsigned long)p,
-                         16, width, precision, flags);
-
+            str = pointer(str, end, &fmt, va_arg(args, const void *),
+                          width, precision, flags);
             continue;
-        }
 
         default: /* Something unrecognised - print the specifier literally. */
             PUT('%');
