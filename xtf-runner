@@ -446,23 +446,36 @@ def interpret_result(logline):
     return "CRASH"
 
 
-def run_test_console(_, test):
+def run_test_console(opts, test):
     """ Run a specific, obtaining results via xenconsole """
 
     cmd = ['xl', 'create', '-p', test.cfg_path()]
-    print "Executing '%s'" % (" ".join(cmd), )
-    rc = subproc_call(cmd)
-    if rc:
+    if not opts.quiet:
+        print "Executing '%s'" % (" ".join(cmd), )
+
+    create = Popen(cmd, stdout = PIPE, stderr = PIPE)
+    _, stderr = create.communicate()
+
+    if create.returncode:
+        if opts.quiet:
+            print "Executing '%s'" % (" ".join(cmd), )
+        print stderr
         raise RunnerError("Failed to create VM")
 
     cmd = ['xl', 'console', test.vm_name()]
-    print "Executing '%s'" % (" ".join(cmd), )
+    if not opts.quiet:
+        print "Executing '%s'" % (" ".join(cmd), )
+
     console = Popen(cmd, stdout = PIPE)
 
     cmd = ['xl', 'unpause', test.vm_name()]
-    print "Executing '%s'" % (" ".join(cmd), )
+    if not opts.quiet:
+        print "Executing '%s'" % (" ".join(cmd), )
+
     rc = subproc_call(cmd)
     if rc:
+        if opts.quiet:
+            print "Executing '%s'" % (" ".join(cmd), )
         raise RunnerError("Failed to unpause VM")
 
     stdout, _ = console.communicate()
@@ -473,7 +486,8 @@ def run_test_console(_, test):
     lines = stdout.splitlines()
 
     if lines:
-        print "\n".join(lines)
+        if not opts.quiet:
+            print "\n".join(lines)
 
     else:
         return "CRASH"
@@ -487,19 +501,24 @@ def run_test_logfile(opts, test):
     logpath = path.join(opts.logfile_dir,
                         opts.logfile_pattern.replace("%s", str(test)))
 
-    print "Using logfile '%s'" % (logpath, )
+    if not opts.quiet:
+        print "Using logfile '%s'" % (logpath, )
 
     fd = os.open(logpath, os.O_CREAT | os.O_RDONLY, 0644)
     logfile = os.fdopen(fd)
     logfile.seek(0, os.SEEK_END)
 
     cmd = ['xl', 'create', '-F', test.cfg_path()]
-    print "Executing '%s'" % (" ".join(cmd), )
+    if not opts.quiet:
+        print "Executing '%s'" % (" ".join(cmd), )
+
     guest = Popen(cmd, stdout = PIPE, stderr = PIPE)
 
     _, stderr = guest.communicate()
 
     if guest.returncode:
+        if opts.quiet:
+            print "Executing '%s'" % (" ".join(cmd), )
         print stderr
         raise RunnerError("Failed to run test")
 
@@ -507,7 +526,8 @@ def run_test_logfile(opts, test):
     for line in logfile.readlines():
 
         line = line.rstrip()
-        print line
+        if not opts.quiet:
+            print line
 
         if "Test result:" in line:
             break
@@ -683,6 +703,10 @@ def main():
                       type = "string",
                       help = ('Specify the log file name pattern, '
                               'defaults to "guest-%s.log"'),
+                      )
+    parser.add_option("-q", "--quiet", action = "store_true",
+                      dest = "quiet",
+                      help = "Print only test results, without console output",
                       )
 
     opts, args = parser.parse_args()
