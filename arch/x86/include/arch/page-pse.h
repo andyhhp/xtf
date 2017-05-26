@@ -29,13 +29,13 @@
 typedef uint32_t pse_intpte_t;
 #define PSE_PRIpte "08"PRIx32
 
-static inline unsigned int pse_l1_table_offset(unsigned long va)
+static inline unsigned int pse_l1_table_offset(unsigned long linear)
 {
-    return (va >> PSE_L1_PT_SHIFT) & (PSE_L1_PT_ENTRIES - 1);
+    return (linear >> PSE_L1_PT_SHIFT) & (PSE_L1_PT_ENTRIES - 1);
 }
-static inline unsigned int pse_l2_table_offset(unsigned long va)
+static inline unsigned int pse_l2_table_offset(unsigned long linear)
 {
-    return (va >> PSE_L2_PT_SHIFT) & (PSE_L2_PT_ENTRIES - 1);
+    return (linear >> PSE_L2_PT_SHIFT) & (PSE_L2_PT_ENTRIES - 1);
 }
 
 static inline uint32_t fold_pse36(uint64_t val)

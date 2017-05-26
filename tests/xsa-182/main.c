@@ -38,7 +38,7 @@ void test_main(void)
     intpte_t *l4 = _p(KB(4));
 
     /* Map the L4 at 4K virtual. */
-    if ( hypercall_update_va_mapping(l4, nl1e, UVMF_INVLPG) )
+    if ( hypercall_update_va_mapping(_u(l4), nl1e, UVMF_INVLPG) )
         return xtf_error("Error: Update va failed\n");
 
     unsigned long map_slot = 0, test_slot = 0;

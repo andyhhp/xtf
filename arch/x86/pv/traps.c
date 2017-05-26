@@ -142,7 +142,7 @@ void arch_init_traps(void)
         bool leaked = false;
 
         /* Remap the page at 0 with _PAGE_USER. */
-        rc = hypercall_update_va_mapping(NULL, nl1e, UVMF_INVLPG);
+        rc = hypercall_update_va_mapping(0, nl1e, UVMF_INVLPG);
         if ( rc )
             panic("Failed to remap page at NULL with _PAGE_USER: %d\n", rc);
 
@@ -170,46 +170,46 @@ void arch_init_traps(void)
          * context.  Proceed with remapping all mappings as _PAGE_USER.
          */
         uint64_t *l3 = _p(start_info->pt_base);
-        unsigned long va = 0;
+        unsigned long linear = 0;
 
-        while ( va < __HYPERVISOR_VIRT_START_PAE )
+        while ( linear < __HYPERVISOR_VIRT_START_PAE )
         {
-            unsigned int i3 = l3_table_offset(va);
+            unsigned int i3 = l3_table_offset(linear);
 
             if ( !(l3[i3] & _PAGE_PRESENT) )
             {
-                va += 1UL << L3_PT_SHIFT;
+                linear += 1UL << L3_PT_SHIFT;
                 continue;
             }
 
             uint64_t *l2 = maddr_to_virt(pte_to_paddr(l3[i3]));
-            unsigned int i2 = l2_table_offset(va);
+            unsigned int i2 = l2_table_offset(linear);
 
             if ( !(l2[i2] & _PAGE_PRESENT) )
             {
-                va += 1UL << L2_PT_SHIFT;
+                linear += 1UL << L2_PT_SHIFT;
                 continue;
             }
 
             uint64_t *l1 = maddr_to_virt(pte_to_paddr(l2[i2]));
-            unsigned int i1 = l1_table_offset(va);
+            unsigned int i1 = l1_table_offset(linear);
 
             if ( !(l1[i1] & _PAGE_PRESENT) )
             {
-                va += 1UL << L1_PT_SHIFT;
+                linear += 1UL << L1_PT_SHIFT;
                 continue;
             }
 
             if ( !(l1[i1] & _PAGE_USER) )
             {
-                rc = hypercall_update_va_mapping(_p(va), l1[i1] | _PAGE_USER,
-                                                 UVMF_INVLPG);
+                rc = hypercall_update_va_mapping(
+                    linear, l1[i1] | _PAGE_USER, UVMF_INVLPG);
                 if ( rc )
                     panic("update_va_mapping(%p, 0x%016"PRIx64") failed: %d\n",
-                          _p(va), l1[i1] | _PAGE_USER, rc);
+                          _p(linear), l1[i1] | _PAGE_USER, rc);
             }
 
-            va += 1UL << L1_PT_SHIFT;
+            linear += 1UL << L1_PT_SHIFT;
         }
     }
     else
@@ -220,26 +220,26 @@ void arch_init_traps(void)
          */
         intpte_t nl1e = pte_from_virt(user_stack, PF_SYM(AD, U, RW, P));
 
-        if ( hypercall_update_va_mapping(user_stack, nl1e, UVMF_INVLPG) )
+        if ( hypercall_update_va_mapping(_u(user_stack), nl1e, UVMF_INVLPG) )
             panic("Unable to remap user_stack with _PAGE_USER\n");
 
         extern const char __start_user_text[], __end_user_text[];
-        unsigned long va = _u(__start_user_text);
+        unsigned long linear = _u(__start_user_text);
 
-        while ( va < _u(__end_user_text) )
+        while ( linear < _u(__end_user_text) )
         {
-            nl1e = pte_from_virt(_p(va), PF_SYM(AD, U, RW, P));
+            nl1e = pte_from_virt(_p(linear), PF_SYM(AD, U, RW, P));
 
-            if ( hypercall_update_va_mapping(_p(va), nl1e, UVMF_INVLPG) )
+            if ( hypercall_update_va_mapping(linear, nl1e, UVMF_INVLPG) )
                 panic("Unable to remap user_text with _PAGE_USER\n");
 
-            va += PAGE_SIZE;
+            linear += PAGE_SIZE;
         }
     }
 #endif
 
     /* Unmap page at 0 to catch errors with NULL pointers. */
-    rc = hypercall_update_va_mapping(NULL, 0, UVMF_INVLPG);
+    rc = hypercall_update_va_mapping(0, 0, UVMF_INVLPG);
     if ( rc )
         panic("Failed to unmap page at NULL: %d\n", rc);
 }

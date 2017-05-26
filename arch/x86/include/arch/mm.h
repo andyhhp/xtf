@@ -22,7 +22,8 @@
  *
  * XTF memory layout.
  *
- * Wherever possible, identity layout for simplicity.
+ * Wherever possible, identity layout for simplicity.  Flat segments are also
+ * used, so virtual address == linear address.
  *
  * PV guests: VIRT_OFFSET is 0 which causes all linked virtual addresses to be
  * contiguous in the pagetables created by the domain builder.  Therefore,

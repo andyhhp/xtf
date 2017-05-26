@@ -71,14 +71,18 @@ static inline long hypercall_xen_version(unsigned cmd, void *arg)
     return HYPERCALL2(long, __HYPERVISOR_xen_version, cmd, arg);
 }
 
-static inline long hypercall_update_va_mapping(void *va, uint64_t npte,
-                                               enum XEN_UVMF flags)
+/*
+ * This hypercall is misnamed in the Xen ABI, and actually operates on a
+ * linear address, not a virtual address.
+ */
+static inline long hypercall_update_va_mapping(
+    unsigned long linear, uint64_t npte, enum XEN_UVMF flags)
 {
 #ifdef __x86_64__
-    return HYPERCALL3(long, __HYPERVISOR_update_va_mapping, va, npte, flags);
+    return HYPERCALL3(long, __HYPERVISOR_update_va_mapping, linear, npte, flags);
 #else
     return HYPERCALL4(long, __HYPERVISOR_update_va_mapping,
-                      va, npte, npte >> 32, flags);
+                      linear, npte, npte >> 32, flags);
 #endif
 }
 

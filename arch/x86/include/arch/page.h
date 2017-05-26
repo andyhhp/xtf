@@ -103,13 +103,13 @@ typedef uint64_t paddr_t;
 typedef pse_intpte_t intpte_t;
 #define PRIpte PSE_PRIpte
 
-static inline unsigned int l1_table_offset(unsigned long va)
+static inline unsigned int l1_table_offset(unsigned long linear)
 {
-    return pse_l1_table_offset(va);
+    return pse_l1_table_offset(linear);
 }
-static inline unsigned int l2_table_offset(unsigned long va)
+static inline unsigned int l2_table_offset(unsigned long linear)
 {
-    return pse_l2_table_offset(va);
+    return pse_l2_table_offset(linear);
 }
 
 #else /* CONFIG_PAGING_LEVELS == 2 */ /* PAE Paging */
@@ -117,31 +117,31 @@ static inline unsigned int l2_table_offset(unsigned long va)
 typedef pae_intpte_t intpte_t;
 #define PRIpte PAE_PRIpte
 
-static inline unsigned int l1_table_offset(unsigned long va)
+static inline unsigned int l1_table_offset(unsigned long linear)
 {
-    return pae_l1_table_offset(va);
+    return pae_l1_table_offset(linear);
 }
-static inline unsigned int l2_table_offset(unsigned long va)
+static inline unsigned int l2_table_offset(unsigned long linear)
 {
-    return pae_l2_table_offset(va);
+    return pae_l2_table_offset(linear);
 }
 
 #endif /* !CONFIG_PAGING_LEVELS == 2 */
 
 #if CONFIG_PAGING_LEVELS >= 3 /* PAE Paging */
 
-static inline unsigned int l3_table_offset(unsigned long va)
+static inline unsigned int l3_table_offset(unsigned long linear)
 {
-    return pae_l3_table_offset(va);
+    return pae_l3_table_offset(linear);
 }
 
 #endif /* CONFIG_PAGING_LEVELS >= 3 */
 
 #if CONFIG_PAGING_LEVELS >= 4 /* PAE Paging */
 
-static inline unsigned int l4_table_offset(unsigned long va)
+static inline unsigned int l4_table_offset(unsigned long linear)
 {
-    return pae_l4_table_offset(va);
+    return pae_l4_table_offset(linear);
 }
 
 #endif /* CONFIG_PAGING_LEVELS >= 4 */

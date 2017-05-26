@@ -189,7 +189,7 @@ static void map_shared_info(void)
     }
     else /* PV */
         rc = hypercall_update_va_mapping(
-            &shared_info, start_info->shared_info | PF_SYM(RW, P),
+            _u(&shared_info), start_info->shared_info | PF_SYM(RW, P),
             UVMF_INVLPG);
 
     if ( rc )

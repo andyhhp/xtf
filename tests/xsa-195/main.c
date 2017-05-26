@@ -43,11 +43,11 @@ void test_main(void)
     unsigned long mem_adjust = (8 + ((-idx - 1) >> 3)) & ~7;
 
     /*
-     * va is the memory target which the `bt` instruction will actually hit.
+     * linear is the memory target which the `bt` instruction will actually hit.
      * A vulnerable Xen mis-calculates the memory adjustment, meaning that it
      * will attempt to read from some other address.
      */
-    unsigned long va = _u(mem) - mem_adjust;
+    unsigned long linear = _u(mem) - mem_adjust;
 
     /*
      * Make all of the virtual address space readable, so Xen's data fetch
@@ -61,11 +61,11 @@ void test_main(void)
     for ( i = 1; i < L4_PT_ENTRIES; ++i )
         pae_l4_identmap[i] = pae_l4_identmap[0] & ~PF_SYM(RW);
 
-    /* Map va to pointing specifically to gfn 0. */
-    nl1t[l1_table_offset(va)] = pte_from_gfn(0, PF_SYM(U, P));
-    nl2t[l2_table_offset(va)] = pte_from_virt(nl1t, PF_SYM(U, P));
-    nl3t[l3_table_offset(va)] = pte_from_virt(nl2t, PF_SYM(U, P));
-    pae_l4_identmap[l4_table_offset(va)] = pte_from_virt(nl3t, PF_SYM(U, P));
+    /* Map linear to pointing specifically to gfn 0. */
+    nl1t[l1_table_offset(linear)] = pte_from_gfn(0, PF_SYM(U, P));
+    nl2t[l2_table_offset(linear)] = pte_from_virt(nl1t, PF_SYM(U, P));
+    nl3t[l3_table_offset(linear)] = pte_from_virt(nl2t, PF_SYM(U, P));
+    pae_l4_identmap[l4_table_offset(linear)] = pte_from_virt(nl3t, PF_SYM(U, P));
 
     /* Remove gfn 0 from the p2m, to cause `bt` to trap for emulation. */
     static unsigned long extent = 0;
