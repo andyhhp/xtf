@@ -5,12 +5,21 @@
 #ifndef XEN_PUBLIC_SCHED_H
 #define XEN_PUBLIC_SCHED_H
 
+#include "event_channel.h"
+
 #define SCHEDOP_yield    0
 #define SCHEDOP_shutdown 2
+#define SCHEDOP_poll     3
 
 #ifndef __ASSEMBLY__
 struct sched_shutdown {
     unsigned int reason; /* SHUTDOWN_* */
+};
+
+struct sched_poll {
+    evtchn_port_t *ports;
+    unsigned int nr_ports;
+    uint64_t timeout;
 };
 #endif
 
