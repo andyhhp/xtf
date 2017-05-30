@@ -2028,6 +2028,8 @@ PREDEFINED             = __aligned(x)= \
                          __always_inline \
                          __attribute__(x)= \
                          __packed \
+                         __page_aligned_bss \
+                         __page_aligned_data \
                          __printf(x,y)= \
                          __noinline \
                          __noreturn \
