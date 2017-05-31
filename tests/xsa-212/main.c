@@ -88,7 +88,7 @@ void test_main(void)
         asm volatile ("1: div %%ecx; 2:"
                       _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
                       : "+&a" (low), "+&d" (hi), "+D" (fault)
-                      : "c" (0));
+                      : "c" (0), "X" (ex_record_fault_edi));
 
         if ( fault == EXINFO_SYM(DE, 0) )
         {

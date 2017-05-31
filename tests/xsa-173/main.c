@@ -66,10 +66,10 @@ void test_main(void)
     ptr = _p((4ULL << PAE_L3_PT_SHIFT) + MB(1));
 
     asm volatile ("1:mov (%[ptr]), %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, %c[ex])
+                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fault)
                   : [val] "=q" (val)
                   : [ptr] "r" (ptr),
-                    [ex]  "i" (ex_fault)
+                    "X" (ex_fault)
                   : "memory");
 
     if ( seen_fault )
