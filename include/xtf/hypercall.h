@@ -6,7 +6,7 @@
 
 #if defined(__x86_64__)
 
-# include <arch/x86_64/hypercall-x86_64.h>
+# include <arch/hypercall-x86_64.h>
 # define HYPERCALL1 _hypercall64_1
 # define HYPERCALL2 _hypercall64_2
 # define HYPERCALL3 _hypercall64_3
@@ -14,7 +14,7 @@
 
 #elif defined(__i386__)
 
-# include <arch/x86_32/hypercall-x86_32.h>
+# include <arch/hypercall-x86_32.h>
 # define HYPERCALL1 _hypercall32_1
 # define HYPERCALL2 _hypercall32_2
 # define HYPERCALL3 _hypercall32_3
