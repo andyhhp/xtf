@@ -139,6 +139,30 @@ extern desc_ptr  idt_ptr;
 extern env_tss tss;
 #endif
 
+static inline unsigned long user_desc_base(const user_desc *d)
+{
+    unsigned long base = (d->base0 |
+                          ((unsigned long)d->base1) << 16 |
+                          ((unsigned long)d->base2) << 24 );
+#ifdef __x86_64__
+    /* Long mode system segments use adjacent slot. */
+    if ( !d->s )
+        base |= ((unsigned long)d[1].lo) << 32;
+#endif
+
+    return base;
+}
+
+static inline unsigned int user_desc_limit(const user_desc *d)
+{
+    unsigned int limit = (d->limit0 |
+                          ((unsigned int)d->limit1) << 16);
+    if ( d->g )
+        limit = limit << 12 | 0xfff;
+
+    return limit;
+}
+
 #endif /* XTF_X86_DESC_H */
 
 /*
