@@ -70,6 +70,8 @@ GLOBAL(label_\insn\()_\type\()_trap)
         /* Fixup from fault label to trap label. */
         _ASM_EXTABLE(label_\insn\()_\type\()_fault,
                      label_\insn\()_\type\()_trap)
+        /* Mark traps as ok. */
+        _ASM_TRAP_OK(label_\insn\()_\type\()_trap)
 
 ENDFUNC(stub_\insn\()_\type)
 .endm
