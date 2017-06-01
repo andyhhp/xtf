@@ -76,6 +76,7 @@ static inline bool cpu_has(unsigned int feature)
 #define cpu_has_vmx             cpu_has(X86_FEATURE_VMX)
 #define cpu_has_smx             cpu_has(X86_FEATURE_SMX)
 #define cpu_has_pcid            cpu_has(X86_FEATURE_PCID)
+#define cpu_has_x2apic          cpu_has(X86_FEATURE_X2APIC)
 #define cpu_has_xsave           cpu_has(X86_FEATURE_XSAVE)
 #define cpu_has_avx             cpu_has(X86_FEATURE_AVX)
 
