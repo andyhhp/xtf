@@ -36,6 +36,8 @@ env_tss tss __aligned(16) =
     .esp0 = _u(&boot_stack[2 * PAGE_SIZE]),
     .ss0  = __KERN_DS,
 
+    .cr3  = _u(cr3_target),
+
 #elif defined(__x86_64__)
 
     .rsp0 =   _u(&boot_stack[2 * PAGE_SIZE]),
