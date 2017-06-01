@@ -53,6 +53,12 @@ static inline void apic_mmio_write(unsigned int reg, uint32_t val)
     *(volatile uint32_t *)(_p(APIC_DEFAULT_BASE) + reg) = val;
 }
 
+static inline void apic_mmio_icr_write(uint64_t val)
+{
+    apic_mmio_write(APIC_ICR2, (uint32_t)(val >> 32));
+    apic_mmio_write(APIC_ICR,  (uint32_t)val);
+}
+
 static inline uint32_t apic_msr_read(unsigned int reg)
 {
     unsigned long val;
@@ -65,8 +71,16 @@ static inline uint32_t apic_msr_read(unsigned int reg)
 
 static inline void apic_msr_write(unsigned int reg, uint32_t val)
 {
-    asm volatile ("wrmsr" : "=a" (val)
-                  : "c" (MSR_X2APIC_REGS + (reg >> 4)), "d" (0));
+    asm volatile ("wrmsr" ::
+                  "a" (val), "d" (0),
+                  "c" (MSR_X2APIC_REGS + (reg >> 4)));
+}
+
+static inline void apic_msr_icr_write(uint64_t val)
+{
+    asm volatile ("wrmsr" ::
+                  "a" ((uint32_t)val), "d" ((uint32_t)(val >> 32)),
+                  "c" (MSR_X2APIC_REGS + (APIC_ICR >> 4)));
 }
 
 extern enum apic_mode cur_apic_mode;
@@ -85,6 +99,14 @@ static inline void apic_write(unsigned int reg, uint32_t val)
         return apic_mmio_write(reg, val);
     else
         return apic_msr_write(reg, val);
+}
+
+static inline void apic_icr_write(uint64_t val)
+{
+    if ( cur_apic_mode == APIC_MODE_XAPIC )
+        return apic_mmio_icr_write(val);
+    else
+        return apic_msr_icr_write(val);
 }
 
 #endif /* XTF_X86_APIC_H */
