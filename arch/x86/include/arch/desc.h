@@ -10,6 +10,7 @@
 #include <xtf/types.h>
 #include <xtf/compiler.h>
 
+#include <arch/x86-gate.h>
 #include <arch/x86-tss.h>
 
 #include <arch/segment.h>
@@ -52,39 +53,6 @@ struct __packed seg_desc32 {
                 };
             };
             uint8_t base2;
-        };
-    };
-};
-
-/** 8-byte gate - Protected mode IDT entry, GDT task/call gate. */
-struct __packed seg_gate32 {
-    union {
-        struct {
-            uint32_t lo, hi;
-        };
-        struct {
-            uint16_t offset0;
-            uint16_t selector;
-            uint8_t  _r0;
-            unsigned int type: 4, s: 1, dpl: 2, p: 1;
-            uint16_t offset1;
-        };
-    };
-};
-
-/** 16-byte gate - Long mode IDT entry. */
-struct __packed seg_gate64 {
-    union {
-        struct {
-            uint64_t lo, hi;
-        };
-        struct {
-            uint16_t offset0;
-            uint16_t selector;
-            unsigned int ist: 3, _r0: 5, type: 4, s: 1, dpl: 2, p: 1;
-            uint16_t offset1;
-            uint32_t offset2;
-            uint32_t _r1;
         };
     };
 };
@@ -165,7 +133,7 @@ extern user_desc gdt[NR_GDT_ENTRIES];
 extern desc_ptr  gdt_ptr;
 
 #if defined(CONFIG_HVM)
-extern gate_desc idt[256];
+extern env_gate idt[256];
 extern desc_ptr  idt_ptr;
 
 extern env_tss tss;

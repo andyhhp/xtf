@@ -48,9 +48,9 @@ env_tss tss __aligned(16) =
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
 
-#if defined(__i386__)
 static env_tss tss_DF __aligned(16) =
 {
+#if defined(__i386__)
     .esp  = _u(&boot_stack[3 * PAGE_SIZE]),
     .ss   = __KERN_DS,
     .ds   = __KERN_DS,
@@ -62,67 +62,31 @@ static env_tss tss_DF __aligned(16) =
     .cs   = __KERN_CS,
 
     .cr3  = _u(cr3_target),
+#endif
 
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
-#endif
-
-void pack_gate32(struct seg_gate32 *gate, unsigned int type, uint32_t func,
-                 unsigned int dpl, unsigned int seg)
-{
-    gate->offset0 = func & 0xffff;
-    gate->selector = seg;
-    gate->_r0 = 0;
-    gate->type = type;
-    gate->s = 0;
-    gate->dpl = dpl;
-    gate->p = 1;
-    gate->offset1 = (func >> 16) & 0xffff;
-}
-
-void pack_gate64(struct seg_gate64 *gate, unsigned int type, uint64_t func,
-                 unsigned int dpl, unsigned int ist, unsigned int seg)
-{
-    gate->offset0 = func & 0xffff;
-    gate->selector = seg;
-    gate->ist = ist;
-    gate->_r0 = 0;
-    gate->type = type;
-    gate->s = 0;
-    gate->dpl = dpl;
-    gate->p = 1;
-    gate->offset1 = (func >> 16) & 0xffff;
-    gate->offset2 = (func >> 32) & 0xffffffffu;
-    gate->_r1 = 0;
-}
 
 static void setup_gate(unsigned int entry, void *addr, unsigned int dpl)
 {
-#if defined(__i386__)
-    pack_gate32(&idt[entry], 14, _u(addr), dpl, __KERN_CS);
-#elif defined(__x86_64__)
-    pack_gate64(&idt[entry], 14, _u(addr), dpl, 0, __KERN_CS);
-#endif
+    pack_gate(&idt[entry], 14, __KERN_CS, _u(addr), dpl, 0);
 }
 
 static void setup_doublefault(void)
 {
-#if defined(__i386__)
-    gdt[GDTE_TSS_DF] = (typeof(*gdt))INIT_GDTE(_u(&tss_DF), 0x67, 0x89);
+    if ( IS_DEFINED(CONFIG_32BIT) )
+    {
+        gdt[GDTE_TSS_DF] = (typeof(*gdt))INIT_GDTE(_u(&tss_DF), 0x67, 0x89);
 
-    pack_gate32(&idt[X86_EXC_DF], 5, 0, 0, GDTE_TSS_DF * 8);
-#elif defined(__x86_64__)
-    pack_gate64(&idt[X86_EXC_DF], 14, _u(entry_DF), 0, 1, __KERN_CS);
-#endif
+        pack_task_gate(&idt[X86_EXC_DF], GDTE_TSS_DF * 8);
+    }
+    else
+        pack_gate(&idt[X86_EXC_DF], 14, __KERN_CS, _u(entry_DF), 0, 1);
 }
 
 int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
 {
-#if defined(__i386__)
-    pack_gate32(&idt[vector], 14, idte->addr, idte->dpl, idte->cs);
-#elif defined(__x86_64__)
-    pack_gate64(&idt[vector], 14, idte->addr, idte->dpl, 0, idte->cs);
-#endif
+    pack_gate(&idt[vector], 14, idte->cs, idte->addr, idte->dpl, 0);
 
     return 0;
 }

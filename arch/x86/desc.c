@@ -26,7 +26,7 @@ desc_ptr gdt_ptr =
 
 #if defined(CONFIG_HVM)
 
-gate_desc idt[256] = { };
+env_gate idt[256];
 
 desc_ptr idt_ptr =
 {
