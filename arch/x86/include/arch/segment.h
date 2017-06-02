@@ -1,6 +1,8 @@
 #ifndef XTF_X86_SEGMENT_H
 #define XTF_X86_SEGMENT_H
 
+#include <xtf/types.h>
+
 #include <xen/arch-x86/xen.h>
 
 /*

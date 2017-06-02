@@ -6,6 +6,10 @@
 #ifndef XTF_X86_PAGE_PAE_H
 #define XTF_X86_PAGE_PAE_H
 
+#include <xtf/types.h>
+
+#include <arch/page.h>
+
 /** PAE pagetable entries are 64 bits wide. */
 #define PAE_PTE_SIZE 8
 /** PAE pagetable entries are 64 bits wide. */

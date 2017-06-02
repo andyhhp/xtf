@@ -1,6 +1,7 @@
 #ifndef XTF_HYPERCALL_H
 #define XTF_HYPERCALL_H
 
+#include <xtf/compiler.h>
 #include <xtf/types.h>
 #include <arch/page.h>
 

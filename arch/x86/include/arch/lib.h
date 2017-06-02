@@ -2,6 +2,7 @@
 #define XTF_X86_LIB_H
 
 #include <xtf/types.h>
+#include <xtf/extable.h>
 #include <xen/arch-x86/xen.h>
 #include <arch/desc.h>
 

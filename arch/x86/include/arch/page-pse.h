@@ -6,6 +6,10 @@
 #ifndef XTF_X86_PAGE_PSE_H
 #define XTF_X86_PAGE_PSE_H
 
+#include <xtf/types.h>
+
+#include <arch/page.h>
+
 /** PSE pagetable entries are 32 bits wide. */
 #define PSE_PTE_SIZE 4
 /** PSE pagetable entries are 32 bits wide. */

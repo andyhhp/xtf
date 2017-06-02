@@ -9,6 +9,8 @@
 #include <arch/exinfo.h>
 #include <arch/regs.h>
 
+struct extable_entry;
+
 /**
  * Record the current fault in @%eax
  *
