@@ -41,7 +41,7 @@ asm(".align 16;"
     );
 
 /* Virtual 8068 task. */
-hw_tss vm86_tss __aligned(16) =
+env_tss vm86_tss __aligned(16) =
 {
     .eflags = X86_EFLAGS_VM | X86_EFLAGS_IOPL | X86_EFLAGS_MBS,
     .eip    = 0x1000,

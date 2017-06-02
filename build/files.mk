@@ -26,6 +26,10 @@ obj-perenv += $(ROOT)/arch/x86/traps.o
 # HVM specific objects
 obj-hvm += $(ROOT)/arch/x86/hvm/pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
+
+# Arguably common objects, but PV guests will have no interest in them.
+obj-hvm += $(ROOT)/arch/x86/x86-tss.o
+
 $(foreach env,$(HVM_ENVIRONMENTS),$(eval obj-$(env) += $(obj-hvm)))
 
 

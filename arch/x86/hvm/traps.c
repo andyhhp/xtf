@@ -29,7 +29,7 @@ void entry_XM(void);
 void entry_VE(void);
 void entry_ret_to_kernel(void);
 
-hw_tss tss __aligned(16) =
+env_tss tss __aligned(16) =
 {
 #if defined(__i386__)
 
@@ -47,7 +47,7 @@ hw_tss tss __aligned(16) =
 };
 
 #if defined(__i386__)
-static hw_tss tss_DF __aligned(16) =
+static env_tss tss_DF __aligned(16) =
 {
     .esp  = _u(&boot_stack[3 * PAGE_SIZE]),
     .ss   = __KERN_DS,

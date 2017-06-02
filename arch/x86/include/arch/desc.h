@@ -169,7 +169,7 @@ extern desc_ptr  gdt_ptr;
 extern gate_desc idt[256];
 extern desc_ptr  idt_ptr;
 
-extern hw_tss tss;
+extern env_tss tss;
 #endif
 
 #endif /* XTF_X86_DESC_H */

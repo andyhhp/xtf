@@ -10,17 +10,17 @@
 #include <xtf/types.h>
 #include <xtf/compiler.h>
 
-struct __packed hw_tss32 {
-    uint16_t link; uint16_t _r0;
+struct __packed x86_tss32 {
+    uint16_t link; uint16_t :16;
 
     uint32_t esp0;
-    uint16_t ss0; uint16_t _r1;
+    uint16_t ss0; uint16_t :16;
 
     uint32_t esp1;
-    uint16_t ss1; uint16_t _r2;
+    uint16_t ss1; uint16_t :16;
 
     uint32_t esp2;
-    uint16_t ss2; uint16_t _r3;
+    uint16_t ss2; uint16_t :16;
 
     uint32_t cr3;
     uint32_t eip;
@@ -34,42 +34,57 @@ struct __packed hw_tss32 {
     uint32_t esi;
     uint32_t edi;
 
-    uint16_t es; uint16_t _r4;
-    uint16_t cs; uint16_t _r5;
-    uint16_t ss; uint16_t _r6;
-    uint16_t ds; uint16_t _r7;
-    uint16_t fs; uint16_t _r8;
-    uint16_t gs; uint16_t _r9;
-    uint16_t ldtr; uint16_t _r10;
-    uint16_t t; uint16_t iopb;
+    uint16_t es; uint16_t :16;
+    uint16_t cs; uint16_t :16;
+    uint16_t ss; uint16_t :16;
+    uint16_t ds; uint16_t :16;
+    uint16_t fs; uint16_t :16;
+    uint16_t gs; uint16_t :16;
+    uint16_t ldtr; uint16_t :16;
+
+    uint16_t trace:1, :15;
+    uint16_t iopb;
 };
 
-struct __packed hw_tss64 {
-    uint16_t link; uint16_t _r0;
+struct __packed x86_tss64 {
+    uint32_t :32;
 
     uint64_t rsp0;
     uint64_t rsp1;
     uint64_t rsp2;
 
-    uint64_t _r1;
+    uint64_t :64;
 
     uint64_t ist[7]; /* 1-based structure */
 
-    uint64_t _r2;
+    uint64_t :64;
 
-    uint16_t t;
+    uint16_t trace:1, :15;
     uint16_t iopb;
 };
 
 #define X86_TSS_INVALID_IO_BITMAP 0x8000
 
+void dump_x86_tss32(const struct x86_tss32 *t);
+void dump_x86_tss64(const struct x86_tss64 *t);
+
 #if defined(__x86_64__)
 
-typedef struct hw_tss64 hw_tss;
+typedef struct x86_tss64 env_tss;
+
+static inline void dump_env_tss(const env_tss *t)
+{
+    dump_x86_tss64(t);
+}
 
 #elif defined(__i386__)
 
-typedef struct hw_tss32 hw_tss;
+typedef struct x86_tss32 env_tss;
+
+static inline void dump_env_tss(const env_tss *t)
+{
+    dump_x86_tss32(t);
+}
 
 #else
 # error Bad architecture for TSS infrastructure
