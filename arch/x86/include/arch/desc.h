@@ -21,39 +21,38 @@ struct __packed seg_desc32 {
         struct {
             uint32_t lo, hi;
         };
-        /** Common named fields. */
         struct {
             uint16_t limit0;
             uint16_t base0;
             uint8_t  base1;
-            unsigned type: 4;
-            unsigned s: 1, dpl: 2, p: 1;
-            unsigned limit: 4;
-            unsigned avl: 1, l: 1, d: 1, g: 1;
+            union {
+                /** Common named fields. */
+                struct __packed {
+                    unsigned int type:4;
+
+                    bool s:1;
+                    unsigned int dpl:2;
+                    bool p:1;
+
+                    unsigned int limit1:4;
+
+                    bool avl:1, :1, :1, g:1;
+                };
+                /** Code segment specific field names. */
+                struct __packed {
+                    bool a:1, r:1, c:1, x:1;
+                    unsigned int :4, :4;
+                    bool :1, l:1, d:1, :1;
+                };
+                /** Data segment specific field names. */
+                struct __packed {
+                    bool :1, w:1, e:1, :1;
+                    unsigned int :4, :4;
+                    bool :1, :1, b:1, :1;
+                };
+            };
             uint8_t base2;
         };
-        /** Code segment specific field names. */
-        struct {
-            uint16_t limit0;
-            uint16_t base0;
-            uint8_t  base1;
-            unsigned a: 1, r: 1, c: 1, x: 1;
-            unsigned s: 1, dpl: 2, p: 1;
-            unsigned limit: 4;
-            unsigned avl: 1, l: 1, d: 1, g: 1;
-            uint8_t base2;
-        } code;
-        /** Data segment specific field names. */
-        struct {
-            uint16_t limit0;
-            uint16_t base0;
-            uint8_t  base1;
-            unsigned a: 1, w: 1, e: 1, x: 1;
-            unsigned s: 1, dpl: 2, p: 1;
-            unsigned limit: 4;
-            unsigned avl: 1, _r0: 1, b: 1, g: 1;
-            uint8_t base2;
-        } data;
     };
 };
 
