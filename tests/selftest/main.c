@@ -316,6 +316,14 @@ static void test_driver_init(void)
         if ( rc && rc != -ENODEV )
             xtf_failure("Fail: apic_init() returned %d\n", rc);
     }
+
+    rc = xtf_init_grant_table(1);
+    if ( rc )
+        xtf_failure("Fail: xtf_init_grant_table(1) returned %d\n", rc);
+
+    rc = xtf_init_grant_table(2);
+    if ( rc && rc != -ENODEV )
+        xtf_failure("Fail: xtf_init_grant_table(2) returned %d\n", rc);
 }
 
 void test_main(void)

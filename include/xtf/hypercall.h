@@ -33,6 +33,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 #include <xen/callback.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
+#include <xen/grant_table.h>
 #include <xen/physdev.h>
 #include <xen/memory.h>
 #include <xen/version.h>
@@ -85,6 +86,12 @@ static inline long hypercall_update_va_mapping(
     return HYPERCALL4(long, __HYPERVISOR_update_va_mapping,
                       linear, npte, npte >> 32, flags);
 #endif
+}
+
+static inline long hypercall_grant_table_op(unsigned int cmd, void *args,
+                                            unsigned int count)
+{
+    return HYPERCALL3(long, __HYPERVISOR_grant_table_op, cmd, args, count);
 }
 
 static inline long hypercall_vm_assist(unsigned int cmd, unsigned int type)

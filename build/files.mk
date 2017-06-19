@@ -7,6 +7,7 @@
 obj-perarch += $(ROOT)/common/console.o
 obj-perarch += $(ROOT)/common/exlog.o
 obj-perarch += $(ROOT)/common/extable.o
+obj-perarch += $(ROOT)/common/grant_table.o
 obj-perarch += $(ROOT)/common/heapsort.o
 obj-perarch += $(ROOT)/common/lib.o
 obj-perarch += $(ROOT)/common/libc/stdio.o
@@ -19,6 +20,7 @@ obj-perarch += $(ROOT)/common/xenbus.o
 obj-perenv += $(ROOT)/arch/x86/decode.o
 obj-perenv += $(ROOT)/arch/x86/desc.o
 obj-perenv += $(ROOT)/arch/x86/extable.o
+obj-perenv += $(ROOT)/arch/x86/grant_table.o
 obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
 obj-perenv += $(ROOT)/arch/x86/setup.o
 obj-perenv += $(ROOT)/arch/x86/traps.o
