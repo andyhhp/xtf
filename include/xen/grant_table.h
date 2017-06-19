@@ -171,6 +171,92 @@ typedef union {
     uint32_t __spacer[4]; /* Pad to a power of two */
 } grant_entry_v2_t;
 
+/* Map the grant entry for access by I/O devices. */
+#define _GNTMAP_device_map      0
+#define GNTMAP_device_map       (1 << _GNTMAP_device_map)
+/* Map the grant entry for access by host CPUs. */
+#define _GNTMAP_host_map        1
+#define GNTMAP_host_map         (1 << _GNTMAP_host_map)
+/* Accesses to the granted frame will be restricted to read-only access. */
+#define _GNTMAP_readonly        2
+#define GNTMAP_readonly         (1 << _GNTMAP_readonly)
+/*
+ * GNTMAP_host_map subflag:
+ *  0 => The host mapping is usable only by the guest OS.
+ *  1 => The host mapping is usable by guest OS + current application.
+ */
+#define _GNTMAP_application_map 3
+#define GNTMAP_application_map  (1 << _GNTMAP_application_map)
+
+/*
+ * GNTMAP_contains_pte subflag:
+ *  0 => This map request contains a host virtual address.
+ *  1 => This map request contains the machine addess of the PTE to update.
+ */
+#define _GNTMAP_contains_pte    4
+#define GNTMAP_contains_pte     (1 << _GNTMAP_contains_pte)
+
+#define _GNTMAP_can_fail        5
+#define GNTMAP_can_fail         (1 << _GNTMAP_can_fail)
+
+/*
+ * Bits to be placed in guest kernel available PTE bits (architecture
+ * dependent; only supported when XENFEAT_gnttab_map_avail_bits is set).
+ */
+#define _GNTMAP_guest_avail0    16
+#define GNTMAP_guest_avail_mask ((uint32_t)~0 << _GNTMAP_guest_avail0)
+
+/*
+ * GNTTABOP_map_grant_ref: Map the grant entry (<dom>,<ref>) for access
+ * by devices and/or host CPUs. If successful, <handle> is a tracking number
+ * that must be presented later to destroy the mapping(s). On error, <status>
+ * is a negative status code.
+ * NOTES:
+ *  1. If GNTMAP_device_map is specified then <dev_bus_addr> is the address
+ *     via which I/O devices may access the granted frame.
+ *  2. If GNTMAP_host_map is specified then a mapping will be added at
+ *     either a host virtual address in the current address space, or at
+ *     a PTE at the specified machine address.  The type of mapping to
+ *     perform is selected through the GNTMAP_contains_pte flag, and the
+ *     address is specified in <host_addr>.
+ *  3. Mappings should only be destroyed via GNTTABOP_unmap_grant_ref. If a
+ *     host mapping is destroyed by other means then it is *NOT* guaranteed
+ *     to be accounted to the correct grant reference!
+ */
+#define GNTTABOP_map_grant_ref        0
+struct gnttab_map_grant_ref {
+    /* IN parameters. */
+    uint64_t host_addr;
+    uint32_t flags;               /* GNTMAP_* */
+    grant_ref_t ref;
+    domid_t  dom;
+    /* OUT parameters. */
+    int16_t  status;              /* => enum grant_status */
+    grant_handle_t handle;
+    uint64_t dev_bus_addr;
+};
+
+/*
+ * GNTTABOP_unmap_grant_ref: Destroy one or more grant-reference mappings
+ * tracked by <handle>. If <host_addr> or <dev_bus_addr> is zero, that
+ * field is ignored. If non-zero, they must refer to a device/host mapping
+ * that is tracked by <handle>
+ * NOTES:
+ *  1. The call may fail in an undefined manner if either mapping is not
+ *     tracked by <handle>.
+ *  3. After executing a batch of unmaps, it is guaranteed that no stale
+ *     mappings will remain in the device or host TLBs.
+ */
+#define GNTTABOP_unmap_grant_ref      1
+struct gnttab_unmap_grant_ref {
+    /* IN parameters. */
+    uint64_t host_addr;
+    uint64_t dev_bus_addr;
+    grant_handle_t handle;
+    /* OUT parameters. */
+    int16_t  status;              /* => enum grant_status */
+};
+
 /*
  * GNTTABOP_setup_table: Set up a grant table for <dom> comprising at least
  * <nr_frames> pages. The frame addresses are written to the <frame_list>.

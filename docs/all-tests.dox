@@ -96,6 +96,8 @@ guest breakout.
 
 @subpage test-xsa-221 - NULL pointer deref in event channel poll.
 
+@subpage test-xsa-224 - grant table operations mishandle reference counts.
+
 
 @section index-utility Utilities
 

@@ -70,6 +70,11 @@ static inline unsigned long virt_to_mfn(const void *va)
     return pfn_to_mfn(virt_to_pfn(va));
 }
 
+static inline uint64_t virt_to_maddr(const void *va)
+{
+    return ((uint64_t)virt_to_mfn(va) << PAGE_SHIFT) + (_u(va) & ~PAGE_MASK);
+}
+
 #undef m2p
 
 #else /* CONFIG_PV */
@@ -79,6 +84,7 @@ extern void *mfn_to_virt(unsigned long mfn);
 extern void *maddr_to_virt(uint64_t maddr);
 extern unsigned long pfn_to_mfn(unsigned long pfn);
 extern unsigned long virt_to_mfn(const void *va);
+extern uint64_t virt_to_maddr(const void *va);
 
 #endif /* CONFIG_PV */
 
