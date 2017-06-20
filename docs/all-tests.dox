@@ -100,6 +100,8 @@ guest breakout.
 
 @subpage test-xsa-224 - grant table operations mishandle reference counts.
 
+@subpage test-xsa-227 - x86: PV privilege escalation via map_grant_ref.
+
 
 @section index-utility Utilities
 

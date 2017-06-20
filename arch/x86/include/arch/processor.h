@@ -171,6 +171,14 @@
 #define X86_PFEC_INSN     (1U << 4)
 #define X86_PFEC_PK       (1U << 5)
 
+/* Pagefault Error Code - Short form mnemonics. */
+#define X86_PFEC_P X86_PFEC_PRESENT
+#define X86_PFEC_W X86_PFEC_WRITE
+#define X86_PFEC_U X86_PFEC_USER
+#define X86_PFEC_R X86_PFEC_RSVD
+#define X86_PFEC_I X86_PFEC_INSN
+#define X86_PFEC_K X86_PFEC_PK
+
 /*
  * Selector mnemonics.
  */

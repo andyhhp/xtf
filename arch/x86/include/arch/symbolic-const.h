@@ -101,6 +101,17 @@
  */
 #define PF_SYM(...) TOK_OR(_PAGE_, ##__VA_ARGS__)
 
+/**
+ * Create pagetable error code based on mnemonics.
+ *
+ * @param ... Partial X86_PFEC_ tokens.
+ *
+ * Eample usage:
+ * - PFEC_SYM(I, U, P)
+ *   - Insn fetch, User access, Present.
+ */
+#define PFEC_SYM(...) TOK_OR(X86_PFEC_, ##__VA_ARGS__)
+
 #endif /* XTF_X86_SYMBOLIC_CONST_H */
 
 /*
