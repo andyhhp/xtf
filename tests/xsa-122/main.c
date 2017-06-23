@@ -30,7 +30,7 @@ const char test_title[] = "XSA-122 PoC";
  */
 static void check_buffer(const char *ref, const char *buf, size_t buf_sz)
 {
-    unsigned i;
+    unsigned int i;
     size_t str_len = strnlen(buf, buf_sz);
 
     if ( str_len == buf_sz )

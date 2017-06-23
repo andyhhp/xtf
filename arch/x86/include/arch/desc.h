@@ -66,7 +66,7 @@ struct __packed seg_gate32 {
             uint16_t offset0;
             uint16_t selector;
             uint8_t  _r0;
-            unsigned type: 4, s: 1, dpl: 2, p: 1;
+            unsigned int type: 4, s: 1, dpl: 2, p: 1;
             uint16_t offset1;
         };
     };
@@ -81,7 +81,7 @@ struct __packed seg_gate64 {
         struct {
             uint16_t offset0;
             uint16_t selector;
-            unsigned ist: 3, _r0: 5, type: 4, s: 1, dpl: 2, p: 1;
+            unsigned int ist: 3, _r0: 5, type: 4, s: 1, dpl: 2, p: 1;
             uint16_t offset1;
             uint32_t offset2;
             uint32_t _r1;

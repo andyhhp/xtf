@@ -65,8 +65,8 @@ static env_tss tss_DF __aligned(16) =
 };
 #endif
 
-void pack_gate32(struct seg_gate32 *gate, unsigned type, uint32_t func,
-                 unsigned dpl, unsigned seg)
+void pack_gate32(struct seg_gate32 *gate, unsigned int type, uint32_t func,
+                 unsigned int dpl, unsigned int seg)
 {
     gate->offset0 = func & 0xffff;
     gate->selector = seg;
@@ -78,8 +78,8 @@ void pack_gate32(struct seg_gate32 *gate, unsigned type, uint32_t func,
     gate->offset1 = (func >> 16) & 0xffff;
 }
 
-void pack_gate64(struct seg_gate64 *gate, unsigned type, uint64_t func,
-                 unsigned dpl, unsigned ist, unsigned seg)
+void pack_gate64(struct seg_gate64 *gate, unsigned int type, uint64_t func,
+                 unsigned int dpl, unsigned int ist, unsigned int seg)
 {
     gate->offset0 = func & 0xffff;
     gate->selector = seg;

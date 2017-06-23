@@ -69,8 +69,8 @@ static int fmt_int(const char **fmt)
     return res;
 }
 
-static char *number(char *str, char *end, long long val, unsigned base,
-                    int width, int precision, unsigned flags)
+static char *number(char *str, char *end, long long val, unsigned int base,
+                    int width, int precision, unsigned int flags)
 {
     static const char lower[] = "0123456789abcdef";
     static const char upper[] = "0123456789ABCDEF";
@@ -245,7 +245,7 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
         const char *spec_start = fmt; /* For rewinding on error. */
 
         unsigned long long num;
-        unsigned base, flags = 0;
+        unsigned int base, flags = 0;
         int width = -1, precision = -1;
         char length_mod = 'i';
 
