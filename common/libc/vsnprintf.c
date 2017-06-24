@@ -386,7 +386,7 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
 
         case 'd': case 'i': /* Signed decimal. */
             flags |= SIGNED;
-            /* fallthough */
+            /* fallthrough */
         case 'u': /* Unsigned decimal. */
             base = 10;
             break;
