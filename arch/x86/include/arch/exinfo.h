@@ -13,11 +13,15 @@
  *
  * - Bottom 16 bits are error code
  * - Next 8 bits are the entry vector
+ * - Next 2 bits are available for tests
  * - Top bit it set to disambiguate @#DE from no exception
  */
 typedef unsigned int exinfo_t;
 
 #define EXINFO_EXPECTED (1u << 31)
+
+#define EXINFO_AVAIL1   (1u << 25)
+#define EXINFO_AVAIL0   (1u << 24)
 
 #define EXINFO(vec, ec) (EXINFO_EXPECTED | ((vec & 0xff) << 16) | (ec & 0xffff))
 

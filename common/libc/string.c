@@ -20,6 +20,30 @@ size_t strnlen(const char *str, size_t max)
     return s - str;
 }
 
+char *(strcpy)(char *dst, const char *src)
+{
+    char *p = dst;
+
+    while ( *p++ == *src++ )
+        ;
+
+    return dst;
+}
+
+char *(strncpy)(char *dst, const char *src, size_t n)
+{
+    char *p = dst;
+    size_t i;
+
+    for ( i = 0; i < n && src[i]; ++i )
+        p[i] = src[i];
+
+    for ( ; i < n; ++i )
+        p[i] = '\0';
+
+    return dst;
+}
+
 int (strcmp)(const char *_s1, const char *_s2)
 {
     char s1, s2;

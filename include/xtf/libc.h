@@ -17,6 +17,12 @@
 size_t strlen(const char *str);
 #define strlen(s)                   __builtin_strlen(s)
 
+char *strcpy(char *dst, const char *src);
+#define strcpy(d, s)                __builtin_strcpy(d, s)
+
+char *strncpy(char *dst, const char *src, size_t n);
+#define strncpy(d, s, n)            __builtin_strncpy(d, s, n)
+
 int strcmp(const char *s1, const char *s2);
 #define strcmp(s1, s2)              __builtin_strcmp(s1, s2)
 
