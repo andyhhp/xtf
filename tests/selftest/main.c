@@ -11,6 +11,7 @@
  */
 #include <xtf.h>
 
+#include <arch/apic.h>
 #include <arch/idt.h>
 #include <arch/processor.h>
 #include <arch/segment.h>
@@ -283,6 +284,22 @@ static void test_custom_idte(void)
         xtf_failure("Fail: Unexpected result %#x\n", res);
 };
 
+static void test_driver_init(void)
+{
+    int rc;
+
+    printk("Test: Driver basic initialisation\n");
+
+    if ( IS_DEFINED(CONFIG_HVM) )
+    {
+        rc = apic_init(APIC_MODE_XAPIC);
+
+        /* Cope with guests which have LAPIC emulation disabled. */
+        if ( rc && rc != -ENODEV )
+            xtf_failure("Fail: apic_init() returned %d\n", rc);
+    }
+}
+
 void test_main(void)
 {
     /*
@@ -311,6 +328,7 @@ void test_main(void)
     test_unhandled_exception_hook();
     test_extable_handler();
     test_custom_idte();
+    test_driver_init();
 
     xtf_success(NULL);
 }
