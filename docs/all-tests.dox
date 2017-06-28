@@ -102,4 +102,9 @@ guest breakout.
 @subpage test-fep - Test availability of HVM Forced Emulation Prefix.
 
 @subpage test-msr - Print MSR information.
+
+
+@section index-in-development In Development
+
+@subpage test-vvmx - Nested VT-x tests.
 */
