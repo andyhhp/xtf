@@ -17,16 +17,6 @@
 #ifdef __ASSEMBLY__
 
 /**
- * Create an exception table entry.
- * @param fault Faulting address.
- * @param fixup Fixup address.
- */
-#define _ASM_EXTABLE(fault, fixup)              \
-    .pushsection .ex_table, "a";                \
-    _WORD fault, fixup, 0;                      \
-    .popsection
-
-/**
  * Create an exception table entry with custom handler.
  * @param fault Faulting address.
  * @param fixup Fixup address.
@@ -40,16 +30,6 @@
 #else
 
 /**
- * Create an exception table entry.
- * @param fault Faulting address.
- * @param fixup Fixup address.
- */
-#define _ASM_EXTABLE(fault, fixup)              \
-    ".pushsection .ex_table, \"a\";\n"          \
-    _WORD STR(fault) ", " STR(fixup) ", 0;\n"   \
-    ".popsection;\n"
-
-/**
  * Create an exception table entry with custom handler.
  * @param fault Faulting address.
  * @param fixup Fixup address.
@@ -59,6 +39,17 @@
     ".pushsection .ex_table, \"a\";\n"                          \
     _WORD STR(fault) ", " STR(fixup) ", " STR(handler) ";\n"    \
     ".popsection;\n"
+
+#endif
+
+/**
+ * Create an exception table entry.
+ * @param fault Faulting address.
+ * @param fixup Fixup address.
+ */
+#define _ASM_EXTABLE(fault, fixup) _ASM_EXTABLE_HANDLER(fault, fixup, 0)
+
+#ifndef __ASSEMBLY__
 
 struct cpu_regs;
 
