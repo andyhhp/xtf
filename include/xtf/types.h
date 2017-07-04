@@ -13,6 +13,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <limits.h>
 
 /**
  * An array which the linker resolves to 0.
