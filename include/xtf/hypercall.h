@@ -149,6 +149,13 @@ static inline void hypercall_yield(void)
     hypercall_sched_op(SCHEDOP_yield, NULL);
 }
 
+static inline long hypercall_poll(evtchn_port_t port)
+{
+    struct sched_poll poll = { .ports = &port, .nr_ports = 1 };
+
+    return hypercall_sched_op(SCHEDOP_poll, &poll);
+}
+
 static inline int hypercall_register_callback(const xen_callback_register_t *arg)
 {
     return hypercall_callback_op(CALLBACKOP_register, arg);

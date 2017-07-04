@@ -1,9 +1,11 @@
 #include <xtf/types.h>
 #include <xtf/atomic.h>
+#include <xtf/bitops.h>
 #include <xtf/console.h>
 #include <xtf/hypercall.h>
 #include <xtf/lib.h>
 #include <xtf/libc.h>
+#include <xtf/traps.h>
 
 /*
  * Output functions, registered if/when available.
@@ -67,18 +69,28 @@ static void pv_console_write(const char *buf, size_t len)
         if ( written < len )
         {
             while ( ACCESS_ONCE(pv_ring->out_cons) == cons )
-                hypercall_yield();
+            {
+                if ( !test_and_clear_bit(pv_evtchn,
+                                         shared_info.evtchn_pending) )
+                    hypercall_poll(pv_evtchn);
+            }
         }
 
     } while ( written < len );
 
     /* Wait for xenconsoled to consume all the data we gave. */
     while ( ACCESS_ONCE(pv_ring->out_cons) != pv_ring->out_prod )
-        hypercall_yield();
+    {
+        if ( !test_and_clear_bit(pv_evtchn, shared_info.evtchn_pending) )
+            hypercall_poll(pv_evtchn);
+    }
 }
 
 void init_pv_console(xencons_interface_t *ring, evtchn_port_t port)
 {
+    if ( port >= (sizeof(shared_info.evtchn_pending) * CHAR_BIT) )
+        panic("evtchn %u out of evtchn_pending[] range\n", port);
+
     pv_ring = ring;
     pv_evtchn = port;
     register_console_callback(pv_console_write);
