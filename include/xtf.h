@@ -19,6 +19,7 @@
 #include <xtf/test.h>
 
 /* Optional functionality */
+#include <xtf/bitops.h>
 #include <xtf/exlog.h>
 #include <xtf/hypercall.h>
 #include <xtf/traps.h>
