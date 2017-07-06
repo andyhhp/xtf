@@ -152,6 +152,11 @@ static inline unsigned int l4_table_offset(unsigned long linear)
 typedef unsigned long intpte_t;
 #define PRIpte "08lx"
 
+unsigned int l1_table_offset(unsigned long linear);
+unsigned int l2_table_offset(unsigned long linear);
+unsigned int l3_table_offset(unsigned long linear);
+unsigned int l4_table_offset(unsigned long linear);
+
 #endif
 
 #ifdef CONFIG_HVM

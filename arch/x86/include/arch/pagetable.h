@@ -29,10 +29,10 @@ static inline intpte_t pte_from_virt(const void *va, uint64_t flags)
 #else /* CONFIG_PAGING_LEVELS > 0 */
 
 /* Enough compatibility to compile in unpaged environments. */
-extern paddr_t pte_to_paddr(intpte_t pte);
-extern intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags);
-extern intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags);
-extern intpte_t pte_from_virt(const void *va, uint64_t flags);
+paddr_t pte_to_paddr(intpte_t pte);
+intpte_t pte_from_paddr(paddr_t paddr, uint64_t flags);
+intpte_t pte_from_gfn(unsigned long gfn, uint64_t flags);
+intpte_t pte_from_virt(const void *va, uint64_t flags);
 
 #endif
 
