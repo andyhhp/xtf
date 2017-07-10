@@ -43,6 +43,12 @@ int __printf(3, 0)
 int __printf(3, 4)
     snprintf(char *buf, size_t size, const char *fmt, ...);
 
+/* Internal helpers of vsnprintf(), for custom arch formatting. */
+char *fmt_number(char *str, char *end, long long val, unsigned int base,
+                 int width, int precision, unsigned int flags);
+char *fmt_string(char *str, char *end, const char *val,
+                 int width, int precision, unsigned int flags);
+
 #endif /* XTF_LIBC_H */
 
 /*

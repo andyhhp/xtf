@@ -69,8 +69,8 @@ static int fmt_int(const char **fmt)
     return res;
 }
 
-static char *number(char *str, char *end, long long val, unsigned int base,
-                    int width, int precision, unsigned int flags)
+char *fmt_number(char *str, char *end, long long val, unsigned int base,
+                 int width, int precision, unsigned int flags)
 {
     static const char lower[] = "0123456789abcdef";
     static const char upper[] = "0123456789ABCDEF";
@@ -167,6 +167,32 @@ static char *number(char *str, char *end, long long val, unsigned int base,
     return str;
 }
 
+char *fmt_string(char *str, char *end, const char *val,
+                 int width, int precision, unsigned int flags)
+{
+    int len, i;
+
+    if ( !val )
+        val = "(NULL)";
+
+    if ( precision < 0 )
+        len = strlen(val);
+    else
+        len = strnlen(val, precision);
+
+    if ( !(flags & LEFT) )
+        while ( len < width-- )
+            PUT(' ');
+
+    for ( i = 0; i < len; ++i )
+        PUT(val[i]);
+
+    while ( len < width-- )
+        PUT(' ');
+
+    return str;
+}
+
 static char *pointer(
     char *str, char *end, const char **fmt_ptr, const void *arg,
     int width, int precision, unsigned int flags)
@@ -214,7 +240,7 @@ static char *pointer(
         for ( int i = 0; ; )
         {
             /* Each byte: 2 chars, 0-padded, base 16, no hex prefix. */
-            str = number(str, end, hex_buffer[i], 16, 2, -1, ZERO);
+            str = fmt_number(str, end, hex_buffer[i], 16, 2, -1, ZERO);
 
             if ( ++i == width )
                 return str;
@@ -233,7 +259,8 @@ static char *pointer(
         flags |= ZERO;
     }
 
-    return number(str, end, (unsigned long)arg, 16, width, precision, flags);
+    return fmt_number(str, end, (unsigned long)arg, 16,
+                      width, precision, flags);
 }
 
 int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
@@ -343,30 +370,9 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
         }
 
         case 's': /* String. */
-        {
-            const char *s = va_arg(args, const char *);
-            int len, i;
-
-            if ( !s )
-                s = "(NULL)";
-
-            if ( precision < 0 )
-                len = strlen(s);
-            else
-                len = strnlen(s, precision);
-
-            if ( !(flags & LEFT) )
-                while ( len < width-- )
-                    PUT(' ');
-
-            for ( i = 0; i < len; ++i )
-                PUT(s[i]);
-
-            while ( len < width-- )
-                PUT(' ');
-
+            str = fmt_string(str, end, va_arg(args, const char *),
+                             width, precision, flags);
             continue;
-        }
 
         case 'p': /* Pointer. */
             str = pointer(str, end, &fmt, va_arg(args, const void *),
@@ -447,7 +453,7 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
             continue;
         }
 
-        str = number(str, end, num, base, width, precision, flags);
+        str = fmt_number(str, end, num, base, width, precision, flags);
     }
 
     /* NUL terminate the buffer, if there is room (but don't count '\0'). */
