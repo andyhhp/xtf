@@ -49,6 +49,11 @@ char *fmt_number(char *str, char *end, long long val, unsigned int base,
 char *fmt_string(char *str, char *end, const char *val,
                  int width, int precision, unsigned int flags);
 
+/* Arch hook for vsnprintf() custom %p handling. */
+bool arch_fmt_pointer(
+    char **str, char *end, const char **fmt_ptr, const void *arg,
+    int width, int precision, unsigned int flags);
+
 #endif /* XTF_LIBC_H */
 
 /*

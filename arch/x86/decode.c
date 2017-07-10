@@ -87,6 +87,37 @@ int x86_decode_exinfo(char *buf, size_t bufsz, exinfo_t info)
         return snprintf(buf, bufsz, "%s", x86_exc_short_name(vec));
 }
 
+bool arch_fmt_pointer(
+    char **str_ptr, char *end, const char **fmt_ptr, const void *arg,
+    int width, int precision, unsigned int flags)
+{
+    const char *fmt = *fmt_ptr;
+    char *str = *str_ptr;
+
+    switch ( fmt[1] )
+    {
+    case 'e':
+    {
+        exinfo_t ex = _u(arg);
+        char buf[16];
+
+        /* Consumed 'e' from the format string. */
+        ++*fmt_ptr;
+
+        x86_decode_exinfo(buf, sizeof buf, ex);
+
+        str = fmt_string(str, end, buf, width, precision, flags);
+        break;
+    }
+
+    default:
+        return false;
+    }
+
+    *str_ptr = str;
+    return true;
+}
+
 /*
  * Local variables:
  * mode: C

@@ -250,6 +250,11 @@ static char *pointer(
         }
     }
     break;
+
+    default:
+        if ( arch_fmt_pointer(&str, end, fmt_ptr,
+                              arg, width, precision, flags) )
+            return str;
     }
 
     /* Fall back to plain 32/64bit hex integer. */
