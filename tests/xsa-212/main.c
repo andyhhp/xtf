@@ -100,13 +100,7 @@ void test_main(void)
             xtf_success("Success: Got #DE as expected\n");
         }
         else
-        {
-            char gotstr[16];
-
-            x86_decode_exinfo(gotstr, ARRAY_SIZE(gotstr), fault);
-
-            xtf_error("Error: Got unexpected fault %s\n", gotstr);
-        }
+            xtf_error("  Error: Unexpected fault %#x, %pe\n", fault, _p(fault));
 
         break;
     }

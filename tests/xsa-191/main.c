@@ -61,13 +61,8 @@ void test_main(void)
         break;
 
     default:
-    {
-        char str[20];
-
-        x86_decode_exinfo(str, ARRAY_SIZE(str), fault);
-        xtf_error("  Error: Unexpected fault %#x (%s)\n", fault, str);
+        xtf_error("  Error: Unexpected fault %#x, %pe\n", fault, _p(fault));
         break;
-    }
     }
 
     printk("Testing stale LDT:\n");
@@ -99,13 +94,8 @@ void test_main(void)
         break;
 
     default:
-    {
-        char str[20];
-
-        x86_decode_exinfo(str, ARRAY_SIZE(str), fault);
-        xtf_error("  Error: Unexpected fault %#x (%s)\n", fault, str);
+        xtf_error("  Error: Unexpected fault %#x, %pe\n", fault, _p(fault));
         break;
-    }
     }
 
     xtf_success(NULL);

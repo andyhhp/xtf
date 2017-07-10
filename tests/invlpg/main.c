@@ -102,13 +102,9 @@ const char test_title[] = "Invlpg tests";
  */
 static bool ex_fail(struct cpu_regs *regs, const struct extable_entry *ex)
 {
-    char buf[16];
+    exinfo_t info = EXINFO(regs->entry_vector, regs->error_code);
 
-    x86_exc_decode_ec(buf, ARRAY_SIZE(buf),
-                      regs->entry_vector, regs->error_code);
-
-    xtf_failure("    Fail: Unexpected %s[%s]\n",
-                x86_exc_short_name(regs->entry_vector), buf);
+    xtf_failure("    Fail: Unexpected fault %#x, %pe\n", info, _p(info));
 
     regs->ip = ex->fixup;
     return true;

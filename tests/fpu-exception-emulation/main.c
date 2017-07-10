@@ -213,18 +213,15 @@ void run_sequence(const struct test_cfg *seq, unsigned int nr,
 
         if ( res != exp )
         {
-            char expstr[12], gotstr[12], cr0str[12];
-
-            x86_decode_exinfo(expstr, ARRAY_SIZE(expstr), exp);
-            x86_decode_exinfo(gotstr, ARRAY_SIZE(gotstr), res);
+            char cr0str[12];
 
             snprintf(cr0str, sizeof(cr0str), "%s%s%s",
                      t->cr0 & X86_CR0_EM ? " EM" : "",
                      t->cr0 & X86_CR0_MP ? " MP" : "",
                      t->cr0 & X86_CR0_TS ? " TS" : "");
 
-            xtf_failure("  Expected %s, got %s (cr0:%s)\n",
-                        expstr, gotstr, cr0str[0] ? cr0str : " - ");
+            xtf_failure("  Expected %pe, got %pe (cr0:%s)\n",
+                        _p(exp), _p(res), cr0str[0] ? cr0str : " - ");
         }
     }
 }

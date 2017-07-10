@@ -41,25 +41,20 @@ void do_exception(struct cpu_regs *regs)
     /* Still unresolved? Give up and panic() with some relevent information. */
     if ( !safe )
     {
-        char buf[16];
-
-        x86_exc_decode_ec(buf, ARRAY_SIZE(buf),
-                          regs->entry_vector, regs->error_code);
+        exinfo_t ex = EXINFO(regs->entry_vector, regs->error_code);
 
         if ( regs->entry_vector == X86_EXC_PF )
         {
             unsigned long cr2 = read_cr2();
 
             panic("Unhandled exception at %04x:%p\n"
-                  "Vec %u %s[%s] %%cr2 %p\n",
-                  regs->cs, _p(regs->ip), regs->entry_vector,
-                  x86_exc_short_name(regs->entry_vector), buf, _p(cr2));
+                  "Vec %u %pe %%cr2 %p\n",
+                  regs->cs, _p(regs->ip), regs->entry_vector, _p(ex), _p(cr2));
         }
         else
             panic("Unhandled exception at %04x:%p\n"
-                  "Vec %u %s[%s]\n",
-                  regs->cs, _p(regs->ip), regs->entry_vector,
-                  x86_exc_short_name(regs->entry_vector), buf);
+                  "Vec %u %pe\n",
+                  regs->cs, _p(regs->ip), regs->entry_vector, _p(ex));
     }
 }
 

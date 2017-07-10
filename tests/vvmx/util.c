@@ -29,7 +29,7 @@ static void decode_test_exinfo(char *str, size_t n, exinfo_t ex)
 
     if ( high == EXINFO_EXPECTED )
     {
-        x86_decode_exinfo(str, n, ex);
+        snprintf(str, n, "%pe", _p(ex));
         return;
     }
 

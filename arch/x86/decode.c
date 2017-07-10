@@ -37,7 +37,8 @@ const char *x86_exc_short_name(unsigned int exc)
     return (exc < ARRAY_SIZE(names) && names[exc]) ? names[exc] : "??";
 }
 
-int x86_exc_decode_ec(char *buf, size_t bufsz, unsigned int ev, unsigned int ec)
+static int x86_exc_decode_ec(char *buf, size_t bufsz,
+                             unsigned int ev, unsigned int ec)
 {
     switch ( ev )
     {
@@ -68,7 +69,7 @@ int x86_exc_decode_ec(char *buf, size_t bufsz, unsigned int ev, unsigned int ec)
     }
 }
 
-int x86_decode_exinfo(char *buf, size_t bufsz, exinfo_t info)
+static int x86_decode_exinfo(char *buf, size_t bufsz, exinfo_t info)
 {
     if ( !info )
         return snprintf(buf, bufsz, "nothing");
