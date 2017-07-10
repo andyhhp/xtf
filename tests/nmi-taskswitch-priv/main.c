@@ -143,7 +143,7 @@ void test_main(void)
      */
     xtf_unhandled_exception_hook = unhandled_exception;
     gdt[GDTE_AVAIL0] = (user_desc)INIT_GDTE(_u(&nmi_tss), 0x67, 0x89);
-    pack_gate(&idt[X86_EXC_NMI], 5, GDTE_AVAIL0 * 8, 0, 0, 0);
+    pack_task_gate(&idt[X86_EXC_NMI], GDTE_AVAIL0 * 8);
     barrier();
 
     /*
@@ -154,7 +154,7 @@ void test_main(void)
     apic_mmio_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
 
     if ( (curr_ts = str()) != (GDTE_TSS * 8) )
-        xtf_failure("Fail: Running NMI handler with unexpected %%tr\n"
+        xtf_failure("Fail: Running main task with unexpected %%tr\n"
                     "  Expected %04x, got %04x\n", (GDTE_TSS * 8), curr_ts);
 
     /*
@@ -165,7 +165,7 @@ void test_main(void)
     exec_user_void(user_inject_nmi);
 
     if ( (curr_ts = str()) != (GDTE_TSS * 8) )
-        xtf_failure("Fail: Running NMI handler with unexpected %%tr\n"
+        xtf_failure("Fail: Running main task with unexpected %%tr\n"
                     "  Expected %04x, got %04x\n", (GDTE_TSS * 8), curr_ts);
 
     /*
