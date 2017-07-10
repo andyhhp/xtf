@@ -50,8 +50,9 @@
 #define _ASM_EXTABLE(fault, fixup) _ASM_EXTABLE_HANDLER(fault, fixup, 0)
 
 /**
- * Create an exception table entry, whitelisting a trap as being ok at @param
- * loc.  (ab)uses the fault fixup logic to fixup to its current position.
+ * Create an exception table entry, whitelisting a trap as being ok at @p loc.
+ * (ab)uses the fault fixup logic to fixup to its current position.
+ * @param loc Location of the trap.
  */
 #define _ASM_TRAP_OK(loc) _ASM_EXTABLE(loc, loc)
 
