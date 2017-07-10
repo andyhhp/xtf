@@ -123,7 +123,9 @@ not behaving as described in the manual.
 
 Once the embargo on XSA-106 lifted, changesets
 [7dfa94c](http://xenbits.xen.org/gitweb/
-?p=xen.git;a=commitdiff;h=7dfa94c6212b979cbfc8cff5ad5336922f4809d9) and
+?p=xen.git;a=commitdiff;h=7dfa94c6212b979cbfc8cff5ad5336922f4809d9),
+[ecf5678](http://xenbits.xen.org/gitweb/
+?p=xen.git;a=commitdiff;h=ecf5678200ad2642b69ffea47ad138190bc3e190) and
 [36ebf14](http://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=36ebf14ebe60310aa22952cbb94de951c158437d) were the
 eventual bugfixes which caused Xen to inject software exceptions correctly.
