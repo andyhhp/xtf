@@ -46,6 +46,33 @@ static size_t pv_console_write_some(const char *buf, size_t len)
 }
 
 /*
+ * Read out data from the pv ring, either until buffer is filled or no
+ * more data are available. Might result in partial strings, depending
+ * on how xenconsoled passes in data.
+ *
+ * Will block if no data are available.
+ */
+size_t pv_console_read_some(char *buf, size_t len)
+{
+    size_t s = 0;
+    uint32_t cons, prod;
+
+    while ( !test_and_clear_bit(pv_evtchn, shared_info.evtchn_pending) ||
+            (pv_ring->in_cons == pv_ring->in_prod) )
+        hypercall_poll(pv_evtchn);
+
+    cons = pv_ring->in_cons;
+    prod = LOAD_ACQUIRE(&pv_ring->in_prod);
+
+    while ( (s < len) && (0 < (prod - cons)) )
+        buf[s++] = pv_ring->in[cons++ & (sizeof(pv_ring->in) - 1)];
+
+    STORE_RELEASE(&pv_ring->in_cons, cons);
+
+    return s;
+}
+
+/*
  * Write some data into the pv ring, synchronously waiting for all data to be
  * consumed.
  */

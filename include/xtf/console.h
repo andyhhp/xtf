@@ -25,6 +25,8 @@ void init_pv_console(xencons_interface_t *ring,
 void vprintk(const char *fmt, va_list args) __printf(1, 0);
 void printk(const char *fmt, ...) __printf(1, 2);
 
+size_t pv_console_read_some(char *buf, size_t len);
+
 #endif /* XTF_CONSOLE_H */
 
 /*
