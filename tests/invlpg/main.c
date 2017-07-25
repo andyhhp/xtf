@@ -100,8 +100,7 @@ const char test_title[] = "Invlpg tests";
  * Custom extable handler, linked to all `invlpg` instruction which are
  * expected not to fault.
  */
-static bool __used ex_fail(struct cpu_regs *regs,
-                           const struct extable_entry *ex)
+static bool ex_fail(struct cpu_regs *regs, const struct extable_entry *ex)
 {
     char buf[16];
 
@@ -136,7 +135,8 @@ static unsigned int invlpg_refill(void)
                   : [zero] "q" (0),
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
-                    [pte2] "m" (pae_l1_identmap[2])
+                    [pte2] "m" (pae_l1_identmap[2]),
+                    "X" (ex_fail)
                   : "memory");
 
     return ((test_ad(pae_l1_identmap[1]) << 0) |
@@ -158,7 +158,8 @@ static unsigned int invlpg_fs_refill(void)
                   : [zero] "q" (0),
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
-                    [pte2] "m" (pae_l1_identmap[2])
+                    [pte2] "m" (pae_l1_identmap[2]),
+                    "X" (ex_fail)
                   : "memory");
 
     return ((test_ad(pae_l1_identmap[1]) << 0) |
@@ -261,7 +262,7 @@ static void invlpg_fs_checked(unsigned long linear)
     asm volatile (_ASM_MAYBE_XEN_FEP
                   "1: invlpg %%fs:(%0); 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
-                  :: "r" (linear));
+                  :: "r" (linear), "X" (ex_fail));
 }
 
 static void test_no_fault(void)

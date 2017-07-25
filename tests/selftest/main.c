@@ -212,8 +212,8 @@ static void test_unhandled_exception_hook(void)
 }
 
 static bool test_extable_handler_handler_run;
-static bool __used test_extable_handler_handler(struct cpu_regs *regs,
-                                                const struct extable_entry *ex)
+static bool test_extable_handler_handler(struct cpu_regs *regs,
+                                         const struct extable_entry *ex)
 {
     test_extable_handler_handler_run = true;
     regs->ip = ex->fixup;
@@ -226,7 +226,8 @@ static void test_extable_handler(void)
 
     asm volatile ("1: ud2a; 2:"
                   _ASM_EXTABLE_HANDLER(1b, 2b,
-                                       test_extable_handler_handler));
+                                       test_extable_handler_handler)
+                  :: "X" (test_extable_handler_handler));
 
     if ( !test_extable_handler_handler_run )
         xtf_failure("Fail: Custom handler didn't run\n");

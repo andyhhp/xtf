@@ -71,8 +71,7 @@ int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
 }
 
 #ifdef __i386__
-static bool __used ex_pf_user(struct cpu_regs *regs,
-                              const struct extable_entry *ex)
+static bool ex_pf_user(struct cpu_regs *regs, const struct extable_entry *ex)
 {
     if ( regs->entry_vector == X86_EXC_PF && read_cr2() == 0xfff )
     {
@@ -159,7 +158,8 @@ void arch_init_traps(void)
                       _ASM_EXTABLE_HANDLER(1b,    3b, ex_pf_user)
                       _ASM_EXTABLE_HANDLER(0xfff, 2b, ex_pf_user)
                       : "+a" (leaked)
-                      : [ptr] "r" (0xfff));
+                      : [ptr] "r" (0xfff),
+                        "X" (ex_pf_user));
 
         if ( leaked )
             panic("Xen's SMEP/SMAP settings leaked into guest context.\n"
