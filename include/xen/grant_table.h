@@ -278,6 +278,27 @@ struct gnttab_setup_table
 };
 
 /*
+ * GNTTABOP_unmap_and_replace: Destroy one or more grant-reference mappings
+ * tracked by <handle> but atomically replace the page table entry with one
+ * pointing to the machine address under <new_addr>.  <new_addr> will be
+ * redirected to the null entry.
+ * NOTES:
+ *  1. The call may fail in an undefined manner if either mapping is not
+ *     tracked by <handle>.
+ *  2. After executing a batch of unmaps, it is guaranteed that no stale
+ *     mappings will remain in the device or host TLBs.
+ */
+#define GNTTABOP_unmap_and_replace    7
+struct gnttab_unmap_and_replace {
+    /* IN parameters. */
+    uint64_t host_addr;
+    uint64_t new_addr;
+    grant_handle_t handle;
+    /* OUT parameters. */
+    int16_t  status;              /* => enum grant_status */
+};
+
+/*
  * GNTTABOP_set_version: Request a particular version of the grant
  * table shared table structure.  This operation may be used to toggle
  * between different versions, but must be performed while no grants
