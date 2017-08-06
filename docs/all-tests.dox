@@ -104,6 +104,8 @@ guest breakout.
 
 @subpage test-xsa-231 - Missing NUMA node parameter verification.
 
+@subpage test-xsa-232 - Missing check for grant table.
+
 
 @section index-utility Utilities
 
