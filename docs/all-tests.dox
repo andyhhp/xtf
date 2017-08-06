@@ -102,6 +102,8 @@ guest breakout.
 
 @subpage test-xsa-227 - x86: PV privilege escalation via map_grant_ref.
 
+@subpage test-xsa-231 - Missing NUMA node parameter verification.
+
 
 @section index-utility Utilities
 
