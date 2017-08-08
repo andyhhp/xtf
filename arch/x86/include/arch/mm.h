@@ -72,6 +72,14 @@ static inline unsigned long virt_to_mfn(const void *va)
 
 #undef m2p
 
+#else /* CONFIG_PV */
+
+/* Enough compatibility to compile in HVM environments. */
+extern void *mfn_to_virt(unsigned long mfn);
+extern void *maddr_to_virt(uint64_t maddr);
+extern unsigned long pfn_to_mfn(unsigned long pfn);
+extern unsigned long virt_to_mfn(const void *va);
+
 #endif /* CONFIG_PV */
 
 static inline void *gfn_to_virt(unsigned long gfn)

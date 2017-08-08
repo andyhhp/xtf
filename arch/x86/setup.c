@@ -152,10 +152,12 @@ static void setup_pv_console(void)
     xencons_interface_t *cons_ring;
     evtchn_port_t cons_evtchn;
 
-#if defined(CONFIG_PV)
-    cons_ring = mfn_to_virt(start_info->console.domU.mfn);
-    cons_evtchn = start_info->console.domU.evtchn;
-#elif defined(CONFIG_HVM)
+    if ( IS_DEFINED(CONFIG_PV) )
+    {
+        cons_ring = mfn_to_virt(start_info->console.domU.mfn);
+        cons_evtchn = start_info->console.domU.evtchn;
+    }
+    else /* HVM */
     {
         uint64_t raw_pfn, raw_evtchn;
 
@@ -166,7 +168,6 @@ static void setup_pv_console(void)
         cons_ring = pfn_to_virt(raw_pfn);
         cons_evtchn = raw_evtchn;
     }
-#endif
 
     init_pv_console(cons_ring, cons_evtchn);
 }
