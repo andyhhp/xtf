@@ -1,6 +1,15 @@
 #include <xtf/lib.h>
 #include <xtf/traps.h>
 #include <xtf/hypercall.h>
+#include <xtf/xenstore.h>
+
+#ifndef isdigit
+/* Avoid pulling in all of ctypes just for this. */
+static int isdigit(int c)
+{
+    return c >= '0' && c <= '9';
+}
+#endif
 
 void __noreturn panic(const char *fmt, ...)
 {
@@ -32,6 +41,26 @@ int xtf_probe_sysctl_interface_version(void)
     }
 
     return -1;
+}
+
+int xtf_get_domid(void)
+{
+    const char *str = xenstore_read("domid");
+    unsigned int domid = 0;
+
+    if ( !str || !isdigit(*str) )
+        return -1;
+
+    while ( isdigit(*str) )
+    {
+        domid = domid * 10 + (*str - '0');
+        str++;
+    }
+
+    if ( domid >= DOMID_FIRST_RESERVED )
+        return -1;
+
+    return domid;
 }
 
 /*

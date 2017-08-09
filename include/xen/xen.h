@@ -66,6 +66,7 @@
 typedef uint16_t domid_t;
 #endif
 
+#define DOMID_FIRST_RESERVED (0x7ff0U)
 #define DOMID_SELF (0x7ff0U)
 
 /* Commands to HYPERVISOR_console_io */
