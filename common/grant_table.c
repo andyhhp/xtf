@@ -20,19 +20,29 @@ const char *gntst_strerror(int err)
 
 int xtf_init_grant_table(unsigned int version)
 {
-    struct gnttab_set_version ver = { version };
+    int rc = 0;
 
-    int rc = hypercall_grant_table_op(GNTTABOP_set_version, &ver, 1);
-
-    if ( rc == -ENOSYS )
-        /* Sufficiently old Xen which doesn't support gnttab v2. */
-        return -ENODEV;
-
-    if ( rc )
+    static bool set_version_unavailable;
+    if ( !set_version_unavailable )
     {
-        printk("%s() GNTTABOP_set_version failed: rc %d\n", __func__, rc);
-        return -EIO;
+        struct gnttab_set_version ver = { version };
+
+        rc = hypercall_grant_table_op(GNTTABOP_set_version, &ver, 1);
+
+        if ( rc == -ENOSYS )
+            /* Hypercall unavailable on older versions of Xen. */
+            set_version_unavailable = true;
+
+        else if ( rc )
+        {
+            printk("%s() GNTTABOP_set_version failed: rc %d\n", __func__, rc);
+            return -EIO;
+        }
     }
+
+    if ( set_version_unavailable && version != 1 )
+        /* Sufficiently old Xen which only knows about gnttab v1. */
+        return -ENODEV;
 
     static bool gnttab_mapped;
     if ( !gnttab_mapped )
