@@ -33,6 +33,8 @@ and functionality.
 @subpage test-swint-emulation - Software interrupt emulation for HVM guests.
 Coveres XSA-106 and XSA-156.
 
+@subpage test-umip - Guest User-Mode Instruction Prevention support.
+
 
 @section index-xsa XSA Proof-of-Concept tests
 
