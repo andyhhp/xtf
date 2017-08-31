@@ -36,6 +36,60 @@ struct xen_trap_info {
     unsigned long address; /* code offset                                   */
 };
 
+/*
+ * The following is all CPU context. Note that the fpu_ctxt block is filled
+ * in by FXSAVE if the CPU has feature FXSR; otherwise FSAVE is used.
+ */
+struct xen_vcpu_guest_context {
+    /* FPU registers come first so they can be aligned for FXSAVE/FXRSTOR.  */
+    struct { char x[512]; } fpu_ctxt;       /* User-level FPU registers     */
+#define VGCF_I387_VALID                (1<<0)
+#define VGCF_IN_KERNEL                 (1<<2)
+#define _VGCF_i387_valid               0
+#define VGCF_i387_valid                (1<<_VGCF_i387_valid)
+#define _VGCF_in_kernel                2
+#define VGCF_in_kernel                 (1<<_VGCF_in_kernel)
+#define _VGCF_failsafe_disables_events 3
+#define VGCF_failsafe_disables_events  (1<<_VGCF_failsafe_disables_events)
+#define _VGCF_syscall_disables_events  4
+#define VGCF_syscall_disables_events   (1<<_VGCF_syscall_disables_events)
+#define _VGCF_online                   5
+#define VGCF_online                    (1<<_VGCF_online)
+    unsigned long flags;                    /* VGCF_* flags                 */
+    struct xen_cpu_user_regs user_regs;     /* User-level CPU registers     */
+    struct xen_trap_info trap_ctxt[256];    /* Virtual IDT                  */
+    unsigned long ldt_base, ldt_ents;       /* LDT (linear address, # ents) */
+    unsigned long gdt_frames[16], gdt_ents; /* GDT (machine frames, # ents) */
+    unsigned long kernel_ss, kernel_sp;     /* Virtual TSS (only SS1/SP1)   */
+    /* NB. User pagetable on x86/64 is placed in ctrlreg[1]. */
+    unsigned long ctrlreg[8];               /* CR0-CR7 (control registers)  */
+    unsigned long debugreg[8];              /* DB0-DB7 (debug registers)    */
+#ifdef __i386__
+    unsigned long event_callback_cs;        /* CS:EIP of event callback     */
+    unsigned long event_callback_eip;
+    unsigned long failsafe_callback_cs;     /* CS:EIP of failsafe callback  */
+    unsigned long failsafe_callback_eip;
+#else
+    unsigned long event_callback_eip;
+    unsigned long failsafe_callback_eip;
+    union {
+        unsigned long syscall_callback_eip;
+        struct {
+            unsigned int event_callback_cs;    /* compat CS of event cb     */
+            unsigned int failsafe_callback_cs; /* compat CS of failsafe cb  */
+        };
+    };
+#endif
+    unsigned long vm_assist;                /* VMASST_TYPE_* bitmap */
+#ifdef __x86_64__
+    /* Segment base addresses. */
+    uint64_t      fs_base;
+    uint64_t      gs_base_kernel;
+    uint64_t      gs_base_user;
+#endif
+};
+typedef struct xen_vcpu_guest_context xen_vcpu_guest_context_t;
+
 struct arch_shared_info {
     /*
      * Number of valid entries in the p2m table(s) anchored at

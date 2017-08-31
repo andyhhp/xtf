@@ -28,18 +28,20 @@
 extern uint8_t hypercall_page[PAGE_SIZE];
 
 /* All Xen ABI for includers convenience .*/
-#include <xen/xen.h>
-#include <xen/sched.h>
 #include <xen/callback.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
 #include <xen/grant_table.h>
-#include <xen/physdev.h>
-#include <xen/memory.h>
-#include <xen/version.h>
-#include <xen/sysctl.h>
 #include <xen/hvm/hvm_op.h>
+#include <xen/hvm/hvm_vcpu.h>
 #include <xen/hvm/params.h>
+#include <xen/memory.h>
+#include <xen/physdev.h>
+#include <xen/sched.h>
+#include <xen/sysctl.h>
+#include <xen/vcpu.h>
+#include <xen/version.h>
+#include <xen/xen.h>
 
 /*
  * Hypercall primatives, compiled for the correct bitness
@@ -97,6 +99,12 @@ static inline long hypercall_grant_table_op(unsigned int cmd, void *args,
 static inline long hypercall_vm_assist(unsigned int cmd, unsigned int type)
 {
     return HYPERCALL2(long, __HYPERVISOR_vm_assist, cmd, type);
+}
+
+static inline long hypercall_vcpu_op(unsigned int cmd, unsigned int vcpu,
+                                     void *extra)
+{
+    return HYPERCALL3(long, __HYPERVISOR_vcpu_op, cmd, vcpu, extra);
 }
 
 static inline long hypercall_mmuext_op(const mmuext_op_t ops[],

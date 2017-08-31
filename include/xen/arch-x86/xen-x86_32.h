@@ -19,6 +19,46 @@
 
 #ifndef __ASSEMBLY__
 
+/* Anonymous unions include all permissible names (e.g., al/ah/ax/eax). */
+#define __DECL_REG_LO8(which) union { \
+    uint32_t e ## which ## x; \
+    uint16_t which ## x; \
+    struct { \
+        uint8_t which ## l; \
+        uint8_t which ## h; \
+    }; \
+}
+#define __DECL_REG_LO16(name) union { \
+    uint32_t e ## name, _e ## name; \
+    uint16_t name; \
+}
+
+struct xen_cpu_user_regs {
+    __DECL_REG_LO8(b);
+    __DECL_REG_LO8(c);
+    __DECL_REG_LO8(d);
+    __DECL_REG_LO16(si);
+    __DECL_REG_LO16(di);
+    __DECL_REG_LO16(bp);
+    __DECL_REG_LO8(a);
+    uint16_t error_code;    /* private */
+    uint16_t entry_vector;  /* private */
+    __DECL_REG_LO16(ip);
+    uint16_t cs;
+    uint8_t  saved_upcall_mask;
+    uint8_t  _pad0;
+    __DECL_REG_LO16(flags); /* eflags.IF == !saved_upcall_mask */
+    __DECL_REG_LO16(sp);
+    uint16_t ss, _pad1;
+    uint16_t es, _pad2;
+    uint16_t ds, _pad3;
+    uint16_t fs, _pad4;
+    uint16_t gs, _pad5;
+};
+
+#undef __DECL_REG_LO8
+#undef __DECL_REG_LO16
+
 /*
  * Page-directory addresses above 4GB do not fit into architectural %cr3.
  * When accessing %cr3, or equivalent field in vcpu_guest_context, guests

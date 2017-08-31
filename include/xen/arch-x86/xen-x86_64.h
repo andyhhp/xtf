@@ -19,6 +19,70 @@
 
 #ifndef __ASSEMBLY__
 
+/* Anonymous unions include all permissible names (e.g., al/ah/ax/eax/rax). */
+#define __DECL_REG_LOHI(which) union { \
+    uint64_t r ## which ## x; \
+    uint32_t e ## which ## x; \
+    uint16_t which ## x; \
+    struct { \
+        uint8_t which ## l; \
+        uint8_t which ## h; \
+    }; \
+}
+#define __DECL_REG_LO8(name) union { \
+    uint64_t r ## name; \
+    uint32_t e ## name; \
+    uint16_t name; \
+    uint8_t name ## l; \
+}
+#define __DECL_REG_LO16(name) union { \
+    uint64_t r ## name; \
+    uint32_t e ## name; \
+    uint16_t name; \
+}
+#define __DECL_REG_HI(num) union { \
+    uint64_t r ## num; \
+    uint32_t r ## num ## d; \
+    uint16_t r ## num ## w; \
+    uint8_t r ## num ## b; \
+}
+
+struct xen_cpu_user_regs {
+    __DECL_REG_HI(15);
+    __DECL_REG_HI(14);
+    __DECL_REG_HI(13);
+    __DECL_REG_HI(12);
+    __DECL_REG_LO8(bp);
+    __DECL_REG_LOHI(b);
+    __DECL_REG_HI(11);
+    __DECL_REG_HI(10);
+    __DECL_REG_HI(9);
+    __DECL_REG_HI(8);
+    __DECL_REG_LOHI(a);
+    __DECL_REG_LOHI(c);
+    __DECL_REG_LOHI(d);
+    __DECL_REG_LO8(si);
+    __DECL_REG_LO8(di);
+    uint32_t error_code;    /* private */
+    uint32_t entry_vector;  /* private */
+    __DECL_REG_LO16(ip);
+    uint16_t cs, _pad0[1];
+    uint8_t  saved_upcall_mask;
+    uint8_t  _pad1[3];
+    __DECL_REG_LO16(flags); /* rflags.IF == !saved_upcall_mask */
+    __DECL_REG_LO8(sp);
+    uint16_t ss, _pad2[3];
+    uint16_t es, _pad3[3];
+    uint16_t ds, _pad4[3];
+    uint16_t fs, _pad5[3]; /* Non-zero => takes precedence over fs_base.     */
+    uint16_t gs, _pad6[3]; /* Non-zero => takes precedence over gs_base_usr. */
+};
+
+#undef __DECL_REG_LOHI
+#undef __DECL_REG_LO8
+#undef __DECL_REG_LO16
+#undef __DECL_REG_HI
+
 struct arch_vcpu_info {
     unsigned long cr2;
     unsigned long pad; /* sizeof(vcpu_info_t) == 64 */
