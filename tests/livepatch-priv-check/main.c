@@ -46,11 +46,11 @@ static void test_upload(void)
             .cmd = XEN_SYSCTL_LIVEPATCH_UPLOAD,
             .u.upload = {
                 .name = {
-                    .name.p = TEST_NAME,
+                    .name = {{ TEST_NAME }},
                     .size = sizeof(TEST_NAME),
                 },
                 .size = PAGE_SIZE,
-                .payload.p = payload,
+                .payload = {{ payload }},
             },
         },
     };
@@ -74,8 +74,8 @@ static void test_list(void)
             .u.list = {
                 .idx = 0,
                 .nr = NR_PAYLOADS,
-                .name.p = names,
-                .len.p = lengths,
+                .name = {{ names }},
+                .len = {{ lengths }},
             },
         },
     };
@@ -93,7 +93,7 @@ static void test_get(void)
             .cmd = XEN_SYSCTL_LIVEPATCH_GET,
             .u.get = {
                 .name = {
-                    .name.p = TEST_NAME,
+                    .name = {{ TEST_NAME }},
                     .size = sizeof(TEST_NAME),
                 },
             },
@@ -113,7 +113,7 @@ static void test_action(uint32_t action)
             .cmd = XEN_SYSCTL_LIVEPATCH_ACTION,
             .u.action = {
                 .name = {
-                    .name.p = TEST_NAME,
+                    .name = {{ TEST_NAME }},
                     .size = sizeof(TEST_NAME),
                 },
                 .cmd = action,
