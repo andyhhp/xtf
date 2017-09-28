@@ -22,7 +22,9 @@ bool test_needs_fep = true;
 void test_main(void)
 {
     asm volatile (_ASM_XEN_FEP
-                  "1: vmfunc; 2:"
+                  "1:"
+                  ".byte 0x0f, 0x01, 0xd4;" /* VMFUNC */
+                  "2:"
                   _ASM_EXTABLE(1b, 2b) /* Ignore #UD on older versions. */
                   :: "a" (0));
 
