@@ -96,12 +96,6 @@ static long multi_iret_call(multicall_entry_t *multi, size_t nr)
 #else
                     "D" (multi), "S" (nr)
 #endif
-                  :
-#ifdef __i386__
-                  "edx", "esi", "edi", "ebp"
-#else
-                  "rdx", "r10", "r8", "r9"
-#endif
         );
 
     return rc;
