@@ -1,6 +1,10 @@
 #ifndef XTF_COMPILER_H
 #define XTF_COMPILER_H
 
+#ifdef __GNUC__
+#include <xtf/compiler-gcc.h>
+#endif
+
 #define __alias(x)            __attribute__((__alias__(x)))
 #define __aligned(x)          __attribute__((__aligned__(x)))
 #define __noreturn            __attribute__((__noreturn__))

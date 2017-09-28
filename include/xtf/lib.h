@@ -28,8 +28,13 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
                   #cond, __FILE__, __LINE__);           \
     } while ( 0 )
 
-#define BUILD_BUG_ON(cond)                              \
+#if __has_extension(c_static_assert)
+# define BUILD_BUG_ON(cond)                             \
     _Static_assert(!(cond), "!(" #cond ")")
+#else
+# define BUILD_BUG_ON(cond)                             \
+    ((void)sizeof(struct { char: -!!(cond); }))
+#endif
 
 #define min(a, b)                                       \
     ({                                                  \
