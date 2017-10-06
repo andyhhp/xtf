@@ -108,6 +108,8 @@ guest breakout.
 
 @subpage test-xsa-234 - insufficient grant unmapping checks for x86 PV guests.
 
+@subpage test-xsa-239 - hypervisor stack leak in x86 I/O intercept code.
+
 
 @section index-utility Utilities
 
