@@ -1,5 +1,8 @@
 name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
-builder="hvm"
+
+type="hvm"
+builder="hvm" # Legacy for before Xen 4.10
+
 memory=128
 firmware_override="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"
 

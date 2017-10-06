@@ -1,4 +1,7 @@
 name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
-loader="generic"
+
+type="pv"
+loader="generic" # Legacy for before Xen 4.10
+
 memory=128
 kernel="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"
