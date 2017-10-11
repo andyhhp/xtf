@@ -24,7 +24,7 @@ char *(strcpy)(char *dst, const char *src)
 {
     char *p = dst;
 
-    while ( *p++ == *src++ )
+    while ( (*p++ = *src++) )
         ;
 
     return dst;
