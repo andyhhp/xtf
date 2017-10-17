@@ -65,15 +65,24 @@ void test_main(void)
     if ( !map_slot || !test_slot )
         return xtf_error("Insufficient free l4 slots\n");
 
-    mmu_update_t mu =
-        {
-            .ptr = cr3 + (map_slot * PTE_SIZE),
-            .val = cr3 | PF_SYM(AD, U, P),
-        };
+    mmu_update_t mu = {
+        .ptr = cr3 + (map_slot * PTE_SIZE),
+        .val = cr3 | PF_SYM(AD, U, P),
+    };
 
     printk("  Creating recursive l4 mapping\n");
-    if ( hypercall_mmu_update(&mu, 1, NULL, DOMID_SELF) )
-        return xtf_error("Recursive mapping failed\n");
+    int rc = hypercall_mmu_update(&mu, 1, NULL, DOMID_SELF);
+    switch ( rc )
+    {
+    case 0:
+        break;
+
+    case -EINVAL:
+        return xtf_skip("Skip: Linear pagetables disallowed\n");
+
+    default:
+        return xtf_error("Error: Recursive mapping failed: %d\n", rc);
+    }
 
     printk("  Remapping l4 RW\n");
     mu.val |= _PAGE_RW;
