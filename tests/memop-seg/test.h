@@ -1,0 +1,201 @@
+#ifdef __i386__
+
+extern unsigned long stub_none_abs(unsigned long);
+extern unsigned long stub_none_eax(unsigned long);
+extern unsigned long stub_none_ecx(unsigned long);
+extern unsigned long stub_none_edx(unsigned long);
+extern unsigned long stub_none_ebx(unsigned long);
+extern unsigned long stub_none_esp(unsigned long);
+extern unsigned long stub_none_ebp(unsigned long);
+extern unsigned long stub_none_esi(unsigned long);
+extern unsigned long stub_none_edi(unsigned long);
+
+extern unsigned long stub_es_abs(unsigned long);
+extern unsigned long stub_es_eax(unsigned long);
+extern unsigned long stub_es_ecx(unsigned long);
+extern unsigned long stub_es_edx(unsigned long);
+extern unsigned long stub_es_ebx(unsigned long);
+extern unsigned long stub_es_esp(unsigned long);
+extern unsigned long stub_es_ebp(unsigned long);
+extern unsigned long stub_es_esi(unsigned long);
+extern unsigned long stub_es_edi(unsigned long);
+
+extern unsigned long stub_cs_abs(unsigned long);
+extern unsigned long stub_cs_eax(unsigned long);
+extern unsigned long stub_cs_ecx(unsigned long);
+extern unsigned long stub_cs_edx(unsigned long);
+extern unsigned long stub_cs_ebx(unsigned long);
+extern unsigned long stub_cs_esp(unsigned long);
+extern unsigned long stub_cs_ebp(unsigned long);
+extern unsigned long stub_cs_esi(unsigned long);
+extern unsigned long stub_cs_edi(unsigned long);
+
+extern unsigned long stub_ss_abs(unsigned long);
+extern unsigned long stub_ss_eax(unsigned long);
+extern unsigned long stub_ss_ecx(unsigned long);
+extern unsigned long stub_ss_edx(unsigned long);
+extern unsigned long stub_ss_ebx(unsigned long);
+extern unsigned long stub_ss_esp(unsigned long);
+extern unsigned long stub_ss_ebp(unsigned long);
+extern unsigned long stub_ss_esi(unsigned long);
+extern unsigned long stub_ss_edi(unsigned long);
+
+extern unsigned long stub_ds_abs(unsigned long);
+extern unsigned long stub_ds_eax(unsigned long);
+extern unsigned long stub_ds_ecx(unsigned long);
+extern unsigned long stub_ds_edx(unsigned long);
+extern unsigned long stub_ds_ebx(unsigned long);
+extern unsigned long stub_ds_esp(unsigned long);
+extern unsigned long stub_ds_ebp(unsigned long);
+extern unsigned long stub_ds_esi(unsigned long);
+extern unsigned long stub_ds_edi(unsigned long);
+
+extern unsigned long stub_fs_abs(unsigned long);
+extern unsigned long stub_fs_eax(unsigned long);
+extern unsigned long stub_fs_ecx(unsigned long);
+extern unsigned long stub_fs_edx(unsigned long);
+extern unsigned long stub_fs_ebx(unsigned long);
+extern unsigned long stub_fs_esp(unsigned long);
+extern unsigned long stub_fs_ebp(unsigned long);
+extern unsigned long stub_fs_esi(unsigned long);
+extern unsigned long stub_fs_edi(unsigned long);
+
+extern unsigned long stub_gs_abs(unsigned long);
+extern unsigned long stub_gs_eax(unsigned long);
+extern unsigned long stub_gs_ecx(unsigned long);
+extern unsigned long stub_gs_edx(unsigned long);
+extern unsigned long stub_gs_ebx(unsigned long);
+extern unsigned long stub_gs_esp(unsigned long);
+extern unsigned long stub_gs_ebp(unsigned long);
+extern unsigned long stub_gs_esi(unsigned long);
+extern unsigned long stub_gs_edi(unsigned long);
+
+#else
+
+extern unsigned long stub_none_abs(unsigned long);
+extern unsigned long stub_none_rax(unsigned long);
+extern unsigned long stub_none_rcx(unsigned long);
+extern unsigned long stub_none_rdx(unsigned long);
+extern unsigned long stub_none_rbx(unsigned long);
+extern unsigned long stub_none_rsp(unsigned long);
+extern unsigned long stub_none_rbp(unsigned long);
+extern unsigned long stub_none_rsi(unsigned long);
+extern unsigned long stub_none_rdi(unsigned long);
+extern unsigned long stub_none_r8 (unsigned long);
+extern unsigned long stub_none_r9 (unsigned long);
+extern unsigned long stub_none_r10(unsigned long);
+extern unsigned long stub_none_r11(unsigned long);
+extern unsigned long stub_none_r12(unsigned long);
+extern unsigned long stub_none_r13(unsigned long);
+extern unsigned long stub_none_r14(unsigned long);
+extern unsigned long stub_none_r15(unsigned long);
+
+extern unsigned long stub_es_abs(unsigned long);
+extern unsigned long stub_es_rax(unsigned long);
+extern unsigned long stub_es_rcx(unsigned long);
+extern unsigned long stub_es_rdx(unsigned long);
+extern unsigned long stub_es_rbx(unsigned long);
+extern unsigned long stub_es_rsp(unsigned long);
+extern unsigned long stub_es_rbp(unsigned long);
+extern unsigned long stub_es_rsi(unsigned long);
+extern unsigned long stub_es_rdi(unsigned long);
+extern unsigned long stub_es_r8 (unsigned long);
+extern unsigned long stub_es_r9 (unsigned long);
+extern unsigned long stub_es_r10(unsigned long);
+extern unsigned long stub_es_r11(unsigned long);
+extern unsigned long stub_es_r12(unsigned long);
+extern unsigned long stub_es_r13(unsigned long);
+extern unsigned long stub_es_r14(unsigned long);
+extern unsigned long stub_es_r15(unsigned long);
+
+extern unsigned long stub_cs_abs(unsigned long);
+extern unsigned long stub_cs_rax(unsigned long);
+extern unsigned long stub_cs_rcx(unsigned long);
+extern unsigned long stub_cs_rdx(unsigned long);
+extern unsigned long stub_cs_rbx(unsigned long);
+extern unsigned long stub_cs_rsp(unsigned long);
+extern unsigned long stub_cs_rbp(unsigned long);
+extern unsigned long stub_cs_rsi(unsigned long);
+extern unsigned long stub_cs_rdi(unsigned long);
+extern unsigned long stub_cs_r8 (unsigned long);
+extern unsigned long stub_cs_r9 (unsigned long);
+extern unsigned long stub_cs_r10(unsigned long);
+extern unsigned long stub_cs_r11(unsigned long);
+extern unsigned long stub_cs_r12(unsigned long);
+extern unsigned long stub_cs_r13(unsigned long);
+extern unsigned long stub_cs_r14(unsigned long);
+extern unsigned long stub_cs_r15(unsigned long);
+
+extern unsigned long stub_ss_abs(unsigned long);
+extern unsigned long stub_ss_rax(unsigned long);
+extern unsigned long stub_ss_rcx(unsigned long);
+extern unsigned long stub_ss_rdx(unsigned long);
+extern unsigned long stub_ss_rbx(unsigned long);
+extern unsigned long stub_ss_rsp(unsigned long);
+extern unsigned long stub_ss_rbp(unsigned long);
+extern unsigned long stub_ss_rsi(unsigned long);
+extern unsigned long stub_ss_rdi(unsigned long);
+extern unsigned long stub_ss_r8 (unsigned long);
+extern unsigned long stub_ss_r9 (unsigned long);
+extern unsigned long stub_ss_r10(unsigned long);
+extern unsigned long stub_ss_r11(unsigned long);
+extern unsigned long stub_ss_r12(unsigned long);
+extern unsigned long stub_ss_r13(unsigned long);
+extern unsigned long stub_ss_r14(unsigned long);
+extern unsigned long stub_ss_r15(unsigned long);
+
+extern unsigned long stub_ds_abs(unsigned long);
+extern unsigned long stub_ds_rax(unsigned long);
+extern unsigned long stub_ds_rcx(unsigned long);
+extern unsigned long stub_ds_rdx(unsigned long);
+extern unsigned long stub_ds_rbx(unsigned long);
+extern unsigned long stub_ds_rsp(unsigned long);
+extern unsigned long stub_ds_rbp(unsigned long);
+extern unsigned long stub_ds_rsi(unsigned long);
+extern unsigned long stub_ds_rdi(unsigned long);
+extern unsigned long stub_ds_r8 (unsigned long);
+extern unsigned long stub_ds_r9 (unsigned long);
+extern unsigned long stub_ds_r10(unsigned long);
+extern unsigned long stub_ds_r11(unsigned long);
+extern unsigned long stub_ds_r12(unsigned long);
+extern unsigned long stub_ds_r13(unsigned long);
+extern unsigned long stub_ds_r14(unsigned long);
+extern unsigned long stub_ds_r15(unsigned long);
+
+extern unsigned long stub_fs_abs(unsigned long);
+extern unsigned long stub_fs_rax(unsigned long);
+extern unsigned long stub_fs_rcx(unsigned long);
+extern unsigned long stub_fs_rdx(unsigned long);
+extern unsigned long stub_fs_rbx(unsigned long);
+extern unsigned long stub_fs_rsp(unsigned long);
+extern unsigned long stub_fs_rbp(unsigned long);
+extern unsigned long stub_fs_rsi(unsigned long);
+extern unsigned long stub_fs_rdi(unsigned long);
+extern unsigned long stub_fs_r8 (unsigned long);
+extern unsigned long stub_fs_r9 (unsigned long);
+extern unsigned long stub_fs_r10(unsigned long);
+extern unsigned long stub_fs_r11(unsigned long);
+extern unsigned long stub_fs_r12(unsigned long);
+extern unsigned long stub_fs_r13(unsigned long);
+extern unsigned long stub_fs_r14(unsigned long);
+extern unsigned long stub_fs_r15(unsigned long);
+
+extern unsigned long stub_gs_abs(unsigned long);
+extern unsigned long stub_gs_rax(unsigned long);
+extern unsigned long stub_gs_rcx(unsigned long);
+extern unsigned long stub_gs_rdx(unsigned long);
+extern unsigned long stub_gs_rbx(unsigned long);
+extern unsigned long stub_gs_rsp(unsigned long);
+extern unsigned long stub_gs_rbp(unsigned long);
+extern unsigned long stub_gs_rsi(unsigned long);
+extern unsigned long stub_gs_rdi(unsigned long);
+extern unsigned long stub_gs_r8 (unsigned long);
+extern unsigned long stub_gs_r9 (unsigned long);
+extern unsigned long stub_gs_r10(unsigned long);
+extern unsigned long stub_gs_r11(unsigned long);
+extern unsigned long stub_gs_r12(unsigned long);
+extern unsigned long stub_gs_r13(unsigned long);
+extern unsigned long stub_gs_r14(unsigned long);
+extern unsigned long stub_gs_r15(unsigned long);
+
+#endif

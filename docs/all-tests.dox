@@ -26,6 +26,8 @@ and functionality.
 
 @subpage test-livepatch-priv-check - Live Patch Privilege Check.
 
+@subpage test-memop-seg - Memory operand and segment interaction test.
+
 @subpage test-nmi-taskswitch-priv - Task Gate handling of interrupts.
 
 @subpage test-pv-iopl - IOPL emulation for PV guests.
