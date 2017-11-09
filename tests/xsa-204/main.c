@@ -21,7 +21,6 @@
  */
 #include <xtf.h>
 
-#include <arch/msr-index.h>
 #include <arch/processor.h>
 
 bool test_needs_fep = true;

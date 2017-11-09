@@ -5,53 +5,7 @@
 #include <xtf/extable.h>
 #include <xen/arch-x86/xen.h>
 #include <arch/desc.h>
-
-static inline uint64_t rdmsr(uint32_t idx)
-{
-    uint32_t lo, hi;
-
-    asm volatile("rdmsr": "=a" (lo), "=d" (hi): "c" (idx));
-
-    return (((uint64_t)hi) << 32) | lo;
-}
-
-static inline bool rdmsr_safe(uint32_t idx, uint64_t *val)
-{
-    uint32_t lo, hi, new_idx;
-
-    asm volatile("1: rdmsr; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_rdmsr_safe)
-                 : "=a" (lo), "=d" (hi), "=c" (new_idx)
-                 : "c" (idx), "X" (ex_rdmsr_safe));
-
-    bool fault = idx != new_idx;
-
-    if ( !fault )
-        *val = (((uint64_t)hi) << 32) | lo;
-
-    return fault;
-}
-
-static inline void wrmsr(uint32_t idx, uint64_t val)
-{
-    asm volatile ("wrmsr":
-                  : "c" (idx), "a" ((uint32_t)val),
-                    "d" ((uint32_t)(val >> 32)));
-}
-
-static inline bool wrmsr_safe(uint32_t idx, uint64_t val)
-{
-    uint32_t new_idx;
-
-    asm volatile ("1: wrmsr; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_wrmsr_safe)
-                  : "=c" (new_idx)
-                  : "c" (idx), "a" ((uint32_t)val),
-                    "d" ((uint32_t)(val >> 32)),
-                    "X" (ex_wrmsr_safe));
-
-    return idx != new_idx;
-}
+#include <arch/msr.h>
 
 static inline void cpuid(uint32_t leaf,
                          uint32_t *eax, uint32_t *ebx,

@@ -1,5 +1,10 @@
-#ifndef XFT_X86_MSR_INDEX_H
-#define XFT_X86_MSR_INDEX_H
+/**
+ * @file arch/x86/include/arch/msr.h
+ *
+ * Model Specific Register mnemonics and bit definitions.
+ */
+#ifndef XTF_X86_MSR_INDEX_H
+#define XTF_X86_MSR_INDEX_H
 
 #include <xtf/numbers.h>
 
@@ -66,35 +71,7 @@
 #define MSR_GS_BASE                     0xc0000101
 #define MSR_SHADOW_GS_BASE              0xc0000102
 
-#ifndef __ASSEMBLY__
-#include <xtf/types.h>
-
-typedef union msr_feature_control {
-    uint64_t raw;
-    struct {
-        bool lock:1,
-            vmxon_inside_smx:1,
-            vmxon_outside_smx:1;
-    };
-} msr_feature_control_t;
-
-typedef union msr_vmx_basic {
-    uint64_t raw;
-    struct {
-        uint32_t      vmcs_rev_id:31;
-        bool                  mbz:1;
-        uint32_t        vmcs_size:13;
-        uint32_t                 :3;
-        bool          paddr_32bit:1;
-        bool             smm_dual:1;
-        uint32_t    vmcs_mem_type:4;
-        bool     inouts_exit_info:1;
-        bool            true_ctls:1;
-    };
-} msr_vmx_basic_t;
-
-#endif /* !__ASSEMBLY__ */
-#endif /* XFT_X86_MSR_INDEX_H */
+#endif /* XTF_X86_MSR_INDEX_H */
 
 /*
  * Local variables:

@@ -34,8 +34,6 @@
  */
 #include <xtf.h>
 
-#include <arch/msr-index.h>
-
 const char test_title[] = "LBR/TSX VMentry failure test";
 
 static void int3_stub(void)

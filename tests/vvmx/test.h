@@ -3,7 +3,6 @@
 
 #include <xtf.h>
 
-#include <arch/msr-index.h>
 #include <arch/vmx.h>
 
 /*

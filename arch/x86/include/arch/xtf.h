@@ -3,6 +3,7 @@
 
 #include <arch/cpuid.h>
 #include <arch/lib.h>
+#include <arch/msr.h>
 
 extern char _end[];
 
