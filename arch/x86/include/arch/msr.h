@@ -107,6 +107,40 @@ typedef union msr_vmx_basic {
     };
 } msr_vmx_basic_t;
 
+/*
+ * Library logic for MSRs.
+ */
+struct xtf_msr_consistency_test_data
+{
+    uint32_t msr;
+
+    const struct xtf_msr_consistency_test_vals
+    {
+        uint64_t val;
+        bool pred;
+    } *vals;
+
+    size_t nr_vals;
+};
+
+/**
+ * Run consistency tests as described by @p t
+ *
+ * Some MSRs may be passed directly through to guests for performance reasons.
+ * This introduces an extra level of complexity for context switching an
+ * emulation purposes.
+ *
+ * To check that synchronisation is working properly, @p t describes an MSR
+ * and an array of predicated values.  For each value where the predicate is
+ * true, mix regular and forced reads and writes to check that values written
+ * via one mechanism become visible via the other.
+ *
+ * This logic is only applicable to read/write MSRs which expect to retain
+ * their written values on subsequent reads, and for values which will succeed
+ * when written.
+ */
+void xtf_msr_consistency_test(const struct xtf_msr_consistency_test_data *t);
+
 #endif /* XTF_X86_MSR_H */
 
 /*

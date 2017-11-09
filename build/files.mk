@@ -22,6 +22,7 @@ obj-perenv += $(ROOT)/arch/x86/desc.o
 obj-perenv += $(ROOT)/arch/x86/extable.o
 obj-perenv += $(ROOT)/arch/x86/grant_table.o
 obj-perenv += $(ROOT)/arch/x86/hypercall_page.o
+obj-perenv += $(ROOT)/arch/x86/msr.o
 obj-perenv += $(ROOT)/arch/x86/setup.o
 obj-perenv += $(ROOT)/arch/x86/traps.o
 
