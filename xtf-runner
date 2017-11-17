@@ -488,6 +488,7 @@ def run_test_console(opts, test):
     if lines:
         if not opts.quiet:
             print "\n".join(lines)
+            print ""
 
     else:
         return "CRASH"
@@ -530,6 +531,7 @@ def run_test_logfile(opts, test):
             print line
 
         if "Test result:" in line:
+            print ""
             break
 
     logfile.close()
@@ -563,7 +565,7 @@ def run_tests(opts):
 
         results.append(res)
 
-    print "\nCombined test results:"
+    print "Combined test results:"
 
     for test, res in zip(tests, results):
         print "%-40s %s" % (test, res)
