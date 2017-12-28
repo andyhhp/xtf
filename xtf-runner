@@ -327,8 +327,9 @@ def tests_from_selection(cats, envs, tests):
             res = tests
 
     # Sort the results
-    res = sorted(res, key = lambda test: test.env)  # by environment second
-    res = sorted(res, key = lambda test: test.name) # by name first
+    res = sorted(res, key = lambda test: test.variation) # by variation third
+    res = sorted(res, key = lambda test: test.env)       # by environment second
+    res = sorted(res, key = lambda test: test.name)      # by name first
     return res
 
 
