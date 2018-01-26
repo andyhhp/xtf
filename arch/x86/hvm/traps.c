@@ -7,6 +7,9 @@
 #include <arch/processor.h>
 #include <arch/desc.h>
 
+/* Filled in by hvm/head.S if started via the PVH entrypoint. */
+xen_pvh_start_info_t *pvh_start_info;
+
 /* Real entry points */
 void entry_DE(void);
 void entry_DB(void);

@@ -237,7 +237,7 @@ static void xen_console_write(const char *buf, size_t len)
 
 void arch_setup(void)
 {
-    if ( IS_DEFINED(CONFIG_HVM) )
+    if ( IS_DEFINED(CONFIG_HVM) && !pvh_start_info )
         register_console_callback(qemu_console_write);
 
     register_console_callback(xen_console_write);

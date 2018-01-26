@@ -14,6 +14,8 @@
 #define XEN_ELFNOTE_FEATURES      10
 #define XEN_ELFNOTE_BSD_SYMTAB    11
 
+#define XEN_ELFNOTE_PHYS32_ENTRY  18
+
 #endif /* XEN_PUBLIC_ELFNOTE_H */
 
 /*
