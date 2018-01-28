@@ -236,6 +236,10 @@ struct xen_pv_start_info {
 typedef struct xen_pv_start_info xen_pv_start_info_t;
 #endif
 
+/* These flags are passed in the 'flags' field of start_info_t. */
+#define SIF_PRIVILEGED    (1u << 0)  /* Is the domain privileged? */
+#define SIF_INITDOMAIN    (1u << 1)  /* Is this the initial control domain? */
+
 /* MMU UPDATE operations */
 #ifndef __ASSEMBLY__
 struct mmu_update {

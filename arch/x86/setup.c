@@ -143,6 +143,14 @@ static void init_hypercalls(void)
         panic("Hypercall page not initialised correctly\n");
 }
 
+static bool is_initdomain(void)
+{
+    if ( IS_DEFINED(CONFIG_PV) )
+        return pv_start_info->flags & SIF_INITDOMAIN;
+    else
+        return pvh_start_info && pvh_start_info->flags & SIF_INITDOMAIN;
+}
+
 static void setup_pv_console(void)
 {
     xencons_interface_t *cons_ring;
@@ -250,9 +258,13 @@ void arch_setup(void)
 
     init_hypercalls();
 
-    setup_pv_console();
+    if ( !is_initdomain() )
+    {
+        setup_pv_console();
+        setup_xenbus();
+    }
+
     map_shared_info();
-    setup_xenbus();
 }
 
 /*
