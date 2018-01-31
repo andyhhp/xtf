@@ -27,8 +27,8 @@ ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
  /* PV entry point. */
 GLOBAL(_start)
 
-        /* Stash start_info_t pointer from domain build. */
-        mov %_ASM_SI, start_info
+        /* Stash the pv_start_info pointer from domain builder. */
+        mov %_ASM_SI, pv_start_info
 
         /* Move onto own stack. */
         mov $boot_stack + PAGE_SIZE, %esp

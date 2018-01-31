@@ -54,7 +54,7 @@ static inline unsigned int cpu_regs_ss(const struct cpu_regs *regs)
 extern uint8_t boot_stack[3 * PAGE_SIZE];
 extern uint8_t user_stack[PAGE_SIZE];
 
-extern start_info_t *start_info;
+extern xen_pv_start_info_t *pv_start_info;
 extern shared_info_t shared_info;
 
 #endif /* XTF_X86_TRAPS_H */

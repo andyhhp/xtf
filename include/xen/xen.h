@@ -201,7 +201,7 @@ struct shared_info {
 };
 typedef struct shared_info shared_info_t;
 
-struct start_info {
+struct xen_pv_start_info {
     /* THE FOLLOWING ARE FILLED IN BOTH ON INITIAL BOOT AND ON RESUME.    */
     char magic[32];             /* "xen-<version>-<platform>".            */
     unsigned long nr_pages;     /* Total pages allocated to this domain.  */
@@ -233,7 +233,7 @@ struct start_info {
     unsigned long first_p2m_pfn;/* 1st pfn forming initial P->M table.    */
     unsigned long nr_p2m_frames;/* # of pfns forming initial P->M table.  */
 };
-typedef struct start_info start_info_t;
+typedef struct xen_pv_start_info xen_pv_start_info_t;
 #endif
 
 /* MMU UPDATE operations */

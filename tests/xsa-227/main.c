@@ -49,7 +49,7 @@ void test_main(void)
     gnttab_v1[8].flags = GTF_permit_access;
 
     /* Opencoded pagewalk to KB(4) */
-    intpte_t *l4t = _p(start_info->pt_base);
+    intpte_t *l4t = _p(pv_start_info->pt_base);
     intpte_t *l3t = maddr_to_virt(pte_to_paddr(l4t[0]));
     intpte_t *l2t = maddr_to_virt(pte_to_paddr(l3t[0]));
     intpte_t *l1t = maddr_to_virt(pte_to_paddr(l2t[0]));

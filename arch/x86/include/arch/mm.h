@@ -5,6 +5,7 @@
 #include <xtf/types.h>
 
 #include <arch/page.h>
+#include <arch/traps.h>
 
 #include <xen/xen.h>
 
@@ -46,7 +47,6 @@ static inline unsigned long virt_to_pfn(const void *va)
 #if defined(CONFIG_PV)
 
 #define m2p ((unsigned long *)MACH2PHYS_VIRT_START)
-extern start_info_t *start_info;
 
 static inline void *mfn_to_virt(unsigned long mfn)
 {
@@ -60,7 +60,7 @@ static inline void *maddr_to_virt(uint64_t maddr)
 
 static inline unsigned long pfn_to_mfn(unsigned long pfn)
 {
-    unsigned long *p2m = _p(start_info->mfn_list);
+    unsigned long *p2m = _p(pv_start_info->mfn_list);
 
     return p2m[pfn];
 }

@@ -253,12 +253,12 @@ void test_main(void)
      * @todo Implement better command line infrastructure, but this will do
      * for now.
      */
-    if ( !strcmp((char *)start_info->cmd_line, "hypercall") )
+    if ( !strcmp((char *)pv_start_info->cmd_line, "hypercall") )
     {
         printk("Test: PHYSDEVOP_set_iopl\n");
         test = &hypercall;
     }
-    else if ( !strcmp((char *)start_info->cmd_line, "vmassist") )
+    else if ( !strcmp((char *)pv_start_info->cmd_line, "vmassist") )
     {
         if ( hypercall_vm_assist(VMASST_CMD_enable,
                                  VMASST_TYPE_architectural_iopl) )

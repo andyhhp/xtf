@@ -10,6 +10,9 @@
 #include <arch/pagetable.h>
 #include <arch/symbolic-const.h>
 
+/* Filled in by pv/head.S */
+xen_pv_start_info_t *pv_start_info = NULL;
+
 /* Real entry points */
 void entry_DE(void);
 void entry_DB(void);
@@ -169,7 +172,7 @@ void arch_init_traps(void)
          * If we have got this far, SMEP/SMAP are not leaking into guest
          * context.  Proceed with remapping all mappings as _PAGE_USER.
          */
-        uint64_t *l3 = _p(start_info->pt_base);
+        uint64_t *l3 = _p(pv_start_info->pt_base);
         unsigned long linear = 0;
 
         while ( linear < __HYPERVISOR_VIRT_START_PAE )

@@ -29,11 +29,6 @@ unsigned int maxphysaddr, maxvirtaddr;
 
 const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 
-#ifdef CONFIG_PV
-/* Filled in by head_pv.S */
-start_info_t *start_info = NULL;
-#endif
-
 shared_info_t shared_info __page_aligned_bss;
 
 static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
@@ -155,8 +150,8 @@ static void setup_pv_console(void)
 
     if ( IS_DEFINED(CONFIG_PV) )
     {
-        cons_ring = mfn_to_virt(start_info->console.domU.mfn);
-        cons_evtchn = start_info->console.domU.evtchn;
+        cons_ring = mfn_to_virt(pv_start_info->console.domU.mfn);
+        cons_evtchn = pv_start_info->console.domU.evtchn;
     }
     else /* HVM */
     {
@@ -180,8 +175,8 @@ static void setup_xenbus(void)
 
     if ( IS_DEFINED(CONFIG_PV) )
     {
-        xb_ring = mfn_to_virt(start_info->store_mfn);
-        xb_port = start_info->store_evtchn;
+        xb_ring = mfn_to_virt(pv_start_info->store_mfn);
+        xb_port = pv_start_info->store_evtchn;
     }
     else /* HVM */
     {
@@ -221,7 +216,7 @@ static void map_shared_info(void)
     }
     else /* PV */
         rc = hypercall_update_va_mapping(
-            _u(&shared_info), start_info->shared_info | PF_SYM(RW, P),
+            _u(&shared_info), pv_start_info->shared_info | PF_SYM(RW, P),
             UVMF_INVLPG);
 
     if ( rc )
