@@ -119,16 +119,18 @@ ENTRY(exec_user_param)
         mov %esp, %ebp          /* Stash %esp for entry_ret_to_kernel(). */
 
         /* Prepare an IRET frame. */
-        push $__USER_DS         /* SS */
+        push exec_user_ss       /* SS */
                                 /* ESP */
         push $user_stack + PAGE_SIZE
         pushf                   /* EFLAGS */
 
-#if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
-        andl $~X86_EFLAGS_IF, (%esp)
-#endif
+        /* Apply and/or masks to eflags. */
+        mov exec_user_efl_and_mask, %edx
+        and %edx, (%esp)
+        mov exec_user_efl_or_mask, %edx
+        or %edx, (%esp)
 
-        push $__USER_CS         /* CS */
+        push exec_user_cs       /* CS */
         push $exec_user_stub    /* EIP */
 
         env_IRET                /* Drop to user privilege. */

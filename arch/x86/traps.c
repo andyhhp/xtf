@@ -6,6 +6,16 @@
 #include <arch/lib.h>
 #include <arch/processor.h>
 
+/*
+ * Parameters for fine tuning the exec_user_*() behaviour.  PV guests see the
+ * real interrupt flag, so mask it by default.
+ */
+unsigned long exec_user_cs = __USER_CS;
+unsigned long exec_user_ss = __USER_DS;
+unsigned long exec_user_efl_and_mask =
+    ~(IS_DEFINED(CONFIG_PV) ? X86_EFLAGS_IF : 0);
+unsigned long exec_user_efl_or_mask;
+
 bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
 
 /*

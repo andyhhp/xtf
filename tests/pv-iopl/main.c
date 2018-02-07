@@ -44,11 +44,6 @@ const char test_title[] = "PV IOPL emulation";
 
 bool test_wants_user_mappings = true;
 
-/**
- * Execute @p fn at user privilege, folding @p iopl into the iret frame.
- */
-void exec_user_with_iopl(void (*fn)(void), unsigned int iopl);
-
 /** Stub CLI instruction with @#GP fixup. */
 static void stub_cli(void)
 {
@@ -166,7 +161,8 @@ static void run_test(const struct test *t)
 
             /* Run insn in userspace. */
             expect(seq->name, 1, t->should_fault(1, iopl));
-            exec_user_with_iopl(seq->fn, iopl);
+            exec_user_void(seq->fn);
+
             check();
         }
     }
@@ -219,7 +215,8 @@ static void vmassist_set_iopl(unsigned int iopl)
      * with the appropriate iopl set.  Reuse the exec_user infrastructure to
      * issue the iret, and execute nothing interesting in user context.
      */
-    exec_user_with_iopl(nop, iopl);
+    exec_user_efl_or_mask = iopl << 12;
+    exec_user_void(nop);
 }
 
 static bool vmassist_should_fault(bool user, unsigned int iopl)

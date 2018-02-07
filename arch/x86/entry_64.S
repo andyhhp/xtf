@@ -117,16 +117,18 @@ ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
         mov %rsp, %rbp          /* Stash %rsp for entry_ret_to_kernel(). */
 
         /* Prepare an IRET frame. */
-        push $__USER_DS         /* SS */
+        push exec_user_ss(%rip) /* SS */
                                 /* RSP */
         push $user_stack + PAGE_SIZE
         pushf                   /* RFLAGS */
 
-#if defined(CONFIG_PV)          /* PV guests see the real interrupt flag. Clobber it. */
-        andq $~X86_EFLAGS_IF, (%rsp)
-#endif
+        /* Apply and/or masks to eflags. */
+        mov exec_user_efl_and_mask(%rip), %rdx
+        and %rdx, (%esp)
+        mov exec_user_efl_or_mask(%rip), %rdx
+        or %rdx, (%esp)
 
-        push $__USER_CS         /* CS */
+        push exec_user_cs(%rip) /* CS */
         push $exec_user_stub    /* RIP */
 
         env_IRETQ               /* Drop to user privilege. */

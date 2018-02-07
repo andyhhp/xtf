@@ -59,6 +59,13 @@ extern xen_pv_start_info_t *pv_start_info;
 extern xen_pvh_start_info_t *pvh_start_info;
 extern shared_info_t shared_info;
 
+/*
+ * Parameters for fine tuning the exec_user_*() behaviour.
+ */
+extern unsigned long exec_user_cs, exec_user_ss;
+extern unsigned long exec_user_efl_and_mask;
+extern unsigned long exec_user_efl_or_mask;
+
 #endif /* XTF_X86_TRAPS_H */
 
 /*
