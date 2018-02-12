@@ -45,6 +45,11 @@ int xtf_probe_sysctl_interface_version(void)
 
 int xtf_get_domid(void)
 {
+    int rc = xenstore_init();
+
+    if ( rc )
+        return -1;
+
     const char *str = xenstore_read("domid");
     unsigned int domid = 0;
 

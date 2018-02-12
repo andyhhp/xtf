@@ -17,6 +17,7 @@
 #include <arch/segment.h>
 
 const char test_title[] = "XTF Selftests";
+bool has_xenstore = true;
 
 static void test_xenstore(void)
 {
@@ -317,6 +318,11 @@ static void test_driver_init(void)
             xtf_failure("Fail: apic_init() returned %d\n", rc);
     }
 
+    rc = xenstore_init();
+    has_xenstore = !rc;
+    if ( rc && rc != -ENODEV )
+        xtf_failure("Fail: xenstore_init() returned %d\n", rc);
+
     rc = xtf_init_grant_table(1);
     if ( rc )
         xtf_failure("Fail: xtf_init_grant_table(1) returned %d\n", rc);
@@ -345,7 +351,6 @@ void test_main(void)
             write_cr4(cr4);
     }
 
-    test_xenstore();
     test_extable();
     test_exlog();
     test_exec_user();
@@ -355,6 +360,9 @@ void test_main(void)
     test_extable_handler();
     test_custom_idte();
     test_driver_init();
+
+    if ( has_xenstore )
+        test_xenstore();
 
     xtf_success(NULL);
 }

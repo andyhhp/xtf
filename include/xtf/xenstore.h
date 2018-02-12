@@ -7,6 +7,12 @@
 #define XTF_XENSTORE_H
 
 /**
+ * Initialise XTF ready for xenstore communication.  May fail if there is no
+ * xenbus ring found.
+ */
+int xenstore_init(void);
+
+/**
  * Issue a #XS_READ operation for @p key, waiting synchronously for the reply.
  *
  * Returns NULL on error.  The current implementation unmarshals data into a

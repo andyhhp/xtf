@@ -108,6 +108,12 @@ static void xenbus_read(void *data, size_t len)
     }
 }
 
+int xenstore_init(void)
+{
+    /* Nothing to initialise.  Report the presence of the xenbus ring. */
+    return xb_port ? 0 : -ENODEV;
+}
+
 const char *xenstore_read(const char *path)
 {
     struct xenstore_msg_hdr hdr = {
