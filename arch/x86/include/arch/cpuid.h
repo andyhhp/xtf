@@ -85,6 +85,8 @@ static inline bool cpu_has(unsigned int feature)
 #define cpu_has_page1gb         cpu_has(X86_FEATURE_PAGE1GB)
 #define cpu_has_lm              cpu_has(X86_FEATURE_LM)
 
+#define cpu_has_svm             cpu_has(X86_FEATURE_SVM)
+
 #define cpu_has_fsgsbase        cpu_has(X86_FEATURE_FSGSBASE)
 #define cpu_has_smep            cpu_has(X86_FEATURE_SMEP)
 #define cpu_has_smap            cpu_has(X86_FEATURE_SMAP)
