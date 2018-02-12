@@ -1,6 +1,6 @@
 include $(ROOT)/build/common.mk
 
-NAME      := vvmx
+NAME      := nested-vmx
 CATEGORY  := in-development
 TEST-ENVS := $(HVM_ENVIRONMENTS)
 

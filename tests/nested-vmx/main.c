@@ -1,12 +1,12 @@
 /**
- * @file tests/vvmx/main.c
- * @ref test-vvmx
+ * @file tests/nested-vmx/main.c
+ * @ref test-nested-vmx
  *
- * @page test-vvmx vvmx
+ * @page test-nested-vmx Nested VT-x
  *
  * Functional testing of the VMX features in a nested-virt environment.
  *
- * @see tests/vvmx/main.c
+ * @see tests/nested-vmx/main.c
  */
 #include "test.h"
 
