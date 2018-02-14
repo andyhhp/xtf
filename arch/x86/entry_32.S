@@ -75,25 +75,24 @@ exception_entry VE  X86_EXC_VE
         .align 16
 handle_exception:
 
+        push %es
+        push %ds
+
         SAVE_ALL
 
-#if defined(CONFIG_HVM)
-        testl $X86_EFLAGS_VM, 11*4(%esp)
-        jz 1f
-
-        mov $__KERN_DS, %eax    /* Restore data segments if leaving vm86 mode. */
+        mov $__KERN_DS, %eax    /* Restore data segments. */
         mov %eax, %ds
         mov %eax, %es
-        mov %eax, %fs
-        mov %eax, %gs
-1:
-#endif
 
         push %esp               /* struct cpu_regs * */
         call do_exception
         add $4, %esp
 
         RESTORE_ALL
+
+        pop %ds
+        pop %es
+
         add $8, %esp            /* Pop error_code/entry_vector. */
 
         env_IRET

@@ -64,6 +64,9 @@ asm("exit_NMI_task:"
     "push $0;"
     "push $" STR(X86_EXC_NMI) ";"
 
+    "push %es;"
+    "push %ds;"
+
     "push %edi;"
     "push %esi;"
     "push %edx;"
@@ -83,6 +86,9 @@ asm("exit_NMI_task:"
     "pop %edx;"
     "pop %esi;"
     "pop %edi;"
+
+    "pop %ds;"
+    "pop %es;"
 
     "add $2*4, %esp;" /* entry_vector/error_code. */
 

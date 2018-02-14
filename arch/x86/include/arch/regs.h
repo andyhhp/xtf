@@ -19,6 +19,9 @@ struct cpu_regs {
     DECL_REG(si);
     DECL_REG(di);
 
+    uint16_t ds, :16;
+    uint16_t es, :16;
+
     uint32_t entry_vector;
     uint32_t error_code;
 
