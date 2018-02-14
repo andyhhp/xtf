@@ -21,6 +21,7 @@
 /* Optional functionality */
 #include <xtf/atomic.h>
 #include <xtf/bitops.h>
+#include <xtf/elf.h>
 #include <xtf/exlog.h>
 #include <xtf/grant_table.h>
 #include <xtf/hypercall.h>

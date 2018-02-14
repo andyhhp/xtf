@@ -24,11 +24,6 @@
  */
 #include <xtf.h>
 
-#include <arch/exinfo.h>
-#include <arch/idt.h>
-#include <arch/processor.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-196 PoC";
 
 bool test_wants_user_mappings = true;

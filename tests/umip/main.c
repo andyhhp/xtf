@@ -13,8 +13,6 @@
  * @see tests/umip/main.c
  */
 #include <xtf.h>
-#include <arch/exinfo.h>
-#include <arch/processor.h>
 
 const char test_title[] = "User-Mode Instruction Prevention Tests";
 bool test_wants_user_mappings = true;

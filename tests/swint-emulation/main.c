@@ -46,9 +46,6 @@
  */
 #include <xtf.h>
 
-#include <arch/processor.h>
-#include <arch/symbolic-const.h>
-
 #include "lowlevel.h"
 
 const char test_title[] = "Software interrupt emulation";

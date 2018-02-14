@@ -23,10 +23,6 @@
  * @see tests/xsa-195/main.c
  */
 #include <xtf.h>
-#include <xen/memory.h>
-
-#include <arch/pagetable.h>
-#include <arch/symbolic-const.h>
 
 const char test_title[] = "XSA-195 PoC";
 

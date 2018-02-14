@@ -29,6 +29,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 
 /* All Xen ABI for includers convenience .*/
 #include <xen/callback.h>
+#include <xen/elfnote.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
 #include <xen/grant_table.h>

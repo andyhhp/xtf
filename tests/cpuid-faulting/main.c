@@ -21,9 +21,6 @@
  */
 #include <xtf.h>
 
-#include <arch/exinfo.h>
-#include <arch/processor.h>
-
 const char test_title[] = "Guest CPUID Faulting support";
 
 bool test_wants_user_mappings = true;

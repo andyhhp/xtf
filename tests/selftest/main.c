@@ -11,11 +11,6 @@
  */
 #include <xtf.h>
 
-#include <arch/apic.h>
-#include <arch/idt.h>
-#include <arch/processor.h>
-#include <arch/segment.h>
-
 const char test_title[] = "XTF Selftests";
 bool has_xenstore = true;
 

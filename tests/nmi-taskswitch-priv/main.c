@@ -39,8 +39,6 @@
  */
 #include <xtf.h>
 
-#include <arch/apic.h>
-
 const char test_title[] = "Test nmi-taskswitch-priv";
 
 bool test_wants_user_mappings = true;

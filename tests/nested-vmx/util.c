@@ -1,7 +1,5 @@
 #include "test.h"
 
-#include <arch/decode.h>
-
 static void decode_test_exinfo(char *str, size_t n, exinfo_t ex)
 {
     if ( ex == VMERR_SUCCESS )

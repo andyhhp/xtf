@@ -32,10 +32,6 @@
  */
 #include <xtf.h>
 
-#include <arch/idt.h>
-#include <arch/pagetable.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-186 PoC";
 
 bool test_needs_fep = true;

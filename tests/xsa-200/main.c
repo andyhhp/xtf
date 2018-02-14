@@ -24,8 +24,6 @@
  */
 #include <xtf.h>
 
-#include <arch/exinfo.h>
-
 const char test_title[] = "XSA-200 PoC";
 
 bool test_needs_fep = true;

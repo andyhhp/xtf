@@ -26,11 +26,6 @@
  */
 #include <xtf.h>
 
-#include <arch/decode.h>
-#include <arch/desc.h>
-#include <arch/exinfo.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-191 PoC";
 
 bool test_needs_fep = true;

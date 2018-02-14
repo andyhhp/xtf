@@ -22,9 +22,6 @@
 
 #include <xtf.h>
 
-#include <arch/pagetable.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-170 PoC";
 
 bool test_wants_user_mappings = true;

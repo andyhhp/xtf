@@ -82,10 +82,6 @@
  */
 #include <xtf.h>
 
-#include <arch/decode.h>
-#include <arch/desc.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "Invlpg tests";
 
 /* Swizzle to easily change all invlpg instructions to being emulated. */

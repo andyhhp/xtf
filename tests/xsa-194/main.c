@@ -28,9 +28,6 @@
  */
 #include <xtf.h>
 
-#include <xtf/elf.h>
-#include <xen/elfnote.h>
-
 const char test_title[] = "XSA-194 PoC";
 
 ELFNOTE(Xen, XEN_ELFNOTE_BSD_SYMTAB, ".asciz \"yes\"");

@@ -21,8 +21,6 @@
  */
 #include <xtf.h>
 
-#include <arch/processor.h>
-
 bool test_needs_fep = true;
 bool test_wants_user_mappings = true;
 const char test_title[] = "XSA-204 PoC";

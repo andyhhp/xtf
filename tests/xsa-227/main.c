@@ -21,9 +21,6 @@
  */
 #include <xtf.h>
 
-#include <arch/pagetable.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-227 PoC";
 
 static uint8_t frame[PAGE_SIZE] __page_aligned_bss;

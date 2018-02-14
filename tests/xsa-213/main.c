@@ -22,9 +22,6 @@
  */
 #include <xtf.h>
 
-#include <arch/idt.h>
-#include <arch/processor.h>
-
 const char test_title[] = "XSA-213 PoC";
 
 #define IRET_IDENTIFIER 0xdead

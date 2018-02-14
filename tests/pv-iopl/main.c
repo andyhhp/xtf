@@ -40,8 +40,6 @@
  */
 #include <xtf.h>
 
-#include <arch/processor.h>
-
 const char test_title[] = "PV IOPL emulation";
 
 bool test_wants_user_mappings = true;

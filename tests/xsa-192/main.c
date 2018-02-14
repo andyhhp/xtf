@@ -21,10 +21,6 @@
  */
 #include <xtf.h>
 
-#include <arch/desc.h>
-#include <arch/exinfo.h>
-#include <arch/idt.h>
-
 const char test_title[] = "XSA-192 PoC";
 
 /* IDT handler to return from vm86 mode. */

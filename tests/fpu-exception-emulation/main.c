@@ -35,11 +35,6 @@
  */
 #include <xtf.h>
 
-#include <arch/decode.h>
-#include <arch/exinfo.h>
-#include <arch/processor.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "FPU Exception Emulation";
 
 #define CR0_SYM(...) TOK_OR(X86_CR0_, ##__VA_ARGS__)

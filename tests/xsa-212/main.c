@@ -27,10 +27,6 @@
  */
 #include <xtf.h>
 
-#include <arch/decode.h>
-#include <arch/exinfo.h>
-#include <arch/mm.h>
-
 const char test_title[] = "XSA-212 PoC";
 
 void test_main(void)

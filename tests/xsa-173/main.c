@@ -22,10 +22,6 @@
  */
 #include <xtf.h>
 
-#include <arch/pagetable.h>
-#include <arch/processor.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-173 PoC";
 
 /* New L2 pagetable for the test to manipulate. */

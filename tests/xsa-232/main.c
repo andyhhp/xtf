@@ -17,9 +17,6 @@
  */
 #include <xtf.h>
 
-#include <arch/pagetable.h>
-#include <arch/symbolic-const.h>
-
 const char test_title[] = "XSA-232 PoC";
 
 void test_main(void)
