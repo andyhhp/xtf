@@ -4,8 +4,15 @@
 #include <arch/segment.h>
 #include <arch/symbolic-const.h>
 
-user_desc gdt[NR_GDT_ENTRIES] =
+#ifdef CONFIG_HVM
+#define gdt_section __page_aligned_data
+#else
+#define gdt_section __page_aligned_bss
+#endif
+
+user_desc gdt[NR_GDT_ENTRIES] gdt_section =
 {
+#ifdef CONFIG_HVM
     [GDTE_CS64_DPL0] = INIT_GDTE_SYM(0, 0xfffff, COMMON, CODE, DPL0, R, L),
     [GDTE_CS32_DPL0] = INIT_GDTE_SYM(0, 0xfffff, COMMON, CODE, DPL0, R, D),
     [GDTE_DS32_DPL0] = INIT_GDTE_SYM(0, 0xfffff, COMMON, DATA, DPL0, B, W),
@@ -16,15 +23,16 @@ user_desc gdt[NR_GDT_ENTRIES] =
 
     /* [GDTE_TSS]     */
     /* [GDTE_TSS + 1] */
+#endif
 };
+
+#if defined(CONFIG_HVM)
 
 desc_ptr gdt_ptr =
 {
     .limit = sizeof(gdt) - 1,
     .base = _u(&gdt),
 };
-
-#if defined(CONFIG_HVM)
 
 env_gate idt[256];
 

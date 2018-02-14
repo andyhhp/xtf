@@ -96,6 +96,20 @@ void arch_init_traps(void)
     if ( rc )
         panic("Failed to set trap table: %d\n", rc);
 
+    /* Register gdt[] with Xen.  Need to map it read-only first. */
+    if ( hypercall_update_va_mapping(
+             _u(gdt), pte_from_virt(gdt, PF_SYM(AD, P)), UVMF_INVLPG) )
+        panic("Unable to remap gdt[] as read-only\n");
+
+    unsigned long gdt_frames[] = {
+        virt_to_mfn(gdt),
+    };
+    BUILD_BUG_ON(NR_GDT_ENTRIES > (PAGE_SIZE / sizeof(user_desc)));
+
+    rc = hypercall_set_gdt(gdt_frames, NR_GDT_ENTRIES);
+    if ( rc )
+        panic("Failed to set gdt: %d\n", rc);
+
     /* PV equivalent of setting tss.{esp0,ss0}. */
     rc = hypercall_stack_switch(__KERN_DS, &boot_stack[2 * PAGE_SIZE]);
     if ( rc )

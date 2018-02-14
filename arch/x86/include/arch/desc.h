@@ -54,6 +54,8 @@ struct __packed seg_desc32 {
             };
             uint8_t base2;
         };
+        /* Full width backing integer. */
+        uint64_t raw;
     };
 };
 

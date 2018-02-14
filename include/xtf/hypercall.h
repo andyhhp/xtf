@@ -3,6 +3,7 @@
 
 #include <xtf/compiler.h>
 #include <xtf/types.h>
+#include <arch/desc.h>
 #include <arch/page.h>
 
 #if defined(__x86_64__)
@@ -61,9 +62,25 @@ static inline long hypercall_mmu_update(const mmu_update_t reqs[],
                       reqs, count, done, foreigndom);
 }
 
+static inline long hypercall_set_gdt(const unsigned long *mfns,
+                                     unsigned int entries)
+{
+    return HYPERCALL2(long, __HYPERVISOR_set_gdt, mfns, entries);
+}
+
 static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
 {
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);
+}
+
+static inline long hypercall_update_descriptor(uint64_t maddr, user_desc desc)
+{
+#ifdef __x86_64__
+    return HYPERCALL2(long, __HYPERVISOR_update_descriptor, maddr, desc.raw);
+#else
+    return HYPERCALL4(long, __HYPERVISOR_update_descriptor,
+                      maddr, maddr >> 32, desc.lo, desc.hi);
+#endif
 }
 
 static inline long hypercall_memory_op(unsigned int cmd, void *arg)

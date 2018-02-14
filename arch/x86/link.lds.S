@@ -102,6 +102,10 @@ ASSERT(IS_ALIGNED(pae32_l3_identmap, 32), "pae32_l3_ident misaligned");
 ASSERT(IS_ALIGNED(pse_l1_identmap, PAGE_SIZE), "pse_l1_identmap misaligned");
 ASSERT(IS_ALIGNED(pse_l2_identmap, PAGE_SIZE), "pse_l2_identmap misaligned");
 
+#else
+
+ASSERT(IS_ALIGNED(gdt, PAGE_SIZE), "gdt misaligned");
+
 #endif
 /*
  * Local variables:
