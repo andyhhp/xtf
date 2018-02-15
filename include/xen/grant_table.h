@@ -311,6 +311,22 @@ struct gnttab_set_version {
 };
 
 /*
+ * GNTTABOP_get_status_frames: Get the list of frames used to store grant
+ * status for <dom>. In grant format version 2, the status is separated
+ * from the other shared grant fields to allow more efficient synchronization
+ * using barriers instead of atomic cmpxchg operations.
+ */
+#define GNTTABOP_get_status_frames    9
+struct gnttab_get_status_frames {
+    /* IN parameters. */
+    uint32_t nr_frames;
+    domid_t  dom;
+    /* OUT parameters. */
+    int16_t  status;              /* => enum grant_status */
+    uint64_t *frame_list;
+};
+
+/*
  * Issue one or more cache maintenance operations on a portion of a
  * page granted to the calling domain by a foreign domain.
  */

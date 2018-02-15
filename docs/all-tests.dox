@@ -112,6 +112,8 @@ guest breakout.
 
 @subpage test-xsa-239 - hypervisor stack leak in x86 I/O intercept code.
 
+@subpage test-xsa-255 - grant table v2 -> v1 transition may crash Xen.
+
 
 @section index-utility Utilities
 
