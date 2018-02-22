@@ -88,6 +88,12 @@ int apic_init(enum apic_mode mode)
         cur_apic_mode = mode;
     }
 
+    /*
+     * Enable the APIC.  Use 0xff for the spurious vector, not that we expect
+     * to see any.
+     */
+    apic_write(APIC_SPIV, APIC_SPIV_APIC_ENABLED | 0xff);
+
     return 0;
 }
 

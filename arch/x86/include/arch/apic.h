@@ -18,6 +18,9 @@
 /* Local APIC register definitions. */
 #define APIC_ID         0x020
 #define APIC_LVR        0x030
+#define APIC_SPIV       0x0f0
+#define   APIC_SPIV_APIC_ENABLED  0x00100
+
 #define APIC_ICR        0x300
 #define   APIC_DM_NMI             0x00400
 #define   APIC_ICR_BUSY           0x01000
