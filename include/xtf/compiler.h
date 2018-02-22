@@ -10,7 +10,6 @@
 #define __noreturn            __attribute__((__noreturn__))
 #define __packed              __attribute__((__packed__))
 #define __printf(f, v)        __attribute__((__format__(__printf__, f, v)))
-#define __section(s)          __attribute__((__section__(s)))
 #define __used                __attribute__((__used__))
 #define __weak                __attribute__((__weak__))
 
@@ -20,6 +19,10 @@
 
 #ifndef __always_inline /* Avoid conflicting with cdefs.h */
 #define __always_inline       __attribute__((__always_inline__))
+#endif
+
+#ifndef __section /* Avoid conflicting with cdefs.h */
+#define __section(s)          __attribute__((__section__(s)))
 #endif
 
 #define unreachable()         __builtin_unreachable()
