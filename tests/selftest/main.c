@@ -309,8 +309,19 @@ static void test_driver_init(void)
         rc = apic_init(APIC_MODE_XAPIC);
 
         /* Cope with guests which have LAPIC emulation disabled. */
-        if ( rc && rc != -ENODEV )
-            xtf_failure("Fail: apic_init() returned %d\n", rc);
+        if ( rc != -ENODEV )
+        {
+            if ( rc )
+                xtf_failure("Fail: apic_init(XAPIC) returned %d\n", rc);
+
+            if ( cpu_has_x2apic )
+            {
+                rc = apic_init(APIC_MODE_X2APIC);
+
+                if ( rc )
+                    xtf_failure("Fail: apic_init(X2APIC) returned %d\n", rc);
+            }
+        }
     }
 
     rc = xenstore_init();
