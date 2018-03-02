@@ -91,7 +91,7 @@ struct __packed seg_desc32 {
 #define SEG_ATTR_W      0x0002 /**< Writable? (0 = RO seg, 1 = RW seg) */
 
 /**
- * Initialise an LDT/GDT entry using a raw attribute number.
+ * Initialiser for an LDT/GDT entry using a raw attribute number.
  *
  * @param base  Segment base.
  * @param limit Segment limit.
@@ -102,6 +102,11 @@ struct __packed seg_desc32 {
      .hi = ((base) & 0xff000000) | ((limit) & 0xf0000) |              \
            (((attr) & 0xf0ff) << 8) | (((base) & 0xff0000) >> 16)     \
      } } }
+
+/**
+ * As INIT_GDTE(), but creates a user_desc object.
+ */
+#define GDTE(base, limit, attr) ((user_desc)INIT_GDTE(base, limit, attr))
 
 /** Long mode lgdt/lidt table pointer. */
 struct __packed desc_ptr64 {

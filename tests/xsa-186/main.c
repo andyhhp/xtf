@@ -191,8 +191,7 @@ void test_main(void)
      * to execute the code with.  The stub still runs with 32bit data
      * segments, which is perfectly valid.
      */
-    gdt[GDTE_AVAIL0] =
-        (typeof(*gdt))INIT_GDTE_SYM(0, 0xfffff, COMMON, CODE, DPL0, R);
+    gdt[GDTE_AVAIL0] = GDTE_SYM(0, 0xfffff, COMMON, CODE, DPL0, R);
 
     asm volatile ("push $%c[cs16];"
                   "push $1f;"

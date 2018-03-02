@@ -86,7 +86,7 @@ void test_main(void)
     xtf_set_idte(X86_VEC_AVAIL, &idte);
 
     /* Create the vm86 TSS descriptor. */
-    gdt[GDTE_AVAIL0] = (user_desc)INIT_GDTE(_u(&vm86_tss), 0x67, 0x89);
+    gdt[GDTE_AVAIL0] = GDTE(_u(&vm86_tss), 0x67, 0x89);
 
     /* Copy a stub to somewhere vm86 can actually reach. */
     uint8_t insn_buf[] = { 0xcd, X86_VEC_AVAIL }; /* `int $X86_VEC_AVAIL` */
@@ -98,7 +98,7 @@ void test_main(void)
      */
     if ( vendor_is_amd )
     {
-        gdt[GDTE_AVAIL1] = (user_desc)INIT_GDTE(0, 0, 0x82);
+        gdt[GDTE_AVAIL1] = GDTE(0, 0, 0x82);
         lldt(GDTE_AVAIL1 << 3);
     }
     lldt(0);

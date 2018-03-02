@@ -271,12 +271,12 @@ static void test_no_fault(void)
     invlpg_fs_checked(0);
 
     printk("  Test: Past segment limit\n");
-    gdt[GDTE_AVAIL0] = (typeof(*gdt))INIT_GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W);
+    gdt[GDTE_AVAIL0] = GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W);
     write_fs(GDTE_AVAIL0 << 3);
     invlpg_fs_checked(0x2000);
 
     printk("  Test: Before expand-down segment limit\n");
-    gdt[GDTE_AVAIL0] = (typeof(*gdt))INIT_GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W, E);
+    gdt[GDTE_AVAIL0] = GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W, E);
     write_fs(GDTE_AVAIL0 << 3);
     invlpg_fs_checked(0);
 

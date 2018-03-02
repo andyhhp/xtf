@@ -42,7 +42,7 @@
 #define TOK_OR(t, ...)     VAR_MACRO_C1(TOK_OR, t, ##__VA_ARGS__)
 
 /**
- * Initialise an LDT/GDT entry using SEG_ATTR_ mnemonics.
+ * Initialiser for an LDT/GDT entry using SEG_ATTR_ mnemonics.
  *
  * @param base  Segment base.
  * @param limit Segment limit.
@@ -57,6 +57,12 @@
  */
 #define INIT_GDTE_SYM(base, limit, ...) \
     INIT_GDTE(base, limit, TOK_OR(SEG_ATTR_, ##__VA_ARGS__))
+
+/**
+ * As INIT_GDTE_SYM(), but creates a user_desc object.
+ */
+#define GDTE_SYM(base, limit, ...) \
+    ((user_desc)INIT_GDTE_SYM(base, limit, __VA_ARGS__))
 
 /**
  * Create a selector based error code using X86_EC_ mnemonics.

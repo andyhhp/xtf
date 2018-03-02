@@ -260,8 +260,8 @@ void test_main(void)
     /* For 32bit, use segments with a limit of 2GB. */
     if ( IS_DEFINED(CONFIG_32BIT) )
     {
-        user_desc code = INIT_GDTE_SYM(0, 0x7ffff, COMMON, CODE, DPL3, R, D);
-        user_desc data = INIT_GDTE_SYM(0, 0x7ffff, COMMON, DATA, DPL3, B, W);
+        user_desc code = GDTE_SYM(0, 0x7ffff, COMMON, CODE, DPL3, R, D);
+        user_desc data = GDTE_SYM(0, 0x7ffff, COMMON, DATA, DPL3, B, W);
 
         if ( IS_DEFINED(CONFIG_HVM) )
         {
