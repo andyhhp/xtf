@@ -10,7 +10,7 @@
 const char *vmx_insn_err_strerror(unsigned int err)
 {
 #define ERR(x) [VMERR_ ## x] = #x
-    const char *const strings[] = {
+    static const char *const strings[] = {
         ERR(VMCALL_IN_ROOT),
         ERR(VMCLEAR_BAD_PADDR),
         ERR(VMCLEAR_WITH_VMXON_PTR),
