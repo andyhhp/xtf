@@ -13,6 +13,31 @@
 
 extern char _end[];
 
+/*** Misc helpers which are library code, but really want to be inline. ***/
+
+/**
+ * Helper to update a live LDT/GDT entry.
+ */
+static inline void update_desc(user_desc *ptr, const user_desc new)
+{
+    if ( IS_DEFINED(CONFIG_HVM) )
+    {
+        *ptr = new;
+
+        /*
+         * Prevent the compiler reordering later operations which refer to the
+         * descriptor which has been updated.
+         */
+        barrier();
+    }
+    else
+    {
+        int rc = hypercall_update_descriptor(virt_to_maddr(ptr), new);
+        if ( rc )
+            panic("Update descriptor failed: %d\n", rc);
+    }
+}
+
 #endif /* XTF_X86_XTF_H */
 
 /*

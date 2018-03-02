@@ -234,7 +234,7 @@ static void test_tlb_refill(void)
         const struct tlb_refill_fs_test *t = &tlb_refill_fs_tests[i];
 
         printk("  Test: %%fs %s\n", t->desc);
-        gdt[GDTE_AVAIL0] = t->seg;
+        update_desc(&gdt[GDTE_AVAIL0], t->seg);
         write_fs(GDTE_AVAIL0 << 3);
         run_tlb_refill_test(invlpg_fs_refill, t->mapping);
     }
@@ -271,12 +271,12 @@ static void test_no_fault(void)
     invlpg_fs_checked(0);
 
     printk("  Test: Past segment limit\n");
-    gdt[GDTE_AVAIL0] = GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W);
+    update_desc(&gdt[GDTE_AVAIL0], GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W));
     write_fs(GDTE_AVAIL0 << 3);
     invlpg_fs_checked(0x2000);
 
     printk("  Test: Before expand-down segment limit\n");
-    gdt[GDTE_AVAIL0] = GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W, E);
+    update_desc(&gdt[GDTE_AVAIL0], GDTE_SYM(0, 1, COMMON, DATA, DPL0, B, W, E));
     write_fs(GDTE_AVAIL0 << 3);
     invlpg_fs_checked(0);
 

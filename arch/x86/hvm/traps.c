@@ -80,6 +80,7 @@ static void setup_doublefault(void)
     if ( IS_DEFINED(CONFIG_32BIT) )
     {
         gdt[GDTE_TSS_DF] = GDTE(_u(&tss_DF), 0x67, 0x89);
+        barrier();
 
         pack_task_gate(&idt[X86_EXC_DF], GDTE_TSS_DF * 8);
     }
@@ -121,6 +122,7 @@ void arch_init_traps(void)
     lidt(&idt_ptr);
 
     gdt[GDTE_TSS] = GDTE(_u(&tss), 0x67, 0x89);
+    barrier();
     ltr(GDTE_TSS * 8);
 
     /*

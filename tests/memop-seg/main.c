@@ -260,28 +260,14 @@ void test_main(void)
     /* For 32bit, use segments with a limit of 2GB. */
     if ( IS_DEFINED(CONFIG_32BIT) )
     {
-        user_desc code = GDTE_SYM(0, 0x7ffff, COMMON, CODE, DPL3, R, D);
-        user_desc data = GDTE_SYM(0, 0x7ffff, COMMON, DATA, DPL3, B, W);
-
-        if ( IS_DEFINED(CONFIG_HVM) )
-        {
-            gdt[GDTE_AVAIL0] = code;
-            gdt[GDTE_AVAIL1] = data;
-        }
-        else
-        {
-            int rc = hypercall_update_descriptor(virt_to_maddr(
-                                                     &gdt[GDTE_AVAIL0]), code);
-
-            if ( !rc )
-                rc = hypercall_update_descriptor(virt_to_maddr(
-                                                     &gdt[GDTE_AVAIL1]), data);
-
-            if ( rc )
-                return xtf_error("Error: Update descriptor failed: %d\n", rc);
-        }
-
+        /* Code selector in AVAIL0 */
+        update_desc(&gdt[GDTE_AVAIL0],
+                    GDTE_SYM(0, 0x7ffff, COMMON, CODE, DPL3, R, D));
         exec_user_cs = GDTE_AVAIL0 << 3 | 3;
+
+        /* Data selector in AVAIL1 */
+        update_desc(&gdt[GDTE_AVAIL1],
+                    GDTE_SYM(0, 0x7ffff, COMMON, DATA, DPL3, B, W));
         exec_user_ss = GDTE_AVAIL1 << 3 | 3;
     }
 

@@ -146,9 +146,8 @@ void test_main(void)
      * Set up NMI handling to be a task gate.
      */
     xtf_unhandled_exception_hook = unhandled_exception;
-    gdt[GDTE_AVAIL0] = GDTE(_u(&nmi_tss), 0x67, 0x89);
+    update_desc(&gdt[GDTE_AVAIL0], GDTE(_u(&nmi_tss), 0x67, 0x89));
     pack_task_gate(&idt[X86_EXC_NMI], GDTE_AVAIL0 * 8);
-    barrier();
 
     /*
      * Send an NMI from supervisor mode, checking that we task switch back to

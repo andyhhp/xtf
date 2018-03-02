@@ -64,8 +64,7 @@ void test_main(void)
 
     user_desc ldt[1] = { gdt[__KERN_DS >> 3] };
 
-    gdt[GDTE_AVAIL0] = GDTE(_u(ldt), sizeof(ldt) - 1, 0x82);
-    barrier();
+    update_desc(&gdt[GDTE_AVAIL0], GDTE(_u(ldt), sizeof(ldt) - 1, 0x82));
 
     lldt(GDTE_AVAIL0 << 3);
     lldt(0);
