@@ -114,6 +114,8 @@ guest breakout.
 
 @subpage test-xsa-255 - grant table v2 -> v1 transition may crash Xen.
 
+@subpage test-xsa-259 - x86: PV guest may crash Xen with XPTI.
+
 
 @section index-utility Utilities
 
