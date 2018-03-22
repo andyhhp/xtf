@@ -116,6 +116,8 @@ guest breakout.
 
 @subpage test-xsa-259 - x86: PV guest may crash Xen with XPTI.
 
+@subpage test-xsa-260 - x86: mishandling of debug exceptions.
+
 
 @section index-utility Utilities
 
