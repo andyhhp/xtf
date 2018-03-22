@@ -138,10 +138,14 @@ void arch_init_traps(void)
     if ( !test_wants_user_mappings )
     {
         extern const char __start_user_text[], __end_user_text[];
+        extern const char __start_user_data[], __end_user_data[];
         extern const char __start_user_bss[],  __end_user_bss[];
 
         remap_user(virt_to_gfn(__start_user_text),
                    virt_to_gfn(__end_user_text));
+
+        remap_user(virt_to_gfn(__start_user_data),
+                   virt_to_gfn(__end_user_data));
 
         remap_user(virt_to_gfn(__start_user_bss),
                    virt_to_gfn(__end_user_bss));

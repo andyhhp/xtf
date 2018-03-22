@@ -255,9 +255,13 @@ void arch_init_traps(void)
          * structures which specifically want to be user.
          */
         extern const char __start_user_text[], __end_user_text[];
+        extern const char __start_user_data[], __end_user_data[];
         extern const char __start_user_bss[],  __end_user_bss[];
 
         remap_linear_range(__start_user_text, __end_user_text,
+                           PF_SYM(AD, U, RW, P));
+
+        remap_linear_range(__start_user_data, __end_user_data,
                            PF_SYM(AD, U, RW, P));
 
         remap_linear_range(__start_user_bss, __end_user_bss,

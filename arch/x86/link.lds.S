@@ -50,6 +50,12 @@ SECTIONS
         . = ALIGN(PAGE_SIZE);
                 *(.data.page_aligned)
         . = ALIGN(PAGE_SIZE);
+
+        __start_user_data = .;
+                *(.data.user)
+	. = ALIGN(PAGE_SIZE);
+        __end_user_data = .;
+
         }
 
         .rodata : {
@@ -94,6 +100,10 @@ ASSERT(IS_ALIGNED(user_stack, PAGE_SIZE), "user_stack misaligned");
 
 ASSERT(IS_ALIGNED(__start_user_text, PAGE_SIZE), "__start_user_text misaligned");
 ASSERT(IS_ALIGNED(__end_user_text,   PAGE_SIZE), "__end_user_text misaligned");
+ASSERT(IS_ALIGNED(__start_user_data, PAGE_SIZE), "__start_user_data misaligned");
+ASSERT(IS_ALIGNED(__end_user_data,   PAGE_SIZE), "__end_user_data misaligned")
+ASSERT(IS_ALIGNED(__start_user_bss,  PAGE_SIZE), "__start_user_data misaligned");
+ASSERT(IS_ALIGNED(__end_user_bss,    PAGE_SIZE), "__end_user_data misaligned")
 
 #ifdef CONFIG_HVM
 

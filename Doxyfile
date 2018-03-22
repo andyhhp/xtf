@@ -2036,7 +2036,9 @@ PREDEFINED             = __alias(x)= \
                          __noinline \
                          __noreturn \
                          __used \
+                         __user_data \
                          __user_page_aligned_bss \
+                         __user_text \
                          __weak \
 
 
