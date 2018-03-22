@@ -133,16 +133,10 @@ void arch_init_traps(void)
     {
         unsigned long gfn = virt_to_gfn(user_stack);
 
-        if ( gfn >= ARRAY_SIZE(l1_identmap) )
-            panic("user_stack[] outside of l1_identmap[]\n");
-
         l1_identmap[gfn] |= _PAGE_USER;
 
         extern const char __start_user_text[], __end_user_text[];
         unsigned long end = virt_to_gfn(__end_user_text);
-
-        if ( gfn >= ARRAY_SIZE(l1_identmap) )
-            panic("__{start,end}_user_text[] outside of l1_identmap[]\n");
 
         for ( gfn = virt_to_gfn(__start_user_text); gfn < end; ++gfn )
             l1_identmap[gfn] |= _PAGE_USER;

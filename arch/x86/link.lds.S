@@ -92,6 +92,9 @@ ASSERT(IS_ALIGNED(__end_user_text,   PAGE_SIZE), "__end_user_text misaligned");
 
 #ifdef CONFIG_HVM
 
+/* Check everything lives within l1_identmap[] for user and r/o mappings. */
+ASSERT(_end < (1 << (PT_ORDER + PAGE_SHIFT)), "Mappings exceed l1_identmap[]");
+
 ASSERT(IS_ALIGNED(pae_l1_identmap, PAGE_SIZE), "pae_l1_identmap misaligned");
 ASSERT(IS_ALIGNED(pae_l2_identmap, PAGE_SIZE), "pae_l2_identmap misaligned");
 ASSERT(IS_ALIGNED(pae_l3_identmap, PAGE_SIZE), "pae_l3_identmap misaligned");
