@@ -95,6 +95,12 @@ int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
     return 0;
 }
 
+static void remap_user(unsigned int start_gfn, unsigned int end_gfn)
+{
+    while ( start_gfn < end_gfn )
+        l1_identmap[start_gfn++] |= _PAGE_USER;
+}
+
 void arch_init_traps(void)
 {
     setup_gate(X86_EXC_DE,  &entry_DE,  0);
@@ -131,15 +137,14 @@ void arch_init_traps(void)
      */
     if ( !test_wants_user_mappings )
     {
-        unsigned long gfn = virt_to_gfn(user_stack);
-
-        l1_identmap[gfn] |= _PAGE_USER;
-
         extern const char __start_user_text[], __end_user_text[];
-        unsigned long end = virt_to_gfn(__end_user_text);
+        extern const char __start_user_bss[],  __end_user_bss[];
 
-        for ( gfn = virt_to_gfn(__start_user_text); gfn < end; ++gfn )
-            l1_identmap[gfn] |= _PAGE_USER;
+        remap_user(virt_to_gfn(__start_user_text),
+                   virt_to_gfn(__end_user_text));
+
+        remap_user(virt_to_gfn(__start_user_bss),
+                   virt_to_gfn(__end_user_bss));
 
         write_cr3(_u(cr3_target));
     }

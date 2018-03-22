@@ -87,6 +87,27 @@ static bool __maybe_unused ex_pf_user(struct cpu_regs *regs,
     return false;
 }
 
+static int remap_linear(const void *linear, uint64_t flags)
+{
+    intpte_t nl1e = pte_from_virt(linear, flags);
+
+    return hypercall_update_va_mapping(_u(linear), nl1e, UVMF_INVLPG);
+}
+
+static int __maybe_unused remap_linear_range(const void *start, const void *end,
+                                             uint64_t flags)
+{
+    int ret = 0;
+
+    while ( !ret && start < end )
+    {
+        ret = remap_linear(start, flags);
+        start += PAGE_SIZE;
+    }
+
+    return ret;
+}
+
 void arch_init_traps(void)
 {
     /* PV equivalent of `lidt`. */
@@ -96,8 +117,7 @@ void arch_init_traps(void)
         panic("Failed to set trap table: %d\n", rc);
 
     /* Register gdt[] with Xen.  Need to map it read-only first. */
-    if ( hypercall_update_va_mapping(
-             _u(gdt), pte_from_virt(gdt, PF_SYM(AD, P)), UVMF_INVLPG) )
+    if ( remap_linear(gdt, PF_SYM(AD, P)) )
         panic("Unable to remap gdt[] as read-only\n");
 
     unsigned long gdt_frames[] = {
@@ -234,23 +254,14 @@ void arch_init_traps(void)
          * If we haven't applied blanket PAGE_USER mappings, remap the
          * structures which specifically want to be user.
          */
-        intpte_t nl1e = pte_from_virt(user_stack, PF_SYM(AD, U, RW, P));
-
-        if ( hypercall_update_va_mapping(_u(user_stack), nl1e, UVMF_INVLPG) )
-            panic("Unable to remap user_stack with _PAGE_USER\n");
-
         extern const char __start_user_text[], __end_user_text[];
-        unsigned long linear = _u(__start_user_text);
+        extern const char __start_user_bss[],  __end_user_bss[];
 
-        while ( linear < _u(__end_user_text) )
-        {
-            nl1e = pte_from_virt(_p(linear), PF_SYM(AD, U, RW, P));
+        remap_linear_range(__start_user_text, __end_user_text,
+                           PF_SYM(AD, U, RW, P));
 
-            if ( hypercall_update_va_mapping(linear, nl1e, UVMF_INVLPG) )
-                panic("Unable to remap user_text with _PAGE_USER\n");
-
-            linear += PAGE_SIZE;
-        }
+        remap_linear_range(__start_user_bss, __end_user_bss,
+                           PF_SYM(AD, U, RW, P));
     }
 #endif
 

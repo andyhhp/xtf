@@ -72,6 +72,11 @@ SECTIONS
         . = ALIGN(PAGE_SIZE);
                 *(.bss.page_aligned)
         . = ALIGN(PAGE_SIZE);
+
+        __start_user_bss = .;
+                *(.bss.user.page_aligned)
+	. = ALIGN(PAGE_SIZE);
+        __end_user_bss = .;
         }
 
         _end = .;
