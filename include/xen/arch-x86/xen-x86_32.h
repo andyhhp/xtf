@@ -85,6 +85,9 @@ struct xen_callback {
 };
 typedef struct xen_callback xen_callback_t;
 
+#define INIT_XEN_CALLBACK(_cs, _ip) \
+    ((xen_callback_t){ .cs = _cs, .eip = _ip })
+
 #endif /* __ASSEMBLY__ */
 
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_X86_32_H */

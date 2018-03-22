@@ -35,6 +35,8 @@ void entry_XM(void);
 void entry_VE(void);
 void entry_ret_to_kernel(void);
 
+void entry_SYSCALL(void);
+
 struct xen_trap_info pv_default_trap_info[] =
 {
     { X86_EXC_DE,  0|4, __KERN_CS, _u(entry_DE)  },
@@ -108,13 +110,44 @@ static int __maybe_unused remap_linear_range(const void *start, const void *end,
     return ret;
 }
 
-void arch_init_traps(void)
+static void init_callbacks(void)
 {
     /* PV equivalent of `lidt`. */
     int rc = hypercall_set_trap_table(pv_default_trap_info);
 
     if ( rc )
         panic("Failed to set trap table: %d\n", rc);
+
+    xen_callback_register_t cb;
+
+#ifdef __x86_64__
+    cb = (xen_callback_register_t) {
+        .type = CALLBACKTYPE_syscall,
+        .flags = CALLBACKF_mask_events,
+        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
+    };
+
+    rc = hypercall_register_callback(&cb);
+    if ( rc )
+        panic("Failed to register syscall callback: %d\n", rc);
+#endif
+
+    cb = (xen_callback_register_t) {
+        .type = CALLBACKTYPE_syscall32,
+        .flags = CALLBACKF_mask_events,
+        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
+    };
+
+    rc = hypercall_register_callback(&cb);
+    if ( rc )
+        panic("Failed to register syscall32 callback: %d\n", rc);
+}
+
+void arch_init_traps(void)
+{
+    int rc;
+
+    init_callbacks();
 
     /* Register gdt[] with Xen.  Need to map it read-only first. */
     if ( remap_linear(gdt, PF_SYM(AD, P)) )

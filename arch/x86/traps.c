@@ -68,6 +68,11 @@ void do_exception(struct cpu_regs *regs)
     }
 }
 
+void __weak do_syscall(struct cpu_regs *regs)
+{
+    panic("Unhandled syscall\n");
+}
+
 /*
  * Local variables:
  * mode: C

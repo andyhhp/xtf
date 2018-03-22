@@ -154,6 +154,35 @@ ENTRY(exec_user_stub)
 ENDFUNC(exec_user_stub)
 .popsection
 
+#if defined(CONFIG_PV)
+ENTRY(entry_SYSCALL)
+        push $0
+        push $0x100
+
+        push %es
+        push %ds
+
+        SAVE_ALL
+
+        mov $__KERN_DS, %eax    /* Restore data segments. */
+        mov %eax, %ds
+        mov %eax, %es
+
+        push %esp               /* struct cpu_regs * */
+        call do_syscall
+        add $4, %esp
+
+        RESTORE_ALL
+
+        pop %ds
+        pop %es
+
+        add $8, %esp            /* Pop error_code/entry_vector. */
+
+        jmp HYPERCALL_iret
+ENDFUNC(entry_SYSCALL)
+#endif
+
 /*
  * Local variables:
  * tab-width: 8

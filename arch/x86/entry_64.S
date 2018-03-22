@@ -148,6 +148,26 @@ ENTRY(exec_user_stub)
 ENDFUNC(exec_user_stub)
 .popsection
 
+#if defined(CONFIG_PV)
+ENTRY(entry_SYSCALL)
+        env_ADJUST_FRAME
+
+        push $0
+        movl $0x100, 4(%rsp)
+
+        SAVE_ALL
+
+        mov %rsp, %rdi          /* struct cpu_regs * */
+        call do_syscall
+
+        RESTORE_ALL
+
+        movq $VGCF_in_syscall, (%rsp) /* Clobber error_code/entry_vector */
+        jmp HYPERCALL_iret
+
+ENDFUNC(entry_SYSCALL)
+#endif /* CONFIG_PV */
+
 /*
  * Local variables:
  * tab-width: 8

@@ -17,6 +17,9 @@
 
 #define MACH2PHYS_VIRT_START 0xFFFF800000000000UL
 
+/* Guest exited in SYSCALL context? Return to guest with SYSRET? */
+#define VGCF_in_syscall 0x100
+
 #ifndef __ASSEMBLY__
 
 /* Anonymous unions include all permissible names (e.g., al/ah/ax/eax/rax). */
@@ -89,6 +92,8 @@ struct arch_vcpu_info {
 };
 
 typedef unsigned long xen_callback_t;
+
+#define INIT_XEN_CALLBACK(_cs, _ip) (_ip)
 
 #endif /* __ASSEMBLY__ */
 

@@ -12,6 +12,7 @@
 #include <arch/msr.h>
 #include <arch/pagetable.h>
 #include <arch/symbolic-const.h>
+#include <arch/test.h>
 #include <arch/x86-dbg-reg.h>
 
 extern char _end[];
