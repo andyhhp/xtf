@@ -2032,6 +2032,7 @@ PREDEFINED             = __alias(x)= \
                          __page_aligned_bss \
                          __page_aligned_data \
                          __printf(x,y)= \
+                         __maybe_unused \
                          __noinline \
                          __noreturn \
                          __used \

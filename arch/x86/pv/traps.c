@@ -73,8 +73,8 @@ int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
     return hypercall_set_trap_table(ti);
 }
 
-#ifdef __i386__
-static bool ex_pf_user(struct cpu_regs *regs, const struct extable_entry *ex)
+static bool __maybe_unused ex_pf_user(struct cpu_regs *regs,
+                                      const struct extable_entry *ex)
 {
     if ( regs->entry_vector == X86_EXC_PF && read_cr2() == 0xfff )
     {
@@ -86,7 +86,6 @@ static bool ex_pf_user(struct cpu_regs *regs, const struct extable_entry *ex)
 
     return false;
 }
-#endif
 
 void arch_init_traps(void)
 {
