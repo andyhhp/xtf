@@ -124,6 +124,8 @@ guest breakout.
 
 @section index-in-development In Development
 
+@subpage test-debug-regs - Debugging facility tests.
+
 @subpage test-nested-svm - Nested SVM tests.
 
 @subpage test-nested-vmx - Nested VT-x tests.
