@@ -62,17 +62,6 @@
 #define X86_CR4_SMAP            0x00200000  /* SMAP                           */
 
 /*
- * DR6 status bits.
- */
-#define X86_DR6_B0              (1u <<  0)  /* Breakpoint 0 triggered  */
-#define X86_DR6_B1              (1u <<  1)  /* Breakpoint 1 triggered  */
-#define X86_DR6_B2              (1u <<  2)  /* Breakpoint 2 triggered  */
-#define X86_DR6_B3              (1u <<  3)  /* Breakpoint 3 triggered  */
-#define X86_DR6_BD              (1u << 13)  /* Debug register accessed */
-#define X86_DR6_BS              (1u << 14)  /* Single step             */
-#define X86_DR6_BT              (1u << 15)  /* Task switch             */
-
-/*
  * CPU features in XCR0.
  */
 #define _XSTATE_FP                0

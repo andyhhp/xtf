@@ -211,24 +211,6 @@ static inline void write_ss(unsigned int ss)
     asm volatile ("mov %0, %%ss" :: "r" (ss));
 }
 
-static inline unsigned long read_dr6(void)
-{
-    unsigned long val;
-
-    asm volatile ("mov %%dr6, %0" : "=r" (val));
-
-    return val;
-}
-
-static inline unsigned long read_dr7(void)
-{
-    unsigned long val;
-
-    asm volatile ("mov %%dr7, %0" : "=r" (val));
-
-    return val;
-}
-
 static inline unsigned long read_cr0(void)
 {
     unsigned long cr0;
