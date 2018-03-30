@@ -4,6 +4,7 @@
 #include <arch/apic.h>
 #include <arch/cpuid.h>
 #include <arch/exinfo.h>
+#include <arch/hpet.h>
 #include <arch/idt.h>
 #include <arch/lib.h>
 #include <arch/mm.h>

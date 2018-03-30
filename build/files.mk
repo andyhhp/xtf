@@ -29,6 +29,7 @@ obj-perenv += $(ROOT)/arch/x86/traps.o
 
 # HVM specific objects
 obj-hvm += $(ROOT)/arch/x86/apic.o
+obj-hvm += $(ROOT)/arch/x86/hpet.o
 obj-hvm += $(ROOT)/arch/x86/hvm/pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
 

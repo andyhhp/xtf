@@ -322,6 +322,10 @@ static void test_driver_init(void)
                     xtf_failure("Fail: apic_init(X2APIC) returned %d\n", rc);
             }
         }
+
+        rc = hpet_init();
+        if ( rc && rc != -ENODEV )
+            xtf_failure("Fail: hpet_init() returned %d\n", rc);
     }
 
     rc = xenstore_init();
