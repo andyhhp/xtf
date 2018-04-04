@@ -124,9 +124,9 @@ ENTRY(exec_user_param)          /* ulong (*fn)(ulong), ulong p1 */
 
         /* Apply and/or masks to eflags. */
         mov exec_user_efl_and_mask(%rip), %rdx
-        and %rdx, (%esp)
+        and %rdx, (%rsp)
         mov exec_user_efl_or_mask(%rip), %rdx
-        or %rdx, (%esp)
+        or %rdx, (%rsp)
 
         push exec_user_cs(%rip) /* CS */
         push $exec_user_stub    /* RIP */
