@@ -50,17 +50,27 @@
 
 #ifdef __x86_64__
 
-#define __KERN_CS (GDTE_CS64_DPL0 * 8)
-#define __KERN_DS (0)
-#define __USER_CS (GDTE_CS64_DPL3 * 8 + 3)
-#define __USER_DS (GDTE_DS32_DPL3 * 8 + 3)
+#define __KERN_CS   (GDTE_CS64_DPL0 * 8)
+#define __KERN_DS   (0)
+#define __KERN_CS32 (GDTE_CS32_DPL0 * 8)
+#define __KERN_DS32 __KERN_DS
+
+#define __USER_CS   (GDTE_CS64_DPL3 * 8 + 3)
+#define __USER_DS   (GDTE_DS32_DPL3 * 8 + 3)
+#define __USER_CS32 (GDTE_CS32_DPL3 * 8 + 3)
+#define __USER_DS32 __USER_DS
 
 #else /* __x86_64__ */
 
-#define __KERN_CS (GDTE_CS32_DPL0 * 8)
-#define __KERN_DS (GDTE_DS32_DPL0 * 8)
-#define __USER_CS (GDTE_CS32_DPL3 * 8 + 3)
-#define __USER_DS (GDTE_DS32_DPL3 * 8 + 3)
+#define __KERN_CS   (GDTE_CS32_DPL0 * 8)
+#define __KERN_DS   (GDTE_DS32_DPL0 * 8)
+#define __KERN_CS32 __KERN_CS
+#define __KERN_DS32 __KERN_DS
+
+#define __USER_CS   (GDTE_CS32_DPL3 * 8 + 3)
+#define __USER_DS   (GDTE_DS32_DPL3 * 8 + 3)
+#define __USER_CS32 __USER_CS
+#define __USER_DS32 __USER_DS
 
 #endif /* __x86_64__ */
 
@@ -83,17 +93,27 @@
  * __{KERN,USER}_DS are used for all data selectors including %ss, use the
  * FLAT_RING3_SS64 rather than FLAT_RING3_DS64.
  */
-#define __KERN_CS (FLAT_RING3_CS64 & ~3)
-#define __KERN_DS (FLAT_RING3_SS64 & ~3)
-#define __USER_CS FLAT_RING3_CS64
-#define __USER_DS FLAT_RING3_SS64
+#define __KERN_CS   (FLAT_RING3_CS64 & ~3)
+#define __KERN_DS   (FLAT_RING3_SS64 & ~3)
+#define __KERN_CS32 (FLAT_RING3_CS32 & ~3)
+#define __KERN_DS32 __KERN_DS
+
+#define __USER_CS   FLAT_RING3_CS64
+#define __USER_DS   FLAT_RING3_SS64
+#define __USER_CS32 FLAT_RING3_CS32
+#define __USER_DS32 __USER_DS
 
 #else /* __x86_64__ */
 
-#define __KERN_CS FLAT_RING1_CS
-#define __KERN_DS FLAT_RING1_DS
-#define __USER_CS FLAT_RING3_CS
-#define __USER_DS FLAT_RING3_DS
+#define __KERN_CS   FLAT_RING1_CS
+#define __KERN_DS   FLAT_RING1_DS
+#define __KERN_CS32 __KERN_CS
+#define __KERN_DS32 __KERN_DS
+
+#define __USER_CS   FLAT_RING3_CS
+#define __USER_DS   FLAT_RING3_DS
+#define __USER_CS32 __USER_CS
+#define __USER_DS32 __USER_DS
 
 #endif /* __x86_64__ */
 

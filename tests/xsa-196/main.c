@@ -60,7 +60,7 @@ unsigned long compat_userspace(void)
                   ".code64; 1:"
                   : "+a" (fault)
                   : [df]   "i" (X86_EXC_DF),
-                    [cs32] "i" (GDTE_CS32_DPL3 * 8 + 3),
+                    [cs32] "i" (__USER_CS32),
                     [cs]   "i" (__USER_CS),
                     "X" (ex_record_fault_eax));
 
