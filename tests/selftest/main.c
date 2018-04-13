@@ -326,6 +326,10 @@ static void test_driver_init(void)
         rc = hpet_init();
         if ( rc && rc != -ENODEV )
             xtf_failure("Fail: hpet_init() returned %d\n", rc);
+
+        rc = ioapic_init();
+        if ( rc && rc != -ENODEV )
+            xtf_failure("Fail: ioapic_init() returned %d\n", rc);
     }
 
     rc = xenstore_init();

@@ -6,6 +6,7 @@
 #include <arch/exinfo.h>
 #include <arch/hpet.h>
 #include <arch/idt.h>
+#include <arch/io-apic.h>
 #include <arch/lib.h>
 #include <arch/mm.h>
 #include <arch/msr.h>

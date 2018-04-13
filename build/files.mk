@@ -32,6 +32,7 @@ obj-hvm += $(ROOT)/arch/x86/apic.o
 obj-hvm += $(ROOT)/arch/x86/hpet.o
 obj-hvm += $(ROOT)/arch/x86/hvm/pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
+obj-hvm += $(ROOT)/arch/x86/io-apic.o
 
 # Arguably common objects, but PV guests will have no interest in them.
 obj-hvm += $(ROOT)/arch/x86/vmx.o

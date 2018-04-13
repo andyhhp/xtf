@@ -21,8 +21,8 @@ const char test_title[] = "XSA-239 PoC";
 
 void test_main(void)
 {
-    uint32_t *io_apic_32 = _p(0xfec00000);
-    uint8_t  *io_apic_8 =  _p(0xfec00000);
+    uint32_t *io_apic_32 = _p(IOAPIC_DEFAULT_BASE);
+    uint8_t  *io_apic_8 =  _p(IOAPIC_DEFAULT_BASE);
     unsigned int i;
 
     /*
