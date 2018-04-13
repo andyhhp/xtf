@@ -37,9 +37,7 @@ static inline uint32_t ioapic_read32(unsigned int reg)
 
 static inline uint64_t ioapic_read64(unsigned int reg)
 {
-    *(volatile uint64_t *)_p(IOAPIC_DEFAULT_BASE + IOAPIC_REGSEL) = reg;
-
-    return *(volatile uint64_t *)_p(IOAPIC_DEFAULT_BASE + IOAPIC_IOWIN);
+    return ioapic_read32(reg) | (uint64_t)ioapic_read32(reg + 1) << 32;
 }
 
 static inline void ioapic_write32(unsigned int reg, uint32_t val)
@@ -50,8 +48,8 @@ static inline void ioapic_write32(unsigned int reg, uint32_t val)
 
 static inline void ioapic_write64(unsigned int reg, uint64_t val)
 {
-    *(volatile uint64_t *)_p(IOAPIC_DEFAULT_BASE + IOAPIC_REGSEL) = reg;
-    *(volatile uint64_t *)_p(IOAPIC_DEFAULT_BASE + IOAPIC_IOWIN) = val;
+    ioapic_write32(reg, val);
+    ioapic_write32(reg + 1, val >> 32);
 }
 
 #endif /* !XTF_X86_IO_APIC_H */
