@@ -18,6 +18,12 @@
 #define __has_extension(x) GCC_HAS_ ## x
 #endif /* __has_extension */
 
+#ifdef __GCC_ASM_FLAG_OUTPUTS__
+# define ASM_FLAG_OUT(yes, no) yes
+#else
+# define ASM_FLAG_OUT(yes, no) no
+#endif
+
 #endif /* XTF_COMPILER_GCC_H */
 
 /*

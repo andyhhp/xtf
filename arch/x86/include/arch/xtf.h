@@ -13,6 +13,7 @@
 #include <arch/pagetable.h>
 #include <arch/symbolic-const.h>
 #include <arch/test.h>
+#include <arch/tsx.h>
 #include <arch/x86-dbg-reg.h>
 
 extern char _end[];
