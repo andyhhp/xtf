@@ -23,7 +23,8 @@ typedef unsigned int exinfo_t;
 #define EXINFO_AVAIL1   (1u << 25)
 #define EXINFO_AVAIL0   (1u << 24)
 
-#define EXINFO(vec, ec) (EXINFO_EXPECTED | ((vec & 0xff) << 16) | (ec & 0xffff))
+#define EXINFO(vec, ec) (EXINFO_EXPECTED |                          \
+                         (((vec) & 0xff) << 16) | ((ec) & 0xffff))
 
 #define EXINFO_SYM(exc, ec) EXINFO(X86_EXC_ ## exc, ec)
 
