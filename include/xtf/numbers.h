@@ -37,6 +37,9 @@
  */
 #define IS_ALIGNED(val, align) (((val) & ((align) - 1)) == 0)
 
+#define MASK_EXTR(v, m) (((v) & (m)) / ((m) & -(m)))
+#define MASK_INSR(v, m) (((v) * ((m) & -(m))) & (m))
+
 #ifndef __ASSEMBLY__
 
 /**

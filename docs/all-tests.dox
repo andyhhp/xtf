@@ -118,6 +118,8 @@ guest breakout.
 
 @subpage test-xsa-260 - x86: mishandling of debug exceptions.
 
+@subpage test-xsa-261 - vHPET interrupt injection memory corruption.
+
 
 @section index-utility Utilities
 

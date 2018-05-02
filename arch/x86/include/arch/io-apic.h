@@ -20,6 +20,11 @@
 /* IO-APIC registers. */
 #define IOAPIC_ID                 0x0
 
+#define IOAPIC_VERSION            0x1
+#define   IOAPIC_MAXREDIR_MASK    0xff0000
+
+#define IOAPIC_REDIR_ENTRY(e)     (0x10 + (e) * 2)
+#define   IOAPIC_REDIR_MASK_SHIFT 16
 
 #define IOAPIC_DEFAULT_BASE       0xfec00000
 
@@ -51,6 +56,11 @@ static inline void ioapic_write64(unsigned int reg, uint64_t val)
     ioapic_write32(reg, val);
     ioapic_write32(reg + 1, val >> 32);
 }
+
+/**
+ * Set the mask bit on a redirection entry.
+ */
+int ioapic_set_mask(unsigned int entry, bool mask);
 
 #endif /* !XTF_X86_IO_APIC_H */
 
