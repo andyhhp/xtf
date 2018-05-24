@@ -43,7 +43,7 @@ GLOBAL(_start)                  /* HVM common setup. */
 #ifdef __x86_64__               /* EFER.LME = 1 */
         mov $MSR_EFER, %ecx
         rdmsr
-        bts $_EFER_LME, %eax
+        or  $EFER_LME, %eax
         wrmsr
 #endif /* __x86_64__ */
 

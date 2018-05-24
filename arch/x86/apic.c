@@ -14,15 +14,15 @@ enum apic_mode cur_apic_mode;
 
 static enum apic_mode apicbase_to_mode(uint64_t apicbase)
 {
-    switch ( apicbase & (MSR_APICBASE_EXTD | MSR_APICBASE_ENABLE) )
+    switch ( apicbase & (APICBASE_EXTD | APICBASE_ENABLE) )
     {
     case 0:
         return APIC_MODE_DISABLED;
 
-    case MSR_APICBASE_ENABLE:
+    case APICBASE_ENABLE:
         return APIC_MODE_XAPIC;
 
-    case MSR_APICBASE_EXTD | MSR_APICBASE_ENABLE:
+    case APICBASE_EXTD | APICBASE_ENABLE:
         return APIC_MODE_X2APIC;
 
     default:
@@ -75,15 +75,15 @@ int apic_init(enum apic_mode mode)
     if ( mode != cur_apic_mode )
     {
         msrval = rdmsr(MSR_APICBASE) &
-            ~(MSR_APICBASE_EXTD | MSR_APICBASE_ENABLE);
+            ~(APICBASE_EXTD | APICBASE_ENABLE);
 
         wrmsr(MSR_APICBASE, msrval);
 
         if ( mode == APIC_MODE_XAPIC || mode == APIC_MODE_X2APIC )
-            wrmsr(MSR_APICBASE, msrval | MSR_APICBASE_ENABLE);
+            wrmsr(MSR_APICBASE, msrval | APICBASE_ENABLE);
 
         if ( mode == APIC_MODE_X2APIC )
-            wrmsr(MSR_APICBASE, msrval | MSR_APICBASE_ENABLE | MSR_APICBASE_EXTD);
+            wrmsr(MSR_APICBASE, msrval | APICBASE_ENABLE | APICBASE_EXTD);
 
         cur_apic_mode = mode;
     }

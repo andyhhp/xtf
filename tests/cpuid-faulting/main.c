@@ -95,7 +95,7 @@ void test_main(void)
 
     /* Probe for CPUID Faulting support. */
     if ( rdmsr_safe(MSR_INTEL_PLATFORM_INFO, &platform_info) ||
-         !(platform_info & MSR_PLATFORM_INFO_CPUID_FAULTING) )
+         !(platform_info & PLATFORM_INFO_CPUID_FAULTING) )
         return xtf_skip("Skip: CPUID Faulting unavailable\n");
 
     if ( rdmsr_safe(MSR_INTEL_MISC_FEATURES_ENABLES, &features_enable) )
@@ -103,7 +103,7 @@ void test_main(void)
 
     /* Attempt to enable CPUID Faulting. */
     if ( wrmsr_safe(MSR_INTEL_MISC_FEATURES_ENABLES,
-                    features_enable | MSR_MISC_FEATURES_CPUID_FAULTING) )
+                    features_enable | MISC_FEATURES_CPUID_FAULTING) )
         return xtf_failure("Fail: Unable to enable CPUID Faulting\n");
 
     /* Faulting active.  CPUID should fault ouside of the kernel. */

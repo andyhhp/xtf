@@ -59,7 +59,7 @@ void test_main(void)
     /* Probe for, and enable Last Branch Record. */
     if ( rdmsr_safe(MSR_DEBUGCTL, &dbgctl) )
         return xtf_skip("Skip: MSR_DEBUGCTL not available\n");
-    else if ( wrmsr_safe(MSR_DEBUGCTL, dbgctl | MSR_DEBUGCTL_LBR) )
+    else if ( wrmsr_safe(MSR_DEBUGCTL, dbgctl | DEBUGCTL_LBR) )
         return xtf_skip("Skip: MSR_DEBUGCTL.LBR not available\n");
 
     /* Construct a function pointer to int3_stub() via its upper alias. */
