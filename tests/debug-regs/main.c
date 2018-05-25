@@ -4,6 +4,15 @@
  *
  * @page test-debug-regs Debug register and control tests
  *
+ * The following general tests are implemented:
+ *
+ * 1.  Xen, before
+ *     [46029da12e](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=46029da12e5efeca6d957e5793bd34f2965fa0a1)
+ *     failed to initialise the guests debug registers correctly.  On hardware
+ *     which supports Restricted Transactional Memory, this becomes visible,
+ *     as @%dr6.rtm appears asserted (clear, for backwards compatibility)
+ *     despite an RTM @#DE not having occurred.
+ *
  * The following PV tests are implemented:
  *
  * 1.  Xen, between
@@ -22,7 +31,7 @@
  *     (Xen 4.11) had a bug whereby a write which cleared @%dr7.L/G would
  *     leave stale IO shadow state visible in later reads of @%dr7.
  *
- *     Unfortunately, that changset introduced a second bug, fixed by
+ *     Unfortunately, that changeset introduced a second bug, fixed by
  *     [237c31b5a1](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=237c31b5a1d5aa88cdb59b8c31b1b62eb13e82d1)
  *     (Xen 4.11), which caused an attempt to set up an IO breakpoint with
  *     @%cr4.DE clear to clobber an already configured state, despite the
@@ -33,6 +42,34 @@
 #include <xtf.h>
 
 const char test_title[] = "Debugging facility tests";
+
+static void check_initial_state(unsigned int dr, unsigned long exp,
+                                unsigned long got)
+{
+    if ( got != exp )
+        xtf_failure("  Fail: %%dr%u expected %p, got %p\n",
+                    dr, _p(exp), _p(got));
+}
+
+static void test_initial_debug_state(void)
+{
+    printk("Test initial debug state\n");
+
+    if ( read_cr4() & X86_CR4_DE )
+        xtf_failure("  Fail: %%cr4.de expected to be clear\n");
+
+    check_initial_state(0, 0, read_dr0());
+    check_initial_state(1, 0, read_dr1());
+    check_initial_state(2, 0, read_dr2());
+    check_initial_state(3, 0, read_dr3());
+    check_initial_state(6, X86_DR6_DEFAULT, read_dr6());
+    check_initial_state(7, X86_DR7_DEFAULT, read_dr7());
+
+    uint64_t val;
+    if ( (val = rdmsr(MSR_DEBUGCTL)) != 0 )
+         xtf_failure("  Fail: MSR_DEBUGCTL expected %08x, got %08"PRIx64"\n",
+                     0, val);
+}
 
 /*
  * Attempt to detect a failure to latch %dr7.  A full vcpu context switch, or
@@ -145,6 +182,8 @@ static void test_pv_dr7_io_breakpoints(void)
 
 void test_main(void)
 {
+    test_initial_debug_state();
+
     if ( IS_DEFINED(CONFIG_PV) )
     {
         test_pv_dr7_latch();

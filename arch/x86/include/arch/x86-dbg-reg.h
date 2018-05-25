@@ -99,9 +99,27 @@
  */
 #define DR7_SYM(bp, ...) TOK_OR(X86_DR7_ ## bp ## _, ##__VA_ARGS__)
 
+static inline unsigned long read_dr0(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr0, %0" : "=r" (val));
+
+    return val;
+}
+
 static inline void write_dr0(unsigned long linear)
 {
     asm volatile ("mov %0, %%dr0" :: "r" (linear));
+}
+
+static inline unsigned long read_dr1(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr1, %0" : "=r" (val));
+
+    return val;
 }
 
 static inline void write_dr1(unsigned long linear)
@@ -109,9 +127,27 @@ static inline void write_dr1(unsigned long linear)
     asm volatile ("mov %0, %%dr1" :: "r" (linear));
 }
 
+static inline unsigned long read_dr2(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr2, %0" : "=r" (val));
+
+    return val;
+}
+
 static inline void write_dr2(unsigned long linear)
 {
     asm volatile ("mov %0, %%dr2" :: "r" (linear));
+}
+
+static inline unsigned long read_dr3(void)
+{
+    unsigned long val;
+
+    asm volatile ("mov %%dr3, %0" : "=r" (val));
+
+    return val;
 }
 
 static inline void write_dr3(unsigned long linear)
