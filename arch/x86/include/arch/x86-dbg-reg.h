@@ -19,9 +19,9 @@
 #define X86_DR6_BD              (1u << 13)  /* Debug register accessed */
 #define X86_DR6_BS              (1u << 14)  /* Single step             */
 #define X86_DR6_BT              (1u << 15)  /* Task switch             */
-#define X86_DR6_NOT_RTM         (1u << 16)  /* #DB/#BP in RTM region   */
+#define X86_DR6_RTM             (1u << 16)  /* #DB/#BP in RTM region   */
 
-#define X86_DR6_RESET           0xffff0ff0u
+#define X86_DR6_DEFAULT         0xffff0ff0
 
 /*
  * DR7 unique control bits.
@@ -30,6 +30,8 @@
 #define X86_DR7_GE              (1u <<  9)  /* Global Exact Breakpoints */
 #define X86_DR7_RTM             (1u << 11)  /* Debugging in RTM regions */
 #define X86_DR7_GD              (1u << 13)  /* General Detect           */
+
+#define X86_DR7_DEFAULT         0x00000400
 
 /*
  * DR7 common control bits.  Intended for use with the DR7_SYM() helper.
