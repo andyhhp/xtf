@@ -43,7 +43,7 @@ static void undo_stack(struct cpu_regs *regs)
     if ( IS_DEFINED(CONFIG_32BIT) )
         ASSERT((regs->cs & 3) == 3);
 
-    regs->_sp = regs->bp;
+    regs->_sp = regs->bx;
 }
 
 void do_syscall(struct cpu_regs *regs)
@@ -79,7 +79,7 @@ static bool ex_check_UD(struct cpu_regs *regs, const struct extable_entry *ex)
 static void __user_text user_syscall(void)
 {
     asm volatile (/* Stash the stack pointer before clobbering it. */
-                  "mov %%" _ASM_SP ", %%" _ASM_BP ";"
+                  "mov %%" _ASM_SP ", %%" _ASM_BX ";"
 
                   "btc $%c[bit], %%" _ASM_SP ";"
                   "mov %[ss], %%ss;"
@@ -90,9 +90,9 @@ static void __user_text user_syscall(void)
                     [ss]  "m" (user_ss),
                     "X" (ex_check_UD)
 #ifdef __x86_64__
-                  : "rbp", "rcx", "r11"
+                  : "rbx", "rcx", "r11"
 #else
-                  : "ebp", "ecx", "edx"
+                  : "ebx", "ecx", "edx"
 #endif
         );
 }
@@ -100,7 +100,7 @@ static void __user_text user_syscall(void)
 static void __user_text user_syscall_compat(void)
 {
     asm volatile (/* Stash the stack pointer before clobbering it. */
-                  "mov %%" _ASM_SP ", %%" _ASM_BP ";"
+                  "mov %%" _ASM_SP ", %%" _ASM_BX ";"
 
                   /* Drop to a 32bit compat code segment. */
                   "push $%c[cs32];"
@@ -129,9 +129,9 @@ static void __user_text user_syscall_compat(void)
                     [cs64]   "i" (__USER_CS),
                     "X" (ex_check_UD)
 #ifdef __x86_64__
-                  : "rbp", "rcx", "r11"
+                  : "rbx", "rcx", "r11"
 #else
-                  : "ebp", "ecx", "edx"
+                  : "ebx", "ecx", "edx"
 #endif
         );
 }
