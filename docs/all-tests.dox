@@ -120,6 +120,9 @@ guest breakout.
 
 @subpage test-xsa-261 - vHPET interrupt injection memory corruption.
 
+@subpage test-xsa-265 - x86: @#DB exception safety check can be triggered by a
+guest.
+
 
 @section index-utility Utilities
 
