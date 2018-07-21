@@ -90,6 +90,12 @@ static inline void exec_user_void(void (*fn)(void))
 int xtf_probe_sysctl_interface_version(void);
 
 /**
+ * Probe for the DOMCTL_INTERFACE_VERSION in use by the hypervisor
+ * @returns version, or -1 on failure.
+ */
+int xtf_probe_domctl_interface_version(void);
+
+/**
  * Obtain the current domid.
  * @returns domid, or -1 on failure.
  */

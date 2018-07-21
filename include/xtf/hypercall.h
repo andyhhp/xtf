@@ -30,6 +30,7 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 
 /* All Xen ABI for includers convenience .*/
 #include <xen/callback.h>
+#include <xen/domctl.h>
 #include <xen/elfnote.h>
 #include <xen/errno.h>
 #include <xen/event_channel.h>
@@ -168,6 +169,11 @@ static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
 static inline long hypercall_sysctl(xen_sysctl_t *arg)
 {
     return HYPERCALL1(long, __HYPERVISOR_sysctl, arg);
+}
+
+static inline long hypercall_domctl(xen_domctl_t *arg)
+{
+    return HYPERCALL1(long, __HYPERVISOR_domctl, arg);
 }
 
 /*

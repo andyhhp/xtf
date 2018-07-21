@@ -43,6 +43,21 @@ int xtf_probe_sysctl_interface_version(void)
     return -1;
 }
 
+int xtf_probe_domctl_interface_version(void)
+{
+    int i;
+    struct xen_domctl op = { .cmd = 0 };
+
+    for ( i = 0; i < 128; i++ )
+    {
+        op.interface_version = i;
+        if ( hypercall_domctl(&op) != -EACCES )
+            return i;
+    }
+
+    return -1;
+}
+
 int xtf_get_domid(void)
 {
     int rc = xenstore_init();

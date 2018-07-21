@@ -132,6 +132,43 @@ struct arch_shared_info {
 #endif
 };
 
+/*
+ * struct xen_arch_domainconfig's ABI is covered by
+ * XEN_DOMCTL_INTERFACE_VERSION.
+ */
+struct xen_arch_domainconfig {
+#define _XEN_X86_EMU_LAPIC          0
+#define XEN_X86_EMU_LAPIC           (1U<<_XEN_X86_EMU_LAPIC)
+#define _XEN_X86_EMU_HPET           1
+#define XEN_X86_EMU_HPET            (1U<<_XEN_X86_EMU_HPET)
+#define _XEN_X86_EMU_PM             2
+#define XEN_X86_EMU_PM              (1U<<_XEN_X86_EMU_PM)
+#define _XEN_X86_EMU_RTC            3
+#define XEN_X86_EMU_RTC             (1U<<_XEN_X86_EMU_RTC)
+#define _XEN_X86_EMU_IOAPIC         4
+#define XEN_X86_EMU_IOAPIC          (1U<<_XEN_X86_EMU_IOAPIC)
+#define _XEN_X86_EMU_PIC            5
+#define XEN_X86_EMU_PIC             (1U<<_XEN_X86_EMU_PIC)
+#define _XEN_X86_EMU_VGA            6
+#define XEN_X86_EMU_VGA             (1U<<_XEN_X86_EMU_VGA)
+#define _XEN_X86_EMU_IOMMU          7
+#define XEN_X86_EMU_IOMMU           (1U<<_XEN_X86_EMU_IOMMU)
+#define _XEN_X86_EMU_PIT            8
+#define XEN_X86_EMU_PIT             (1U<<_XEN_X86_EMU_PIT)
+#define _XEN_X86_EMU_USE_PIRQ       9
+#define XEN_X86_EMU_USE_PIRQ        (1U<<_XEN_X86_EMU_USE_PIRQ)
+#define _XEN_X86_EMU_VPCI           10
+#define XEN_X86_EMU_VPCI            (1U<<_XEN_X86_EMU_VPCI)
+
+#define XEN_X86_EMU_ALL             (XEN_X86_EMU_LAPIC | XEN_X86_EMU_HPET |  \
+                                     XEN_X86_EMU_PM | XEN_X86_EMU_RTC |      \
+                                     XEN_X86_EMU_IOAPIC | XEN_X86_EMU_PIC |  \
+                                     XEN_X86_EMU_VGA | XEN_X86_EMU_IOMMU |   \
+                                     XEN_X86_EMU_PIT | XEN_X86_EMU_USE_PIRQ |\
+                                     XEN_X86_EMU_VPCI)
+    uint32_t emulation_flags;
+};
+
 #endif
 
 /**
