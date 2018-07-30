@@ -27,6 +27,9 @@
 
 #define MSR_DEBUGCTL                    0x000001d9
 #define DEBUGCTL_LBR                    (_AC(1, ULL) <<  0) /* Last Branch Record */
+#define DEBUGCTL_TR                     (_AC(1, ULL) <<  6) /* Trace Message Enable */
+#define DEBUGCTL_BTS                    (_AC(1, ULL) <<  7) /* Branch Trace Store */
+#define DEBUGCTL_BTINT                  (_AC(1, ULL) <<  8) /* Branch Trace Interrupt */
 
 #define MSR_FIXED_CTR(n)               (0x00000309 + (n))
 #define MSR_PERF_CAPABILITIES           0x00000345

@@ -68,6 +68,7 @@ static inline bool cpu_has(unsigned int feature)
 #define cpu_has_mca             cpu_has(X86_FEATURE_MCA)
 #define cpu_has_pat             cpu_has(X86_FEATURE_PAT)
 #define cpu_has_pse36           cpu_has(X86_FEATURE_PSE36)
+#define cpu_has_ds              cpu_has(X86_FEATURE_DS)
 #define cpu_has_mmx             cpu_has(X86_FEATURE_MMX)
 #define cpu_has_fxsr            cpu_has(X86_FEATURE_FXSR)
 
