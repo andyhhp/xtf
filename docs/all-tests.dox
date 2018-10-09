@@ -126,6 +126,9 @@ guest.
 @subpage test-xsa-269 - x86: Incorrect MSR_DEBUGCTL handling lets guests
 enable BTS.
 
+@subpage test-xsa-277 - x86: incorrect error handling for guest p2m page
+removals.
+
 @subpage test-xsa-278 - x86: Nested VT-x usable even when disabled.
 
 
