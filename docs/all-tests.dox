@@ -126,6 +126,8 @@ guest.
 @subpage test-xsa-269 - x86: Incorrect MSR_DEBUGCTL handling lets guests
 enable BTS.
 
+@subpage test-xsa-278 - x86: Nested VT-x usable even when disabled.
+
 
 @section index-utility Utilities
 
