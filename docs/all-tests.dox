@@ -131,6 +131,9 @@ removals.
 
 @subpage test-xsa-278 - x86: Nested VT-x usable even when disabled.
 
+@subpage test-xsa-279 - x86: DoS from attempting to use INVPCID with a
+non-canonical addresses.
+
 
 @section index-utility Utilities
 
