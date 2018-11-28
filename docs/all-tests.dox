@@ -148,6 +148,8 @@ XSA-293 - See @ref test-pv-fsgsbase.
 @subpage test-xsa-298 - missing descriptor table limit checking in x86 PV
 emulation.
 
+@subpage test-xsa-304 - x86: Machine Check Error on Page Size Change DoS.
+
 @subpage test-xsa-consoleio-write - CONSOLEIO_write stack overflow.
 
 @subpage test-xsa-308 - VMX: VMentry failure with debug exceptions and blocked

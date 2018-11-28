@@ -390,6 +390,11 @@ static inline void clflush(const void *ptr)
     asm volatile ("clflush %0" :: "m" (*(const char *)ptr));
 }
 
+static inline void flush_tlb(void)
+{
+    write_cr3(read_cr3());
+}
+
 #endif /* XTF_X86_LIB_H */
 
 /*
