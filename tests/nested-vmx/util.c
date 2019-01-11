@@ -90,12 +90,14 @@ exinfo_t stub_vmxon(uint64_t paddr)
                   : [paddr] "m" (paddr),
                     "X" (ex_record_fault_edi));
 
-    if ( fail_invalid )
+    if ( ex )
+        return ex;
+    else if ( fail_invalid )
         return VMERR_INVALID;
     else if ( fail_valid )
         return get_vmx_insn_err();
     else
-        return ex;
+        return VMERR_SUCCESS;
 }
 
 exinfo_t stub_vmptrld(uint64_t paddr)
@@ -114,12 +116,14 @@ exinfo_t stub_vmptrld(uint64_t paddr)
                   : [paddr] "m" (paddr),
                     "X" (ex_record_fault_edi));
 
-    if ( fail_invalid )
+    if ( ex )
+        return ex;
+    else if ( fail_invalid )
         return VMERR_INVALID;
     else if ( fail_valid )
         return get_vmx_insn_err();
     else
-        return ex;
+        return VMERR_SUCCESS;
 }
 
 exinfo_t __user_text stub_vmxon_user(uint64_t paddr)
@@ -138,12 +142,14 @@ exinfo_t __user_text stub_vmxon_user(uint64_t paddr)
                   : [paddr] "m" (paddr),
                     "X" (ex_record_fault_edi));
 
-    if ( fail_invalid )
+    if ( ex )
+        return ex;
+    else if ( fail_invalid )
         return VMERR_INVALID;
     else if ( fail_valid )
         return get_vmx_insn_err();
     else
-        return ex;
+        return VMERR_SUCCESS;
 }
 
 /*
