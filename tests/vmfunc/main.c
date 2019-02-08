@@ -104,7 +104,19 @@ struct xen_hvm_altp2m_op {
     } u;
 };
 
+void int_ff_handler(void);
+const char int_str[] = "In int_ff_handler() => %%cs %04x\n";
+asm(".align 16;"
+    "int_ff_handler:"
+    "lea int_str(%rip), %rdi;"
+    "mov %cs, %rsi;"
+    "xor %eax, %eax;"
+    "call printk;"
+    "iretq;"
+    );
+
 static uint8_t ve_frame[PAGE_SIZE] __page_aligned_bss;
+static user_desc ldt[PAGE_SIZE / sizeof(user_desc)] __page_aligned_bss;
 
 void test_main(void)
 {
@@ -150,15 +162,35 @@ void test_main(void)
     rc = hypercall_hvm_op(HVMOP_altp2m, &ap2m);
     printk("ap2m enable notify: %d\n", rc);
 
-    printk("Switching to view %u\n", view);
-    asm volatile ("vmfunc" :: "a" (0), "c" (view));
-    printk("Switching to view %u done\n", view);
+    if ( 1 )
+    {
+        printk("Switching to view %u\n", view);
+        asm volatile ("vmfunc" :: "a" (0), "c" (view));
+        printk("Switching to view %u done\n", view);
+    }
+
+    /* Construct an LDT %cs which suffers #VE when read. */
+    printk("Constructing LDT\n");
+    ldt[0] = gdt[__KERN_CS >> 3];
+    /* ldt[0].a = 0; */
+    update_desc(&gdt[GDTE_AVAIL0], GDTE(_u(ldt), sizeof(ldt) - 1, 0x82));
+    lldt(GDTE_AVAIL0 << 3);
+    barrier();
+
+    struct xtf_idte idte = {
+        .addr = _u(int_ff_handler),
+        .cs   = 4,
+        .dpl  = 0,
+    };
+
+    xtf_set_idte(0xff, &idte);
+    printk("Constructing LDT done\n");
 
     ap2m.cmd = HVMOP_altp2m_set_mem_access;
     ap2m.u.mem_access = (struct xen_hvm_altp2m_mem_access){
         .view = view,
-        .access = /* XENMEM_access_r */ 1,
-        .gfn = 1,
+        .access = /* XENMEM_access_x */ 1,
+        .gfn = virt_to_gfn(ldt),
     };
 
     printk("ap2m set access\n");
@@ -169,13 +201,22 @@ void test_main(void)
     ap2m.u.suppress_ve = (struct xen_hvm_altp2m_suppress_ve){
         .view = view,
         .suppress_ve = 0,
-        .gfn = 1,
+        .gfn = virt_to_gfn(ldt),
     };
+
+    printk("Switching to view %u\n", view);
+    asm volatile ("vmfunc" :: "a" (0), "c" (view));
+    printk("Switching to view %u done\n", view);
 
     printk("ap2m allow #VE\n");
     rc = hypercall_hvm_op(HVMOP_altp2m, &ap2m);
     printk("ap2m allow #VE: %d\n", rc);
 
+    printk("Using IDT\n");
+    asm volatile ("int $0xff" ::: "rax", "rdi", "rsi", "memory");
+    printk("Using IDT done\n");
+
+#if 0
     unsigned long extent = virt_to_gfn(ve_frame);
     struct xen_memory_reservation mr = {
         .extent_start = &extent,
@@ -187,12 +228,13 @@ void test_main(void)
         printk("Failed to balloon out\n");
     else
         printk("Ok\n");
+#endif
 
     printk("Trying read:\n");
-    (void)ACCESS_ONCE(*(char *)KB(4));
+    (void)ACCESS_ONCE(*(char *)&ldt[1]);
 
     printk("Trying write:\n");
-    ACCESS_ONCE(*(char *)KB(4)) = 0;
+    ACCESS_ONCE(*(char *)&ldt[1]) = 0;
 
     xtf_success(NULL);
 }
