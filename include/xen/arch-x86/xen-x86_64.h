@@ -86,6 +86,16 @@ struct xen_cpu_user_regs {
 #undef __DECL_REG_LO16
 #undef __DECL_REG_HI
 
+static inline unsigned long xen_pfn_to_cr3(unsigned long pfn)
+{
+    return pfn << 12;
+}
+
+static inline unsigned long xen_cr3_to_pfn(unsigned long cr3)
+{
+    return cr3 >> 12;
+}
+
 struct arch_vcpu_info {
     unsigned long cr2;
     unsigned long pad; /* sizeof(vcpu_info_t) == 64 */

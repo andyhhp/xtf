@@ -138,6 +138,8 @@ non-canonical addresses.
 
 XSA-293 - See @ref test-pv-fsgsbase.
 
+@subpage test-xsa-296 - VCPUOP_initialise DoS.
+
 
 @section index-utility Utilities
 
