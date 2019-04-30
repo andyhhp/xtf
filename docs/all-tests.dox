@@ -30,6 +30,8 @@ and functionality.
 
 @subpage test-nmi-taskswitch-priv - Task Gate handling of interrupts.
 
+@subpage test-pv-fsgsbase - FSGSBASE behaviour for PV guests.
+
 @subpage test-pv-iopl - IOPL emulation for PV guests.
 
 @subpage test-swint-emulation - Software interrupt emulation for HVM guests.
@@ -133,6 +135,8 @@ removals.
 
 @subpage test-xsa-279 - x86: DoS from attempting to use INVPCID with a
 non-canonical addresses.
+
+XSA-293 - See @ref test-pv-fsgsbase.
 
 
 @section index-utility Utilities
