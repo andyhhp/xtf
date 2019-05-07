@@ -25,9 +25,9 @@ void test_main(void)
     exinfo_t fault = 0;
 
     asm volatile ("1: int $0x80; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault)
-                  : "X" (ex_record_fault_eax));
+                  : [rec] "p" (ex_record_fault_eax));
 
     /*
      * If Xen is vulnerable, it should have crashed.  If Xen is not

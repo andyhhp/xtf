@@ -26,10 +26,10 @@ static unsigned long stub_sgdt(unsigned long force)
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sgdt %[tmp]; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "+D" (fault), [tmp] "=m" (tmp)
                  : [fep] "q" (force),
-                   "X" (ex_record_fault_edi));
+                   [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }
@@ -42,10 +42,10 @@ static unsigned long stub_sidt(unsigned long force)
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sidt %[tmp]; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "+D" (fault), [tmp] "=m" (tmp)
                  : [fep] "q" (force),
-                   "X" (ex_record_fault_edi));
+                   [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }
@@ -59,10 +59,10 @@ static unsigned long stub_sldt(unsigned long force)
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sldt %[tmp]; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "+D" (fault), [tmp] "=r" (tmp)
                  : [fep] "q" (force),
-                   "X" (ex_record_fault_edi));
+                   [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }
@@ -76,10 +76,10 @@ static unsigned long stub_str(unsigned long force)
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: str %[tmp]; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "+D" (fault), [tmp] "=r" (tmp)
                  : [fep] "q" (force),
-                   "X" (ex_record_fault_edi));
+                   [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }
@@ -93,10 +93,10 @@ static unsigned long stub_smsw(unsigned long force)
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: smsw %[tmp]; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "+D" (fault), [tmp] "=r" (tmp)
                  : [fep] "q" (force),
-                   "X" (ex_record_fault_edi));
+                   [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }

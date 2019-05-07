@@ -281,10 +281,10 @@ static inline bool write_cr4_safe(unsigned long cr4)
     exinfo_t fault = 0;
 
     asm volatile ("1: mov %[cr4], %%cr4; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (fault)
                   : [cr4] "r" (cr4),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return fault;
 }

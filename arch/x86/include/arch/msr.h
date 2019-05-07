@@ -37,9 +37,9 @@ static inline bool rdmsr_safe(uint32_t idx, uint64_t *val)
     uint32_t lo, hi, new_idx;
 
     asm volatile ("1: rdmsr; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_rdmsr_safe)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
                   : "=a" (lo), "=d" (hi), "=c" (new_idx)
-                  : "c" (idx), "X" (ex_rdmsr_safe));
+                  : "c" (idx), [hnd] "p" (ex_rdmsr_safe));
 
     bool fault = idx != new_idx;
 
@@ -71,11 +71,11 @@ static inline bool wrmsr_safe(uint32_t idx, uint64_t val)
     uint32_t new_idx;
 
     asm volatile ("1: wrmsr; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_wrmsr_safe)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
                   : "=c" (new_idx)
                   : "c" (idx), "a" ((uint32_t)val),
                     "d" ((uint32_t)(val >> 32)),
-                    "X" (ex_wrmsr_safe));
+                    [hnd] "p" (ex_wrmsr_safe));
 
     return idx != new_idx;
 }

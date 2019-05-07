@@ -119,7 +119,7 @@ static unsigned int invlpg_refill(void)
                   "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
                   "1: invlpg 0x1000; 2:\n\t"   /* Invalidate one page only. */
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
                   "mov %[zero], 0x1000;\n\t"   /* Expect refill. */
                   "mov %[zero], 0x2000;\n\t"   /* Expect no refill. */
                   :
@@ -127,7 +127,7 @@ static unsigned int invlpg_refill(void)
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2]),
-                    "X" (ex_fail)
+                    [hnd] "p" (ex_fail)
                   : "memory");
 
     return ((test_ad(pae_l1_identmap[1]) << 0) |
@@ -142,7 +142,7 @@ static unsigned int invlpg_fs_refill(void)
                   "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
                   "1: invlpg %%fs:0x1000; 2:\n\t" /* Invalidate one page only. */
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
                   "mov %[zero], 0x1000;\n\t"  /* Expect one TLB entry to refil, */
                   "mov %[zero], 0x2000;\n\t"  /* depending on %fs base.*/
                   :
@@ -150,7 +150,7 @@ static unsigned int invlpg_fs_refill(void)
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2]),
-                    "X" (ex_fail)
+                    [hnd] "p" (ex_fail)
                   : "memory");
 
     return ((test_ad(pae_l1_identmap[1]) << 0) |
@@ -244,16 +244,16 @@ static void invlpg_checked(unsigned long linear)
 {
     asm volatile (_ASM_MAYBE_XEN_FEP
                   "1: invlpg (%0); 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
-                  :: "r" (linear));
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
+                  :: "r" (linear), [hnd] "p" (ex_fail));
 }
 
 static void invlpg_fs_checked(unsigned long linear)
 {
     asm volatile (_ASM_MAYBE_XEN_FEP
                   "1: invlpg %%fs:(%0); 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
-                  :: "r" (linear), "X" (ex_fail));
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
+                  :: "r" (linear), [hnd] "p" (ex_fail));
 }
 
 static void test_no_fault(void)

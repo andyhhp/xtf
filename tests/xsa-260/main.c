@@ -84,11 +84,11 @@ static void __user_text user_syscall(void)
                   "btc $%c[bit], %%" _ASM_SP ";"
                   "mov %[ss], %%ss;"
                   "1: syscall; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_check_UD)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
                   :
                   : [bit] "i" (BITS_PER_LONG - 1),
                     [ss]  "m" (user_ss),
-                    "X" (ex_check_UD)
+                    [hnd] "p" (ex_check_UD)
 #ifdef __x86_64__
                   : "rbx", "rcx", "r11"
 #else
@@ -118,7 +118,7 @@ static void __user_text user_syscall_compat(void)
                    */
                   "mov (%k[ss_ptr]), %%ss;"
                   "1: syscall; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_check_UD)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
 
                   /* Return to 64bit mode. */
                   "ljmpl $%c[cs64], $1f; 1:"
@@ -127,7 +127,7 @@ static void __user_text user_syscall_compat(void)
                   : [cs32]   "i" (__USER_CS32),
                     [ss_ptr] "R" (&user_ss),
                     [cs64]   "i" (__USER_CS),
-                    "X" (ex_check_UD)
+                    [hnd] "p" (ex_check_UD)
 #ifdef __x86_64__
                   : "rbx", "rcx", "r11"
 #else
@@ -152,9 +152,9 @@ void test_main(void)
 
     /* Sanity check that breakpoints are working. */
     asm volatile ("mov %[ss], %%ss; nop; 1:"
-                  _ASM_EXTABLE_HANDLER(1b, 1b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 1b, %P[rec])
                   : "+a" (fault)
-                  : [ss] "m" (ss), "X" (ex_record_fault_eax));
+                  : [ss] "m" (ss), [rec] "p" (ex_record_fault_eax));
 
     if ( fault != exp )
         return xtf_error("Error checking breakpoint\n"

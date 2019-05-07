@@ -83,12 +83,12 @@ exinfo_t stub_vmxon(uint64_t paddr)
                   ASM_FLAG_OUT(, "setc %[fail_invalid];")
                   ASM_FLAG_OUT(, "setz %[fail_valid];")
                   "2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex),
                     ASM_FLAG_OUT("=@ccc", [fail_invalid] "+rm") (fail_invalid),
                     ASM_FLAG_OUT("=@ccz", [fail_valid]   "+rm") (fail_valid)
                   : [paddr] "m" (paddr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     if ( ex )
         return ex;
@@ -109,12 +109,12 @@ exinfo_t stub_vmptrld(uint64_t paddr)
                   ASM_FLAG_OUT(, "setc %[fail_invalid];")
                   ASM_FLAG_OUT(, "setz %[fail_valid];")
                   "2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex),
                     ASM_FLAG_OUT("=@ccc", [fail_invalid] "+rm") (fail_invalid),
                     ASM_FLAG_OUT("=@ccz", [fail_valid]   "+rm") (fail_valid)
                   : [paddr] "m" (paddr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     if ( ex )
         return ex;
@@ -135,12 +135,12 @@ exinfo_t __user_text stub_vmxon_user(uint64_t paddr)
                   ASM_FLAG_OUT(, "setc %[fail_invalid];")
                   ASM_FLAG_OUT(, "setz %[fail_valid];")
                   "2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex),
                     ASM_FLAG_OUT("=@ccc", [fail_invalid] "+rm") (fail_invalid),
                     ASM_FLAG_OUT("=@ccz", [fail_valid]   "+rm") (fail_valid)
                   : [paddr] "m" (paddr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     if ( ex )
         return ex;

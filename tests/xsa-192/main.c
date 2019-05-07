@@ -65,10 +65,10 @@ unsigned long user_ldt_use(void)
 
     /* Attempt to load %fs from the LDT. */
     asm volatile ("1: mov %[sel], %%fs; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault)
                   : [sel] "r" (LDT_SEL),
-                    "X" (ex_record_fault_eax));
+                    [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }

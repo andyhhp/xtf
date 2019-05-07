@@ -174,11 +174,11 @@ void test_main(void)
      * instructions don't get lost.
      */
     asm volatile ("call *%[ptr];"
-                  _ASM_EXTABLE_HANDLER(-1, 0, ex_fault)
+                  _ASM_EXTABLE_HANDLER(-1, 0, %P[hnd])
                   : "=a" (res)
                   : "0" (0),
                     [ptr] "r" (stub),
-                    "X" (ex_fault)
+                    [hnd] "p" (ex_fault)
                   : "memory");
 
     if ( res != 0xc0de )

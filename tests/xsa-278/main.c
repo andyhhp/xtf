@@ -31,10 +31,10 @@ static exinfo_t stub_vmclear(void)
     uint64_t addr = 0;
 
     asm volatile ("1: vmclear %[ptr]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [ptr] "m" (addr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -45,10 +45,10 @@ static exinfo_t stub_vmptrld(void)
     uint64_t addr = 0;
 
     asm volatile ("1: vmptrld %[ptr]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [ptr] "m" (addr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -59,9 +59,9 @@ static exinfo_t stub_vmptrst(void)
     uint64_t addr;
 
     asm volatile ("1: vmptrst %[ptr]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex), [ptr] "=m" (addr)
-                  : "X" (ex_record_fault_edi));
+                  : [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -72,10 +72,10 @@ static exinfo_t stub_vmread(void)
     unsigned long tmp;
 
     asm volatile ("1: vmread %[field], %[value]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex), [value] "=rm" (tmp)
                   : [field] "r" (0l),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -85,10 +85,10 @@ static exinfo_t stub_vmwrite(void)
     exinfo_t ex = 0;
 
     asm volatile ("1: vmwrite %[value], %[field]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [field] "r" (0l), [value] "rm" (0l),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -98,9 +98,9 @@ static exinfo_t stub_vmlaunch(void)
     exinfo_t ex = 0;
 
     asm volatile ("1: vmlaunch; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
-                  : "X" (ex_record_fault_edi));
+                  : [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -110,9 +110,9 @@ static exinfo_t stub_vmresume(void)
     exinfo_t ex = 0;
 
     asm volatile ("1: vmresume; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
-                  : "X" (ex_record_fault_edi));
+                  : [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -122,9 +122,9 @@ static exinfo_t stub_vmxoff(void)
     exinfo_t ex = 0;
 
     asm volatile ("1: vmxoff; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
-                  : "X" (ex_record_fault_edi));
+                  : [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -135,10 +135,10 @@ static exinfo_t stub_vmxon(void)
     uint64_t addr = ~0ull;
 
     asm volatile ("1: vmxon %[ptr]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [ptr] "m" (addr),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -149,10 +149,10 @@ static exinfo_t stub_invept(void)
     struct { uint64_t eptp, rsvd; } desc;
 
     asm volatile ("1: invept %[desc], %[type]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [type] "r" (0l), [desc] "m" (desc),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }
@@ -163,10 +163,10 @@ static exinfo_t stub_invvpid(void)
     struct { uint64_t vpid, linear; } desc;
 
     asm volatile ("1: invvpid %[desc], %[type]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+D" (ex)
                   : [type] "r" (0l), [desc] "m" (desc),
-                    "X" (ex_record_fault_edi));
+                    [rec] "p" (ex_record_fault_edi));
 
     return ex;
 }

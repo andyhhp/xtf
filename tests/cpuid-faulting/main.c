@@ -30,9 +30,9 @@ unsigned long stub_cpuid(void)
     unsigned int fault = 0, tmp;
 
     asm volatile("1: cpuid; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "=a" (tmp), "+D" (fault)
-                 : "a" (0), "X" (ex_record_fault_edi)
+                 : "a" (0), [rec] "p" (ex_record_fault_edi)
                  : "ebx", "ecx", "edx");
 
     return fault;
@@ -44,9 +44,9 @@ unsigned long stub_fep_cpuid(void)
 
     asm volatile(_ASM_XEN_FEP
                  "1: cpuid; 2:"
-                 _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_edi)
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                  : "=a" (tmp), "+D" (fault)
-                 : "a" (0), "X" (ex_record_fault_edi)
+                 : "a" (0), [rec] "p" (ex_record_fault_edi)
                  : "ebx", "ecx", "edx");
 
     return fault;

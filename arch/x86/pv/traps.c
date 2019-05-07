@@ -234,11 +234,11 @@ void arch_init_traps(void)
                       "jmp 3f;"
                       "2: ret;"
                       "3:"
-                      _ASM_EXTABLE_HANDLER(1b,    3b, ex_pf_user)
-                      _ASM_EXTABLE_HANDLER(0xfff, 2b, ex_pf_user)
+                      _ASM_EXTABLE_HANDLER(1b,    3b, %P[rec])
+                      _ASM_EXTABLE_HANDLER(0xfff, 2b, %P[rec])
                       : "+a" (leaked)
                       : [ptr] "r" (0xfff),
-                        "X" (ex_pf_user));
+                        [rec] "p" (ex_pf_user));
 
         if ( leaked )
             panic("Xen's SMEP/SMAP settings leaked into guest context.\n"

@@ -86,11 +86,11 @@ void test_main(void)
      * Try to use the linear address which was clobbered by the map call.
      */
     asm volatile ("1: mov %[ptr], %[res]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault),
                     [res] "=q" (discard)
                   : [ptr] "m" (*(char *)KB(4)),
-                    "X" (ex_record_fault_eax));
+                    [rec] "p" (ex_record_fault_eax));
 
     switch ( fault )
     {

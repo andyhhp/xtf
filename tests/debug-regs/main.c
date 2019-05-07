@@ -101,10 +101,10 @@ static void test_pv_dr7_latch(void)
 
         asm volatile ("mov %[dr7], %%dr7;"
                       "movl $0, %[ptr]; 1:"
-                      _ASM_EXTABLE_HANDLER(1b, 1b, ex_record_fault_eax)
+                      _ASM_EXTABLE_HANDLER(1b, 1b, %P[rec])
                       : "+a" (fault),
                         [ptr] "=m" (dummy)
-                      : [dr7] "r" (dr7), "X" (ex_record_fault_eax));
+                      : [dr7] "r" (dr7), [rec] "p" (ex_record_fault_eax));
 
         /* Reset any latched %dr7 content. */
         write_dr7(0);
@@ -166,10 +166,10 @@ static void test_pv_dr7_io_breakpoints(void)
     /* Attempt to reload an IO breakpoint in %dr0, which should fail ... */
     exinfo_t fault = 0;
     asm volatile ("1: mov %[val], %%dr7; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault)
                   : [val] "r" (io0),
-                    "X" (ex_record_fault_eax));
+                    [rec] "p" (ex_record_fault_eax));
 
     if ( fault != EXINFO_SYM(GP, 0) )
         xtf_error("Error: Unexpected fault %pe\n", _p(fault));

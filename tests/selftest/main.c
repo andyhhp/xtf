@@ -240,9 +240,8 @@ static void test_extable_handler(void)
     printk("Test: Exception Table Handler\n");
 
     asm volatile ("1: ud2a; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b,
-                                       test_extable_handler_handler)
-                  :: "X" (test_extable_handler_handler));
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[hnd])
+                  :: [hnd] "p" (test_extable_handler_handler));
 
     if ( !test_extable_handler_handler_run )
         xtf_failure("Fail: Custom handler didn't run\n");

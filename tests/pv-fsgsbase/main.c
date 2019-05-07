@@ -39,9 +39,9 @@ static exinfo_t stub_rdfsbase(unsigned long unused)
     exinfo_t fault = 0;
 
     asm volatile ("1: rdfsbase %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault), [val] "=r" (tmp)
-                  : "X" (ex_record_fault_eax));
+                  : [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
@@ -52,9 +52,9 @@ static exinfo_t stub_rdgsbase(unsigned long unused)
     exinfo_t fault = 0;
 
     asm volatile ("1: rdgsbase %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault), [val] "=r" (tmp)
-                  : "X" (ex_record_fault_eax));
+                  : [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
@@ -64,9 +64,9 @@ static exinfo_t stub_wrfsbase(unsigned long val)
     exinfo_t fault = 0;
 
     asm volatile ("1: wrfsbase %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault)
-                  : [val] "r" (val), "X" (ex_record_fault_eax));
+                  : [val] "r" (val), [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
@@ -76,9 +76,9 @@ static exinfo_t stub_wrgsbase(unsigned long val)
     exinfo_t fault = 0;
 
     asm volatile ("1: wrgsbase %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_record_fault_eax)
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
                   : "+a" (fault)
-                  : [val] "r" (val), "X" (ex_record_fault_eax));
+                  : [val] "r" (val), [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
