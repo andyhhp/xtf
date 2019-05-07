@@ -140,6 +140,9 @@ XSA-293 - See @ref test-pv-fsgsbase.
 
 @subpage test-xsa-296 - VCPUOP_initialise DoS.
 
+@subpage test-xsa-298 - missing descriptor table limit checking in x86 PV
+emulation.
+
 
 @section index-utility Utilities
 

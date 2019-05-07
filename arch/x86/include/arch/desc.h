@@ -114,10 +114,36 @@ struct __packed desc_ptr64 {
     uint64_t base;
 };
 
+/**
+ * Long mode lcall/ljmp memory operand.
+ *
+ * WARNING: Intel and AMD disagree on how large a far_ptr64 is.  Intel uses 8
+ * bytes offset, while AMD use 4.
+ *
+ * Initialisation of offset and encoding for an lcall/ljmp instruction needs
+ * per-vendor configuration.
+ */
+struct __packed far_ptr64 {
+    union {
+        uint64_t offset_intel;
+        struct {
+            uint32_t :32;
+            uint32_t offset_amd;
+        };
+    };
+    uint16_t selector;
+};
+
 /** Protected mode lgdt/lidt table pointer. */
 struct __packed desc_ptr32 {
     uint16_t limit;
     uint32_t base;
+};
+
+/** Protected mode lcall/ljmp memory operand. */
+struct __packed far_ptr32 {
+    uint32_t offset;
+    uint16_t selector;
 };
 
 #if defined(__x86_64__)
@@ -125,12 +151,14 @@ struct __packed desc_ptr32 {
 typedef struct desc_ptr64 desc_ptr;
 typedef struct seg_desc32 user_desc;
 typedef struct seg_gate64 gate_desc;
+typedef struct far_ptr64  far_ptr;
 
 #elif defined(__i386__)
 
 typedef struct desc_ptr32 desc_ptr;
 typedef struct seg_desc32 user_desc;
 typedef struct seg_gate32 gate_desc;
+typedef struct far_ptr32  far_ptr;
 
 #else
 # error Bad architecture for descriptor infrastructure
