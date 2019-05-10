@@ -114,7 +114,7 @@ static inline void pack_intr_gate(
     pack_gate(g, 14, sel, offset, dpl, other);
 }
 
-#endif /* XTF_X86_TSS_H */
+#endif /* XTF_X86_GATE_H */
 
 /*
  * Local variables:

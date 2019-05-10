@@ -35,14 +35,12 @@ bool test_needs_fep = true;
 
 void test_main(void)
 {
-    unsigned long src = 0x1234, dest = 0;
+    unsigned int src = 0x1234, dest = 0;
 
     asm volatile(_ASM_XEN_FEP
                  /* Explicit %cs segment override. */
-                 ".byte 0x2e;"
-                 "mov %k[src], %k[dest]"
-                 : [src] "=r" (src), [dest] "=r" (dest)
-                 : "0" (src), "1" (dest));
+                 ".byte 0x2e; mov %[src], %[dest]"
+                 : [src] "+r" (src), [dest] "+r" (dest));
 
     if ( dest != 0x1234 )
         xtf_failure("  '%%cs:mov %%reg, %%reg' clobbered hypervisor memory\n");

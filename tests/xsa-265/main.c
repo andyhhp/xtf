@@ -37,7 +37,7 @@ void test_main(void)
 
     asm volatile ("mov %[ss], %%ss; int3; 1:"
                   _ASM_TRAP_OK(1b)
-                  :: [ss] "m" (ss), "X" (ex_record_fault_eax));
+                  :: [ss] "m" (ss));
 
     /*
      * If Xen is still alive at this point, the erroneous safety check didn't

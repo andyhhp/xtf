@@ -118,7 +118,7 @@ static unsigned int invlpg_refill(void)
                   "andb $~%c[ad], %[pte1];\n\t" /* Clear A/D bits. */
                   "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
-                  "1: invlpg (0x1000); 2:\n\t" /* Invalidate one page only. */
+                  "1: invlpg 0x1000; 2:\n\t"   /* Invalidate one page only. */
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
                   "mov %[zero], 0x1000;\n\t"   /* Expect refill. */
                   "mov %[zero], 0x2000;\n\t"   /* Expect no refill. */
@@ -141,7 +141,7 @@ static unsigned int invlpg_fs_refill(void)
                   "andb $~%c[ad], %[pte1];\n\t" /* Clear A/D bits. */
                   "andb $~%c[ad], %[pte2];\n\t"
                   _ASM_MAYBE_XEN_FEP
-                  "1: invlpg %%fs:(0x1000); 2:\n\t" /* Invalidate one page only. */
+                  "1: invlpg %%fs:0x1000; 2:\n\t" /* Invalidate one page only. */
                   _ASM_EXTABLE_HANDLER(1b, 2b, ex_fail)
                   "mov %[zero], 0x1000;\n\t"  /* Expect one TLB entry to refil, */
                   "mov %[zero], 0x2000;\n\t"  /* depending on %fs base.*/
@@ -224,7 +224,7 @@ static void test_tlb_refill(void)
 {
     unsigned int i;
 
-    printk("Testing 'invlpg (0x1000)' with segment bases\n");
+    printk("Testing 'invlpg 0x1000' with segment bases\n");
 
     printk("  Test: No segment\n");
     run_tlb_refill_test(invlpg_refill, 1);

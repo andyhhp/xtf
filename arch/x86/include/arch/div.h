@@ -40,9 +40,9 @@ static inline uint32_t divmod64(uint64_t *dividend, uint32_t divisor)
                    high /= divisor;
         }
 
-        asm ("divl %2"
-             : "=a" (low), "=d" (mod)
-             : "rm" (divisor), "0" (low), "1" (umod));
+        asm ("divl %[divisor]"
+             : "+a" (low), "=d" (mod)
+             : [divisor] "rm" (divisor), "d" (umod));
 
         *dividend = (((uint64_t)high) << 32) | low;
     }
