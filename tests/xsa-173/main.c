@@ -27,26 +27,10 @@ const char test_title[] = "XSA-173 PoC";
 /* New L2 pagetable for the test to manipulate. */
 uint64_t nl2[PAE_L2_PT_ENTRIES] __page_aligned_bss;
 
-static bool seen_fault;
-
-static bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
-{
-    /* Expect to see #PF indicating that a reserved bits was set. */
-    if ( regs->entry_vector == X86_EXC_PF &&
-         (regs->error_code & X86_PFEC_RSVD) )
-    {
-        seen_fault = true;
-
-        regs->ip = ex->fixup;
-        return true;
-    }
-
-    return false;
-}
-
 void test_main(void)
 {
     uint64_t *ptr, val;
+    exinfo_t fault = 0;
 
     /* Hook nl2 into the existing l3, just above the 4GB boundary. */
     pae_l3_identmap[4] = pte_from_virt(nl2, PF_SYM(U, RW, P));
@@ -61,19 +45,23 @@ void test_main(void)
     /* Create a pointer which uses the bad l2e. */
     ptr = _p((4ULL << PAE_L3_PT_SHIFT) + MB(1));
 
-    asm volatile ("1:mov (%[ptr]), %[val]; 2:"
-                  _ASM_EXTABLE_HANDLER(1b, 2b, ex_fault)
-                  : [val] "=q" (val)
-                  : [ptr] "r" (ptr),
-                    "X" (ex_fault)
-                  : "memory");
+    asm volatile ("1:mov %[ptr], %[val]; 2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                  : [val] "=r" (val), "+a" (fault)
+                  : [ptr] "m" (*ptr), [rec] "p" (ex_record_fault_eax));
 
-    if ( seen_fault )
-        return xtf_success("Xen appears not vulnerable\n");
-    else
+    switch ( fault )
     {
+    case EXINFO_SYM(PF, PFEC_SYM(R, P)):
+        /* #PF[Rsvd] => Page wasn't shadowed. */
+        return xtf_success("Xen appears not vulnerable\n");
+
+    case 0:
         printk("Value at %p is 0x%08"PRIx64"\n", ptr, val);
         return xtf_failure("Xen shadowed bogus sl2e\n");
+
+    default:
+        return xtf_error("Unexpected fault %#x, %pe\n", fault, _p(fault));
     }
 }
 
