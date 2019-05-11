@@ -46,7 +46,7 @@ char *(strncpy)(char *dst, const char *src, size_t n)
 
 int (strcmp)(const char *_s1, const char *_s2)
 {
-    char s1, s2;
+    unsigned char s1, s2;
 
     do {
         s1 = *_s1++;
