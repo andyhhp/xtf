@@ -19,7 +19,7 @@ COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 
 # Experimental LTO support.  `make ... lto=y`
 COMMON_CFLAGS-$(lto) := -flto
-LDFLAGS-$(lto) := -flto -B /usr/lib/gold-ld
+LDFLAGS-$(lto) := -flto -fuse-ld=gold
 
 COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
