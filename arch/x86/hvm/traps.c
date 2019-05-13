@@ -70,27 +70,9 @@ static env_tss tss_DF __aligned(16) =
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
 
-static void setup_gate(unsigned int entry, void *addr, unsigned int dpl)
-{
-    pack_gate(&idt[entry], 14, __KERN_CS, _u(addr), dpl, 0);
-}
-
-static void setup_doublefault(void)
-{
-    if ( IS_DEFINED(CONFIG_32BIT) )
-    {
-        gdt[GDTE_TSS_DF] = GDTE(_u(&tss_DF), 0x67, 0x89);
-        barrier();
-
-        pack_task_gate(&idt[X86_EXC_DF], GDTE_TSS_DF * 8);
-    }
-    else
-        pack_gate(&idt[X86_EXC_DF], 14, __KERN_CS, _u(entry_DF), 0, 1);
-}
-
 int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
 {
-    pack_gate(&idt[vector], 14, idte->cs, idte->addr, idte->dpl, 0);
+    pack_intr_gate(&idt[vector], idte->cs, idte->addr, idte->dpl, 0);
 
     return 0;
 }
@@ -103,27 +85,36 @@ static void remap_user(unsigned int start_gfn, unsigned int end_gfn)
 
 void arch_init_traps(void)
 {
-    setup_gate(X86_EXC_DE,  &entry_DE,  0);
-    setup_gate(X86_EXC_DB,  &entry_DB,  0);
-    setup_gate(X86_EXC_NMI, &entry_NMI, 0);
-    setup_gate(X86_EXC_BP,  &entry_BP,  3);
-    setup_gate(X86_EXC_OF,  &entry_OF,  3);
-    setup_gate(X86_EXC_BR,  &entry_BR,  0);
-    setup_gate(X86_EXC_UD,  &entry_UD,  0);
-    setup_gate(X86_EXC_NM,  &entry_NM,  0);
-    setup_doublefault();
-    setup_gate(X86_EXC_TS,  &entry_TS,  0);
-    setup_gate(X86_EXC_NP,  &entry_NP,  0);
-    setup_gate(X86_EXC_SS,  &entry_SS,  0);
-    setup_gate(X86_EXC_GP,  &entry_GP,  0);
-    setup_gate(X86_EXC_PF,  &entry_PF,  0);
-    setup_gate(X86_EXC_MF,  &entry_MF,  0);
-    setup_gate(X86_EXC_AC,  &entry_AC,  0);
-    setup_gate(X86_EXC_MC,  &entry_MC,  0);
-    setup_gate(X86_EXC_XM,  &entry_XM,  0);
-    setup_gate(X86_EXC_VE,  &entry_VE,  0);
+    pack_intr_gate(&idt[X86_EXC_DE],  __KERN_CS, _u(&entry_DE),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_DB],  __KERN_CS, _u(&entry_DB),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_NMI], __KERN_CS, _u(&entry_NMI), 0, 0);
+    pack_intr_gate(&idt[X86_EXC_BP],  __KERN_CS, _u(&entry_BP),  3, 0);
+    pack_intr_gate(&idt[X86_EXC_OF],  __KERN_CS, _u(&entry_OF),  3, 0);
+    pack_intr_gate(&idt[X86_EXC_BR],  __KERN_CS, _u(&entry_BR),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_UD],  __KERN_CS, _u(&entry_UD),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_NM],  __KERN_CS, _u(&entry_NM),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_TS],  __KERN_CS, _u(&entry_TS),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_NP],  __KERN_CS, _u(&entry_NP),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_SS],  __KERN_CS, _u(&entry_SS),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_GP],  __KERN_CS, _u(&entry_GP),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_PF],  __KERN_CS, _u(&entry_PF),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_MF],  __KERN_CS, _u(&entry_MF),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_AC],  __KERN_CS, _u(&entry_AC),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_MC],  __KERN_CS, _u(&entry_MC),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_XM],  __KERN_CS, _u(&entry_XM),  0, 0);
+    pack_intr_gate(&idt[X86_EXC_VE],  __KERN_CS, _u(&entry_VE),  0, 0);
 
-    setup_gate(X86_VEC_RET2KERN, &entry_ret_to_kernel, 3);
+    /* Handle #DF with a task gate in 32bit, and IST 1 in 64bit. */
+    if ( IS_DEFINED(CONFIG_32BIT) )
+    {
+        gdt[GDTE_TSS_DF] = GDTE(_u(&tss_DF), 0x67, 0x89);
+        pack_task_gate(&idt[X86_EXC_DF], GDTE_TSS_DF * 8);
+    }
+    else
+        pack_intr_gate(&idt[X86_EXC_DF], __KERN_CS, _u(&entry_DF), 0, 1);
+
+    pack_intr_gate(&idt[X86_VEC_RET2KERN],
+                   __KERN_CS, _u(&entry_ret_to_kernel), 3, 0);
 
     lidt(&idt_ptr);
 

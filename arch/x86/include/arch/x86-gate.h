@@ -107,6 +107,13 @@ static inline void pack_task_gate(env_gate *g, unsigned int selector)
     pack_gate(g, 5, selector, 0, 0, 0);
 }
 
+static inline void pack_intr_gate(
+    env_gate *g, unsigned int sel, unsigned long offset,
+    unsigned int dpl, unsigned int other)
+{
+    pack_gate(g, 14, sel, offset, dpl, other);
+}
+
 #endif /* XTF_X86_TSS_H */
 
 /*
