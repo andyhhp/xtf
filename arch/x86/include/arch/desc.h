@@ -170,6 +170,29 @@ static inline unsigned int user_desc_limit(const user_desc *d)
     return limit;
 }
 
+static inline void pack_tss_desc(user_desc *d, const env_tss *t)
+{
+    unsigned long base = (unsigned long)t;
+
+    d[0] = GDTE(base, sizeof(*t) - 1, 0x89);
+#ifdef __x86_64__
+    d[1] = (user_desc){{{ .lo = base >> 32, .hi = 0 }}};
+#endif
+    barrier(); /* Force desc update before ltr. */
+}
+
+static inline void pack_ldt_desc(user_desc *d, const user_desc *ldt,
+                                 unsigned int limit)
+{
+    unsigned long base = (unsigned long)ldt;
+
+    d[0] = GDTE(base, limit, 0x82);
+#ifdef __x86_64__
+    d[1] = (user_desc){{{ .lo = base >> 32, .hi = 0 }}};
+#endif
+    barrier(); /* Force desc update before lldt. */
+}
+
 #endif /* XTF_X86_DESC_H */
 
 /*

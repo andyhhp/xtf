@@ -107,7 +107,7 @@ void arch_init_traps(void)
     /* Handle #DF with a task gate in 32bit, and IST 1 in 64bit. */
     if ( IS_DEFINED(CONFIG_32BIT) )
     {
-        gdt[GDTE_TSS_DF] = GDTE(_u(&tss_DF), 0x67, 0x89);
+        pack_tss_desc(&gdt[GDTE_TSS_DF], &tss_DF);
         pack_task_gate(&idt[X86_EXC_DF], GDTE_TSS_DF * 8);
     }
     else
@@ -118,8 +118,7 @@ void arch_init_traps(void)
 
     lidt(&idt_ptr);
 
-    gdt[GDTE_TSS] = GDTE(_u(&tss), 0x67, 0x89);
-    barrier();
+    pack_tss_desc(&gdt[GDTE_TSS], &tss);
     ltr(GDTE_TSS * 8);
 
     /*

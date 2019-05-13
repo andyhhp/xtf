@@ -146,7 +146,7 @@ void test_main(void)
      * Set up NMI handling to be a task gate.
      */
     xtf_unhandled_exception_hook = unhandled_exception;
-    update_desc(&gdt[GDTE_AVAIL0], GDTE(_u(&nmi_tss), 0x67, 0x89));
+    pack_tss_desc(&gdt[GDTE_AVAIL0], &nmi_tss);
     pack_task_gate(&idt[X86_EXC_NMI], GDTE_AVAIL0 * 8);
 
     /*
