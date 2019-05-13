@@ -140,7 +140,7 @@ void test_main(void)
 {
     unsigned int ss = read_ss();
 
-    write_dr0(_u(&ss));
+    write_dr0(&ss);
 
     unsigned long dr7 = DR7_SYM(0, L, G, RW, 32) | X86_DR7_LE | X86_DR7_GE;
 
@@ -162,7 +162,7 @@ void test_main(void)
                          exp, _p(exp), fault, _p(fault));
 
     /* Prime the user code for its exploit attempt. */
-    write_dr0(_u(&user_ss));
+    write_dr0(&user_ss);
 
     printk("Testing native syscall\n");
     exec_user_void(user_syscall);

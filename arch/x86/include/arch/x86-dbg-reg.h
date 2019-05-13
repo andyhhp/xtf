@@ -108,9 +108,9 @@ static inline unsigned long read_dr0(void)
     return val;
 }
 
-static inline void write_dr0(unsigned long linear)
+static inline void write_dr0(addr_t linear)
 {
-    asm volatile ("mov %0, %%dr0" :: "r" (linear));
+    asm volatile ("mov %0, %%dr0" :: "r" (linear.val));
 }
 
 static inline unsigned long read_dr1(void)
@@ -122,9 +122,9 @@ static inline unsigned long read_dr1(void)
     return val;
 }
 
-static inline void write_dr1(unsigned long linear)
+static inline void write_dr1(addr_t linear)
 {
-    asm volatile ("mov %0, %%dr1" :: "r" (linear));
+    asm volatile ("mov %0, %%dr1" :: "r" (linear.val));
 }
 
 static inline unsigned long read_dr2(void)
@@ -136,9 +136,9 @@ static inline unsigned long read_dr2(void)
     return val;
 }
 
-static inline void write_dr2(unsigned long linear)
+static inline void write_dr2(addr_t linear)
 {
-    asm volatile ("mov %0, %%dr2" :: "r" (linear));
+    asm volatile ("mov %0, %%dr2" :: "r" (linear.val));
 }
 
 static inline unsigned long read_dr3(void)
@@ -150,9 +150,9 @@ static inline unsigned long read_dr3(void)
     return val;
 }
 
-static inline void write_dr3(unsigned long linear)
+static inline void write_dr3(addr_t linear)
 {
-    asm volatile ("mov %0, %%dr3" :: "r" (linear));
+    asm volatile ("mov %0, %%dr3" :: "r" (linear.val));
 }
 
 static inline unsigned long read_dr6(void)

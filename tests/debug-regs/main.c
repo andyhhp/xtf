@@ -99,7 +99,7 @@ static void test_pv_dr7_latch(void)
     write_dr7(0);
 
     /* Point %dr0 at dummy, %dr7 set with %dr0 enabled. */
-    write_dr0(_u(&dummy));
+    write_dr0(&dummy);
     dr7 = X86_DR7_GE | DR7_SYM(0, G, RW, 32);
 
     /*

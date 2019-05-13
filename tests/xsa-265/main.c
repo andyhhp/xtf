@@ -31,7 +31,7 @@ void test_main(void)
     write_dr6(X86_DR6_BD);
 
     /* Data breakpoint for `ss`, working around Xen's %dr7 latching bug. */
-    write_dr0(_u(&ss));
+    write_dr0(&ss);
     write_dr7(dr7);
     write_dr7(dr7);
 

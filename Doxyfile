@@ -2262,6 +2262,7 @@ PREDEFINED             = __alias(x)= \
                          __maybe_unused \
                          __noinline \
                          __noreturn \
+                         __transparent \
                          __used \
                          __user_data \
                          __user_page_aligned_bss \

@@ -23,6 +23,18 @@
  */
 extern char zeroptr[];
 
+/**
+ * Type (ab)use for helpers which take a linear address, and would like to
+ * accept it in either pointer or integer form.
+ *
+ * Useful for programming hardware registers and datastructures to point to a
+ * specific C object/function, given the flat memory layout.
+ */
+typedef union {
+    unsigned long val;
+    void *ptr;
+} __attribute__((__transparent_union__)) addr_t;
+
 #endif /* !__ASSEMBLY__ */
 
 #endif /* XTF_TYPES_H */
