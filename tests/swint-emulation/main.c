@@ -212,7 +212,7 @@ void check(void)
 }
 
 /** Print expected information in the case of an unexpected exception. */
-bool unhandled_exception(struct cpu_regs *regs)
+bool do_unhandled_exception(struct cpu_regs *regs)
 {
     printk("Unhandled Exception at %p\n", _p(regs));
     check();
@@ -374,8 +374,6 @@ void test_main(void)
     if ( !xtf_has_fep )
         xtf_skip("FEP support not detected - some tests will be skipped\n");
 
-    /* Setup.  Hook unhandled exceptions for debugging purposes. */
-    xtf_unhandled_exception_hook = unhandled_exception;
     set_idt_entries_present(true);
     set_idt_entries_dpl(3);
 

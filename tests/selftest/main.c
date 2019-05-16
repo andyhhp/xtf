@@ -203,7 +203,7 @@ static void test_NULL_unmapped(void)
     xtf_exlog_stop();
 }
 
-static bool local_unhandled_exception_hook(struct cpu_regs *regs)
+bool do_unhandled_exception(struct cpu_regs *regs)
 {
     extern unsigned long hook_fault[], hook_fixup[];
 
@@ -223,11 +223,7 @@ static void test_unhandled_exception_hook(void)
     printk("Test: Unhandled Exception Hook\n");
 
     /* Check that the hook catches the exception, and fix it up. */
-    xtf_unhandled_exception_hook = local_unhandled_exception_hook;
-
-    asm volatile ("hook_fault: ud2a; hook_fixup:" ::: "memory");
-
-    xtf_unhandled_exception_hook = NULL;
+    asm volatile ("hook_fault: ud2a; hook_fixup:");
 }
 
 static bool test_extable_handler_handler_run;

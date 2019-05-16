@@ -16,8 +16,6 @@ unsigned long exec_user_efl_and_mask =
     ~(IS_DEFINED(CONFIG_PV) ? X86_EFLAGS_IF : 0);
 unsigned long exec_user_efl_or_mask;
 
-bool (*xtf_unhandled_exception_hook)(struct cpu_regs *regs);
-
 /*
  * C entry-point for exceptions, after the per-environment stubs have suitably
  * adjusted the stack.
@@ -41,12 +39,9 @@ void do_exception(struct cpu_regs *regs)
         }
     }
 
-    /*
-     * If the test has installed an unhandled exception hook, call it in the
-     * hope that it can resolve the exception.
-     */
-    if ( !safe && xtf_unhandled_exception_hook )
-        safe = xtf_unhandled_exception_hook(regs);
+    /* Try the unhandled_exception() hook. */
+    if ( !safe )
+        safe = do_unhandled_exception(regs);
 
     /* Still unresolved? Give up and panic() with some relevent information. */
     if ( !safe )
@@ -66,6 +61,11 @@ void do_exception(struct cpu_regs *regs)
                   "Vec %u %pe\n",
                   regs->cs, _p(regs->ip), regs->entry_vector, _p(ex));
     }
+}
+
+bool __weak do_unhandled_exception(struct cpu_regs *regs)
+{
+    return false;
 }
 
 void __weak do_syscall(struct cpu_regs *regs)

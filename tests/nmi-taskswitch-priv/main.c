@@ -110,7 +110,7 @@ static env_tss nmi_tss __aligned(16) =
     .iopb   = X86_TSS_INVALID_IO_BITMAP,
 };
 
-static bool unhandled_exception(struct cpu_regs *regs)
+bool do_unhandled_exception(struct cpu_regs *regs)
 {
     if ( regs->entry_vector != X86_EXC_NMI )
         return false;
@@ -145,7 +145,6 @@ void test_main(void)
     /*
      * Set up NMI handling to be a task gate.
      */
-    xtf_unhandled_exception_hook = unhandled_exception;
     pack_tss_desc(&gdt[GDTE_AVAIL0], &nmi_tss);
     pack_task_gate(&idt[X86_EXC_NMI], GDTE_AVAIL0 * 8);
 
