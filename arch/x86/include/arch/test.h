@@ -13,6 +13,11 @@
  */
 void do_syscall(struct cpu_regs *regs);
 
+/**
+ * May be implemented by a guest to handle Event Channel upcalls.
+ */
+void do_evtchn(struct cpu_regs *regs);
+
 #endif /* XTF_X86_TEST_H */
 
 /*

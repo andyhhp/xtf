@@ -148,6 +148,23 @@ ENTRY(exec_user_stub)
 ENDFUNC(exec_user_stub)
 .popsection
 
+ENTRY(entry_EVTCHN)
+        env_ADJUST_FRAME
+
+        push $0
+        movl $0x200, 4(%rsp)
+
+        SAVE_ALL
+
+        mov %rsp, %rdi          /* struct cpu_regs * */
+        call do_evtchn
+
+        RESTORE_ALL
+        add $8, %rsp            /* Pop error_code/entry_vector. */
+
+        env_IRETQ
+ENDFUNC(entry_EVTCHN)
+
 #if defined(CONFIG_PV)
 ENTRY(entry_SYSCALL)
         env_ADJUST_FRAME

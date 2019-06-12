@@ -154,6 +154,33 @@ ENTRY(exec_user_stub)
 ENDFUNC(exec_user_stub)
 .popsection
 
+ENTRY(entry_EVTCHN)
+        push $0
+        push $0x200
+
+        push %es
+        push %ds
+
+        SAVE_ALL
+
+        mov $__KERN_DS, %eax    /* Restore data segments. */
+        mov %eax, %ds
+        mov %eax, %es
+
+        push %esp               /* struct cpu_regs * */
+        call do_evtchn
+        add $4, %esp
+
+        RESTORE_ALL
+
+        pop %ds
+        pop %es
+
+        add $8, %esp            /* Pop error_code/entry_vector. */
+
+        env_IRET
+ENDFUNC(entry_EVTCHN)
+
 #if defined(CONFIG_PV)
 ENTRY(entry_SYSCALL)
         push $0

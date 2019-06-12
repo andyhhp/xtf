@@ -36,6 +36,7 @@ void entry_VE(void);
 void entry_ret_to_kernel(void);
 
 void entry_SYSCALL(void);
+void entry_EVTCHN(void);
 
 struct xen_trap_info pv_default_trap_info[] =
 {
@@ -119,6 +120,15 @@ static void init_callbacks(void)
         panic("Failed to set trap table: %d\n", rc);
 
     xen_callback_register_t cb;
+
+    cb = (xen_callback_register_t) {
+        .type = CALLBACKTYPE_event,
+        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_EVTCHN)),
+    };
+
+    rc = hypercall_register_callback(&cb);
+    if ( rc )
+        panic("Failed to register evtchn callback: %d\n", rc);
 
 #ifdef __x86_64__
     cb = (xen_callback_register_t) {
