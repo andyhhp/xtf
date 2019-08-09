@@ -65,7 +65,7 @@ static inline int _xtest(void)
 
 static inline void _xend(void)
 {
-    asm volatile (".byte 0x0f, 0x01, 0xd6" /* xend */
+    asm volatile (".byte 0x0f, 0x01, 0xd5" /* xend */
                   ::: "memory");
 }
 
