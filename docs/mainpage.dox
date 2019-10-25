@@ -40,7 +40,7 @@ Requirements:
       sufficient. For RHEL-based systems, the `glibc-devel.i686` package is
       generally needed beyond the default toolchain packages.
     - Clang may be used, via `CC="clang"`
-- Python
+- Python 2.6 or later
 
 Optionally:
 - A toolchain with x32 support.

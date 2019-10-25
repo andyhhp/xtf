@@ -7,6 +7,8 @@ xtf-runner - A utility for enumerating and running XTF tests.
 Currently assumes the presence and availability of the `xl` toolstack.
 """
 
+from __future__ import print_function, unicode_literals
+
 import sys, os, os.path as path
 
 from optparse import OptionParser
@@ -16,6 +18,10 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
+# Python 2/3 compatibility
+if sys.version_info >= (3, ):
+    basestring = str
 
 # All results of a test, keep in sync with C code report.h.
 # Notes:
@@ -57,11 +63,11 @@ class TestInstance(object):
         self.env, self.name, self.variation = parse_test_instance_string(arg)
 
         if self.env is None:
-            raise RunnerError("No environment for '%s'" % (arg, ))
+            raise RunnerError("No environment for '{}'".format(arg))
 
         if self.variation is None and get_all_test_info()[self.name].variations:
-            raise RunnerError("Test '%s' has variations, but none specified"
-                              % (self.name, ))
+            raise RunnerError("Test '{}' has variations, but none specified"
+                              .format(self.name))
 
     def vm_name(self):
         """ Return the VM name as `xl` expects it. """
@@ -73,9 +79,9 @@ class TestInstance(object):
 
     def __repr__(self):
         if not self.variation:
-            return "test-%s-%s" % (self.env, self.name)
+            return "test-{}-{}".format(self.env, self.name)
         else:
-            return "test-%s-%s~%s" % (self.env, self.name, self.variation)
+            return "test-{}-{}~{}".format(self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -95,33 +101,33 @@ class TestInfo(object):
 
         name = test_json["name"]
         if not isinstance(name, basestring):
-            raise TypeError("Expected string for 'name', got '%s'"
-                            % (type(name), ))
+            raise TypeError("Expected string for 'name', got '{}'"
+                            .format(type(name)))
         self.name = name
 
         cat = test_json["category"]
         if not isinstance(cat, basestring):
-            raise TypeError("Expected string for 'category', got '%s'"
-                            % (type(cat), ))
+            raise TypeError("Expected string for 'category', got '{}'"
+                            .format(type(cat)))
         if not cat in all_categories:
-            raise ValueError("Unknown category '%s'" % (cat, ))
+            raise ValueError("Unknown category '{}'".format(cat))
         self.cat = cat
 
         envs = test_json["environments"]
         if not isinstance(envs, list):
-            raise TypeError("Expected list for 'environments', got '%s'"
-                            % (type(envs), ))
+            raise TypeError("Expected list for 'environments', got '{}'"
+                            .format(type(envs)))
         if not envs:
             raise ValueError("Expected at least one environment")
         for env in envs:
             if not env in all_environments:
-                raise ValueError("Unknown environments '%s'" % (env, ))
+                raise ValueError("Unknown environments '{}'".format(env))
         self.envs = envs
 
         variations = test_json["variations"]
         if not isinstance(variations, list):
-            raise TypeError("Expected list for 'variations', got '%s'"
-                            % (type(variations), ))
+            raise TypeError("Expected list for 'variations', got '{}'"
+                            .format(type(variations)))
         self.variations = variations
 
     def all_instances(self, env_filter = None, vary_filter = None):
@@ -144,15 +150,15 @@ class TestInfo(object):
         if variations:
             for env in envs:
                 for vary in variations:
-                    res.append(TestInstance("test-%s-%s~%s"
-                                            % (env, self.name, vary)))
+                    res.append(TestInstance("test-{}-{}~{}"
+                                            .format(env, self.name, vary)))
         else:
-            res = [ TestInstance("test-%s-%s" % (env, self.name))
+            res = [ TestInstance("test-{}-{}".format(env, self.name))
                     for env in envs ]
         return res
 
     def __repr__(self):
-        return "TestInfo(%s)" % (self.name, )
+        return "TestInfo({})".format(self.name)
 
 
 def parse_test_instance_string(arg):
@@ -196,28 +202,28 @@ def parse_test_instance_string(arg):
 
     # Otherwise, give up
     else:
-        raise RunnerError("Unrecognised test '%s'" % (arg, ))
+        raise RunnerError("Unrecognised test '{}'".format(arg))
 
     # At this point, 'env' has always been checked for plausibility.  'name'
     # might not be
 
     if name not in all_tests:
-        raise RunnerError("Unrecognised test name '%s' for '%s'"
-                          % (name, arg))
+        raise RunnerError("Unrecognised test name '{}' for '{}'"
+                          .format(name, arg))
 
     info = all_tests[name]
 
     if env and env not in info.envs:
-        raise RunnerError("Test '%s' has no environment '%s'"
-                          % (name, env))
+        raise RunnerError("Test '{}' has no environment '{}'"
+                          .format(name, env))
 
     # If a variation has been given, check it is valid
     if variation is not None:
         if not info.variations:
-            raise RunnerError("Test '%s' has no variations" % (name, ))
+            raise RunnerError("Test '{}' has no variations".format(name))
         elif not variation in info.variations:
-            raise RunnerError("No variation '%s' for test '%s'"
-                              % (variation, name))
+            raise RunnerError("No variation '{}' for test '{}'"
+                              .format(variation, name))
 
     return env, name, variation
 
@@ -326,10 +332,10 @@ def tests_from_selection(cats, envs, tests):
         else:
             res = tests
 
-    # Sort the results
-    res = sorted(res, key = lambda test: test.variation) # by variation third
-    res = sorted(res, key = lambda test: test.env)       # by environment second
-    res = sorted(res, key = lambda test: test.name)      # by name first
+    # Sort the results.  Variation third, Env second and Name fist.
+    res = sorted(res, key = lambda test: test.variation or "")
+    res = sorted(res, key = lambda test: test.env)
+    res = sorted(res, key = lambda test: test.name)
     return res
 
 
@@ -379,8 +385,8 @@ def interpret_selection(opts):
         )
 
         if not instances:
-            raise RunnerError("No appropriate instances for '%s' (env %s)"
-                              % (arg, env))
+            raise RunnerError("No appropriate instances for '{}' (env {})"
+                              .format(arg, env))
 
         tests.extend(instances)
 
@@ -421,14 +427,14 @@ def list_tests(opts):
     if opts.environments:
         # The caller only wants the environment list
         for env in sorted(all_environments):
-            print env
+            print(env)
         return
 
     if not opts.selection:
         raise RunnerError("No tests selected")
 
     for sel in opts.selection:
-        print sel
+        print(sel)
 
 
 def interpret_result(logline):
@@ -449,31 +455,31 @@ def run_test_console(opts, test):
 
     cmd = ['xl', 'create', '-p', test.cfg_path()]
     if not opts.quiet:
-        print "Executing '%s'" % (" ".join(cmd), )
+        print("Executing '{}'".format(" ".join(cmd)))
 
     create = Popen(cmd, stdout = PIPE, stderr = PIPE)
     _, stderr = create.communicate()
 
     if create.returncode:
         if opts.quiet:
-            print "Executing '%s'" % (" ".join(cmd), )
-        print stderr
+            print("Executing '{}'".format(" ".join(cmd)))
+        print(stderr)
         raise RunnerError("Failed to create VM")
 
     cmd = ['xl', 'console', test.vm_name()]
     if not opts.quiet:
-        print "Executing '%s'" % (" ".join(cmd), )
+        print("Executing '{}'".format(" ".join(cmd)))
 
     console = Popen(cmd, stdout = PIPE)
 
     cmd = ['xl', 'unpause', test.vm_name()]
     if not opts.quiet:
-        print "Executing '%s'" % (" ".join(cmd), )
+        print("Executing '{}'".format(" ".join(cmd)))
 
     rc = subproc_call(cmd)
     if rc:
         if opts.quiet:
-            print "Executing '%s'" % (" ".join(cmd), )
+            print("Executing '{}'".format(" ".join(cmd)))
         raise RunnerError("Failed to unpause VM")
 
     stdout, _ = console.communicate()
@@ -481,12 +487,12 @@ def run_test_console(opts, test):
     if console.returncode:
         raise RunnerError("Failed to obtain VM console")
 
-    lines = stdout.splitlines()
+    lines = stdout.decode("utf-8").splitlines()
 
     if lines:
         if not opts.quiet:
-            print "\n".join(lines)
-            print ""
+            print("\n".join(lines))
+            print("")
 
     else:
         return "CRASH"
@@ -501,15 +507,15 @@ def run_test_logfile(opts, test):
                         opts.logfile_pattern.replace("%s", str(test)))
 
     if not opts.quiet:
-        print "Using logfile '%s'" % (logpath, )
+        print("Using logfile '{}'".format(logpath))
 
-    fd = os.open(logpath, os.O_CREAT | os.O_RDONLY, 0644)
+    fd = os.open(logpath, os.O_CREAT | os.O_RDONLY, 0o644)
     logfile = os.fdopen(fd)
     logfile.seek(0, os.SEEK_END)
 
     cmd = ['xl', 'create', '-F', test.cfg_path()]
     if not opts.quiet:
-        print "Executing '%s'" % (" ".join(cmd), )
+        print("Executing '{}'".format(" ".join(cmd)))
 
     guest = Popen(cmd, stdout = PIPE, stderr = PIPE)
 
@@ -517,8 +523,8 @@ def run_test_logfile(opts, test):
 
     if guest.returncode:
         if opts.quiet:
-            print "Executing '%s'" % (" ".join(cmd), )
-        print stderr
+            print("Executing '{}'".format(" ".join(cmd)))
+        print(stderr)
         raise RunnerError("Failed to run test")
 
     line = ""
@@ -526,10 +532,10 @@ def run_test_logfile(opts, test):
 
         line = line.rstrip()
         if not opts.quiet:
-            print line
+            print(line)
 
         if "Test result:" in line:
-            print ""
+            print("")
             break
 
     logfile.close()
@@ -549,7 +555,7 @@ def run_tests(opts):
     }.get(opts.results_mode, None)
 
     if run_test is None:
-        raise RunnerError("Unknown mode '%s'" % (opts.mode, ))
+        raise RunnerError("Unknown mode '{}'".format(opts.mode))
 
     rc = all_results.index('SUCCESS')
     results = []
@@ -563,10 +569,10 @@ def run_tests(opts):
 
         results.append(res)
 
-    print "Combined test results:"
+    print("Combined test results:")
 
     for test, res in zip(tests, results):
-        print "%-40s %s" % (test, res)
+        print("{0:<40} {1}".format(str(test), res))
 
     return exit_code(all_results[rc])
 
@@ -719,8 +725,8 @@ def main():
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except RunnerError, e:
-        print >>sys.stderr, "Error:", e
+    except RunnerError as e:
+        print("Error:", e, file=sys.stderr)
         sys.exit(1)
     except KeyboardInterrupt:
         sys.exit(1)
