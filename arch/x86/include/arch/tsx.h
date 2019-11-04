@@ -21,8 +21,10 @@
 #define XTF_X86_TSX_H
 
 #include <xtf/compiler.h>
+#include <xtf/extable.h>
 
 #define _XBEGIN_STARTED  (~0u)
+#define _XBEGIN_UD       EXINFO_SYM(UD, 0)
 #define _XABORT_EXPLICIT (1u << 0)
 #define _XABORT_RETRY    (1u << 1)
 #define _XABORT_CONFLICT (1u << 2)
@@ -37,6 +39,20 @@ static inline unsigned int _xbegin(void)
 
     asm volatile (".byte 0xc7, 0xf8, 0, 0, 0, 0" /* xbegin 1f; 1: */
                   : "+a" (ret) :: "memory");
+
+    return ret;
+}
+
+/* Like _xbegin(), but will catch #UD as well. */
+static inline unsigned int _xbegin_safe(void)
+{
+    unsigned int ret = _XBEGIN_STARTED;
+
+    asm volatile ("1: .byte 0xc7, 0xf8, 0, 0, 0, 0; 2:" /* xbegin 2f; 2: */
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                  : "+a" (ret)
+                  : [rec] "p" (ex_record_fault_eax)
+                  : "memory");
 
     return ret;
 }

@@ -170,6 +170,8 @@ states.
 
 @subpage test-msr - Print MSR information.
 
+@subpage test-rtm-check - Probe for the RTM behaviour.
+
 
 @section index-in-development In Development
 
