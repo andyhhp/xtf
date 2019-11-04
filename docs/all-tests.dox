@@ -145,6 +145,9 @@ emulation.
 
 @subpage test-xsa-consoleio-write - CONSOLEIO_write stack overflow
 
+@subpage test-xsa-308 - VMX: VMentry failure with debug exceptions and blocked
+states.
+
 
 @section index-utility Utilities
 
