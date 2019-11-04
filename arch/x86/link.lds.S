@@ -34,6 +34,8 @@ SECTIONS
 {
         . = SEGMENT_START("text-segment", MB(1));
 
+        _start = .;
+
         .text : {
                 *(.text)
 

@@ -16,7 +16,7 @@
 #include <arch/tsx.h>
 #include <arch/x86-dbg-reg.h>
 
-extern char _end[];
+extern char _start[], _end[];
 
 /*** Misc helpers which are library code, but really want to be inline. ***/
 
