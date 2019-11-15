@@ -65,7 +65,7 @@ struct xen_trap_info pv_default_trap_info[] =
     { 0, 0, 0, 0 }, /* Sentinel. */
 };
 
-int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
+int xtf_set_idte(unsigned int vector, const struct xtf_idte *idte)
 {
     struct xen_trap_info ti[2] =
     {

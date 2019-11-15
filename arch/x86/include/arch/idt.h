@@ -40,7 +40,7 @@ struct xtf_idte
  * @returns 0 for HVM guests, hypercall result for PV guests.
  */
 int xtf_set_idte(unsigned int vector,
-                 struct xtf_idte *idte);
+                 const struct xtf_idte *idte);
 
 #endif /* __ASSEMBLY__ */
 

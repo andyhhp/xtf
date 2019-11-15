@@ -36,6 +36,12 @@ asm(".align 16;"
     "jmp .Ltss_ret_point;"
     );
 
+static const struct xtf_idte idte = {
+    .addr = _u(ret_from_vm86),
+    .cs   = __KERN_CS,
+    .dpl  = 3,
+};
+
 /* Virtual 8068 task. */
 env_tss vm86_tss __aligned(16) =
 {
@@ -75,13 +81,6 @@ unsigned long user_ldt_use(void)
 
 void test_main(void)
 {
-    struct xtf_idte idte =
-    {
-        .addr = _u(ret_from_vm86),
-        .cs   = __KERN_CS,
-        .dpl  = 3,
-    };
-
     /* Hook ret_from_vm86(). */
     xtf_set_idte(X86_VEC_AVAIL, &idte);
 

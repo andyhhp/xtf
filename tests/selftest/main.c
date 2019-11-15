@@ -266,16 +266,15 @@ asm ("test_idte_handler:;"
 #endif
     );
 
+static const struct xtf_idte idte = {
+    .addr = _u(test_idte_handler),
+    /* PV guests need DPL1, HVM need DPL0. */
+    .dpl = IS_DEFINED(CONFIG_PV) ? 1 : 0,
+    .cs = __KERN_CS,
+};
+
 static void test_custom_idte(void)
 {
-    struct xtf_idte idte =
-        {
-            .addr = _u(test_idte_handler),
-            /* PV guests need DPL1, HVM need DPL0. */
-            .dpl = IS_DEFINED(CONFIG_PV) ? 1 : 0,
-            .cs = __KERN_CS,
-        };
-
     printk("Test: Custom IDT entry\n");
 
     int rc = xtf_set_idte(X86_VEC_AVAIL, &idte);

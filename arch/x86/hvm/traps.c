@@ -70,7 +70,7 @@ static env_tss tss_DF __aligned(16) =
     .iopb = X86_TSS_INVALID_IO_BITMAP,
 };
 
-int xtf_set_idte(unsigned int vector, struct xtf_idte *idte)
+int xtf_set_idte(unsigned int vector, const struct xtf_idte *idte)
 {
     pack_intr_gate(&idt[vector], idte->cs, idte->addr, idte->dpl, 0);
 

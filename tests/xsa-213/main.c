@@ -34,6 +34,12 @@ asm(".align 16;"
     "jmp multicall_return;"
     );
 
+static const struct xtf_idte idte = {
+    .addr = _u(recover_from_iret),
+    .cs   = __KERN_CS,
+    .dpl  = 3,
+};
+
 /* Target of the __HYPERVISOR_iret hypercall. */
 void iret_entry(void);
 asm (".pushsection .text.user;"
@@ -109,13 +115,6 @@ static multicall_entry_t multi[] = {
             (unsigned long)NULL,
         },
     },
-};
-
-static struct xtf_idte idte =
-{
-    .addr = (unsigned long)recover_from_iret,
-    .cs   = __KERN_CS,
-    .dpl  = 3,
 };
 
 void test_main(void)

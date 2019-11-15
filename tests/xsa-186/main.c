@@ -47,6 +47,11 @@ asm(".align 16;"
     "iret"
     );
 
+static const struct xtf_idte idte = {
+    .addr = _u(test_int_handler),
+    .cs = __KERN_CS,
+};
+
 /* Stub instruction buffer. */
 asm(".align 16;"
     "insn_stub_start:;"
@@ -75,12 +80,6 @@ static bool ex_fault(struct cpu_regs *regs, const struct extable_entry *ex)
 
 void test_main(void)
 {
-    struct xtf_idte idte =
-    {
-        .addr = _u(test_int_handler),
-        .cs = __KERN_CS,
-    };
-
     /* Hook test_int_handler() into the real IDT. */
     xtf_set_idte(X86_VEC_AVAIL, &idte);
 

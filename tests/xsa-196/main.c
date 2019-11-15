@@ -37,6 +37,11 @@ asm(".align 16;"
     "iretq;"
     );
 
+static const struct xtf_idte idte = {
+    .addr = _u(custom_doublefault_handler),
+    .cs   = __KERN_CS,
+};
+
 unsigned long compat_userspace(void)
 {
     exinfo_t fault = 0;
@@ -75,13 +80,6 @@ void test_main(void)
      */
     ASSERT(idt[X86_EXC_OF].dpl == 3);
     ASSERT(idt[X86_EXC_DF].dpl == 0);
-
-    struct xtf_idte idte =
-    {
-        .addr = _u(custom_doublefault_handler),
-        .cs   = __KERN_CS,
-        .dpl  = 0,
-    };
 
     /* Hook the custom doublefault handler. */
     xtf_set_idte(X86_EXC_DF, &idte);
