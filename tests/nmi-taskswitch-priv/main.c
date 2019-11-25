@@ -21,19 +21,11 @@
  * obvious in retrospect, while some are not.
  *
  * - Entering a task doesn't push an exception frame, although an error code
- *   will be pushed if applicable.  To exit from the task using iret, you must
- *   either land under a prepared iret frame with eflags.NT set, or have the
- *   handler construct one itself.
+ *   will be pushed if applicable.
  *
  * - Exiting a task overwrites all GPR state in the TSS, which gets recalled
  *   on the subsequent entry.  For the task to be reusable, the iret to leave
  *   it must be immediately before the entry point.
- *
- * - The state saved on a successful task exit will be the @%eip following the
- *   iret instruction, but the @%esp at the start of the instruction;
- *   **despite the impression by the SDM pseudocode**.  You either need to
- *   land under a prepared frame, or leave 3 slots of room above the
- *   entrypoint to construct a suitable frame.
  *
  * @see tests/nmi-taskswitch-priv/main.c
  */
@@ -43,16 +35,7 @@ const char test_title[] = "Test nmi-taskswitch-priv";
 
 bool test_wants_user_mappings = true;
 
-static uint32_t nmi_stack[PAGE_SIZE / sizeof(uint32_t)] __page_aligned_data =
-{
-    [ ARRAY_SIZE(nmi_stack) - 8 ] =
-    0xdeadbeef,                         /* %eip    */
-    0x0000dead,                         /* %cs     */
-    X86_EFLAGS_NT | X86_EFLAGS_MBS,     /* eflags  */
-    0xdeadbeef,                         /* %esp    */
-    0x0000dead,                         /* %ss     */
-    0xc2c2c2c2, 0xc2c2c2c2, 0xc2c2c2c2, /* poision */
-};
+static uint8_t nmi_stack[PAGE_SIZE] __page_aligned_bss;
 
 void entry_NMI_task(void);
 asm("exit_NMI_task:"
@@ -98,7 +81,7 @@ static env_tss nmi_tss __aligned(16) =
     .eip    = _u(entry_NMI_task),
     .cs     = __KERN_CS,
     .eflags = X86_EFLAGS_MBS,
-    .esp    = _u(&nmi_stack[ARRAY_SIZE(nmi_stack) - 8]),
+    .esp    = _u(nmi_stack + PAGE_SIZE),
     .ss     = __KERN_DS,
 
     .ds     = __USER_DS,
