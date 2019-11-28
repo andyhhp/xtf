@@ -4,7 +4,7 @@
  *
  * @page test-xsa-191 XSA-191
  *
- * Advisory: [XSA-191](http://xenbits.xen.org/xsa/advisory-191.html)
+ * Advisory: [XSA-191](https://xenbits.xen.org/xsa/advisory-191.html)
  *
  * Before XSA-191, Xen had several bugs with its handling of segments which
  * shouldn't be eligible for use.  Memory accesses through user segments and

@@ -4,7 +4,7 @@
  *
  * @page test-xsa-259 XSA-259
  *
- * Advisory: [XSA-259](http://xenbits.xen.org/xsa/advisory-259.html)
+ * Advisory: [XSA-259](https://xenbits.xen.org/xsa/advisory-259.html)
  *
  * The Meltdown mitigation work (XPTI) didn't correctly deal with an error
  * path connecting the `int $0x80` special case handing with general exception

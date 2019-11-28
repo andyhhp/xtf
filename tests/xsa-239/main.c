@@ -4,7 +4,7 @@
  *
  * @page test-xsa-239 XSA-239
  *
- * Advisory: [XSA-239](http://xenbits.xen.org/xsa/advisory-239.html)
+ * Advisory: [XSA-239](https://xenbits.xen.org/xsa/advisory-239.html)
  *
  * The IOAPIC REG_SELECT register is an 8bit register, which is expected to be
  * accessed with 32bit accesses.

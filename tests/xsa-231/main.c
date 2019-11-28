@@ -4,7 +4,7 @@
  *
  * @page test-xsa-231 XSA-231
  *
- * Advisory: [XSA-231](http://xenbits.xen.org/xsa/advisory-231.html)
+ * Advisory: [XSA-231](https://xenbits.xen.org/xsa/advisory-231.html)
  *
  * Before XSA-231, the node parameter in xen_memory_reservation was passed
  * unaudited into the heap allocator, which ASSERT()ed it was range, then

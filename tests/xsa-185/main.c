@@ -4,7 +4,7 @@
  *
  * @page test-xsa-185 XSA-185
  *
- * Advisory: [XSA-185](http://xenbits.xen.org/xsa/advisory-185.html)
+ * Advisory: [XSA-185](https://xenbits.xen.org/xsa/advisory-185.html)
  *
  * This vulnerability is along the same lines as XSA-182, and was uncovered
  * once XSA-182 had been fixed.  Please refer to 182 for the discussion of

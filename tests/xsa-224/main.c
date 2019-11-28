@@ -4,7 +4,7 @@
  *
  * @page test-xsa-224 XSA-224
  *
- * Advisory: [XSA-224](http://xenbits.xen.org/xsa/advisory-224.html)
+ * Advisory: [XSA-224](https://xenbits.xen.org/xsa/advisory-224.html)
  *
  * XSA-224 has multiple CVEs assigned.  This testcase exercises CVE-2017-10920
  * specifically.

@@ -4,7 +4,7 @@
  *
  * @page test-xsa-269 XSA-269
  *
- * Advisory: [XSA-269](http://xenbits.xen.org/xsa/advisory-269.html)
+ * Advisory: [XSA-269](https://xenbits.xen.org/xsa/advisory-269.html)
  *
  * Before XSA-269, no reserved bit checking was performed for writes to
  * MSR_DEBUGCTL.  Branch Trace Store isn't virtualised, and must only be

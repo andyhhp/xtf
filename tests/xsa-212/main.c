@@ -4,7 +4,7 @@
  *
  * @page test-xsa-212 XSA-212
  *
- * Advisory: [XSA-212](http://xenbits.xen.org/xsa/advisory-212.html)
+ * Advisory: [XSA-212](https://xenbits.xen.org/xsa/advisory-212.html)
  *
  * The XENMEM_exchange hypercall previously had incomplete checks on the
  * safety of the parameters passed.  XENMEM_exchange takes an input and output

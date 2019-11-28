@@ -4,7 +4,7 @@
  *
  * @page test-xsa-194 XSA-194
  *
- * Advisory: [XSA-194](http://xenbits.xen.org/xsa/advisory-194.html)
+ * Advisory: [XSA-194](https://xenbits.xen.org/xsa/advisory-194.html)
  *
  * When a guest requests BSD_SYMTAB, Some versions of libelf use a packed
  * struct containing an Elf header, and three Section headers.  These headers

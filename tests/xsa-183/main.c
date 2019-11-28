@@ -4,7 +4,7 @@
  *
  * @page test-xsa-183 XSA-183
  *
- * Advisory: [XSA-183](http://xenbits.xen.org/xsa/advisory-183.html)
+ * Advisory: [XSA-183](https://xenbits.xen.org/xsa/advisory-183.html)
  *
  * This vulnerability only affects hardware supporting SMAP (Intel
  * Broadwell/AMD Zen or later) on Xen 4.5 or later (due to the addition of

@@ -4,10 +4,10 @@
  *
  * @page test-xsa-265 XSA-265
  *
- * Advisory: [XSA-265](http://xenbits.xen.org/xsa/advisory-264.html)
+ * Advisory: [XSA-265](https://xenbits.xen.org/xsa/advisory-264.html)
  *
  * One of the fixes for
- * [XSA-260](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=75d6828bc2146d0eea16adc92376951a310d94a7)
+ * [XSA-260](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=75d6828bc2146d0eea16adc92376951a310d94a7)
  * introduced logic to try and prevent livelocks of @#DB exceptions in
  * hypervisor context.  However, it failed to account for the fact that some
  * %dr6 bits are sticky and never cleared by hardware.

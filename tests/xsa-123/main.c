@@ -4,7 +4,7 @@
  *
  * @page test-xsa-123 XSA-123
  *
- * Advisory: [XSA-123](http://xenbits.xen.org/xsa/advisory-123.html)
+ * Advisory: [XSA-123](https://xenbits.xen.org/xsa/advisory-123.html)
  *
  * An x86 instruction destination operand is either a memory reference or a
  * register.  Memory references always have an associated selector, and

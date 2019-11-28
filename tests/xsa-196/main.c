@@ -4,9 +4,9 @@
  *
  * @page test-xsa-196 XSA-196
  *
- * Advisory: [XSA-196](http://xenbits.xen.org/xsa/advisory-196.html)
+ * Advisory: [XSA-196](https://xenbits.xen.org/xsa/advisory-196.html)
  *
- * Xen change [36ebf14ebe](http://xenbits.xen.org/gitweb/
+ * Xen change [36ebf14ebe](https://xenbits.xen.org/gitweb/
  * ?p=xen.git;a=commitdiff;h=36ebf14ebe60310aa22952cbb94de951c158437d)
  * contained a bug when calculating the correct size of an IDT entry.
  *

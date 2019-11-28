@@ -4,7 +4,7 @@
  *
  * @page test-xsa-232 XSA-232
  *
- * Advisory: [XSA-232](http://xenbits.xen.org/xsa/advisory-232.html)
+ * Advisory: [XSA-232](https://xenbits.xen.org/xsa/advisory-232.html)
  *
  * GNTTABOP_cache_flush takes a machine address, looks up the page owner and
  * unconditionally follows the owners grant table pointer.  For system domains

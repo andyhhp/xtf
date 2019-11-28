@@ -4,7 +4,7 @@
  *
  * @page test-xsa-188 XSA-188
  *
- * Advisory: [XSA-188](http://xenbits.xen.org/xsa/advisory-188.html)
+ * Advisory: [XSA-188](https://xenbits.xen.org/xsa/advisory-188.html)
  *
  * EVTCHNOP_init_control with an invalid control_gfn will correctly
  * fail and free resources but incorrectly leaves a pointer to freed

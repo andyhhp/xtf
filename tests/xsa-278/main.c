@@ -4,10 +4,10 @@
  *
  * @page test-xsa-278 XSA-278
  *
- * Advisory: [XSA-278](http://xenbits.xen.org/xsa/advisory-278.html)
+ * Advisory: [XSA-278](https://xenbits.xen.org/xsa/advisory-278.html)
  *
  * Between
- * [ac6a4500b](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=ac6a4500b2bed47fa135afbf8e4caeb4b3df546d)
+ * [ac6a4500b](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=ac6a4500b2bed47fa135afbf8e4caeb4b3df546d)
  * (Xen 4.9) and XSA-278, Xen incorrectly handled its concept of "in VMX
  * mode", and allowed the use of the VT-x instructions before VMXON had
  * completed.

@@ -4,7 +4,7 @@
  *
  * @page test-xsa-182 XSA-182
  *
- * Advisory: [XSA-182](http://xenbits.xen.org/xsa/advisory-182.html)
+ * Advisory: [XSA-182](https://xenbits.xen.org/xsa/advisory-182.html)
  *
  * There is a trick with pagetables, known as recursive pagetables (also
  * linear or twisted pagetables), where a top level pagetable referrers back

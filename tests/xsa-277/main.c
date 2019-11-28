@@ -4,7 +4,7 @@
  *
  * @page test-xsa-277 XSA-277
  *
- * Advisory: [XSA-277](http://xenbits.xen.org/xsa/advisory-277.html)
+ * Advisory: [XSA-277](https://xenbits.xen.org/xsa/advisory-277.html)
  *
  * Before XSA-277, an error path in the P2M code left a spinlock held when the
  * guest tried to remove a page which was already not present.

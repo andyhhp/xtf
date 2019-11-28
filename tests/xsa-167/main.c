@@ -4,7 +4,7 @@
  *
  * @page test-xsa-167 XSA-167
  *
- * Advisory: [XSA-167](http://xenbits.xen.org/xsa/advisory-167.html)
+ * Advisory: [XSA-167](https://xenbits.xen.org/xsa/advisory-167.html)
  *
  * The MMUEXT subops MARK_SUPER and UNMARK_SUPER do not perform a range check
  * on the `mfn` parameter before indexing the superframe array.  They do

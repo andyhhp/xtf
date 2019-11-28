@@ -4,7 +4,7 @@
  *
  * @page test-xsa-204 XSA-204
  *
- * Advisory: [XSA-204](http://xenbits.xen.org/xsa/advisory-204.html)
+ * Advisory: [XSA-204](https://xenbits.xen.org/xsa/advisory-204.html)
  *
  * SYSCALL (unlike most instructions) evaluates its singlestep action based on
  * the resulting EFLAGS.TF, not the starting EFLAGS.TF.  As the @#DB is raised

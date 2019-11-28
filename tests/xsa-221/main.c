@@ -4,9 +4,9 @@
  *
  * @page test-xsa-221 XSA-221
  *
- * Advisory: [XSA-221](http://xenbits.xen.org/xsa/advisory-221.html)
+ * Advisory: [XSA-221](https://xenbits.xen.org/xsa/advisory-221.html)
  *
- * The upstream change [fbbd5009e6](http://xenbits.xen.org/gitweb/
+ * The upstream change [fbbd5009e6](https://xenbits.xen.org/gitweb/
  * ?p=xen.git;a=commitdiff;h=fbbd5009e6ed1201731b1727762070c1a988e67d)
  * neglected to check that ports were suitably initialised before
  * dereferencing their structure.

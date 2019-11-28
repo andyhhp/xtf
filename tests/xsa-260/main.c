@@ -4,7 +4,7 @@
  *
  * @page test-xsa-260 XSA-260
  *
- * Advisory: [XSA-260](http://xenbits.xen.org/xsa/advisory-260.html)
+ * Advisory: [XSA-260](https://xenbits.xen.org/xsa/advisory-260.html)
  *
  * The `mov` and `pop` instructions, when encoded with an @%ss destination
  * register, set the `movss` shadow in hardware, which prevents

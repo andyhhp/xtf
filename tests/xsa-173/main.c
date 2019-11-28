@@ -4,7 +4,7 @@
  *
  * @page test-xsa-173 XSA-173
  *
- * Advisory: [XSA-173](http://xenbits.xen.org/xsa/advisory-173.html)
+ * Advisory: [XSA-173](https://xenbits.xen.org/xsa/advisory-173.html)
  *
  * This vulnerability only affects guests running with shadow paging.  Xen
  * truncated the shadowed gfn into a 32bit variable, causing issues later when

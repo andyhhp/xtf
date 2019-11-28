@@ -7,7 +7,7 @@
  *
  * The set of identifiers to be added here shouldn't extend beyond what
  * POSIX mandates (see e.g.
- * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/errno.h.html)
+ * https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/errno.h.html)
  * with the exception that we support some optional (XSR) values
  * specified there (but no new ones should be added).
  */

@@ -4,7 +4,7 @@
  *
  * @page test-xsa-255 XSA-255
  *
- * Advisory: [XSA-255](http://xenbits.xen.org/xsa/advisory-255.html)
+ * Advisory: [XSA-255](https://xenbits.xen.org/xsa/advisory-255.html)
  *
  * The Grant Table v2 API has includes a set of status frames, which the guest
  * is expected to map in addition to the regular grant frames.  These frames

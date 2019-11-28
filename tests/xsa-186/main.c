@@ -4,7 +4,7 @@
  *
  * @page test-xsa-186 XSA-186
  *
- * Advisory: [XSA-186](http://xenbits.xen.org/xsa/advisory-186.html)
+ * Advisory: [XSA-186](https://xenbits.xen.org/xsa/advisory-186.html)
  *
  * Experimentally, Intel and AMD hardware is happy executing a 64bit
  * instruction stream which crosses the -1 -> 0 virtual boundary, whether the
@@ -18,7 +18,7 @@
  * used and behaves normally as a 32bit register, including in 16bit protected
  * mode segments, as well as in Real and Unreal mode.
  *
- * The upstream change [0640ffb6](http://xenbits.xen.org/gitweb/
+ * The upstream change [0640ffb6](https://xenbits.xen.org/gitweb/
  * ?p=xen.git;a=commitdiff;h=0640ffb67fb92e2561c63b9308c27b71281fdd72) broke
  * this behaviour, and introduced conditions which resulted in x86 emulator
  * state corruption.

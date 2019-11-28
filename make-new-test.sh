@@ -102,7 +102,7 @@ else
     cat <<EOF
  * @page test-$NAME $NAME_UC
  *
- * Advisory: [$NAME_UC](http://xenbits.xen.org/xsa/advisory-${NAME#xsa-}.html)
+ * Advisory: [$NAME_UC](https://xenbits.xen.org/xsa/advisory-${NAME#xsa-}.html)
 EOF
 fi
 

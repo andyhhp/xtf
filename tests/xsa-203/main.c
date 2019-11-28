@@ -4,7 +4,7 @@
  *
  * @page test-xsa-203 XSA-203
  *
- * Advisory: [XSA-203](http://xenbits.xen.org/xsa/advisory-203.html)
+ * Advisory: [XSA-203](https://xenbits.xen.org/xsa/advisory-203.html)
  *
  * Versions of Xen between 4.6 (when VMFUNC support was introduced) and
  * XSA-203, would follow a NULL function pointer on non-Intel hardware.

@@ -4,7 +4,7 @@
  *
  * @page test-xsa-213 XSA-213
  *
- * Advisory: [XSA-213](http://xenbits.xen.org/xsa/advisory-213.html)
+ * Advisory: [XSA-213](https://xenbits.xen.org/xsa/advisory-213.html)
  *
  * Before XSA-213, Xen would allow the use of __HYPERCALL_iret in a multicall.
  * __HYPERCALL_iret switches the guest from kernel mode into user mode, but

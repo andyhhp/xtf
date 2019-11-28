@@ -4,7 +4,7 @@
  *
  * @page test-xsa-261 XSA-261
  *
- * Advisory: [XSA-261](http://xenbits.xen.org/xsa/advisory-261.html)
+ * Advisory: [XSA-261](https://xenbits.xen.org/xsa/advisory-261.html)
  *
  * Before XSA-261, Xen didn't implement IO-APIC interrupt routing for HPET
  * timers properly, and attempting to configure a IRQ above the legacy PIC

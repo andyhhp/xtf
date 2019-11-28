@@ -4,7 +4,7 @@
  *
  * @page test-xsa-279 XSA-279
  *
- * Advisory: [XSA-279](http://xenbits.xen.org/xsa/advisory-279.html)
+ * Advisory: [XSA-279](https://xenbits.xen.org/xsa/advisory-279.html)
  *
  * When `PCID` support was added to Xen to mitigate some of the performance
  * hit from the Meltdown protection, Xen's internal TLB flushing changed from

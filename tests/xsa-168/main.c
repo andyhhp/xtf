@@ -4,7 +4,7 @@
  *
  * @page test-xsa-168 XSA-168
  *
- * Advisory: [XSA-168](http://xenbits.xen.org/xsa/advisory-168.html)
+ * Advisory: [XSA-168](https://xenbits.xen.org/xsa/advisory-168.html)
  *
  * This vulnerability only affects VT-x hardware, and can only exploited by a
  * guest running with shadow paging.

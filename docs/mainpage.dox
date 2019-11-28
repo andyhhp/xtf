@@ -108,7 +108,7 @@ To run tests on a Xen host: (see @ref errata first)
 @section history History
 
 The Xen Test Framework grew out of the work done to debug
-[XSA-106](http://xenbits.xen.org/xsa/advisory-106.html).  As reported, Xen's
+[XSA-106](https://xenbits.xen.org/xsa/advisory-106.html).  As reported, Xen's
 instruction emulator failed to perform dpl checks for instructions generating
 software exceptions, which allowed guest userspace to bypass a security check
 set up by the guest kernel.  Further investigation showed that the exception
@@ -122,11 +122,11 @@ doing this, it was observed that different hardware was behaving differently
 not behaving as described in the manual.
 
 Once the embargo on XSA-106 lifted, changesets
-[7dfa94c](http://xenbits.xen.org/gitweb/
+[7dfa94c](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=7dfa94c6212b979cbfc8cff5ad5336922f4809d9),
-[ecf5678](http://xenbits.xen.org/gitweb/
+[ecf5678](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=ecf5678200ad2642b69ffea47ad138190bc3e190) and
-[36ebf14](http://xenbits.xen.org/gitweb/
+[36ebf14](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=36ebf14ebe60310aa22952cbb94de951c158437d) were the
 eventual bugfixes which caused Xen to inject software exceptions correctly.
 
@@ -136,9 +136,9 @@ progressed only in the authors copious free time, when more important tasks
 were not being done.
 
 Moving forward by a year, the author was dismayed to discover that the
-[XSA-156](http://xenbits.xen.org/xsa/advisory-156.html) release contained a
+[XSA-156](https://xenbits.xen.org/xsa/advisory-156.html) release contained a
 regression (causing infinite loops inside guests which used hardware debugging
-facilities, fixed in [0747bc8](http://xenbits.xen.org/gitweb/
+facilities, fixed in [0747bc8](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=0747bc8b4d85f3fc0ee1e58418418fa0229e8ff8)) which
 would have been caught by the original test for XSA-106, had that test been in
 a usable state.

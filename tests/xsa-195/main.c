@@ -4,7 +4,7 @@
  *
  * @page test-xsa-195 XSA-195
  *
- * Advisory: [XSA-195](http://xenbits.xen.org/xsa/advisory-195.html)
+ * Advisory: [XSA-195](https://xenbits.xen.org/xsa/advisory-195.html)
  *
  * The `bt` family of instructions can reference an arbitrary bit offset from
  * their memory operand.  The x86 instruction emulator accounts for this by

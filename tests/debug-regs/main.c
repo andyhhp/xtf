@@ -7,7 +7,7 @@
  * The following general tests are implemented:
  *
  * 1.  Xen, before
- *     [46029da12e](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=46029da12e5efeca6d957e5793bd34f2965fa0a1)
+ *     [46029da12e](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=46029da12e5efeca6d957e5793bd34f2965fa0a1)
  *     failed to initialise the guests debug registers correctly.  On hardware
  *     which supports Restricted Transactional Memory, this becomes visible,
  *     as @%dr6.rtm appears asserted (clear, for backwards compatibility)
@@ -16,9 +16,9 @@
  * The following PV tests are implemented:
  *
  * 1.  Xen, between
- *     [65e3554908](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=65e355490817ac1783c9ef06c13cf980edf05b5b)
+ *     [65e3554908](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=65e355490817ac1783c9ef06c13cf980edf05b5b)
  *     (Introduced in Xen 4.5) and
- *     [adf8feba1a](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=adf8feba1afa040f3a84a82953e18af02060884a)
+ *     [adf8feba1a](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=adf8feba1afa040f3a84a82953e18af02060884a)
  *     (Fixed in Xen 4.11) had a bug whereby some writes to @%dr7 didn't take
  *     immediate effect.
  *
@@ -27,12 +27,12 @@
  *     reschedule.
  *
  * 2.  Xen, before
- *     [f539ae2706](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=f539ae27061c6811fd5e80e0755bf0514e22b977)
+ *     [f539ae2706](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=f539ae27061c6811fd5e80e0755bf0514e22b977)
  *     (Xen 4.11) had a bug whereby a write which cleared @%dr7.L/G would
  *     leave stale IO shadow state visible in later reads of @%dr7.
  *
  *     Unfortunately, that changeset introduced a second bug, fixed by
- *     [237c31b5a1](http://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=237c31b5a1d5aa88cdb59b8c31b1b62eb13e82d1)
+ *     [237c31b5a1](https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=237c31b5a1d5aa88cdb59b8c31b1b62eb13e82d1)
  *     (Xen 4.11), which caused an attempt to set up an IO breakpoint with
  *     @%cr4.DE clear to clobber an already configured state, despite the
  *     update failing.

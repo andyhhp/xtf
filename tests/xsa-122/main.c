@@ -4,7 +4,7 @@
  *
  * @page test-xsa-122 XSA-122
  *
- * Advisory: [XSA-122](http://xenbits.xen.org/xsa/advisory-122.html)
+ * Advisory: [XSA-122](https://xenbits.xen.org/xsa/advisory-122.html)
  *
  * Before XSA-122, Xen would fill a fixed size stack array with a
  * NUL-terminated string, and copy the entire array back to guest space.  This

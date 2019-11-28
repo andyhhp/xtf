@@ -4,7 +4,7 @@
  *
  * @page test-xsa-170 XSA-170
  *
- * Advisory: [XSA-170](http://xenbits.xen.org/xsa/advisory-170.html)
+ * Advisory: [XSA-170](https://xenbits.xen.org/xsa/advisory-170.html)
  *
  * XSA-170 concerns a vmentry quirk on VMX hardware, which causes the vmentry
  * to fail if @%rip is non-canonical.  This bug does not affect SVM hardware,

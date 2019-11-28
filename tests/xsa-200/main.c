@@ -4,7 +4,7 @@
  *
  * @page test-xsa-200 XSA-200
  *
- * Advisory: [XSA-200](http://xenbits.xen.org/xsa/advisory-200.html)
+ * Advisory: [XSA-200](https://xenbits.xen.org/xsa/advisory-200.html)
  *
  * Before XSA-200, the instruction emulator in Xen had a bug where it
  * incorrectly honoured the legacy operand-side override prefix for

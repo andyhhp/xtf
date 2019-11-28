@@ -4,7 +4,7 @@
  *
  * @page test-xsa-234 XSA-234
  *
- * Advisory: [XSA-234](http://xenbits.xen.org/xsa/advisory-234.html)
+ * Advisory: [XSA-234](https://xenbits.xen.org/xsa/advisory-234.html)
  *
  * Various grant unmapping operations will succeed and drop a writeable
  * reference count, even when the mapping was only read-only.  This can be
