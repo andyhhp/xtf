@@ -572,6 +572,10 @@ def run_tests(opts):
     print("Combined test results:")
 
     for test, res in zip(tests, results):
+
+        if res == "SUCCESS" and opts.quiet >= 2:
+            continue
+
         print("{0:<40} {1}".format(str(test), res))
 
     return exit_code(all_results[rc])
@@ -706,9 +710,11 @@ def main():
                       help = ('Specify the log file name pattern, '
                               'defaults to "guest-%s.log"'),
                       )
-    parser.add_option("-q", "--quiet", action = "store_true",
+    parser.add_option("-q", "--quiet", action = "count",
                       dest = "quiet",
-                      help = "Print only test results, without console output",
+                      help = ("Progressively make the output less verbose.  "
+                              "1) No console logs, only test results.  "
+                              "2) Not even SUCCESS results."),
                       )
 
     opts, args = parser.parse_args()
