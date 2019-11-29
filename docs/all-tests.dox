@@ -143,6 +143,8 @@ XSA-293 - See @ref test-pv-fsgsbase.
 @subpage test-xsa-298 - missing descriptor table limit checking in x86 PV
 emulation.
 
+@subpage test-xsa-consoleio-write - CONSOLEIO_write stack overflow
+
 
 @section index-utility Utilities
 
