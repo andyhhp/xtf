@@ -12,7 +12,7 @@ from __future__ import print_function, unicode_literals
 import sys, os, os.path as path
 
 from optparse import OptionParser
-from subprocess import Popen, PIPE, call as subproc_call, check_output
+from subprocess import Popen, PIPE, call as subproc_call
 
 try:
     import json
@@ -397,7 +397,10 @@ def interpret_selection(opts):
 
         host_envs = []
 
-        for line in check_output(['xl', 'info']).splitlines():
+        cmd = Popen(['xl', 'info'], stdout = PIPE)
+        stdout, _ = cmd.communicate()
+
+        for line in stdout.splitlines():
             if not line.startswith("xen_caps"):
                 continue
 
