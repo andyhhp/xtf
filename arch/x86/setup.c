@@ -235,12 +235,7 @@ static void qemu_console_write(const char *buf, size_t len)
 {
     asm volatile("rep; outsb"
                  : "+S" (buf), "+c" (len)
-                 : "d" (0x12));
-}
-
-static void xen_console_write(const char *buf, size_t len)
-{
-    hypercall_console_write(buf, len);
+                 : "d" (0xe9));
 }
 
 void arch_setup(void)
@@ -248,13 +243,13 @@ void arch_setup(void)
     if ( IS_DEFINED(CONFIG_HVM) && !pvh_start_info )
         register_console_callback(qemu_console_write);
 
-    register_console_callback(xen_console_write);
-
     collect_cpuid(IS_DEFINED(CONFIG_PV) ? pv_cpuid_count : cpuid_count);
 
     sort_extable();
 
     arch_init_traps();
+
+    return;
 
     init_hypercalls();
 

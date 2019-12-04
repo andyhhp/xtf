@@ -145,10 +145,10 @@ struct arch_shared_info {
  * hypervisor's x86 emulator.
  */
 #ifdef __ASSEMBLY__
-#define _ASM_XEN_FEP ud2a; .ascii "xen";
+#define _ASM_XEN_FEP ud2a; .ascii "kvm";
 #else
-#define _ASM_XEN_FEP "ud2a; .ascii \"xen\";"
-#define _BIN_XEN_FEP "\x0f\x0bxen"
+#define _ASM_XEN_FEP "ud2a; .ascii \"kvm\";"
+#define _BIN_XEN_FEP "\x0f\x0bkvm"
 #endif
 
 #endif /* XEN_PUBLIC_ARCH_X86_XEN_H */

@@ -146,6 +146,8 @@ void arch_init_traps(void)
 
 void __noreturn arch_crash_hard(void)
 {
+    outb(0, 0xf4);
+
     /*
      * Clear interrupts and halt.  Xen should catch this condition and shut
      * the VM down.  If that fails, sit in a loop.

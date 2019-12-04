@@ -64,7 +64,7 @@ CFLAGS_$(1) := $$(CFLAGS_$($(1)_arch)) $$(COMMON_CFLAGS-$(1)) -DCONFIG_ENV_$(1) 
 
 link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
-LDFLAGS_$(1) := -T $$(link-$(1)) -nostdlib $(LDFLAGS-y)
+LDFLAGS_$(1) := -T $$(link-$(1)) -nostdlib -static -m32 $(LDFLAGS-y)
 
 # Needs to pick up test-provided obj-perenv and obj-perbits
 DEPS-$(1) = \

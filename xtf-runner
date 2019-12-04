@@ -93,9 +93,12 @@ class TestInstance(object):
         """ Return the VM name as `xl` expects it. """
         return repr(self)
 
+    def vm_path(self):
+        return path.join("tests", self.name, repr(self))
+
     def cfg_path(self):
         """ Return the path to the `xl` config file for this test. """
-        return path.join("tests", self.name, repr(self) + ".cfg")
+        return self.vm_path() + ".cfg"
 
     def __repr__(self):
         if not self.variation:
@@ -461,40 +464,17 @@ def interpret_result(logline):
 def run_test_console(opts, test):
     """ Run a specific, obtaining results via xenconsole """
 
-    cmd = ['xl', 'create', '-p', test.cfg_path()]
+    cmd = ["qemu-system-x86_64",
+           "-nodefaults", "-nographic", "-cpu", "host", "-machine", "accel=kvm",
+           "-debugcon",  "stdio",
+           "-device", "isa-debug-exit,iobase=0xf4,iosize=0x4",
+           "-kernel", test.vm_path()]
+
     if not opts.quiet:
         print("Executing '{0}'".format(" ".join(cmd)))
 
-    create = Popen(cmd, stdout = PIPE, stderr = PIPE)
-    _, stderr = create.communicate()
-
-    if create.returncode:
-        if opts.quiet:
-            print("Executing '{0}'".format(" ".join(cmd)))
-        print(stderr)
-        raise RunnerError("Failed to create VM")
-
-    cmd = ['xl', 'console', test.vm_name()]
-    if not opts.quiet:
-        print("Executing '{0}'".format(" ".join(cmd)))
-
-    console = Popen(cmd, stdout = PIPE)
-
-    cmd = ['xl', 'unpause', test.vm_name()]
-    if not opts.quiet:
-        print("Executing '{0}'".format(" ".join(cmd)))
-
-    rc = subproc_call(cmd)
-    if rc:
-        if opts.quiet:
-            print("Executing '{0}'".format(" ".join(cmd)))
-        raise RunnerError("Failed to unpause VM")
-
+    console = Popen(cmd, stdout = PIPE, stderr = PIPE)
     stdout, _ = console.communicate()
-
-    if console.returncode:
-        raise RunnerError("Failed to obtain VM console")
-
     lines = stdout.splitlines()
 
     if lines:
