@@ -18,7 +18,7 @@
 
 const char test_title[] = "CONSOLEIO_write stack overflow PoC";
 
-uint8_t zero_page[PAGE_SIZE] __page_aligned_bss;
+uint8_t zero_page[PAGE_SIZE] __page_aligned_bss __used;
 
 /* Have the assembler build an L1/L2 pair mapping zero_page[] many times. */
 asm (".section \".data.page_aligned\", \"aw\";"
