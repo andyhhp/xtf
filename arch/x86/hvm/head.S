@@ -9,6 +9,19 @@
 
         .section ".text.head", "ax", @progbits
         .code32                 /* Always starts in 32bit flat mode. */
+
+#define MULTIBOOT_HEADER_MAGIC         0x1BADB002
+#define MULTIBOOT_HEADER_MODS_ALIGNED  0x00000001
+#define MULTIBOOT_HEADER_FLAGS (MULTIBOOT_HEADER_MODS_ALIGNED | 2)
+GLOBAL(multiboot1_header)
+        /* Magic number indicating a Multiboot header. */
+        .long   MULTIBOOT_HEADER_MAGIC
+        /* Flags to bootloader (see Multiboot spec). */
+        .long   MULTIBOOT_HEADER_FLAGS
+        /* Checksum: must be the negated sum of the first two fields. */
+        .long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+ENDDATA(multiboot1_header)
+
 GLOBAL(_elf_start)              /* HVM common setup. */
 
 #if CONFIG_PAGING_LEVELS > 0    /* Paging setup for CR3 and CR4 */
