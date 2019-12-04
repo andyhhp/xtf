@@ -44,6 +44,14 @@ name:
     SIZE(name)
 
 /**
+ * Set the type of @p name to function, and set its size.
+ * @param name Symbol name.
+ */
+#define ENDDATA(name)                           \
+    .type name, STT_OBJECT;                     \
+    SIZE(name)
+
+/**
  * Declare a string with label @p name and value @p val.  It is placed in the
  * mergable string section, is declared as data, and has its size set.
  * @param name String name.
