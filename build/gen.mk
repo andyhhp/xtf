@@ -32,7 +32,7 @@ build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME)) $(TEST-CFGS)
 build: info.json
 
 info.json: $(ROOT)/build/mkinfo.py FORCE
-	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)" "$(VARY-CFG)"
+	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(filter-out pv%,$(TEST-ENVS))" ""
 	@$(call move-if-changed,$@.tmp,$@)
 
 .PHONY: install install-each-env
@@ -52,7 +52,7 @@ else
 # hvm64 needs linking normally, then converting to elf32-x86-64 or elf32-i386
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
 	$(CC) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@.tmp
-	$(OBJCOPY) $$@.tmp -O $(hvm64-format) $$@
+	$(OBJCOPY) $$@.tmp -O elf32-i386 $$@
 	rm -f $$@.tmp
 endif
 

@@ -24,7 +24,6 @@ void __noreturn panic(const char *fmt, ...)
 
     printk("******************************\n");
 
-    hypercall_shutdown(SHUTDOWN_crash);
     arch_crash_hard();
 }
 

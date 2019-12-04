@@ -61,7 +61,7 @@ CFLAGS_$(1) := $$(CFLAGS_$($(1)_arch)) $$(COMMON_CFLAGS-$(1)) -DCONFIG_ENV_$(1) 
 head-$(1) := $(ROOT)/arch/x86/$($(1)_guest)/head-$(1).o
 link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
-LDFLAGS_$(1) := -Wl,-T,$$(link-$(1)) -nostdlib $(LDFLAGS-y)
+LDFLAGS_$(1) := -Wl,-T,$$(link-$(1)) -nostdlib $(LDFLAGS-y) -static -m32
 
 # Needs to pick up test-provided obj-perenv and obj-perarch
 DEPS-$(1) = $$(head-$(1)) \
