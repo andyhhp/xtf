@@ -211,6 +211,20 @@ static inline void write_ss(unsigned int ss)
     asm volatile ("mov %0, %%ss" :: "rm" (ss));
 }
 
+static inline unsigned int read_flags(void)
+{
+    unsigned int flags;
+
+    asm volatile ("pushf; pop %0" : "=rm" (flags));
+
+    return flags;
+}
+
+static inline void write_flags(unsigned int flags)
+{
+    asm volatile ("push %0; popf" :: "irm" (flags));
+}
+
 static inline unsigned long read_cr0(void)
 {
     unsigned long cr0;
@@ -372,6 +386,11 @@ static inline uint64_t read_xcr0(void)
 static inline void write_xcr0(uint64_t xcr0)
 {
     xsetbv(0, xcr0);
+}
+
+static inline void clflush(const void *ptr)
+{
+    asm volatile ("clflush %0" :: "m" (*(const char *)ptr));
 }
 
 #endif /* XTF_X86_LIB_H */

@@ -121,6 +121,13 @@ static inline void pack_intr_gate(
     pack_gate(g, 14, sel, offset, dpl, other);
 }
 
+static inline void pack_trap_gate(
+    env_gate *g, unsigned int sel, unsigned long offset,
+    unsigned int dpl, unsigned int other)
+{
+    pack_gate(g, 15, sel, offset, dpl, other);
+}
+
 #endif /* XTF_X86_GATE_H */
 
 /*
