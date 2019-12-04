@@ -22,7 +22,7 @@ OUTPUT_ARCH(i386)
 # error Bad architecture to link with
 #endif
 
-ENTRY(_start)
+ENTRY(elf_entry)
 
 PHDRS
 {

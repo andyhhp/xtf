@@ -8,7 +8,7 @@
 #include <xen/elfnote.h>
 
         .code32                 /* Always starts in 32bit flat mode. */
-GLOBAL(_start)                  /* HVM common setup. */
+GLOBAL(elf_entry)               /* HVM common setup. */
 
 #if CONFIG_PAGING_LEVELS > 0    /* Paging setup for CR3 and CR4 */
 
@@ -90,16 +90,16 @@ GLOBAL(_start)                  /* HVM common setup. */
         push $.Lmain_err_msg
 #endif
         call panic
-ENDFUNC(_start)
+ENDFUNC(elf_entry)
 
 DECLSTR(.Lmain_err_msg, "xtf_main() returned\n")
 
 /* All HVM XTF guests are compatible with the PVH ABI. */
-ENTRY(_pvh_start)
+ENTRY(pvh_entry)
         mov %ebx, pvh_start_info
-        jmp _start
-ENDFUNC(_pvh_start)
-ELFNOTE(Xen, XEN_ELFNOTE_PHYS32_ENTRY, .long _pvh_start)
+        jmp elf_entry
+ENDFUNC(pvh_entry)
+ELFNOTE(Xen, XEN_ELFNOTE_PHYS32_ENTRY, .long pvh_entry)
 
 /*
  * Local variables:
