@@ -63,10 +63,10 @@ class TestInstance(object):
         self.env, self.name, self.variation = parse_test_instance_string(arg)
 
         if self.env is None:
-            raise RunnerError("No environment for '{}'".format(arg))
+            raise RunnerError("No environment for '{0}'".format(arg))
 
         if self.variation is None and get_all_test_info()[self.name].variations:
-            raise RunnerError("Test '{}' has variations, but none specified"
+            raise RunnerError("Test '{0}' has variations, but none specified"
                               .format(self.name))
 
     def vm_name(self):
@@ -79,9 +79,9 @@ class TestInstance(object):
 
     def __repr__(self):
         if not self.variation:
-            return "test-{}-{}".format(self.env, self.name)
+            return "test-{0}-{1}".format(self.env, self.name)
         else:
-            return "test-{}-{}~{}".format(self.env, self.name, self.variation)
+            return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -101,32 +101,32 @@ class TestInfo(object):
 
         name = test_json["name"]
         if not isinstance(name, basestring):
-            raise TypeError("Expected string for 'name', got '{}'"
+            raise TypeError("Expected string for 'name', got '{0}'"
                             .format(type(name)))
         self.name = name
 
         cat = test_json["category"]
         if not isinstance(cat, basestring):
-            raise TypeError("Expected string for 'category', got '{}'"
+            raise TypeError("Expected string for 'category', got '{0}'"
                             .format(type(cat)))
         if not cat in all_categories:
-            raise ValueError("Unknown category '{}'".format(cat))
+            raise ValueError("Unknown category '{0}'".format(cat))
         self.cat = cat
 
         envs = test_json["environments"]
         if not isinstance(envs, list):
-            raise TypeError("Expected list for 'environments', got '{}'"
+            raise TypeError("Expected list for 'environments', got '{0}'"
                             .format(type(envs)))
         if not envs:
             raise ValueError("Expected at least one environment")
         for env in envs:
             if not env in all_environments:
-                raise ValueError("Unknown environments '{}'".format(env))
+                raise ValueError("Unknown environments '{0}'".format(env))
         self.envs = envs
 
         variations = test_json["variations"]
         if not isinstance(variations, list):
-            raise TypeError("Expected list for 'variations', got '{}'"
+            raise TypeError("Expected list for 'variations', got '{0}'"
                             .format(type(variations)))
         self.variations = variations
 
@@ -150,15 +150,15 @@ class TestInfo(object):
         if variations:
             for env in envs:
                 for vary in variations:
-                    res.append(TestInstance("test-{}-{}~{}"
+                    res.append(TestInstance("test-{0}-{1}~{2}"
                                             .format(env, self.name, vary)))
         else:
-            res = [ TestInstance("test-{}-{}".format(env, self.name))
+            res = [ TestInstance("test-{0}-{1}".format(env, self.name))
                     for env in envs ]
         return res
 
     def __repr__(self):
-        return "TestInfo({})".format(self.name)
+        return "TestInfo({0})".format(self.name)
 
 
 def parse_test_instance_string(arg):
@@ -202,27 +202,27 @@ def parse_test_instance_string(arg):
 
     # Otherwise, give up
     else:
-        raise RunnerError("Unrecognised test '{}'".format(arg))
+        raise RunnerError("Unrecognised test '{0}'".format(arg))
 
     # At this point, 'env' has always been checked for plausibility.  'name'
     # might not be
 
     if name not in all_tests:
-        raise RunnerError("Unrecognised test name '{}' for '{}'"
+        raise RunnerError("Unrecognised test name '{0}' for '{1}'"
                           .format(name, arg))
 
     info = all_tests[name]
 
     if env and env not in info.envs:
-        raise RunnerError("Test '{}' has no environment '{}'"
+        raise RunnerError("Test '{0}' has no environment '{1}'"
                           .format(name, env))
 
     # If a variation has been given, check it is valid
     if variation is not None:
         if not info.variations:
-            raise RunnerError("Test '{}' has no variations".format(name))
+            raise RunnerError("Test '{0}' has no variations".format(name))
         elif not variation in info.variations:
-            raise RunnerError("No variation '{}' for test '{}'"
+            raise RunnerError("No variation '{0}' for test '{1}'"
                               .format(variation, name))
 
     return env, name, variation
@@ -385,7 +385,7 @@ def interpret_selection(opts):
         )
 
         if not instances:
-            raise RunnerError("No appropriate instances for '{}' (env {})"
+            raise RunnerError("No appropriate instances for '{0}' (env {1})"
                               .format(arg, env))
 
         tests.extend(instances)
@@ -458,31 +458,31 @@ def run_test_console(opts, test):
 
     cmd = ['xl', 'create', '-p', test.cfg_path()]
     if not opts.quiet:
-        print("Executing '{}'".format(" ".join(cmd)))
+        print("Executing '{0}'".format(" ".join(cmd)))
 
     create = Popen(cmd, stdout = PIPE, stderr = PIPE)
     _, stderr = create.communicate()
 
     if create.returncode:
         if opts.quiet:
-            print("Executing '{}'".format(" ".join(cmd)))
+            print("Executing '{0}'".format(" ".join(cmd)))
         print(stderr)
         raise RunnerError("Failed to create VM")
 
     cmd = ['xl', 'console', test.vm_name()]
     if not opts.quiet:
-        print("Executing '{}'".format(" ".join(cmd)))
+        print("Executing '{0}'".format(" ".join(cmd)))
 
     console = Popen(cmd, stdout = PIPE)
 
     cmd = ['xl', 'unpause', test.vm_name()]
     if not opts.quiet:
-        print("Executing '{}'".format(" ".join(cmd)))
+        print("Executing '{0}'".format(" ".join(cmd)))
 
     rc = subproc_call(cmd)
     if rc:
         if opts.quiet:
-            print("Executing '{}'".format(" ".join(cmd)))
+            print("Executing '{0}'".format(" ".join(cmd)))
         raise RunnerError("Failed to unpause VM")
 
     stdout, _ = console.communicate()
@@ -510,7 +510,7 @@ def run_test_logfile(opts, test):
                         opts.logfile_pattern.replace("%s", str(test)))
 
     if not opts.quiet:
-        print("Using logfile '{}'".format(logpath))
+        print("Using logfile '{0}'".format(logpath))
 
     fd = os.open(logpath, os.O_CREAT | os.O_RDONLY, 0o644)
     logfile = os.fdopen(fd)
@@ -518,7 +518,7 @@ def run_test_logfile(opts, test):
 
     cmd = ['xl', 'create', '-F', test.cfg_path()]
     if not opts.quiet:
-        print("Executing '{}'".format(" ".join(cmd)))
+        print("Executing '{0}'".format(" ".join(cmd)))
 
     guest = Popen(cmd, stdout = PIPE, stderr = PIPE)
 
@@ -526,7 +526,7 @@ def run_test_logfile(opts, test):
 
     if guest.returncode:
         if opts.quiet:
-            print("Executing '{}'".format(" ".join(cmd)))
+            print("Executing '{0}'".format(" ".join(cmd)))
         print(stderr)
         raise RunnerError("Failed to run test")
 
@@ -558,7 +558,7 @@ def run_tests(opts):
     }.get(opts.results_mode, None)
 
     if run_test is None:
-        raise RunnerError("Unknown mode '{}'".format(opts.mode))
+        raise RunnerError("Unknown mode '{0}'".format(opts.mode))
 
     rc = all_results.index('SUCCESS')
     results = []
