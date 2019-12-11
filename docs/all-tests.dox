@@ -176,6 +176,8 @@ states.
 
 @subpage test-msr - Print MSR information.
 
+@subpage test-splitlock - Splitlock generator.
+
 @subpage test-rtm-check - Probe for the RTM behaviour.
 
 
