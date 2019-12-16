@@ -2,6 +2,8 @@
  * @file tests/xsa-consoleio-write/main.c
  * @ref test-xsa-consoleio-write
  *
+ * @page test-xsa-consoleio-write CONSOLEIO_write stack overflow
+ *
  * This issue was discovered before it made it into any released version of
  * Xen.  Therefore, no XSA or CVE was issued.
  *
