@@ -42,7 +42,7 @@ void test_main(void)
      */
     asm volatile ("1: invlpg (%0); 2:"
                   _ASM_EXTABLE(1b, 2b)
-                  :: "q" (0x8000000000000000UL));
+                  :: "r" (0x8000000000000000UL));
 
     xtf_success(NULL);
 }

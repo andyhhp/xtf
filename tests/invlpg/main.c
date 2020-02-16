@@ -123,7 +123,7 @@ static unsigned int invlpg_refill(void)
                   "mov %[zero], 0x1000;\n\t"   /* Expect refill. */
                   "mov %[zero], 0x2000;\n\t"   /* Expect no refill. */
                   :
-                  : [zero] "q" (0),
+                  : [zero] "r" (0),
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2]),
@@ -146,7 +146,7 @@ static unsigned int invlpg_fs_refill(void)
                   "mov %[zero], 0x1000;\n\t"  /* Expect one TLB entry to refil, */
                   "mov %[zero], 0x2000;\n\t"  /* depending on %fs base.*/
                   :
-                  : [zero] "q" (0),
+                  : [zero] "r" (0),
                     [ad]   "i" (_PAGE_AD),
                     [pte1] "m" (pae_l1_identmap[1]),
                     [pte2] "m" (pae_l1_identmap[2]),

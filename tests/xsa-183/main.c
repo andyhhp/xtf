@@ -58,9 +58,9 @@ void test_main(void)
                   _ASM_EXTABLE(1b, 2b)        /* selector to cause a fault. */
 
                   "mov %[curr_stk], %%esp;"   /* Restore the previous stack. */
-                  : [curr_stk] "=&q" (curr_stk),
+                  : [curr_stk] "=&r" (curr_stk),
                     [tmp] "=r" (discard)
-                  : [user_stk] "q" (&user_stack[PAGE_SIZE]),
+                  : [user_stk] "r" (&user_stack[PAGE_SIZE]),
                     [AC] "i" (X86_EFLAGS_AC));
 
     /*

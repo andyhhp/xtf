@@ -39,7 +39,7 @@ void wild_jump(void)
                   "1: jmp *%0;"
                   ".Lwild_fixup:"
                   _ASM_EXTABLE(1b, .Lwild_fixup)
-                  :: "qI" (0x8000000000000000ULL));
+                  :: "rm" (0x8000000000000000ULL));
 }
 
 void nop_slide(void)
@@ -53,7 +53,7 @@ void nop_slide(void)
                   ".Lnop_fixup:"
                   _ASM_EXTABLE(0x0000800000000000, .Lnop_fixup) /* Correct. */
                   _ASM_EXTABLE(0xffff800000000000, .Lnop_fixup) /* XSA-170. */
-                  :: "qI" (0x00007ffffffffff8ULL));
+                  :: "rm" (0x00007ffffffffff8ULL));
 }
 
 void test_main(void)
