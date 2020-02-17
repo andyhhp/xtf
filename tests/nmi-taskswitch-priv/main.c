@@ -2,7 +2,7 @@
  * @file tests/nmi-taskswitch-priv/main.c
  * @ref test-nmi-taskswitch-priv
  *
- * @page test-nmi-taskswitch-priv NMI Taskswitch with increasing privilege.
+ * @page test-nmi-taskswitch-priv NMI Taskswitch with increasing privilege
  *
  * 32bit versions of Windows use a Task Gate for handling @#NMI, and use NMI
  * IPIs between vCPUs in some circumstances.
