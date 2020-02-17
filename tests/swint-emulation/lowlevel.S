@@ -12,9 +12,8 @@ ENTRY(stub_\insn\()_\type)
 
         .ifc \insn, into
             /* Ensure the overflow flag is set, to trigger 'into'. */
-            pushf
-            orl $X86_EFLAGS_OF, (%esp)
-            popf
+            mov $0x7f, %al
+            add %al, %al
         .else
             /* Avoid function label and fault label possibly aliasing. */
             nop
