@@ -175,7 +175,7 @@ static inline unsigned int read_ss(void)
     return ss;
 }
 
-static inline void write_cs(unsigned int cs)
+static inline void write_cs(unsigned long cs)
 {
     asm volatile ("push %0;"
                   "push $1f;"
@@ -183,7 +183,7 @@ static inline void write_cs(unsigned int cs)
                   "rex64 "
 #endif
                   "lret; 1:"
-                  :: "qI" (cs));
+                  :: "rme" (cs));
 }
 
 static inline void write_ds(unsigned int ds)
@@ -211,18 +211,18 @@ static inline void write_ss(unsigned int ss)
     asm volatile ("mov %0, %%ss" :: "rm" (ss));
 }
 
-static inline unsigned int read_flags(void)
+static inline unsigned long read_flags(void)
 {
-    unsigned int flags;
+    unsigned long flags;
 
     asm volatile ("pushf; pop %0" : "=rm" (flags));
 
     return flags;
 }
 
-static inline void write_flags(unsigned int flags)
+static inline void write_flags(unsigned long flags)
 {
-    asm volatile ("push %0; popf" :: "irm" (flags));
+    asm volatile ("push %0; popf" :: "rme" (flags));
 }
 
 static inline unsigned long read_cr0(void)

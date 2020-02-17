@@ -376,6 +376,28 @@ void test_main(void)
 }
 
 /*
+ * Inline assembly checks.
+ *
+ * Needs to be written out into an object file to cause build failures.
+ * Nothing executes the resulting code.
+ *
+ * - push/pop %reg need to use unsigned long types to avoid trying to allocate
+ *   32bit registers, which aren't encodable in 64bit.
+ * - push $imm can't encode 64bit integers (only 32bit sign extended)
+ */
+static void __used asm_checks(void)
+{
+    read_flags();
+
+#ifdef __x86_64__
+    unsigned long tmp = 0xdead0000c0deULL;
+
+    write_flags(tmp);
+    write_cs(tmp);
+#endif
+}
+
+/*
  * Local variables:
  * mode: C
  * c-file-style: "BSD"
