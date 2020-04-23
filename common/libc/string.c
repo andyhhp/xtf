@@ -56,6 +56,15 @@ int (strcmp)(const char *_s1, const char *_s2)
     return (s1 < s2) ? -1 : (s1 > s2);
 }
 
+int (strncmp)(const char *_s1, const char *_s2, size_t n)
+{
+    for ( size_t i = 0; i < n; i++)
+        if ( _s1[i] != _s2[i] )
+            return _s1[i] - _s2[i];
+
+    return 0;
+}
+
 void *(memset)(void *s, int c, size_t n)
 {
     char *p = s;

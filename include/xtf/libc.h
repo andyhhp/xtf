@@ -26,6 +26,9 @@ char *strncpy(char *dst, const char *src, size_t n);
 int strcmp(const char *s1, const char *s2);
 #define strcmp(s1, s2)              __builtin_strcmp(s1, s2)
 
+int strncmp(const char *s1, const char *s2, size_t n);
+#define strncmp(s1, s2, n)          __builtin_strncmp(s1, s2, n)
+
 void *memset(void *s, int c, size_t n);
 #define memset(d, c, n)             __builtin_memset(d, c, n)
 
