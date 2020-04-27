@@ -714,7 +714,7 @@ def main():
                               'defaults to "guest-%s.log"'),
                       )
     parser.add_option("-q", "--quiet", action = "count",
-                      dest = "quiet",
+                      dest = "quiet", default = 0,
                       help = ("Progressively make the output less verbose.  "
                               "1) No console logs, only test results.  "
                               "2) Not even SUCCESS results."),
