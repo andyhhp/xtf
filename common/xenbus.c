@@ -31,9 +31,7 @@ static void xenbus_write(const void *data, size_t len)
         uint32_t prod = ACCESS_ONCE(xb_ring->req_prod);
         uint32_t cons = ACCESS_ONCE(xb_ring->req_cons);
 
-        uint32_t used = mask_xenbus_idx(prod - cons);
-
-        part = (XENBUS_RING_SIZE - 1) - used;
+        part = (XENBUS_RING_SIZE - 1) - mask_xenbus_idx(prod - cons);
 
         /* No space?  Kick xenstored and wait for it to consume some data. */
         if ( !part )
@@ -47,7 +45,7 @@ static void xenbus_write(const void *data, size_t len)
         }
 
         /* Don't overrun the ring. */
-        part = min(part, XENBUS_RING_SIZE - used);
+        part = min(part, XENBUS_RING_SIZE - mask_xenbus_idx(prod));
 
         /* Don't write more than necessary. */
         part = min(part, (unsigned int)len);
