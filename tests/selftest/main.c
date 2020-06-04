@@ -340,6 +340,43 @@ static void test_driver_init(void)
         xtf_failure("Fail: xtf_init_grant_table(2) returned %d\n", rc);
 }
 
+static void test_vsnprintf_crlf_one(const char *fmt, ...)
+{
+    va_list args;
+
+    char buf[4];
+    int rc;
+
+    va_start(args, fmt);
+    rc = vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+
+    if ( rc != 1 )
+        return xtf_failure("Fail: '%s', expected length 1, got %d\n", fmt, rc);
+    if ( strcmp(buf, "\n") )
+        return xtf_failure("Fail: '%s', expected \"\\n\", got %*ph\n",
+                           fmt, (int)sizeof(buf), buf);
+
+    va_start(args, fmt);
+    rc = vsnprintf_internal(buf, sizeof(buf), fmt, args, LF_TO_CRLF);
+    va_end(args);
+
+    if ( rc != 2 )
+        return xtf_failure("Fail: '%s', expected length 2, got %d\n", fmt, rc);
+    if ( strcmp(buf, "\r\n") )
+        return xtf_failure("Fail: '%s', expected \"\\r\\n\", got %*ph\n",
+                           fmt, (int)sizeof(buf), buf);
+}
+
+static void test_vsnprintf_crlf(void)
+{
+    printk("Test: vsnprintf() with CRLF expansion\n");
+
+    test_vsnprintf_crlf_one("\n");
+    test_vsnprintf_crlf_one("%c", '\n');
+    test_vsnprintf_crlf_one("%s", "\n");
+}
+
 void test_main(void)
 {
     /*
@@ -368,6 +405,7 @@ void test_main(void)
     test_extable_handler();
     test_custom_idte();
     test_driver_init();
+    test_vsnprintf_crlf();
 
     if ( has_xenstore )
         test_xenstore();

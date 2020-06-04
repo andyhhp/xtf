@@ -47,6 +47,7 @@ static int isdigit(int c)
 /* Conversions */
 #define UPPER     (1u << 5)
 #define SIGNED    (1u << 6)
+/* Careful not to overlap with vsnprintf_internal() flags. */
 
 /* Shorthand for ensuring str moves forwards, but not overruning the buffer. */
 #define PUT(c)                                  \
@@ -185,7 +186,11 @@ char *fmt_string(char *str, char *end, const char *val,
             PUT(' ');
 
     for ( i = 0; i < len; ++i )
+    {
+        if ( (flags & LF_TO_CRLF) && val[i] == '\n' )
+            PUT('\r');
         PUT(val[i]);
+    }
 
     while ( len < width-- )
         PUT(' ');
@@ -268,7 +273,8 @@ static char *pointer(
                       width, precision, flags);
 }
 
-int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
+int vsnprintf_internal(char *buf, size_t size, const char *fmt, va_list args,
+                       unsigned int caller_flags)
 {
     char *str = buf, *end = buf + size;
 
@@ -277,15 +283,15 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
         const char *spec_start = fmt; /* For rewinding on error. */
 
         unsigned long long num;
-        unsigned int base, flags = 0;
+        unsigned int base, flags = caller_flags;
         int width = -1, precision = -1;
-        char length_mod = 'i';
+        char c, length_mod = 'i';
 
         /* Put regular characters into the destination. */
         if ( *fmt != '%' )
         {
-            PUT(*fmt);
-            continue;
+            c = *fmt;
+            goto put_char;
         }
 
  next_flag: /* Process any flags. */
@@ -359,20 +365,21 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
             continue;
 
         case 'c': /* Unsigned char. */
-        {
-            unsigned char c = va_arg(args, int);
+            c = va_arg(args, int);
 
             if ( !(flags & LEFT) )
                 while ( --width > 0 )
                     PUT(' ');
 
+        put_char:
+            if ( (flags & LF_TO_CRLF) && c == '\n' )
+                PUT('\r');
             PUT(c);
 
             while ( --width > 0 )
                 PUT(' ');
 
             continue;
-        }
 
         case 's': /* String. */
             str = fmt_string(str, end, va_arg(args, const char *),

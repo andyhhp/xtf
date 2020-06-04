@@ -122,7 +122,7 @@ void vprintk(const char *fmt, va_list args)
     unsigned int i;
     int rc;
 
-    rc = vsnprintf(buf, sizeof(buf), fmt, args);
+    rc = vsnprintf_internal(buf, sizeof(buf), fmt, args, LF_TO_CRLF);
 
     if ( rc > (int)sizeof(buf) )
         panic("vprintk() buffer overflow\n");

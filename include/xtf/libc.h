@@ -37,8 +37,21 @@ int memcmp(const void *s1, const void *s2, size_t n);
 
 size_t strnlen(const char *str, size_t max);
 
+/*
+ * Internal version of vsnprintf(), taking extra control flags.
+ *
+ * LF_TO_CRLF causes "\n" to be expanded to "\r\n" in the output buffer.
+ */
+#define LF_TO_CRLF (1u << 7)
 int __printf(3, 0)
-    vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
+    vsnprintf_internal(char *buf, size_t size, const char *fmt, va_list args,
+                       unsigned int flags);
+
+static inline int __printf(3, 0)
+    vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
+{
+    return vsnprintf_internal(buf, size, fmt, args, 0);
+}
 
 int __printf(3, 4)
     snprintf(char *buf, size_t size, const char *fmt, ...);
