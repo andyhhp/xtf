@@ -39,7 +39,7 @@ static uint8_t nmi_stack[PAGE_SIZE] __page_aligned_bss;
 
 void entry_NMI_task(void);
 asm("exit_NMI_task:"
-    "iret;"
+    "iretl;"
     "entry_NMI_task:;"
 
     "push $0;"

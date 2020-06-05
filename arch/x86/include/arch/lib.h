@@ -179,10 +179,7 @@ static inline void write_cs(unsigned long cs)
 {
     asm volatile ("push %0;"
                   "push $1f;"
-#if __x86_64__
-                  "rex64 "
-#endif
-                  "lret; 1:"
+                  __ASM_SEL(lretl, lretq) "; 1:"
                   :: "rme" (cs));
 }
 

@@ -18,11 +18,7 @@ ELFNOTE(Xen, XEN_ELFNOTE_FEATURES, .asciz "!writable_page_tables|pae_pgdir_above
 ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
 
         .text
-#ifdef __x86_64__
-        .code64
-#else
-        .code32
-#endif
+        __ASM_SEL(.code32, .code64)
 
  /* PV entry point. */
 GLOBAL(_start)

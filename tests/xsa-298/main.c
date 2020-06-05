@@ -44,10 +44,8 @@ const char test_title[] = "XSA-298 PoC";
 unsigned int gate_target(void);
 asm ("gate_target:;"
      "mov %cs, %eax;"
-#ifdef __x86_64__
-     "rex64 "
-#endif
-     "lret;");
+     __ASM_SEL(lretl, lretq)
+    );
 
 static void __user_text user1(void)
 {

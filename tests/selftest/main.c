@@ -254,10 +254,7 @@ asm ("test_idte_handler:;"
 #endif
      "mov $0x1e51c0de, %eax;"
 #if defined (CONFIG_HVM)
-#ifdef __x86_64__
-     "rex64 "
-#endif
-     "iret;"
+     __ASM_SEL(iretl, iretq) ";"
 #else /* CONFIG_HVM */
 #ifdef __x86_64__
      "push $0;"

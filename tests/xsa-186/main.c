@@ -41,10 +41,7 @@ void test_int_handler(void);
 asm(".align 16;"
     "test_int_handler:"
     "movl $0xc0de, %eax;"
-#ifdef __x86_64__
-    "rex64 "
-#endif
-    "iret"
+    __ASM_SEL(iretl, iretq)
     );
 
 static const struct xtf_idte idte = {
@@ -195,22 +192,16 @@ void test_main(void)
 
     asm volatile ("push $%c[cs16];"
                   "push $1f;"
-#ifdef __x86_64__
-                  "rex64 "
-#endif
-                  "lret; 1:"
+                  __ASM_SEL(lretl, lretq) ";"
 
-                  ".code16;"
+                  "1: .code16;"
                   "start_16bit:;"
                   _ASM_XEN_FEP
                   "int $" STR(X86_VEC_AVAIL) ";"
                   "ljmpl $%c[cs], $.Ldone;"
                   "end_16bit:;"
-#if __x86_64__
-                  ".code64;"
-#else
-                  ".code32;"
-#endif
+
+                  __ASM_SEL(.code32, .code64) ";"
                   ".Ldone:"
                   : "=a" (res)
                   : "0" (0),

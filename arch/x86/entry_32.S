@@ -31,7 +31,7 @@ containing the entry vector.
         jmp HYPERCALL_iret      /* PV guests use the 'iret' hypercall. */
 
 #else
-        iret                    /* HVM guests use a real 'iret' instruction. */
+        iretl                   /* HVM guests use a real 'iret' instruction. */
 #endif
 .endm
 
