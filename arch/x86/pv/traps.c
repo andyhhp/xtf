@@ -119,38 +119,31 @@ static void init_callbacks(void)
     if ( rc )
         panic("Failed to set trap table: %d\n", rc);
 
-    xen_callback_register_t cb;
-
-    cb = (xen_callback_register_t) {
-        .type = CALLBACKTYPE_event,
-        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_EVTCHN)),
-    };
-
-    rc = hypercall_register_callback(&cb);
-    if ( rc )
-        panic("Failed to register evtchn callback: %d\n", rc);
-
+    static const xen_callback_register_t cb[] = {
+        {
+            .type = CALLBACKTYPE_event,
+            .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_EVTCHN)),
+        },
 #ifdef __x86_64__
-    cb = (xen_callback_register_t) {
-        .type = CALLBACKTYPE_syscall,
-        .flags = CALLBACKF_mask_events,
-        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
-    };
-
-    rc = hypercall_register_callback(&cb);
-    if ( rc )
-        panic("Failed to register syscall callback: %d\n", rc);
+        {
+            .type = CALLBACKTYPE_syscall,
+            .flags = CALLBACKF_mask_events,
+            .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
+        },
 #endif
-
-    cb = (xen_callback_register_t) {
-        .type = CALLBACKTYPE_syscall32,
-        .flags = CALLBACKF_mask_events,
-        .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
+        {
+            .type = CALLBACKTYPE_syscall32,
+            .flags = CALLBACKF_mask_events,
+            .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_SYSCALL)),
+        },
     };
 
-    rc = hypercall_register_callback(&cb);
-    if ( rc )
-        panic("Failed to register syscall32 callback: %d\n", rc);
+    for ( unsigned int i = 0; i < ARRAY_SIZE(cb); ++i )
+    {
+        rc = hypercall_register_callback(&cb[i]);
+        if ( rc )
+            panic("Failed to register callback[%u]: %d\n", i, rc);
+    }
 }
 
 void arch_init_traps(void)
