@@ -183,6 +183,24 @@ ENTRY(entry_SYSCALL)
         jmp HYPERCALL_iret
 
 ENDFUNC(entry_SYSCALL)
+
+ENTRY(entry_SYSENTER)
+        env_ADJUST_FRAME
+
+        push $0
+        movl $0x200, 4(%rsp)
+
+        SAVE_ALL
+
+        mov %rsp, %rdi          /* struct cpu_regs * */
+        call do_sysenter
+
+        RESTORE_ALL
+
+        movq $0, (%rsp)         /* Clobber error_code/entry_vector */
+        jmp HYPERCALL_iret
+
+ENDFUNC(entry_SYSENTER)
 #endif /* CONFIG_PV */
 
 /*

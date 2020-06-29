@@ -208,6 +208,33 @@ ENTRY(entry_SYSCALL)
 
         jmp HYPERCALL_iret
 ENDFUNC(entry_SYSCALL)
+
+ENTRY(entry_SYSENTER)
+        push $0
+        push $0x200
+
+        push %es
+        push %ds
+
+        SAVE_ALL
+
+        mov $__KERN_DS, %eax    /* Restore data segments. */
+        mov %eax, %ds
+        mov %eax, %es
+
+        push %esp               /* struct cpu_regs * */
+        call do_sysenter
+        add $4, %esp
+
+        RESTORE_ALL
+
+        pop %ds
+        pop %es
+
+        add $8, %esp            /* Pop error_code/entry_vector. */
+
+        jmp HYPERCALL_iret
+ENDFUNC(entry_SYSENTER)
 #endif
 
 /*

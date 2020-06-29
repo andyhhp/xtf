@@ -73,6 +73,11 @@ void __weak do_syscall(struct cpu_regs *regs)
     panic("Unhandled syscall\n");
 }
 
+void __weak do_sysenter(struct cpu_regs *regs)
+{
+    panic("Unhandled sysenter\n");
+}
+
 void __weak do_evtchn(struct cpu_regs *regs)
 {
     panic("Unhandled evtchn upcall\n");

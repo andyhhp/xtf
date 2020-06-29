@@ -14,6 +14,11 @@
 void do_syscall(struct cpu_regs *regs);
 
 /**
+ * May be implemented by a guest to handle SYSENTER invocations.
+ */
+void do_sysenter(struct cpu_regs *regs);
+
+/**
  * May be implemented by a guest to handle Event Channel upcalls.
  */
 void do_evtchn(struct cpu_regs *regs);
