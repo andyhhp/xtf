@@ -2,6 +2,7 @@
 #define XTF_XENBUS_H
 
 #include <xtf/types.h>
+#include <xtf/compiler.h>
 #include <xen/event_channel.h>
 #include <xen/io/xs_wire.h>
 

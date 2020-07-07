@@ -1,11 +1,21 @@
 #ifndef XEN_PUBLIC_EVENT_CHANNEL_H
 #define XEN_PUBLIC_EVENT_CHANNEL_H
 
+#include <xen/xen.h>
+
 #define EVTCHNOP_send             4
+#define EVTCHNOP_alloc_unbound    6
 #define EVTCHNOP_init_control    11
 #define EVTCHNOP_expand_array    12
 
 typedef uint32_t evtchn_port_t;
+
+struct evtchn_alloc_unbound {
+    /* IN parameters. */
+    domid_t dom, remote_dom;
+    /* OUT parameters. */
+    evtchn_port_t port;
+};
 
 struct evtchn_init_control {
     /* IN parameters. */
