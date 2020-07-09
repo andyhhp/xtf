@@ -75,7 +75,7 @@ static void xenbus_read(void *data, size_t len)
         uint32_t prod = ACCESS_ONCE(xb_ring->rsp_prod);
         uint32_t cons = ACCESS_ONCE(xb_ring->rsp_cons);
 
-        part = mask_xenbus_idx(prod - cons);
+        part = prod - cons;
 
         /* No data?  Kick xenstored and wait for it to produce some data. */
         if ( !part )
