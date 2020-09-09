@@ -25,6 +25,8 @@
 
 #define MSR_PERFEVTSEL(n)              (0x00000186 + (n))
 
+#define MSR_MISC_ENABLE                 0x000001a0
+
 #define MSR_DEBUGCTL                    0x000001d9
 #define DEBUGCTL_LBR                    (_AC(1, ULL) <<  0) /* Last Branch Record */
 #define DEBUGCTL_TR                     (_AC(1, ULL) <<  6) /* Trace Message Enable */

@@ -154,6 +154,8 @@ states.
 
 @subpage test-xsa-317 - Incorrect error handling in event channel port allocation.
 
+@subpage test-xsa-333 - x86 pv: Crash when handling guest access to MSR_MISC_ENABLE.
+
 @subpage test-xsa-339 - x86 pv guest kernel DoS via SYSENTER.
 
 
