@@ -33,25 +33,7 @@ void test_main(void)
     };
 
     for ( port = 32; port <= 4096; ++port )
-    {
-        int rc = hypercall_sched_op(SCHEDOP_poll, &poll);
-
-        switch ( rc )
-        {
-        case 0:
-            continue;
-
-        case -EINVAL:
-            /* Upper ABI limit of 2l evtchn. */
-            if ( port == 4096 )
-                break;
-
-            /* Fallthrough. */
-        default:
-            return xtf_error("Error: Unexpected "
-                             "SCHEDOP_poll(port %u) return: %d\n", port, rc);
-        }
-    }
+        hypercall_sched_op(SCHEDOP_poll, &poll);
 
     /*
      * If Xen is still alive at this point, it hasn't fallen over a NULL
