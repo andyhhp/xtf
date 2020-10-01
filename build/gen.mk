@@ -21,6 +21,10 @@ ifneq ($(filter-out $(ALL_CATEGORIES),$(CATEGORY)),)
 $(error Unrecognised category '$(filter-out $(ALL_CATEGORIES),$(CATEGORY))')
 endif
 
+ifeq ($(VCPUS),)
+VCPUS := 1 # Default to 1 vcpu if not provided
+endif
+
 ifneq ($(VARY-CFG),)
 TEST-CFGS := $(foreach env,$(TEST-ENVS),$(foreach vary,$(VARY-CFG),test-$(env)-$(NAME)~$(vary).cfg))
 else
@@ -61,15 +65,15 @@ cfg-$(1) ?= $(defcfg-$($(1)_guest))
 cfg-default-deps := $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
 
 test-$(1)-$(NAME).cfg: $$(cfg-default-deps)
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" ""
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" ""
 	@$(call move-if-changed,$$@.tmp,$$@)
 
 test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) %.cfg.in
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" "$$*.cfg.in"
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$$*.cfg.in"
 	@$(call move-if-changed,$$@.tmp,$$@)
 
 test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) $(ROOT)/config/%.cfg.in
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(TEST-EXTRA-CFG)" "$(ROOT)/config/$$*.cfg.in"
+	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$(ROOT)/config/$$*.cfg.in"
 	@$(call move-if-changed,$$@.tmp,$$@)
 
 -include $$(link-$(1):%.lds=%.d)

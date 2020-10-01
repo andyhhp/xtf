@@ -3,8 +3,7 @@ include $(ROOT)/build/common.mk
 NAME      := xsa-296
 CATEGORY  := xsa
 TEST-ENVS := $(PV_ENVIRONMENTS)
-
-TEST-EXTRA-CFG := extra.cfg.in
+VCPUS     := 2
 
 obj-perenv += main.o
 

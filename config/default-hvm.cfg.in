@@ -1,5 +1,7 @@
 name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
 
+vcpus=@@VCPUS@@
+
 type="hvm"
 builder="hvm" # Legacy for before Xen 4.10
 
@@ -9,8 +11,3 @@ firmware_override="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"
 # The framework doesn't reboot.  A reboot signal is almost certainly a triple
 # fault instead.  Prevent it turning into a runaway domain.
 on_reboot = "destroy"
-
-# Work around a bug whereby both Xen and libxl fail to calculate the minimum
-# required shadow pool size for this VM, which causes a failure to construct
-# the domain on hardware lacking hap support.
-shadow_memory=4

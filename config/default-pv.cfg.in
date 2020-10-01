@@ -1,5 +1,7 @@
 name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
 
+vcpus=@@VCPUS@@
+
 type="pv"
 loader="generic" # Legacy for before Xen 4.10
 
