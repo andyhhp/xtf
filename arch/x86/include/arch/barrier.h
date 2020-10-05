@@ -15,8 +15,10 @@
  * the point of view of program order, reads may not be reordered with respect
  * to other reads, and writes may not be reordered with respect to other
  * writes, causing smp_rmb() and smp_wmb() to degrade to simple compiler
- * barriers.  smp_mb() however does need to be an mfence instruction, as reads
- * are permitted to be reordered ahead of non-aliasing writes.
+ * barriers.
+ *
+ * smp_mb() however does need to provide real ordering, as reads are permitted
+ * to be reordered ahead of non-aliasing writes.
  */
 
 #include <xtf/compiler.h>
@@ -25,7 +27,11 @@
 #define rmb()     __asm__ __volatile__ ("lfence" ::: "memory")
 #define wmb()     __asm__ __volatile__ ("sfence" ::: "memory")
 
-#define smp_mb()  mb()
+#ifdef __i386__
+#define smp_mb()  __asm__ __volatile__ ("lock addl $0, -4(%%esp)" ::: "memory");
+#else
+#define smp_mb()  __asm__ __volatile__ ("lock addl $0, -4(%%rsp)" ::: "memory");
+#endif
 #define smp_rmb() barrier()
 #define smp_wmb() barrier()
 
