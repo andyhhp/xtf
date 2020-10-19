@@ -88,6 +88,12 @@ static inline long hypercall_memory_op(unsigned int cmd, void *arg)
     return HYPERCALL2(long, __HYPERVISOR_memory_op, cmd, arg);
 }
 
+static inline long hypercall_multicall(struct multicall_entry *list,
+                                       unsigned int nr)
+{
+    return HYPERCALL2(long, __HYPERVISOR_multicall, list, nr);
+}
+
 /*
  * This hypercall is misnamed in the Xen ABI, and actually operates on a
  * linear address, not a virtual address.

@@ -138,6 +138,9 @@ removals.
 @subpage test-xsa-279 - x86: DoS from attempting to use INVPCID with a
 non-canonical addresses.
 
+@subpage test-xsa-286 - x86 PV guest INVLPG-like flushes may leave stale TLB
+entries.
+
 XSA-293 - See @ref test-pv-fsgsbase.
 
 @subpage test-xsa-296 - VCPUOP_initialise DoS.
