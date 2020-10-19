@@ -88,11 +88,6 @@ static inline long hypercall_memory_op(unsigned int cmd, void *arg)
     return HYPERCALL2(long, __HYPERVISOR_memory_op, cmd, arg);
 }
 
-static inline long hypercall_xen_version(unsigned int cmd, void *arg)
-{
-    return HYPERCALL2(long, __HYPERVISOR_xen_version, cmd, arg);
-}
-
 /*
  * This hypercall is misnamed in the Xen ABI, and actually operates on a
  * linear address, not a virtual address.
@@ -106,6 +101,11 @@ static inline long hypercall_update_va_mapping(
     return HYPERCALL4(long, __HYPERVISOR_update_va_mapping,
                       linear, npte, npte >> 32, flags);
 #endif
+}
+
+static inline long hypercall_xen_version(unsigned int cmd, void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_xen_version, cmd, arg);
 }
 
 static inline long hypercall_grant_table_op(unsigned int cmd, void *args,
