@@ -25,7 +25,16 @@ endif
 
 xtftestdir := $(xtfdir)/tests
 
-export DESTDIR xtfdir xtftestdir
+# Supported architectures
+SUPPORTED_ARCH := x86
+# Default architecture
+ARCH ?= x86
+# Check if specified architecture is supported
+ifeq ($(filter $(ARCH),$(SUPPORTED_ARCH)),)
+$(error Architecture '$(ARCH)' not supported)
+endif
+
+export DESTDIR ARCH xtfdir xtftestdir
 
 ifeq ($(LLVM),) # GCC toolchain
 CC              := $(CROSS_COMPILE)gcc
@@ -57,7 +66,7 @@ PYTHON             ?= $(PYTHON_INTERPRETER)
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
 
 # By default enable all the tests
-TESTS ?= $(wildcard $(ROOT)/tests/*)
+TESTS ?= $(wildcard tests/*)
 
 .PHONY: all
 all:
