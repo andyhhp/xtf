@@ -52,6 +52,11 @@
  */
 #define _u(v) ((unsigned long)(v))
 
+/**
+ * Round up a number to the next integer
+ */
+#define roundup(x, y) ((((x) + ((y) - 1)) / (y)) * (y))
+
 #endif /* !__ASSEMBLY__ */
 #endif /* XTF_NUMBERS_H */
 

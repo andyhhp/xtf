@@ -164,6 +164,8 @@ states.
 
 @section index-utility Utilities
 
+@subpage test-argo - Argo functionality test
+
 @subpage test-cpuid - Print CPUID information.
 
 @subpage test-fep - Test availability of HVM Forced Emulation Prefix.
