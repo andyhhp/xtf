@@ -49,7 +49,7 @@
 #define __HYPERVISOR_domctl               36
 #define __HYPERVISOR_kexec_op             37
 #define __HYPERVISOR_tmem_op              38
-#define __HYPERVISOR_xc_reserved_op       39 /* reserved for XenClient */
+#define __HYPERVISOR_argo_op              39
 #define __HYPERVISOR_xenpmu_op            40
 
 /* Architecture-specific hypercall definitions. */

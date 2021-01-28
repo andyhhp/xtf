@@ -9,18 +9,22 @@
 #if defined(__x86_64__)
 
 # include <arch/hypercall-x86_64.h>
+# define HYPERCALL0 _hypercall64_0
 # define HYPERCALL1 _hypercall64_1
 # define HYPERCALL2 _hypercall64_2
 # define HYPERCALL3 _hypercall64_3
 # define HYPERCALL4 _hypercall64_4
+# define HYPERCALL5 _hypercall64_5
 
 #elif defined(__i386__)
 
 # include <arch/hypercall-x86_32.h>
+# define HYPERCALL0 _hypercall32_0
 # define HYPERCALL1 _hypercall32_1
 # define HYPERCALL2 _hypercall32_2
 # define HYPERCALL3 _hypercall32_3
 # define HYPERCALL4 _hypercall32_4
+# define HYPERCALL5 _hypercall32_5
 
 #else
 # error Bad architecture for hypercalls
@@ -168,6 +172,12 @@ static inline long hypercall_hvm_op(unsigned int cmd, void *arg)
 static inline long hypercall_sysctl(xen_sysctl_t *arg)
 {
     return HYPERCALL1(long, __HYPERVISOR_sysctl, arg);
+}
+
+static inline long hypercall_argo_op(unsigned int cmd, void *arg1, void *arg2,
+                                     unsigned long arg3, unsigned long arg4)
+{
+    return HYPERCALL5(long, __HYPERVISOR_argo_op, cmd, arg1, arg2, arg3, arg4);
 }
 
 /*

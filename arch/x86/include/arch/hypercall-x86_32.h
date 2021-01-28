@@ -7,6 +7,17 @@
  * Inputs: %ebx, %ecx, %edx, %esi, %edi, %ebp (arguments 1-6)
  */
 
+#define _hypercall32_0(type, hcall)                                     \
+    ({                                                                  \
+        long res;                                                       \
+        asm volatile (                                                  \
+            "call hypercall_page + %c[offset]"                          \
+            : "=a" (res)                                                \
+            : [offset] "i" (hcall * 32)                                 \
+            : "memory" );                                               \
+        (type)res;                                                      \
+    })
+
 #define _hypercall32_1(type, hcall, a1)                                 \
     ({                                                                  \
         long res, _a1 = (long)(a1);                                     \
@@ -48,6 +59,19 @@
             "call hypercall_page + %c[offset]"                          \
             : "=a" (res), "+b" (_a1), "+c" (_a2), "+d" (_a3),           \
               "+S" (_a4)                                                \
+            : [offset] "i" (hcall * 32)                                 \
+            : "memory" );                                               \
+        (type)res;                                                      \
+    })
+
+#define _hypercall32_5(type, hcall, a1, a2, a3, a4, a5)                 \
+    ({                                                                  \
+        long res, _a1 = (long)(a1), _a2 = (long)(a2), _a3 = (long)(a3), \
+            _a4 = (long)(a4), _a5 = (long)(a5);                         \
+        asm volatile (                                                  \
+            "call hypercall_page + %c[offset]"                          \
+            : "=a" (res), "+b" (_a1), "+c" (_a2), "+d" (_a3),           \
+              "+S" (_a4), "+D" (_a5)                                    \
             : [offset] "i" (hcall * 32)                                 \
             : "memory" );                                               \
         (type)res;                                                      \
