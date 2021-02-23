@@ -2,6 +2,24 @@ Xen Test Framework
 
 Build requirements:
  - GNU Make >= 3.81
+For x86:
  - GNU compatible compiler, capable of:
    -std=gnu99
    -m64 and -m32
+For arm64/arm32:
+-when cross-compiling:
+ - GNU compatible cross-compiler toolchain for Aarch64/Aarch32
+-when building natively:
+ - GNU compatible toolchain for Aarch64/Aarch32
+
+To build XTF:
+-for x86:
+  $ make
+-for arm64 natively:
+  $ make ARCH=arm64
+-for arm64 when cross compiling:
+  $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+-for arm32 natively:
+  $ make ARCH=arm32
+-for arm32 when cross compiling:
+  $ make ARCH=arm32 CROSS_COMPILE=arm-linux-gnueabi-
