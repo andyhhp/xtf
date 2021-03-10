@@ -15,6 +15,8 @@
 # define __ASM_CODE_RAW(x) #x
 #endif
 
+#define ALIGN .align 16
+
 /* Select between two variations based on compat or long mode. */
 #ifdef __i386__
 # define __ASM_SEL(c, l)     __ASM_CODE(c)

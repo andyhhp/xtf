@@ -57,7 +57,6 @@ extern uint8_t user_stack[PAGE_SIZE];
 
 extern xen_pv_start_info_t *pv_start_info;
 extern xen_pvh_start_info_t *pvh_start_info;
-extern shared_info_t shared_info;
 
 /*
  * Parameters for fine tuning the exec_user_*() behaviour.

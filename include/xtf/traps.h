@@ -6,6 +6,8 @@
 
 #include <arch/traps.h>
 
+extern shared_info_t shared_info;
+
 /**
  * May be implemented by a guest to provide custom exception handling.
  */

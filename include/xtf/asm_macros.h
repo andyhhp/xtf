@@ -25,7 +25,7 @@ name:
  * @param name Function name.
  */
 #define ENTRY(name)                             \
-    .align 16;                                  \
+    ALIGN;                                      \
     GLOBAL(name)
 
 /**
