@@ -6,3 +6,4 @@ include $(ROOT)/build/arm-common/arch-files.mk
 # Specific files for arm64
 obj-perenv += $(ROOT)/arch/arm/arm64/head.o
 obj-perenv += $(ROOT)/arch/arm/arm64/cache.o
+obj-perenv += $(ROOT)/arch/arm/arm64/hypercall.o

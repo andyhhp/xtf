@@ -7,30 +7,29 @@
 #define XTF_ARM_HYPERCALL_H
 
 #include <xtf/lib.h>
+#include <arch/desc.h>
+#include <arch/page.h>
+#include <xen/sysctl.h>
 
-#define _hypercall_1(type, hcall, a1)                   \
-    ({                                                  \
-        UNIMPLEMENTED();                                \
-        (type)0;                                        \
-    })
+int hypercall_memory_op(unsigned int cmd, void *arg);
+int hypercall_domctl(unsigned long op);
+int hypercall_sched_op(int cmd, void *arg);
+int hypercall_console_io(int cmd, int count, char *str);
+int hypercall_xen_version(int cmd, void *arg);
+int hypercall_event_channel_op(int cmd, void *op);
+int hypercall_physdev_op(void *physdev_op);
+int hypercall_sysctl(xen_sysctl_t *arg);
+int hypercall_hvm_op(unsigned long op, void *arg);
+int hypercall_grant_table_op(unsigned int cmd, void *uop, unsigned int count);
+int hypercall_vcpu_op(int cmd, int vcpuid, void *extra_args);
 
-#define _hypercall_2(type, hcall, a1, a2)               \
-    ({                                                  \
-        UNIMPLEMENTED();                                \
-        (type)0;                                        \
-    })
-
-#define _hypercall_3(type, hcall, a1, a2, a3)           \
-    ({                                                  \
-        UNIMPLEMENTED();                                \
-        (type)0;                                        \
-    })
-
-#define _hypercall_5(type, hcall, a1, a2, a3, a4, a5)  \
-    ({                                                 \
-        UNIMPLEMENTED();                               \
-        (type)0;                                       \
-    })
+/*
+ * Higher level hypercall helpers
+ */
+static inline void hypercall_console_write(const char *buf, size_t count)
+{
+    (void)hypercall_console_io(CONSOLEIO_write, count, (char *)buf);
+}
 
 #endif /* XTF_ARM_HYPERCALL_H */
 
