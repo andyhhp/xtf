@@ -10,7 +10,6 @@ bool arch_fmt_pointer(
     char **str_ptr, char *end, const char **fmt_ptr, const void *arg,
     int width, int precision, unsigned int flags)
 {
-    UNIMPLEMENTED();
     return false;
 }
 

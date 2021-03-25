@@ -2,6 +2,9 @@
 #include <xtf/asm_macros.h>
 #include <xen/xen.h>
 
+/* Necessary for older compilers */
+lr .req x30
+
 /* 1 if BE, 0 if LE */
 #define HEAD_FLAG_ENDIANNESS  0
 #define HEAD_FLAG_PAGE_SIZE   ((PAGE_SHIFT - 10) / 2)
@@ -30,6 +33,10 @@
 
 .section ".bss.page_aligned"
 .p2align PAGE_SHIFT
+
+stack_start:
+    .space STACK_SIZE
+stack_end:
 
 .text
     b       _start                  /* branch to kernel start, magic */
@@ -61,8 +68,14 @@
  * x30 - lr
  */
 ENTRY(_start)
+    /* Disable all IRQs */
+    msr     daifset, #0xf
+
     /* Save DTB pointer */
     mov     x20, x0
+
+    /* Disable MMU */
+    bl      _mmu_disable
 
     /* Calculate where we are */
     ldr     x22, =_start        /* x22 := vaddr(_start) */
@@ -71,8 +84,14 @@ ENTRY(_start)
 
     PRINT("- XTF booting -\n")
 
-    PRINT("- Zero BSS -\n")
+    PRINT("- Setup CPU -\n")
+    bl      _cpu_setup
 
+    /* Load the vector table */
+    ldr     x2, =vector_table
+    msr     vbar_el1, x2
+
+    PRINT("- Zero BSS -\n")
     load_paddr  x0, __start_bss
     load_paddr  x1, __end_bss
 
@@ -85,6 +104,170 @@ ENTRY(_start)
     load_paddr  x0, __start_bss
     bl      flush_dcache_range
 
-    /* Start an infinite loop */
-    PRINT("- Infinite loop -\n")
-2:  b   2b
+    PRINT("- Setup stack -\n")
+    ldr     x1, =stack_end
+    mov     sp, x1
+
+    /* Save boot arguments */
+    ldr     x0, =boot_data
+    stp     x21, x20, [x0]
+
+    PRINT("- Jump to C world-\n")
+    b       xtf_main
+ENDFUNC(_start)
+
+ENTRY(_mmu_disable)
+    dsb     sy
+
+    /* Turn off D-cache and MMU */
+    mrs     x2, sctlr_el1
+    bic     x2, x2, #SCTLR_M
+    bic     x2, x2, #SCTLR_C
+    msr     sctlr_el1, x2
+    isb
+
+    ret
+ENDFUNC(_mmu_disable)
+
+ENTRY(_cpu_setup)
+    dsb     sy
+
+    /* Set up memory attribute type tables */
+    ldr     x0, =MAIRVAL
+    msr     mair_el1, x0
+    isb
+
+    ret
+ENDFUNC(_cpu_setup)
+
+/* Save state */
+.macro entry_trap
+    sub     sp, sp, #(272 - 240)     /* offset: spsr_el1 - lr */
+    stp     x28, x29, [sp, #-16]!
+    stp     x26, x27, [sp, #-16]!
+    stp     x24, x25, [sp, #-16]!
+    stp     x22, x23, [sp, #-16]!
+    stp     x20, x21, [sp, #-16]!
+    stp     x18, x19, [sp, #-16]!
+    stp     x16, x17, [sp, #-16]!
+    stp     x14, x15, [sp, #-16]!
+    stp     x12, x13, [sp, #-16]!
+    stp     x10, x11, [sp, #-16]!
+    stp     x8, x9, [sp, #-16]!
+    stp     x6, x7, [sp, #-16]!
+    stp     x4, x5, [sp, #-16]!
+    stp     x2, x3, [sp, #-16]!
+    stp     x0, x1, [sp, #-16]!
+
+    add     x21, sp, #272           /* offset: spsr_el1 */
+    stp     lr, x21, [sp, #240]     /* offset: lr */
+    mrs     x21, elr_el1
+    mrs     x22, spsr_el1
+    stp     x21, x22, [sp, #256]    /* offset: pc */
+.endm
+
+/* Restore state */
+.macro exit_trap
+    ldp     x21, x22, [sp, #256]    /* offset: pc */
+    ldp     x0, x1, [sp], #16
+    ldp     x2, x3, [sp], #16
+    ldp     x4, x5, [sp], #16
+    ldp     x6, x7, [sp], #16
+    ldp     x8, x9, [sp], #16
+
+    msr     elr_el1, x21            /* set up the return data */
+    msr     spsr_el1, x22
+
+    ldp     x10, x11, [sp], #16
+    ldp     x12, x13, [sp], #16
+    ldp     x14, x15, [sp], #16
+    ldp     x16, x17, [sp], #16
+    ldp     x18, x19, [sp], #16
+    ldp     x20, x21, [sp], #16
+    ldp     x22, x23, [sp], #16
+    ldp     x24, x25, [sp], #16
+    ldp     x26, x27, [sp], #16
+    ldp     x28, x29, [sp], #16
+
+    ldr     lr, [sp], #32           /* offset: spsr_el1 - lr */
+    eret
+.endm
+
+/* Bad abort numbers */
+#define BAD_SYNC    0
+#define BAD_IRQ     1
+#define BAD_FIQ     2
+#define BAD_ERROR   3
+
+.macro invalid, reason
+    mov     x0, sp
+    mov     x1, #\reason
+    b       do_bad_mode
+.endm
+
+el0_error_invalid:
+    invalid BAD_ERROR
+ENDFUNC(el0_error_invalid)
+
+el1_sync_invalid:
+    invalid BAD_SYNC
+ENDFUNC(el1_sync_invalid)
+
+el1_irq_invalid:
+    invalid BAD_IRQ
+ENDFUNC(el1_irq_invalid)
+
+el1_fiq_invalid:
+    invalid BAD_FIQ
+ENDFUNC(el1_fiq_invalid)
+
+el1_error_invalid:
+    invalid BAD_ERROR
+ENDFUNC(el1_error_invalid)
+
+/* SYNC exception handler */
+    .align 6
+el1_sync:
+    entry_trap
+    mov     x0, sp
+    bl      do_trap_sync
+    exit_trap
+ENDFUNC(el1_sync)
+
+/* IRQ exception handler */
+    .align 6
+el1_irq:
+    entry_trap
+    mov     x0, sp
+    bl      do_trap_irq
+    exit_trap
+ENDFUNC(el1_irq)
+
+/* Exception vectors */
+.macro ventry label
+    .align  7
+    b       \label
+.endm
+
+    .align  11
+ENTRY(vector_table)
+    ventry el1_sync_invalid         /* Synchronous EL1t */
+    ventry el1_irq_invalid          /* IRQ EL1t */
+    ventry el1_fiq_invalid          /* FIQ EL1t */
+    ventry el1_error_invalid        /* Error EL1t */
+
+    ventry el1_sync                 /* Synchronous EL1h */
+    ventry el1_irq                  /* IRQ EL1h */
+    ventry el1_fiq_invalid          /* FIQ EL1h */
+    ventry el1_error_invalid        /* Error EL1h */
+
+    ventry el0_error_invalid        /* Synchronous 64-bit EL0 */
+    ventry el0_error_invalid        /* IRQ 64-bit EL0 */
+    ventry el0_error_invalid        /* FIQ 64-bit EL0 */
+    ventry el0_error_invalid        /* Error 64-bit EL0 */
+
+    ventry el0_error_invalid        /* Synchronous 32-bit EL0 */
+    ventry el0_error_invalid        /* IRQ 32-bit EL0 */
+    ventry el0_error_invalid        /* FIQ 32-bit EL0 */
+    ventry el0_error_invalid        /* Error 32-bit EL0 */
+ENDFUNC(vector_table)

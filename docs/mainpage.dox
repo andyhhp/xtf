@@ -19,8 +19,8 @@ easy to write code once and compile it for multiple different environments
 (virtual machines).
 
 Currently there are 3 architectures available: x86, arm64 and arm32 although
-only x86 is truly supported. Initial support for arm64 and arm32 is added
-allowing to run a startup code based on the test: tests/example.
+only x86 is truly supported. Initial support for arm64 is added allowing to run
+hello-world test. Support for arm32 allows to run startup code.
 This creates a base for future implementation.
 
 The current environments supported are:

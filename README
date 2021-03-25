@@ -10,8 +10,8 @@ microkernels, to test the same functionality from different types of virtual
 machine.
 
 Currently there are 3 architectures available: x86, arm64 and arm32 although
-only x86 is truly supported. Initial support for arm64 and arm32 is added
-allowing to run a startup code based on the test: tests/example.
+only x86 is truly supported. Initial support for arm64 is added allowing to run
+hello-world test. Support for arm32 allows to run startup code.
 This creates a base for future implementation.
 
 ## The framework consists of:
@@ -20,7 +20,8 @@ This creates a base for future implementation.
 * Hypercall interface
 * PV console driver (output)
 * Common reporting framework
-* Initial support for arm64/arm32 (startup code running)
+* Initial support for arm64 (hello-world test running)
+* Initial support for arm32 (startup code running)
 
 ## TODO List:
 
