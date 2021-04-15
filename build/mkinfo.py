@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os, json
+import sys, json
 
 # Usage: mkcfg.py $OUT $NAME $CATEGORY $ENVS $VARIATIONS
 _, out, name, cat, envs, variations = sys.argv

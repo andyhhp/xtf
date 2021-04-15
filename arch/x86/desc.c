@@ -10,7 +10,7 @@
 #define gdt_section __page_aligned_bss
 #endif
 
-user_desc gdt[NR_GDT_ENTRIES] gdt_section =
+user_desc gdt[NR_GDT_ENTRIES] gdt_section = /* lgtm [cpp/short-global-name] */
 {
 #ifdef CONFIG_HVM
     [GDTE_CS64_DPL0] = INIT_GDTE_SYM(0, 0xfffff, COMMON, CODE, DPL0, R, L),
@@ -34,7 +34,7 @@ desc_ptr gdt_ptr =
     .base = _u(&gdt),
 };
 
-env_gate idt[256];
+env_gate idt[256]; /* lgtm [cpp/short-global-name] */
 
 desc_ptr idt_ptr =
 {

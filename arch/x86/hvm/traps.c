@@ -32,7 +32,7 @@ void entry_XM(void);
 void entry_VE(void);
 void entry_ret_to_kernel(void);
 
-env_tss tss __aligned(16) =
+env_tss tss __aligned(16) = /* lgtm [cpp/short-global-name] */
 {
 #if defined(__i386__)
 
