@@ -34,20 +34,17 @@ Environment | Guest | Width | Paging
 
 Requirements:
 - GNU Make >= 3.81
-- GNU compatible 32 and 64-bit toolchain, capable of `-std=gnu99`, `-m64`, and
-  `-m32`
-    - For Debian-based systems, the `build-essential` package is
-      sufficient. For RHEL-based systems, the `glibc-devel.i686` package is
-      generally needed beyond the default toolchain packages.
-    - Clang may be used, via `CC="clang"`
 - Python 2.6 or later
 
-Optionally:
-- A toolchain with x32 support.
-    - `hvm64` tests would prefer to use the `elf32-x86-64` format, so they
-      both load and disassemble correctly.  In the absence of x32 support,
-      `elf32-i386` will be used which will load correctly, but disassemble
-      incorrectly.
+For x86:
+    - GNU compatible 32 and 64-bit toolchain, capable of `-std=gnu99`, `-m64`,
+      and `-m32`.
+        - Clang may be used, via `CC="clang"`.
+    - Optionally, a toolchain with x32 support.
+        - `hvm64` tests would prefer to use the `elf32-x86-64` format, so they
+          both load and disassemble correctly.  In the absence of x32 support,
+          `elf32-i386` will be used which will load correctly, but disassemble
+          incorrectly.
 
 To obtain and build:
 

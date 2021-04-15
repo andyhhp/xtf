@@ -25,7 +25,7 @@ COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
 COMMON_CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
 COMMON_CFLAGS += -fno-common -fno-asynchronous-unwind-tables -fno-strict-aliasing
-COMMON_CFLAGS += -fno-stack-protector -fno-pic -ffreestanding
+COMMON_CFLAGS += -fno-stack-protector -fno-pic -ffreestanding -nostdinc
 COMMON_CFLAGS += -mno-red-zone -mno-sse
 COMMON_CFLAGS += -Wno-unused-parameter -Winline
 

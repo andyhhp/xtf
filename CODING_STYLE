@@ -112,15 +112,4 @@ Header files
 ------------
 
 A microkernel will not make use of system libraries, and provide local
-implementations of all required functionality.  C99 however provides
-standard headers which are explicitly safe for embedded use.  These
-should be used instead of reimplementing equivalent functionality
-locally.
-
-An incomplete list includes:
-
- * inttypes.h  (PRIx64, ...)
- * limits.h    (INT_MAX, ...)
- * stdarg.h    (va_list, ...)
- * stdbool.h   (bool, true, false)
- * stdint.h    (uint??_t ...)
+implementations of all required functionality.
