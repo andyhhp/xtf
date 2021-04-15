@@ -12,7 +12,7 @@
 
 int arch_map_gnttab(void)
 {
-    unsigned int i, nr_frames = sizeof(gnttab_raw) / PAGE_SIZE;
+    unsigned int i;
     int rc = 0;
 
     /* Ensure gnttab_raw[] is a whole number of pages. */
@@ -20,7 +20,7 @@ int arch_map_gnttab(void)
 
     if ( IS_DEFINED(CONFIG_PV) )
     {
-        unsigned long gnttab_gfns[nr_frames];
+        unsigned long gnttab_gfns[sizeof(gnttab_raw) / PAGE_SIZE] = {};
         struct gnttab_setup_table setup = {
             .dom = DOMID_SELF,
             .nr_frames = ARRAY_SIZE(gnttab_gfns),
@@ -35,7 +35,7 @@ int arch_map_gnttab(void)
             return -EIO;
         }
 
-        for ( i = 0; !rc && i < nr_frames; ++i )
+        for ( i = 0; !rc && i < ARRAY_SIZE(gnttab_gfns); ++i )
             rc = hypercall_update_va_mapping(
                 _u(&gnttab_raw[i * PAGE_SIZE]),
                 pte_from_gfn(gnttab_gfns[i], PF_SYM(AD, RW, P)), UVMF_INVLPG);
@@ -49,7 +49,8 @@ int arch_map_gnttab(void)
             .gfn = virt_to_gfn(gnttab_raw),
         };
 
-        for ( i = 0; !rc && i < nr_frames; ++i, ++xatp.idx, ++xatp.gfn )
+        for ( i = 0; !rc && i < (sizeof(gnttab_raw) / PAGE_SIZE);
+              ++i, ++xatp.idx, ++xatp.gfn )
             rc = hypercall_memory_op(XENMEM_add_to_physmap, &xatp);
     }
 

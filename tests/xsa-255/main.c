@@ -37,7 +37,7 @@ void test_main(void)
         return xtf_error("Error initialising grant table: %d\n", rc);
 
     /* Retrieve the status frames from Xen. */
-    uint64_t status_frames[1];
+    uint64_t status_frames[1] = {};
     struct gnttab_get_status_frames gsf = {
         .dom = DOMID_SELF,
         .nr_frames = ARRAY_SIZE(status_frames),
