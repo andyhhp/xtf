@@ -1,0 +1,20 @@
+name: scan-build
+
+on: [push, pull_request]
+
+jobs:
+  scan-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install
+      run: |
+        sudo apt-get update -q
+        sudo apt-get install clang-tools-11
+
+    - uses: actions/checkout@v2
+
+    - name: Scan-build
+      run: |
+        scan-build-11 --status-bugs -analyze-headers make -j`nproc`
