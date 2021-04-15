@@ -181,7 +181,7 @@ void test_vmxon(void)
     test_vmxon_novmxe();
     test_vmxon_novmxe_in_user();
 
-    write_cr4(cr4 |= X86_CR4_VMXE);
+    write_cr4(cr4 | X86_CR4_VMXE);
 
     test_vmxon_in_user();
     test_vmxon_overly_wide_paddr();

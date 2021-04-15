@@ -43,7 +43,7 @@ void test_main(void)
      */
     wrmsr_safe(MSR_DEBUGCTL, val |= DEBUGCTL_TR);
     wrmsr_safe(MSR_DEBUGCTL, val |= DEBUGCTL_BTS);
-    wrmsr_safe(MSR_DEBUGCTL, val |= DEBUGCTL_BTINT);
+    wrmsr_safe(MSR_DEBUGCTL, val |  DEBUGCTL_BTINT);
 
     /*
      * If we're still alive, generate a billion jumps to check that BTS really

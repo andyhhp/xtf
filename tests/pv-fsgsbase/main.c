@@ -174,7 +174,9 @@ void test_main(void)
     {
         xtf_failure("Fail: Initial CR4.FSGSBASE state should be clear\n");
 
-        if ( pv_write_cr4_safe(cr4 &= ~X86_CR4_FSGSBASE) )
+        /* Try turning CR4.FSGSBASE off, to continue the test. */
+        cr4 &= ~X86_CR4_FSGSBASE;
+        if ( pv_write_cr4_safe(cr4) )
             return xtf_failure("Fail: Fault while trying to clear CR4.FSGSBASE\n");
     }
 
@@ -187,14 +189,14 @@ void test_main(void)
     if ( !cpu_has_fsgsbase )
     {
         /* If the FSGSBASE feature isn't visible, check we can't turn it on. */
-        if ( !pv_write_cr4_safe(cr4 |= X86_CR4_FSGSBASE) )
+        if ( !pv_write_cr4_safe(cr4 | X86_CR4_FSGSBASE) )
             xtf_failure("Fail: Able to set CR4.FSGSBASE without the feature\n");
 
         return;
     }
 
     /* Check we can turn CR4.FSGSBASE on. */
-    if ( pv_write_cr4_safe(cr4 |= X86_CR4_FSGSBASE) )
+    if ( pv_write_cr4_safe(cr4 | X86_CR4_FSGSBASE) )
         xtf_failure("Fail: Unable to enable CR4.FSGSBASE\n");
 
     /* Check that {RD,WR}{FS,GS}BASE instructions are enabled. */
@@ -204,7 +206,7 @@ void test_main(void)
     test_wrfsbase_values();
 
     /* Check we can turn CR4.FSGSBASE off again. */
-    if ( pv_write_cr4_safe(cr4 &= ~X86_CR4_FSGSBASE) )
+    if ( pv_write_cr4_safe(cr4) )
         xtf_failure("Fail: Unable to enable CR4.FSGSBASE\n");
 
     /* Check that {RD,WR}{FS,GS}BASE instructions are disabled again. */

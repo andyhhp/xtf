@@ -138,7 +138,7 @@ static void test_pv_dr7_io_breakpoints(void)
     printk("Test PV %%dr7 IO breakpoints\n");
 
     if ( !(cr4 & X86_CR4_DE) )
-        write_cr4(cr4 |= X86_CR4_DE);
+        write_cr4(cr4 | X86_CR4_DE);
 
     /* Active IO breakpoint in %dr0. */
     io0 = DR7_SYM(0, G, IO, 32) | X86_DR7_GE | X86_DR7_DEFAULT;
@@ -161,7 +161,7 @@ static void test_pv_dr7_io_breakpoints(void)
     write_dr7(io0);
 
     /* Clear %cr4.de, after which IO breakpoints are invalid. */
-    write_cr4(cr4 &= ~X86_CR4_DE);
+    write_cr4(cr4);
 
     /* Attempt to reload an IO breakpoint in %dr0, which should fail ... */
     exinfo_t fault = 0;
