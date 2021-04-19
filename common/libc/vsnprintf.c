@@ -265,7 +265,7 @@ static char *pointer(
     /* Fall back to plain 32/64bit hex integer. */
     if ( width == -1 )
     {
-        width = 2 * sizeof(arg);
+        width = 2 * sizeof(void *);
         flags |= ZERO;
     }
 

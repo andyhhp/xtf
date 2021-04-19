@@ -25,7 +25,7 @@
 const char test_title[] = "XSA-173 PoC";
 
 /* New L2 pagetable for the test to manipulate. */
-uint64_t nl2[PAE_L2_PT_ENTRIES] __page_aligned_bss;
+static uint64_t nl2[PAE_L2_PT_ENTRIES] __page_aligned_bss;
 
 void test_main(void)
 {
