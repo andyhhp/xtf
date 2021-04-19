@@ -21,10 +21,22 @@ xtftestdir := $(xtfdir)/tests
 
 export DESTDIR xtfdir xtftestdir
 
-# Programs used
+ifeq ($(LLVM),) # GCC toolchain
 CC              := $(CROSS_COMPILE)gcc
 LD              := $(CROSS_COMPILE)ld
 OBJCOPY         := $(CROSS_COMPILE)objcopy
+
+else # LLVM toolchain
+
+# Optional -$NUM version when multiple toolchains are installed
+ver := $(filter -%,$(LLVM))
+CC              := clang$(ver) $(if $(CROSS_COMPILE),--target=$(CROSS_COMPILE:%-=%))
+LD              := ld.lld$(ver)
+OBJCOPY         := llvm-objcopy$(ver)
+undefine ver
+
+endif
+
 CPP             := $(CC) -E
 INSTALL         := install
 INSTALL_DATA    := $(INSTALL) -m 644 -p
