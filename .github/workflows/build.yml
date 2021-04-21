@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [x86]
+        arch: [x86, arm32, arm64]
         compiler: [llvm-9, llvm-10, llvm-11]
 
         include:
@@ -26,6 +26,11 @@ jobs:
             compiler: clang-10
           - arch: x86
             compiler: clang-11
+
+          - arch: arm32
+            compiler: gcc-arm-linux-gnueabihf
+          - arch: arm64
+            compiler: gcc-aarch64-linux-gnu
 
     runs-on: ubuntu-latest
 
@@ -46,11 +51,19 @@ jobs:
 
     - name: Build
       run: |
-        # Select appropriate LLVM= or CC=
+        a=${{matrix.arch}}
         c=${{matrix.compiler}}
-        case $c in
-            llvm-*)  COMP="LLVM=${c#llvm}" ;;
-            *)       COMP="CC=$c" ;;
+
+        # Select appropriate CROSS_COMPILE for non-x86 targets
+        case $a in
+            arm32) CROSS="CROSS_COMPILE=arm-linux-gnueabihf-" ;;
+            arm64) CROSS="CROSS_COMPILE=aarch64-linux-gnu-"   ;;
         esac
 
-        make -j`nproc` ARCH=${{matrix.arch}} $CROSS $COMP
+        # Select appropriate LLVM= or CC=
+        case $c in
+            llvm-*)  COMP="LLVM=${c#llvm}" ;;
+            *) [[ -z "$CROSS" ]] && COMP="CC=$c" ;;
+        esac
+
+        make -j`nproc` ARCH=$a $CROSS $COMP
