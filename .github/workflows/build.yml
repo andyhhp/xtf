@@ -32,8 +32,15 @@ jobs:
     steps:
     - name: Install
       run: |
+        c=${{matrix.compiler}}
+        v=${c##llvm-}
+        case $c in
+            # Need all {llvm,clang,lld}-$v packages
+            llvm-*) EXTRA="clang-${v} lld-${v}" ;;
+        esac
+
         sudo apt-get update -q
-        sudo apt-get install ${{matrix.compiler}}
+        sudo apt-get install -y build-essential python ${{matrix.compiler}} ${EXTRA}
 
     - uses: actions/checkout@v2
 
