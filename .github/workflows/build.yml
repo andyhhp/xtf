@@ -32,8 +32,19 @@ jobs:
     steps:
     - name: Install
       run: |
+        # LLVM package does not contain clang and ld.lld
+        c=${{matrix.compiler}}
+        v=${c##llvm-}
+        case $c in
+            llvm-*) EXTRA="clang-${v} lld-${v}" ;;
+        esac
+
         sudo apt-get update -q
-        sudo apt-get install ${{matrix.compiler}}
+        sudo apt-get install -y \
+          ${{matrix.compiler}}  \
+          build-essential       \
+          python                \
+          ${EXTRA}
 
     - uses: actions/checkout@v2
 
