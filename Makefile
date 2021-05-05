@@ -30,7 +30,7 @@ else # LLVM toolchain
 
 # Optional -$NUM version when multiple toolchains are installed
 ver := $(filter -%,$(LLVM))
-CC              := clang$(ver) $(if $(CROSS_COMPILE),--target=$(CROSS_COMPILE:%-=%))
+CC              := clang$(ver) $(if $(CROSS_COMPILE),--target=$(notdir $(CROSS_COMPILE:%-=%)))
 LD              := ld.lld$(ver)
 OBJCOPY         := llvm-objcopy$(ver)
 undefine ver
