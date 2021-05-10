@@ -1,3 +1,4 @@
+#include <xtf/framework.h>
 #include <xtf/lib.h>
 #include <xtf/traps.h>
 #include <xtf/hypercall.h>

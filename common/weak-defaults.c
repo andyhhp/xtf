@@ -16,6 +16,14 @@ void __weak test_setup(void)
 {
 }
 
+void __weak __noreturn arch_crash_hard(void)
+{
+    /* panic() has failed.  Sit in a tight loop. */
+    for ( ;; )
+        ;
+    unreachable();
+}
+
 /*
  * Local variables:
  * mode: C

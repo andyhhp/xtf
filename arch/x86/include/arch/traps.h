@@ -15,12 +15,6 @@
 void arch_init_traps(void);
 
 /*
- * Arch-specific function to quiesce the domain, in the event that a
- * shutdown(crash) hypercall has not succeeded.
- */
-void __noreturn arch_crash_hard(void);
-
-/*
  * Return the correct %ss/%esp from an exception.  In 32bit if no stack switch
  * occurs, an exception frame doesn't contain this information.
  */

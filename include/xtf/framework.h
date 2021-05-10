@@ -16,6 +16,12 @@ void arch_setup(void);
 /* Set up test-specific configuration. */
 void test_setup(void);
 
+/*
+ * In the case that normal shutdown actions have failed, contain execution as
+ * best as possible.
+ */
+void __noreturn arch_crash_hard(void);
+
 /* Single line summary of execution environment. */
 extern const char environment_description[];
 
