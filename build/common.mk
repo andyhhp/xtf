@@ -17,6 +17,12 @@ $(foreach env,$(64BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_64))
 
 COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 
+cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -S -o /dev/null -x c - 2>&1`" ]; \
+			then echo y; else echo n; fi)
+
+# Disable PIE, but need to check if compiler supports it
+COMMON_CFLAGS-$(call cc-option,-no-pie) += -no-pie
+
 COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
 COMMON_CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
@@ -37,13 +43,6 @@ defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
 obj-perarch :=
 obj-perenv  :=
 include $(ROOT)/build/files.mk
-
-
-cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -S -o /dev/null -x c - 2>&1`" ]; \
-			then echo y; else echo n; fi)
-
-# Disable PIE, but need to check if compiler supports it
-LDFLAGS-$(call cc-option,-no-pie) += -no-pie
 
 # Run once per environment to set up some common bits & pieces
 define PERENV_setup
