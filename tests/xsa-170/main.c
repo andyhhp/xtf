@@ -72,7 +72,7 @@ void test_main(void)
     pae_l4_identmap[255] = pte_from_virt(pae_l3_identmap, PF_SYM(AD, U, RW, P));
     barrier();
 
-    uint64_t *ptr = _p(0x00007ffffffffff8ULL);
+    void *volatile /* GCC issue 99578 */ ptr = _p(0x00007ffffffffff8ULL);
 
     /*
      * Put a NOP slide and Forced Emulation Prefix as the final instructions

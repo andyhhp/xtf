@@ -97,7 +97,8 @@ void test_main(void)
     /*
      * Prepare userspace memory.
      */
-    memset(gate, 0, PAGE_SIZE);
+    void *volatile /* GCC issue 99578 */ ptr = gate;
+    memset(ptr, 0, PAGE_SIZE);
     remap_linear(gate, PF_SYM(AD, U, RW, P));
 
     /*
