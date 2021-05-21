@@ -1,4 +1,4 @@
-name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
+name="test-@@SUBARCH@@-@@ENV@@-@@NAME@@@@VARIATION@@"
 
 vcpus=@@VCPUS@@
 
@@ -6,4 +6,4 @@ type="pv"
 loader="generic" # Legacy for before Xen 4.10
 
 memory=128
-kernel="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"
+kernel="@@XTFDIR@@/tests/@@NAME@@/test-@@SUBARCH@@-@@ENV@@-@@NAME@@"

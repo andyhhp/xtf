@@ -6,7 +6,7 @@
 
 A test has several important attributes, and are often referred to in the form:
 
-    test-$ENVIRONMENT-$NAME[~$VARIATION]
+    test-$SUBARCH-$ENVIRONMENT-$NAME[~$VARIATION]
 
 This identifies a single test instance, with the purpose of executing and
 providing a single result (See @ref running).
@@ -123,21 +123,21 @@ Building this will generate a number of files.
     main-pv64.d
     main-pv64.o
     Makefile
-    test-hvm32-example
-    test-hvm32-example.cfg
-    test-hvm32pae-example
-    test-hvm32pae-example.cfg
-    test-hvm32pse-example
-    test-hvm32pse-example.cfg
-    test-hvm64-example
-    test-hvm64-example.cfg
-    test-pv32pae-example
-    test-pv32pae-example.cfg
-    test-pv64-example
-    test-pv64-example.cfg
+    test-x86-hvm32-example
+    test-x86-hvm32-example.cfg
+    test-x86-hvm32pae-example
+    test-x86-hvm32pae-example.cfg
+    test-x86-hvm32pse-example
+    test-x86-hvm32pse-example.cfg
+    test-x86-hvm64-example
+    test-x86-hvm64-example.cfg
+    test-x86-pv32pae-example
+    test-x86-pv32pae-example.cfg
+    test-x86-pv64-example
+    test-x86-pv64-example.cfg
 
 The `.o` and `.d` files are build artefacts, leading to the eventual
-`test-$ENV-$NAME` microkernel.  Individual `xl.cfg` files are generated for
+`test-$SUBARCH-$ENV-$NAME` microkernel.  Individual `xl.cfg` files are generated for
 each microkernel.  `info.json` contains metadata about the test.
 
 
@@ -145,7 +145,7 @@ each microkernel.  `info.json` contains metadata about the test.
 
 If XTF in being built in dom0, all paths should be set up to run correctly.
 
-    # xl create tests/example/test-hvm64-example.cfg
+    # xl create tests/example/test-x86-hvm64-example.cfg
 
 If XTF is built elsewhere, it should be installed:
 
@@ -158,18 +158,18 @@ with paths appropriate for the system under test.
 
 A test will by default write synchronously to all available consoles:
 
-    # ./xtf-runner test-hvm64-example
-    Executing 'xl create -p tests/example/test-hvm64-example.cfg'
-    Parsing config from tests/example/test-hvm64-example.cfg
-    Executing 'xl console test-hvm64-example'
-    Executing 'xl unpause test-hvm64-example'
+    # ./xtf-runner test-x86-hvm64-example
+    Executing 'xl create -p tests/example/test-x86-hvm64-example.cfg'
+    Parsing config from tests/example/test-x86-hvm64-example.cfg
+    Executing 'xl console test-x86-hvm64-example'
+    Executing 'xl unpause test-x86-hvm64-example'
     --- Xen Test Framework ---
     Environment: HVM 64bit (Long mode 4 levels)
     Hello World
     Test result: SUCCESS
 
     Combined test results:
-    test-hvm64-example                       SUCCESS
+    test-x86-hvm64-example                       SUCCESS
 
 The result is covered by the report.h API.  In short, the options are:
 

@@ -54,18 +54,18 @@ To obtain and build:
 
 To run tests on a Xen host: (see @ref errata first)
 
-    # ./xtf-runner test-pv64-example
-    Executing 'xl create -p tests/example/test-pv64-example.cfg'
-    Parsing config from tests/example/test-pv64-example.cfg
-    Executing 'xl console test-pv64-example'
-    Executing 'xl unpause test-pv64-example'
+    # ./xtf-runner test-x86-pv64-example
+    Executing 'xl create -p tests/example/test-x86-pv64-example.cfg'
+    Parsing config from tests/example/test-x86-pv64-example.cfg
+    Executing 'xl console test-x86-pv64-example'
+    Executing 'xl unpause test-x86-pv64-example'
     --- Xen Test Framework ---
     Environment: PV 64bit (Long mode 4 levels)
     Hello World
     Test result: SUCCESS
 
     Combined test results:
-    test-pv64-example                        SUCCESS
+    test-x86-pv64-example                        SUCCESS
 
 
 @section errata Errata
