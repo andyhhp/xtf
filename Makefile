@@ -42,7 +42,11 @@ INSTALL         := install
 INSTALL_DATA    := $(INSTALL) -m 644 -p
 INSTALL_DIR     := $(INSTALL) -d -p
 INSTALL_PROGRAM := $(INSTALL) -p
-PYTHON          := python
+
+# Best effort attempt to find a python interpreter, defaulting to Python 3 if
+# available.  Fall back to just `python` if `which` is nowhere to be found.
+PYTHON_INTERPRETER := $(word 1,$(shell which python3 python python2 2>/dev/null) python)
+PYTHON             ?= $(PYTHON_INTERPRETER)
 
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
 

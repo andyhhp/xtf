@@ -40,7 +40,7 @@ jobs:
         esac
 
         sudo apt-get update -q
-        sudo apt-get install -y build-essential python ${{matrix.compiler}} ${EXTRA}
+        sudo apt-get install -y build-essential python3 ${{matrix.compiler}} ${EXTRA}
 
     - uses: actions/checkout@v2
 
