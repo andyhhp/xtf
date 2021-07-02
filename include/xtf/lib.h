@@ -5,9 +5,9 @@
 #include <xtf/console.h>
 #include <xtf/types.h>
 
-#if defined(__i386__)
+#if defined(__i386__) || defined(__arm__)
 # define BYTES_PER_LONG 4
-#elif defined(__x86_64__)
+#elif defined(__x86_64__) || defined(__aarch64__)
 # define BYTES_PER_LONG 8
 #else
 # errror Bad width
@@ -35,6 +35,11 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
 # define BUILD_BUG_ON(cond)                             \
     ((void)sizeof(struct { char: -!!(cond); }))
 #endif
+
+#define UNIMPLEMENTED() do {                            \
+    panic("Unimplemented function -> %s:%u\n",          \
+          __FILE__, __LINE__);                          \
+} while(0)
 
 #define min(a, b)                                       \
     ({                                                  \

@@ -26,6 +26,14 @@
 # define HYPERCALL4 _hypercall32_4
 # define HYPERCALL5 _hypercall32_5
 
+#elif defined(__aarch64__) || defined(__arm__)
+
+#include <arch/hypercall.h>
+# define HYPERCALL1 _hypercall_1
+# define HYPERCALL2 _hypercall_2
+# define HYPERCALL3 _hypercall_3
+# define HYPERCALL5 _hypercall_5
+
 #else
 # error Bad architecture for hypercalls
 #endif
@@ -52,6 +60,10 @@ extern uint8_t hypercall_page[PAGE_SIZE];
 /*
  * Hypercall primatives, compiled for the correct bitness
  */
+
+/* x86 specific hypercalls */
+#if defined(__x86_64__) || defined(__i386__)
+
 static inline long hypercall_set_trap_table(const struct xen_trap_info *ti)
 {
     return HYPERCALL1(long, __HYPERVISOR_set_trap_table, ti);
@@ -87,17 +99,6 @@ static inline long hypercall_update_descriptor(uint64_t maddr, user_desc desc)
 #endif
 }
 
-static inline long hypercall_memory_op(unsigned int cmd, void *arg)
-{
-    return HYPERCALL2(long, __HYPERVISOR_memory_op, cmd, arg);
-}
-
-static inline long hypercall_multicall(struct multicall_entry *list,
-                                       unsigned int nr)
-{
-    return HYPERCALL2(long, __HYPERVISOR_multicall, list, nr);
-}
-
 /*
  * This hypercall is misnamed in the Xen ABI, and actually operates on a
  * linear address, not a virtual address.
@@ -111,6 +112,34 @@ static inline long hypercall_update_va_mapping(
     return HYPERCALL4(long, __HYPERVISOR_update_va_mapping,
                       linear, npte, npte >> 32, flags);
 #endif
+}
+
+static inline long hypercall_mmuext_op(const mmuext_op_t ops[],
+                                       unsigned int count,
+                                       unsigned int *done,
+                                       unsigned int foreigndom)
+{
+    return HYPERCALL4(long, __HYPERVISOR_mmuext_op,
+                      ops, count, done, foreigndom);
+}
+
+static inline long hypercall_callback_op(unsigned int cmd, const void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_callback_op, cmd, arg);
+}
+
+#endif /* defined(__x86_64__) || defined(__i386__) */
+
+/* Common hypercalls */
+static inline long hypercall_memory_op(unsigned int cmd, void *arg)
+{
+    return HYPERCALL2(long, __HYPERVISOR_memory_op, cmd, arg);
+}
+
+static inline long hypercall_multicall(struct multicall_entry *list,
+                                       unsigned int nr)
+{
+    return HYPERCALL2(long, __HYPERVISOR_multicall, list, nr);
 }
 
 static inline long hypercall_xen_version(unsigned int cmd, void *arg)
@@ -135,23 +164,9 @@ static inline long hypercall_vcpu_op(unsigned int cmd, unsigned int vcpu,
     return HYPERCALL3(long, __HYPERVISOR_vcpu_op, cmd, vcpu, extra);
 }
 
-static inline long hypercall_mmuext_op(const mmuext_op_t ops[],
-                                       unsigned int count,
-                                       unsigned int *done,
-                                       unsigned int foreigndom)
-{
-    return HYPERCALL4(long, __HYPERVISOR_mmuext_op,
-                      ops, count, done, foreigndom);
-}
-
 static inline long hypercall_sched_op(unsigned int cmd, void *arg)
 {
     return HYPERCALL2(long, __HYPERVISOR_sched_op, cmd, arg);
-}
-
-static inline long hypercall_callback_op(unsigned int cmd, const void *arg)
-{
-    return HYPERCALL2(long, __HYPERVISOR_callback_op, cmd, arg);
 }
 
 static inline long hypercall_event_channel_op(unsigned int cmd, void *arg)
@@ -183,6 +198,18 @@ static inline long hypercall_argo_op(unsigned int cmd, void *arg1, void *arg2,
 /*
  * Higher level hypercall helpers
  */
+
+/* x86 specific hypercall helpers */
+#if defined(__x86_64__) || defined(__i386__)
+
+static inline int hypercall_register_callback(const xen_callback_register_t *arg)
+{
+    return hypercall_callback_op(CALLBACKOP_register, arg);
+}
+
+#endif /* defined(__x86_64__) || defined(__i386__) */
+
+/* Common hypercall helpers */
 static inline void hypercall_console_write(const char *buf, unsigned long count)
 {
     (void)HYPERCALL3(long, __HYPERVISOR_console_io, CONSOLEIO_write, count, buf);
@@ -203,11 +230,6 @@ static inline long hypercall_poll(evtchn_port_t port)
     struct sched_poll poll = { .ports = &port, .nr_ports = 1 };
 
     return hypercall_sched_op(SCHEDOP_poll, &poll);
-}
-
-static inline int hypercall_register_callback(const xen_callback_register_t *arg)
-{
-    return hypercall_callback_op(CALLBACKOP_register, arg);
 }
 
 static inline int hypercall_evtchn_send(evtchn_port_t port)

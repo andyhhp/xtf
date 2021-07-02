@@ -38,16 +38,28 @@ categories are:
 
 A test is built for one or more environments.  The environment encodes:
 
+For x86 architecture:
 - The Xen VM ABI in use (PV or HVM).
 - The compilation width (32bit or 64bit).
 - The primary paging mode (none, PSE, PAE).
 
-All available environments are:
+For arm64/arm32 there is currently a single environment called {64/32}le.
+
+All available environments for x86 are:
+@dontinclude build/x86/arch-common.mk
 @skipline ALL_ENVIRONMENTS
 
-Some more specific collections for environments are also available:
+Some more specific collections for x86 environments are also available:
 @skipline PV_ENVIRONMENTS
 @until 64BIT_ENVIRONMENTS
+
+All available environments for arm64 are:
+@dontinclude build/arm64/arch-common.mk
+@skipline ALL_ENVIRONMENTS
+
+All available environments for arm32 are:
+@dontinclude build/arm32/arch-common.mk
+@skipline ALL_ENVIRONMENTS
 
 An individual test, compiled for more than one environment, will end up with a
 individual microkernel binary for each specified environment.
