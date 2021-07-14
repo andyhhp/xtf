@@ -6,7 +6,17 @@
 #ifndef XTF_ARM_CONFIG_H
 #define XTF_ARM_CONFIG_H
 
+/*
+ * On MMU less system, when using XTF as dom0 we need to know the load address
+ * as it may differ depending on the target. Allow specifying the load address
+ * on the command line when invoking make using:
+ * CONFIG_LOAD_ADDRESS=<address>
+ */
+#if defined(CONFIG_LOAD_ADDRESS)
+#define XTF_VIRT_START CONFIG_LOAD_ADDRESS
+#else
 #define XTF_VIRT_START 0x40000000
+#endif
 
 #if defined(CONFIG_ENV_64le)
 #define CONFIG_ARM_64           1
