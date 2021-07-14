@@ -13,22 +13,23 @@ lr .req x30
                               (HEAD_FLAG_PAGE_SIZE << 1) |   \
                               (HEAD_FLAG_PHYS_BASE << 3))
 
+/* Include console driver */
+#ifdef CONFIG_PL011_EARLY_PRINTK
+#include "pl011.inc"
+#else
+#include "hvc.inc"
+#endif
+
 /*
- * Print a string on the debug console
- *
- * Clobbers: x0, x1, x2, x3, x16
+ * Print a string to the console
+ * console_puts is a driver specific function to print a string.
+ * Address of a string is stored in x0.
  */
-#define PRINT(s)                                    \
-    adr     x2, 98f;                                \
-    mov     x1, #0;                                 \
-97: ldrb    w3, [x2, x1];                           \
-    add     x1, x1, #1;                             \
-    cbnz    w3, 97b;                                \
-    mov     x0, #CONSOLEIO_write;                   \
-    mov     x16, #__HYPERVISOR_console_io;          \
-    hvc     #XEN_HYPERCALL_TAG;                     \
-.pushsection .rodata.str, "aMS", %progbits, 1;      \
-98: .asciz  s;                                      \
+#define PRINT(s)                                \
+    adr   x0, 98f;                              \
+    console_puts;                               \
+.pushsection .rodata.str, "aMS", %progbits, 1;  \
+98: .asciz s;                                   \
 .popsection
 
 .section ".bss.page_aligned"
@@ -81,6 +82,8 @@ ENTRY(_start)
     ldr     x22, =_start        /* x22 := vaddr(_start) */
     adr     x21, _start         /* x21 := paddr(_start) */
     sub     x21, x21, x22       /* x21 := phys-offset */
+
+    bl      console_init
 
     PRINT("- XTF booting -\n")
 
@@ -139,6 +142,17 @@ ENTRY(_cpu_setup)
 
     ret
 ENDFUNC(_cpu_setup)
+
+ENTRY(console_init)
+#ifdef CONFIG_PL011_EARLY_PRINTK
+    ldr     x23, =CONFIG_PL011_ADDRESS
+    pl011_uart_init x23, 0
+    PRINT("- Early printk using PL011 UART -\n")
+#else
+    PRINT("- Early printk using Xen debug console -\n")
+#endif
+    ret
+ENDFUNC(console_init)
 
 /* Save state */
 .macro entry_trap

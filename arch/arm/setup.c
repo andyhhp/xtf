@@ -5,6 +5,7 @@
  */
 #include <xtf/hypercall.h>
 #include <xtf/framework.h>
+#include <arch/pl011.h>
 
 const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 
@@ -15,10 +16,24 @@ struct init_data
     void *fdt;
 } boot_data;
 
-void arch_setup(void)
+void setup_console(void)
 {
+#ifdef CONFIG_PL011_UART
+#ifndef CONFIG_PL011_EARLY_PRINTK
+    /* Initialize UART */
+    pl011_init();
+#endif
+    /* Use PL011 UART to print messages */
+    register_console_callback(pl011_console_write);
+#else
     /* Use Xen console to print messages */
     register_console_callback(hypercall_console_write);
+#endif
+}
+
+void arch_setup(void)
+{
+    setup_console();
 }
 
 void test_setup(void)

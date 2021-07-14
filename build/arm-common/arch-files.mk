@@ -12,3 +12,6 @@ obj-perenv += $(ROOT)/common/xenbus.o
 obj-perenv += $(ROOT)/arch/arm/decode.o
 obj-perenv += $(ROOT)/arch/arm/setup.o
 obj-perenv += $(ROOT)/arch/arm/traps.o
+ifeq ($(CONFIG_PL011_UART), y)
+obj-perenv += $(ROOT)/arch/arm/pl011.o
+endif
