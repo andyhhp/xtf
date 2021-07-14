@@ -15,3 +15,4 @@ obj-perenv += $(ROOT)/arch/arm/traps.o
 ifeq ($(CONFIG_PL011_UART), y)
 obj-perenv += $(ROOT)/arch/arm/pl011.o
 endif
+obj-perenv += $(ROOT)/arch/arm/mm.o

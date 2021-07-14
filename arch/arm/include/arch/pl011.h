@@ -7,8 +7,15 @@
 #define XTF_ARM_PL011_H
 
 #include <xtf/types.h>
+#include <arch/page.h>
+#include <arch/mm.h>
 
+#ifdef CONFIG_MMU
+#define PL011_EARLY_VA      FIXMAP_ADDR(FIXMAP_UART)
+#define PL011_REG(reg)      (volatile void *)(PL011_EARLY_VA + reg)
+#else
 #define PL011_REG(reg)      (volatile void *)(CONFIG_PL011_ADDRESS + reg)
+#endif
 
 /* UART register offsets */
 #define PL011_UARTDR        0x00    /* Data register. */

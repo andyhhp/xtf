@@ -1,7 +1,7 @@
 # Architecture specific configuration for arm64
 
 SUBARCH := arm
-ALL_ENVIRONMENTS := 64le
+ALL_ENVIRONMENTS := 64le mmu64le
 
 $(foreach env,$(ALL_ENVIRONMENTS),$(eval $(env)_guest := arm64))
 $(foreach env,$(ALL_ENVIRONMENTS),$(eval $(env)_arch := arm64))
