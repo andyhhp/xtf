@@ -49,10 +49,16 @@ all_categories         = default_categories | non_default_categories
 # All test environments
 pv_environments        = set(("pv64", "pv32pae"))
 hvm_environments       = set(("hvm64", "hvm32pae", "hvm32pse", "hvm32"))
-all_environments       = pv_environments | hvm_environments
+arm_environments       = set(["mmu64le"])
+all_environments       = pv_environments | hvm_environments | arm_environments
+
+# Unsupported environments from xtf-runner point of view.
+# Exmaple: arm's environment 64le does not have pv console support hence
+# it cannot be run using xtf-runner.
+unsupported_envs       = set(["64le"])
 
 # All sub-architectures
-all_subarchs           = set(["x86"])
+all_subarchs           = set(("x86", "arm"))
 
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
@@ -133,6 +139,11 @@ class TestInfo(object):
         self.cat = cat
 
         envs = test_json["environments"]
+        # Remove unsupported environments from envs
+        for env in unsupported_envs:
+            if env in envs:
+                envs.remove(env)
+
         if not isinstance(envs, list):
             raise TypeError("Expected list for 'environments', got '{0}'"
                             .format(type(envs)))
