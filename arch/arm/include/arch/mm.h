@@ -52,6 +52,7 @@
 
 /* Fixmap slots */
 #define FIXMAP_UART             0
+#define FIXMAP_PV_CONSOLE       1
 
 /* Descriptors */
 #define DESCR_BAD               0x0
