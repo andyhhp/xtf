@@ -6,6 +6,7 @@
 #include <xtf/hypercall.h>
 #include <xtf/framework.h>
 #include <arch/pl011.h>
+#include <arch/mm.h>
 
 const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 
@@ -33,6 +34,9 @@ void setup_console(void)
 
 void arch_setup(void)
 {
+#ifdef CONFIG_MMU
+    setup_mm(boot_data.phys_offset);
+#endif
     setup_console();
 }
 

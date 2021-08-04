@@ -3,6 +3,8 @@
 SUBARCH := arm
 ALL_ENVIRONMENTS := 64le mmu64le
 
+MMU_ENVIRONMENTS    := $(filter mmu%,$(ALL_ENVIRONMENTS))
+
 $(foreach env,$(ALL_ENVIRONMENTS),$(eval $(env)_guest := arm64))
 $(foreach env,$(ALL_ENVIRONMENTS),$(eval $(env)_arch := arm64))
 
