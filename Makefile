@@ -1,6 +1,5 @@
 MAKEFLAGS += -rR
 ROOT := $(abspath $(CURDIR))
-export ROOT
 
 # $(xtfdir) defaults to $(ROOT) so development and testing can be done
 # straight out of the working tree.
@@ -19,7 +18,16 @@ endif
 
 xtftestdir := $(xtfdir)/tests
 
-export DESTDIR xtfdir xtftestdir
+# Supported architectures
+SUPPORTED_ARCH := x86 arm64 arm32
+# Default architecture
+ARCH ?= x86
+# Check if specified architecture is supported
+ifeq ($(filter $(ARCH),$(SUPPORTED_ARCH)),)
+$(error Architecture '$(ARCH)' not supported)
+endif
+
+export ROOT DESTDIR ARCH xtfdir xtftestdir
 
 ifeq ($(LLVM),) # GCC toolchain
 CC              := $(CROSS_COMPILE)gcc
@@ -50,9 +58,16 @@ PYTHON             ?= $(PYTHON_INTERPRETER)
 
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
 
+# Some tests are architecture specific. In this case we can have a list of tests
+# supported by a given architecture in $(ROOT)/build/$(ARCH)/arch-tests.mk
+-include $(ROOT)/build/$(ARCH)/arch-tests.mk
+
+# By default enable all the tests
+TESTS ?= $(wildcard tests/*)
+
 .PHONY: all
 all:
-	@set -e; for D in $(wildcard tests/*); do \
+	@set -e; for D in $(TESTS); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D build; \
 	done
@@ -61,7 +76,7 @@ all:
 install:
 	@$(INSTALL_DIR) $(DESTDIR)$(xtfdir)
 	$(INSTALL_PROGRAM) xtf-runner $(DESTDIR)$(xtfdir)
-	@set -e; for D in $(wildcard tests/*); do \
+	@set -e; for D in $(TESTS); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \
 	done

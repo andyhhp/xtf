@@ -3,12 +3,13 @@
 
 import sys, json
 
-# Usage: mkcfg.py $OUT $NAME $CATEGORY $ENVS $VARIATIONS
-_, out, name, cat, envs, variations = sys.argv
+# Usage: mkcfg.py $OUT $NAME $CATEGORY $SUBARCH $ENVS $VARIATIONS
+_, out, name, cat, subarch, envs, variations = sys.argv
 
 template = {
     "name": name,
     "category": cat,
+    "subarch": subarch,
     "environments": [],
     "variations": [],
     }

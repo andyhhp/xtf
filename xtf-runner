@@ -49,8 +49,16 @@ all_categories         = default_categories | non_default_categories
 # All test environments
 pv_environments        = set(("pv64", "pv32pae"))
 hvm_environments       = set(("hvm64", "hvm32pae", "hvm32pse", "hvm32"))
-all_environments       = pv_environments | hvm_environments
+arm_environments       = set(["mmu64le"])
+all_environments       = pv_environments | hvm_environments | arm_environments
 
+# Unsupported environments from xtf-runner point of view.
+# Exmaple: arm's environment 64le does not have pv console support hence
+# it cannot be run using xtf-runner.
+unsupported_envs       = set(["64le"])
+
+# All sub-architectures
+all_subarchs           = set(("x86", "arm"))
 
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
@@ -60,7 +68,11 @@ class TestInstance(object):
 
     def __init__(self, arg):
         """ Parse and verify 'arg' as a test instance. """
-        self.env, self.name, self.variation = parse_test_instance_string(arg)
+        self.subarch, self.env, self.name, self.variation = \
+        parse_test_instance_string(arg)
+
+        if self.subarch is None:
+            raise RunnerError("No subarch for '{0}'".format(arg))
 
         if self.env is None:
             raise RunnerError("No environment for '{0}'".format(arg))
@@ -79,9 +91,10 @@ class TestInstance(object):
 
     def __repr__(self):
         if not self.variation:
-            return "test-{0}-{1}".format(self.env, self.name)
+            return "test-{0}-{1}-{2}".format(self.subarch, self.env, self.name)
         else:
-            return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
+            return "test-{0}-{1}-{2}~{3}".format(
+                    self.subarch, self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -111,6 +124,12 @@ class TestInfo(object):
                             .format(type(name)))
         self.name = name
 
+        subarch = test_json["subarch"]
+        if not isinstance(subarch, basestring):
+            raise TypeError("Expected string for 'subarch', got '{0}'"
+                            .format(type(subarch)))
+        self.subarch = subarch
+
         cat = test_json["category"]
         if not isinstance(cat, basestring):
             raise TypeError("Expected string for 'category', got '{0}'"
@@ -120,6 +139,11 @@ class TestInfo(object):
         self.cat = cat
 
         envs = test_json["environments"]
+        # Remove unsupported environments from envs
+        for env in unsupported_envs:
+            if env in envs:
+                envs.remove(env)
+
         if not isinstance(envs, list):
             raise TypeError("Expected list for 'environments', got '{0}'"
                             .format(type(envs)))
@@ -156,10 +180,12 @@ class TestInfo(object):
         if variations:
             for env in envs:
                 for vary in variations:
-                    res.append(TestInstance("test-{0}-{1}~{2}"
-                                            .format(env, self.name, vary)))
+                    res.append(TestInstance("test-{0}-{1}-{2}~{3}"
+                                            .format(self.subarch, env,
+                                            self.name, vary)))
         else:
-            res = [ TestInstance("test-{0}-{1}".format(env, self.name))
+            res = [ TestInstance("test-{0}-{1}-{2}"
+                                 .format(self.subarch, env, self.name))
                     for env in envs ]
         return res
 
@@ -170,19 +196,21 @@ class TestInfo(object):
 def parse_test_instance_string(arg):
     """Parse a test instance string.
 
-    Has the form: '[[test-]$ENV-]$NAME[~$VARIATION]'
+    Has the form: '[[test-]$SUBARCH-]$ENV-]$NAME[~$VARIATION]'
 
     Optional 'test-' prefix
+    Optional $SUBARCH
     Optional $ENV environment part
     Mandatory $NAME
     Optional ~$VARIATION suffix
 
     Verifies:
       - $NAME is valid
+      - if $SUBARCH, it is valid for $NAME
       - if $ENV, it is valid for $NAME
       - if $VARIATION, it is valid for $NAME
 
-    Returns: tuple($ENV or None, $NAME, $VARIATION or None)
+    Returns: tuple($SUBARCH or None, $ENV or None, $NAME, $VARIATION or None)
     """
 
     all_tests = get_all_test_info()
@@ -191,27 +219,33 @@ def parse_test_instance_string(arg):
     if '~' in arg:
         arg, variation = arg.split('~', 1)
 
-    parts = arg.split('-', 2)
+    parts = arg.split('-', 3)
     parts_len = len(parts)
 
-    # If arg =~ test-$ENV-$NAME
-    if parts_len == 3 and parts[0] == "test" and parts[1] in all_environments:
-        _, env, name = parts
+    # If arg =~ test-$SUBARCH-$ENV-$NAME
+    if parts_len == 4 and parts[0] == "test" and parts[1] in all_subarchs and \
+       parts[2] in all_environments:
+        _, subarch, env, name = parts
+
+    # If arg =~ $SUBARCH-$ENV-$NAME
+    elif parts_len == 3 and parts[0] in all_subarchs and \
+         parts[1] in all_environments:
+        subarch, env, name = parts[0], parts[1], "-".join(parts[2:])
 
     # If arg =~ $ENV-$NAME
-    elif parts_len > 0 and parts[0] in all_environments:
-        env, name = parts[0], "-".join(parts[1:])
+    elif parts_len == 2 and parts[0] in all_environments:
+        subarch, env, name = None, parts[0], "-".join(parts[1:])
 
     # If arg =~ $NAME
     elif arg in all_tests:
-        env, name = None, arg
+        subarch, env, name = None, None, arg
 
     # Otherwise, give up
     else:
         raise RunnerError("Unrecognised test '{0}'".format(arg))
 
-    # At this point, 'env' has always been checked for plausibility.  'name'
-    # might not be
+    # At this point, 'env' and 'subarch' have always been checked for
+    # plausibility.  'name' might not be
 
     if name not in all_tests:
         raise RunnerError("Unrecognised test name '{0}' for '{1}'"
@@ -223,6 +257,10 @@ def parse_test_instance_string(arg):
         raise RunnerError("Test '{0}' has no environment '{1}'"
                           .format(name, env))
 
+    if subarch and subarch not in info.subarch:
+        raise RunnerError("Test '{0}' has no subarch '{1}'"
+                          .format(name, subarch))
+
     # If a variation has been given, check it is valid
     if variation is not None:
         if not info.variations:
@@ -231,7 +269,7 @@ def parse_test_instance_string(arg):
             raise RunnerError("No variation '{0}' for test '{1}'"
                               .format(variation, name))
 
-    return env, name, variation
+    return subarch, env, name, variation
 
 
 # Cached test json from disk
@@ -383,7 +421,7 @@ def interpret_selection(opts):
 
     # Second, sanity check others as full or partial test names
     for arg in others:
-        env, name, vary = parse_test_instance_string(arg)
+        _, env, name, vary = parse_test_instance_string(arg)
 
         instances = all_tests[name].all_instances(
             env_filter = env and [env] or None,
@@ -669,8 +707,8 @@ def main():
             "    ./xtf-runner pv-iopl\n"
             "      <console ouput>\n"
             "    Combined test results:\n"
-            "    test-pv64-pv-iopl                        SUCCESS\n"
-            "    test-pv32pae-pv-iopl                     SUCCESS\n"
+            "    test-x86-pv64-pv-iopl                        SUCCESS\n"
+            "    test-x86-pv32pae-pv-iopl                     SUCCESS\n"
             "\n"
             "  Exit code for this script:\n"
             "    0:    everything is ok\n"

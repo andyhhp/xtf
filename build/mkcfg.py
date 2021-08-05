@@ -11,8 +11,8 @@ import sys, os
 # Usage: mkcfg.py $OUT $DEFAULT-CFG $EXTRA-CFG $VARY-CFG
 _, out, defcfg, vcpus, extracfg, varycfg = sys.argv
 
-# Evaluate environment and name from $OUT
-_, env, name = out.split('.')[0].split('-', 2)
+# Evaluate subarch, environment and name from $OUT
+_, subarch, env, name = out.split('.')[0].split('-', 3)
 
 # Possibly split apart the variation suffix
 variation = ''
@@ -28,6 +28,7 @@ def expand(text):
             .replace("@@VCPUS@@",  vcpus)
             .replace("@@XTFDIR@@", os.environ["xtfdir"])
             .replace("@@VARIATION@@", variation)
+            .replace("@@SUBARCH@@",   subarch)
         )
 
 config = open(defcfg).read()
