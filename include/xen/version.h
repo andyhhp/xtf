@@ -24,6 +24,16 @@ typedef struct xen_compile_info xen_compile_info_t;
 #define XENVER_changeset 4
 typedef char xen_changeset_info_t[64];
 
+#define XENVER_get_features 6
+struct xen_feature_info {
+    unsigned int submap_idx;    /* IN: which 32-bit submap to return */
+    uint32_t     submap;        /* OUT: 32-bit submap */
+};
+typedef struct xen_feature_info xen_feature_info_t;
+
+/* Declares the features reported by XENVER_get_features. */
+#include "features.h"
+
 #endif /* __XEN_PUBLIC_VERSION_H__ */
 
 /*
