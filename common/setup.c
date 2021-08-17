@@ -36,6 +36,15 @@ void __noreturn xtf_main(void)
     xtf_exit();
 }
 
+/**
+ * Some basic assertions about the compile environment.
+ */
+static void __maybe_unused build_assertions(void)
+{
+    BUILD_BUG_ON(BITS_PER_LONG != 32 &&
+                 BITS_PER_LONG != 64);
+}
+
 /*
  * Local variables:
  * mode: C

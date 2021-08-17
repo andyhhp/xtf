@@ -8,6 +8,9 @@
 
 #define CHAR_BIT __CHAR_BIT__
 
+#define BYTES_PER_LONG __SIZEOF_LONG__
+#define BITS_PER_LONG (BYTES_PER_LONG * CHAR_BIT)
+
 #endif /* LIMITS_H */
 
 /*
