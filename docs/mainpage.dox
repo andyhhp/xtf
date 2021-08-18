@@ -50,7 +50,10 @@ To obtain and build:
 
     $ git clone git://xenbits.xen.org/xtf.git
     $ cd xtf
+    # To build natively (by default ARCH targets the host architecture)
     $ make -j4
+    # To build for x86
+    $ make ARCH=x86 CROSS_COMPILE=<cross_compiler_prefix>
 
 To run tests on a Xen host: (see @ref errata first)
 

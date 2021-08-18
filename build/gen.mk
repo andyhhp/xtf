@@ -1,6 +1,6 @@
+# Architecture independent makefile for compiling tests
 
 # Sanity checking of expected parameters
-
 ifeq ($(NAME),)
 $(error NAME should be specified)
 endif
@@ -44,20 +44,20 @@ install: install-each-env info.json
 	@$(INSTALL_DIR) $(DESTDIR)$(xtftestdir)/$(NAME)
 	$(INSTALL_DATA) info.json $(DESTDIR)$(xtftestdir)/$(NAME)
 
-hvm64-format := $(firstword $(filter elf32-x86-64,$(shell $(OBJCOPY) --help)) elf32-i386)
-
+# Build a test for specified environment
 define PERENV_build
 
-ifneq ($(1),hvm64)
-# Generic link line for most environments
+# If any environment needs a special compilation/linking recipe instead of
+# the default one, a custom recipe called build-$(env) e.g. build-hvm64
+# should be created in $(ROOT)/build/$(ARCH)/arch-common.mk
+
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
+ifndef build-$(1)
+	@# Generic link line for most environments
 	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
 else
-# hvm64 needs linking normally, then converting to elf32-x86-64 or elf32-i386
-test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
-	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@.tmp
-	$(OBJCOPY) $$@.tmp -O $(hvm64-format) $$@
-	rm -f $$@.tmp
+	@# Environment specific compilation recipe
+	$(call build-$(1))
 endif
 
 cfg-$(1) ?= $(defcfg-$($(1)_guest))
@@ -91,6 +91,8 @@ install-$(1).cfg: $(filter test-$(1)-%,$(TEST-CFGS))
 install-each-env: install-$(1) install-$(1).cfg
 
 endef
+
+# Make a call to a function PERENV_build once per each test's environment
 $(foreach env,$(TEST-ENVS),$(eval $(call PERENV_build,$(env))))
 
 .PHONY: clean

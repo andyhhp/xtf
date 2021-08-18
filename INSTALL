@@ -2,6 +2,18 @@ Xen Test Framework
 
 Build requirements:
  - GNU Make >= 3.81
+
+For x86:
  - GNU compatible compiler, capable of:
    -std=gnu99
    -m64 and -m32
+
+By default ARCH is set to the host architecture where make is executed,
+provided that it is supported by XTF.
+In order to perform cross compilation, ARCH needs to be set to the target
+architecture (when invoking make) e.g. ARCH=x86, together with specifying
+cross compiler prefix e.g. CROSS_COMPILE=x86_64-linux-gnu-.
+
+To build XTF:
+-for x86:
+make ARCH=x86 CROSS_COMPILE=<cross_compiler_prefix>
