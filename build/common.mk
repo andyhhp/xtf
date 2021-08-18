@@ -63,7 +63,7 @@ DEPS-$(1) = $$(head-$(1)) \
 	$$(obj-perarch:%.o=%-$($(1)_arch).o) \
 	$$(obj-$(1):%.o=%-$(1).o) $$(obj-perenv:%.o=%-$(1).o)
 
-# Generate .lds with approprate flags
+# Generate .lds with appropriate flags
 %/link-$(1).lds: %/link.lds.S
 	$$(CPP) $$(AFLAGS_$(1)) -P -C $$< -o $$@
 

@@ -56,9 +56,12 @@ PYTHON             ?= $(PYTHON_INTERPRETER)
 
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
 
+# By default enable all the tests
+TESTS ?= $(wildcard $(ROOT)/tests/*)
+
 .PHONY: all
 all:
-	@set -e; for D in $(wildcard tests/*); do \
+	@set -e; for D in $(TESTS); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D build; \
 	done
@@ -67,7 +70,7 @@ all:
 install:
 	@$(INSTALL_DIR) $(DESTDIR)$(xtfdir)
 	$(INSTALL_PROGRAM) xtf-runner $(DESTDIR)$(xtfdir)
-	@set -e; for D in $(wildcard tests/*); do \
+	@set -e; for D in $(TESTS); do \
 		[ ! -e $$D/Makefile ] && continue; \
 		$(MAKE) -C $$D install; \
 	done
