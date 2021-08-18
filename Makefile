@@ -1,6 +1,5 @@
 MAKEFLAGS += -rR
 ROOT := $(abspath $(CURDIR))
-export ROOT
 
 # Default to the all rule
 all:
@@ -25,7 +24,33 @@ endif
 
 xtftestdir := $(xtfdir)/tests
 
-export DESTDIR xtfdir xtftestdir
+# Supported architectures
+SUPPORTED_ARCH := x86
+
+# By default ARCH is set to the host architecture where make is executed,
+# provided that it is supported by XTF.
+# In order to perform cross compilation, ARCH needs to be set to the target
+# architecture (when invoking make) e.g. ARCH=x86, together with specifying
+# cross compiler prefix e.g. CROSS_COMPILE=x86_64-linux-gnu-.
+
+# Read machine hardware name using 'uname -m' and try to match it with the list
+# of architectures passed as the first argument (space separated).
+match-arch = $(shell echo $(1) | grep -w -q $(shell uname -m 2>/dev/null || \
+             echo none) && echo y || echo n)
+
+# Set ARCH to the host architecture
+ifeq ($(call match-arch, x86_64 i386),y)
+ARCH ?= x86
+else
+ARCH ?= none
+endif
+
+# Check if specified architecture is supported
+ifeq ($(filter $(ARCH),$(SUPPORTED_ARCH)),)
+$(error Architecture '$(ARCH)' not supported)
+endif
+
+export ROOT DESTDIR ARCH xtfdir xtftestdir
 
 ifeq ($(LLVM),) # GCC toolchain
 CC              := $(CROSS_COMPILE)gcc
