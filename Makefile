@@ -2,6 +2,12 @@ MAKEFLAGS += -rR
 ROOT := $(abspath $(CURDIR))
 export ROOT
 
+# Default to the all rule
+all:
+
+# Local settings and rules
+-include Makefile.local
+
 # $(xtfdir) defaults to $(ROOT) so development and testing can be done
 # straight out of the working tree.
 xtfdir  ?= $(ROOT)
@@ -97,5 +103,3 @@ doxygen: Doxyfile
 .PHONY: pylint
 pylint:
 	-pylint --rcfile=.pylintrc xtf-runner
-
--include Makefile.local
