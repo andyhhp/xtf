@@ -4,7 +4,7 @@
  *
  * @page test-xsa-227 XSA-227
  *
- * Advisory: [XSA-227](https://xenbits.xen.org/xsa/advisory-xsa-227.html)
+ * Advisory: [XSA-227](https://xenbits.xen.org/xsa/advisory-227.html)
  *
  * For x86 PV guests, the #GNTTABOP_map_grant_ref hypercall allows mapping by
  * nominated linear address, or by nominating a specific L1e.  However, there
