@@ -26,6 +26,8 @@ and functionality.
 
 @subpage test-livepatch-priv-check - Live Patch Privilege Check.
 
+@subpage test-lm-ts - Long Mode @#TS exception.
+
 @subpage test-memop-seg - Memory operand and segment interaction test.
 
 @subpage test-nmi-taskswitch-priv - Task Gate handling of interrupts.

@@ -74,6 +74,8 @@
 
 #endif /* __x86_64__ */
 
+#define TSS_SEL     (GDTE_TSS * 8)
+
 #endif /* CONFIG_HVM */
 
 /*

@@ -138,9 +138,9 @@ void test_main(void)
     printk("First self-nmi, from supervisor mode\n");
     apic_mmio_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
 
-    if ( (curr_ts = str()) != (GDTE_TSS * 8) )
+    if ( (curr_ts = str()) != TSS_SEL )
         xtf_failure("Fail: Running main task with unexpected %%tr\n"
-                    "  Expected %04x, got %04x\n", (GDTE_TSS * 8), curr_ts);
+                    "  Expected %04x, got %04x\n", TSS_SEL, curr_ts);
 
     /*
      * Send an NMI from user mode, and again check that we are in the expected
@@ -149,9 +149,9 @@ void test_main(void)
     printk("Second self-nmi, from user mode\n");
     exec_user_void(user_inject_nmi);
 
-    if ( (curr_ts = str()) != (GDTE_TSS * 8) )
+    if ( (curr_ts = str()) != TSS_SEL )
         xtf_failure("Fail: Running main task with unexpected %%tr\n"
-                    "  Expected %04x, got %04x\n", (GDTE_TSS * 8), curr_ts);
+                    "  Expected %04x, got %04x\n", TSS_SEL, curr_ts);
 
     /*
      * If Xen is still alive, it handled the user=>supervisor task switch
