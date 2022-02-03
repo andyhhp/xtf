@@ -25,7 +25,7 @@ SECTIONS
 {
         . = XTF_VIRT_START;
 
-        _start = .;
+        PROVIDE(_start = .); /* arch may provide it's own _start symbol */
 
         .text : {
                 *(.text.head)
