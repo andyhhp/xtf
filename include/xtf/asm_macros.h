@@ -62,7 +62,7 @@ name:
  * 'desc' may be an arbitrary asm construct.
  */
 #define ELFNOTE(name, type, desc)                   \
-    .pushsection .note.name                       ; \
+    .pushsection .note.name, "a", @note           ; \
     .align 4                                      ; \
     .long 2f - 1f         /* namesz */            ; \
     .long 4f - 3f         /* descsz */            ; \
@@ -76,7 +76,7 @@ name:
 #else
 
 #define ELFNOTE(name, type, desc)                \
-    asm (".pushsection .note." #name ";"         \
+    asm (".pushsection .note, \"a\", @note;"     \
     ".align 4;"                                  \
     ".long 2f - 1f;"       /* namesz */          \
     ".long 4f - 3f;"       /* descsz */          \
