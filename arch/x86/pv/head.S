@@ -21,7 +21,7 @@ ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
         __ASM_SEL(.code32, .code64)
 
  /* PV entry point. */
-GLOBAL(_start)
+GLOBAL(_elf_start)
 
         /* Stash the pv_start_info pointer from domain builder. */
         mov %_ASM_SI, pv_start_info
@@ -38,7 +38,7 @@ GLOBAL(_start)
         push $.Lmain_err_msg
 #endif
         call panic
-ENDFUNC(_start)
+ENDFUNC(_elf_start)
 
 DECLSTR(.Lmain_err_msg, "xtf_main() returned\n")
 
