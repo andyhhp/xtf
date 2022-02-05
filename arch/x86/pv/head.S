@@ -17,7 +17,7 @@ ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION, .asciz "xen-3.0")
 ELFNOTE(Xen, XEN_ELFNOTE_FEATURES, .asciz "!writable_page_tables|pae_pgdir_above_4gb")
 ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE, .asciz "yes")
 
-        .text
+        .section ".text.head", "ax", @progbits
         __ASM_SEL(.code32, .code64)
 
  /* PV entry point. */

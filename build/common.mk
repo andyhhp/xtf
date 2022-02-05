@@ -53,13 +53,12 @@ CFLAGS_$($(1)_arch) := $$(COMMON_CFLAGS) $$(COMMON_CFLAGS-$($(1)_arch))
 AFLAGS_$(1) := $$(AFLAGS_$($(1)_arch)) $$(COMMON_AFLAGS-$(1)) -DCONFIG_ENV_$(1) -include arch/config.h
 CFLAGS_$(1) := $$(CFLAGS_$($(1)_arch)) $$(COMMON_CFLAGS-$(1)) -DCONFIG_ENV_$(1) -include arch/config.h
 
-head-$(1) := $(ROOT)/arch/x86/$($(1)_guest)/head-$(1).o
 link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
 LDFLAGS_$(1) := -T $$(link-$(1)) -nostdlib $(LDFLAGS-y)
 
 # Needs to pick up test-provided obj-perenv and obj-perarch
-DEPS-$(1) = $$(head-$(1)) \
+DEPS-$(1) = \
 	$$(obj-perarch:%.o=%-$($(1)_arch).o) \
 	$$(obj-$(1):%.o=%-$(1).o) $$(obj-perenv:%.o=%-$(1).o)
 

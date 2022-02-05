@@ -37,6 +37,7 @@ SECTIONS
         _start = .;
 
         .text : {
+                *(.text.head)
                 *(.text)
 
 	. = ALIGN(PAGE_SIZE);

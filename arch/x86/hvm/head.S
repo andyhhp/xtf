@@ -7,6 +7,7 @@
 
 #include <xen/elfnote.h>
 
+        .section ".text.head", "ax", @progbits
         .code32                 /* Always starts in 32bit flat mode. */
 GLOBAL(_elf_start)              /* HVM common setup. */
 

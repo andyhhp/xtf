@@ -31,6 +31,7 @@ obj-perenv += $(ROOT)/arch/x86/traps.o
 # HVM specific objects
 obj-hvm += $(ROOT)/arch/x86/apic.o
 obj-hvm += $(ROOT)/arch/x86/hpet.o
+obj-hvm += $(ROOT)/arch/x86/hvm/head.o
 obj-hvm += $(ROOT)/arch/x86/hvm/pagetables.o
 obj-hvm += $(ROOT)/arch/x86/hvm/traps.o
 obj-hvm += $(ROOT)/arch/x86/io-apic.o
@@ -43,6 +44,7 @@ $(foreach env,$(HVM_ENVIRONMENTS),$(eval obj-$(env) += $(obj-hvm)))
 
 
 # PV specific objects
+obj-pv  += $(ROOT)/arch/x86/pv/head.o
 obj-pv  += $(ROOT)/arch/x86/pv/traps.o
 $(foreach env,$(PV_ENVIRONMENTS),$(eval obj-$(env) += $(obj-pv)))
 
