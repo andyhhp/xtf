@@ -11,3 +11,4 @@ obj-perenv += $(ROOT)/common/xenbus.o
 obj-perenv += $(ROOT)/common/weak-defaults.o
 
 obj-perenv += $(ROOT)/arch/arm/setup.o
+obj-perenv += $(ROOT)/arch/arm/traps.o

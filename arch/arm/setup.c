@@ -5,6 +5,13 @@
  */
 #include <xtf/lib.h>
 
+/* Structure to store boot arguments. */
+struct init_data
+{
+    uint64_t phys_offset;
+    void *fdt;
+} boot_data;
+
 const char environment_description[] = ENVIRONMENT_DESCRIPTION;
 
 /*
