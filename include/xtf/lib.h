@@ -25,6 +25,11 @@ void __noreturn panic(const char *fmt, ...) __printf(1, 2);
     ((void)sizeof(struct { char: -!!(cond); }))
 #endif
 
+#define UNIMPLEMENTED() do {                            \
+    panic("Unimplemented function -> %s:%u\n",          \
+          __FILE__, __LINE__);                          \
+} while(0)
+
 #define min(a, b)                                       \
     ({                                                  \
         const typeof(a) _a = (a);                       \

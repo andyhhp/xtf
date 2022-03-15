@@ -8,6 +8,12 @@ For x86:
    -std=gnu99
    -m64 and -m32
 
+For arm64/arm32:
+- when cross-compiling:
+ - GNU compatible cross-compiler toolchain for Aarch64/Aarch32
+- when building natively:
+ - GNU compatible toolchain for Aarch64/Aarch32
+
 By default ARCH is set to the host architecture where make is executed,
 provided that it is supported by XTF.
 In order to perform cross compilation, ARCH needs to be set to the target
@@ -17,3 +23,7 @@ cross compiler prefix e.g. CROSS_COMPILE=x86_64-linux-gnu-.
 To build XTF:
 -for x86:
 make ARCH=x86 CROSS_COMPILE=<cross_compiler_prefix>
+-for arm64:
+make ARCH=arm64 CROSS_COMPILE=<cross_compiler_prefix>
+-for arm32:
+make ARCH=arm32 CROSS_COMPILE=<cross_compiler_prefix>

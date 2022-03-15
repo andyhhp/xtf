@@ -47,17 +47,21 @@ install: install-each-env info.json
 # Build a test for specified environment
 define PERENV_build
 
-# If any environment needs a special compilation/linking recipe instead of
-# the default one, a custom recipe called build-$(env) e.g. build-hvm64
-# should be created in $(ROOT)/build/$(ARCH)/arch-common.mk
+# If any base architecture/environment needs a special compilation/linking
+# recipe instead of the default one, a custom recipe called build-$(BASE_ARCH)
+# or build-$(env) e.g. build-arm or build-hvm64 should be created in
+# $(ROOT)/build/$(ARCH)/arch-common.mk
 
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
-ifndef build-$(1)
-	@# Generic link line for most environments
-	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
-else
+ifdef build-$(BASE_ARCH)
+	@# Base-architecture specific compilation recipe
+	$(call build-$(BASE_ARCH),$(1))
+else ifdef build-$(1)
 	@# Environment specific compilation recipe
 	$(call build-$(1))
+else
+	@# Generic link line for most environments
+	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
 endif
 
 cfg-$(1) ?= $(defcfg-$($(1)_guest))

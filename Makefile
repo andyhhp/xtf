@@ -25,7 +25,7 @@ endif
 xtftestdir := $(xtfdir)/tests
 
 # Supported architectures
-SUPPORTED_ARCH := x86
+SUPPORTED_ARCH := x86 arm64 arm32
 
 # By default ARCH is set to the host architecture where make is executed,
 # provided that it is supported by XTF.
@@ -41,6 +41,10 @@ match-arch = $(shell echo $(1) | grep -w -q $(shell uname -m 2>/dev/null || \
 # Set ARCH to the host architecture
 ifeq ($(call match-arch, x86_64 i386),y)
 ARCH ?= x86
+else ifeq ($(call match-arch, aarch64 arm64),y)
+ARCH ?= arm64
+else ifeq ($(call match-arch, arm arm32),y)
+ARCH ?= arm32
 else
 ARCH ?= none
 endif
@@ -80,6 +84,10 @@ PYTHON_INTERPRETER := $(word 1,$(shell which python3 python python2 2>/dev/null)
 PYTHON             ?= $(PYTHON_INTERPRETER)
 
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
+
+# Some tests are architecture specific. In this case we can have a list of tests
+# supported by a given architecture in $(ROOT)/build/$(ARCH)/arch-tests.mk.
+-include $(ROOT)/build/$(ARCH)/arch-tests.mk
 
 # By default enable all the tests
 TESTS ?= $(wildcard $(ROOT)/tests/*)

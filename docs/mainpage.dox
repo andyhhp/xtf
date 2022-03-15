@@ -18,8 +18,14 @@ The build system and library abstractions are specifically designed to make it
 easy to write code once and compile it for multiple different environments
 (virtual machines).
 
+Currently there are 3 architectures available: x86, arm64 and arm32 although
+only x86 is truly supported. Initial support for arm64 and arm32 is added
+allowing to run a startup code based on the test: tests/example.
+This creates a base for future implementation.
+
 The current environments supported are:
 
+x86:
 Environment | Guest | Width | Paging
 :-----------|:------|:------|:---------
 `pv32pae`   | PV    | 32bit | PAE
@@ -29,6 +35,15 @@ Environment | Guest | Width | Paging
 `hvm32pae`  | HVM   | 32bit | PAE
 `hvm64`     | HVM   | 64bit | Long mode
 
+arm64:
+Environment | Guest | Width | Endianness | Paging
+:-----------|:------|:------|:-----------|:----------------
+`64le`      | arm64 | 64bit | little     | Currently no MMU
+
+arm32:
+Environment | Guest | Width | Endianness | Paging
+:-----------|:------|:------|:-----------|:----------------
+`32le`      | arm32 | 32bit | little     | Currently no MMU
 
 @section getting-started Getting Started
 
@@ -46,6 +61,12 @@ For x86:
           `elf32-i386` will be used which will load correctly, but disassemble
           incorrectly.
 
+For arm64/arm32:
+- when cross-compiling:
+ - GNU compatible cross-compiler toolchain for Aarch64/Aarch32
+- when building natively:
+ - GNU compatible toolchain for Aarch64/Aarch32
+
 To obtain and build:
 
     $ git clone git://xenbits.xen.org/xtf.git
@@ -54,6 +75,10 @@ To obtain and build:
     $ make -j4
     # To build for x86
     $ make ARCH=x86 CROSS_COMPILE=<cross_compiler_prefix>
+    # To build for arm64
+    $ make ARCH=arm64 CROSS_COMPILE=<cross_compiler_prefix>
+    # To build for arm32
+    $ make ARCH=arm32 CROSS_COMPILE=<cross_compiler_prefix>
 
 To run tests on a Xen host: (see @ref errata first)
 
