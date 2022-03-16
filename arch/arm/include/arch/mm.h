@@ -50,6 +50,9 @@
 #define L3_TABLE_OFFSET         (L3_TABLE_SIZE - 1)
 #define L3_TABLE_INDEX(x)       ((x >> L3_TABLE_SHIFT) & TABLE_ADDR_MASK)
 
+/* Fixmap slots */
+#define FIXMAP_PV_CONSOLE       0
+
 /* Descriptors */
 #define DESCR_BAD               0x0
 #define DESCR_VALID             0x1
