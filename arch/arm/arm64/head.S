@@ -71,6 +71,25 @@ ENTRY(_start)
 
     PRINT("- XTF booting -\n")
 
+    PRINT("- Zero BSS -\n")
+
+    load_paddr  x0, __start_bss
+    load_paddr  x1, __end_bss
+
+    /*
+     * The BSS is not going to be part of the loaded image, so there is no
+     * guarantee in the state of the cache. Therefore we need to clean and
+     * invalidate the cache for BSS region before and after zeroing BSS.
+     */
+    bl      clean_and_invalidate_dcache
+1:  str     xzr, [x0], #8
+    cmp     x0, x1
+    b.lo    1b
+
+    /* Load BSS start address again as x0 has been modified in the upper loop */
+    load_paddr  x0, __start_bss
+    bl      clean_and_invalidate_dcache
+
     /* Start an infinite loop */
     PRINT("- Infinite loop -\n")
-1:  b   1b
+2:  b   2b
