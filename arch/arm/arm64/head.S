@@ -1,4 +1,3 @@
-#include <arch/page.h>
 #include <xtf/asm_macros.h>
 #include <xen/xen.h>
 
@@ -99,9 +98,35 @@ ENTRY(_start)
     ldr     x2, =vector_table
     msr     vbar_el1, x2
 
+    /*
+     * TTBR0_EL1 - identity mapping
+     * TTBR1_EL1 - page tables
+     */
+    PRINT("- Setup page tables -\n")
+    bl      setup_page_tables
+    bl      setup_identity_mapping
+
+    PRINT("- Enable MMU -\n")
+    bl      mmu_enable
+
+    /* Jump to the runtime VA */
+    ldr     x0, =mmu_enabled
+    br      x0
+
+mmu_enabled:
+    bl      setup_fixmap
+
+    /*
+     * Remove identity mapping.
+     * By setting bit EPD0 we are disabling page table walk using TTBR0_EL1.
+     */
+    mrs     x0, tcr_el1
+    add     x0, x0, #TCR_EPD0
+    msr     tcr_el1, x0
+
     PRINT("- Zero BSS -\n")
-    load_paddr  x0, __start_bss
-    load_paddr  x1, __end_bss
+    ldr     x0, =__start_bss
+    ldr     x1, =__end_bss
 
     /*
      * The BSS is not going to be part of the loaded image, so there is no
@@ -114,7 +139,7 @@ ENTRY(_start)
     b.lo    1b
 
     /* Load BSS start address again as x0 has been modified in the upper loop */
-    load_paddr  x0, __start_bss
+    ldr     x0, =__start_bss
     bl      clean_and_invalidate_dcache
 
     PRINT("- Setup stack -\n")
@@ -133,7 +158,7 @@ ENDFUNC(_start)
 /*
  * Setup CPU for enabling MMU.
  *
- * Clobbers: x0
+ * Clobbers: x0, x1
  */
 cpu_setup:
     dsb     sy
@@ -141,10 +166,140 @@ cpu_setup:
     /* Set up memory attribute type tables */
     ldr     x0, =MAIRVAL
     msr     mair_el1, x0
+
+    /* Set up TCR_EL1 register */
+    ldr     x0, =TCRVAL
+    mrs     x1, ID_AA64MMFR0_EL1
+    /* Set TCR_EL1.IPS to ID_AA64MMFR0_EL1.PARange */
+    bfi     x0, x1, #32, #3
+    msr     tcr_el1, x0
     isb
 
     ret
 ENDFUNC(cpu_setup)
+
+/*
+ * Enable MMU and D-cache.
+ *
+ * Clobbers: x2
+ */
+mmu_enable:
+    dsb     sy
+
+    /* Turn on D-cache and MMU */
+    mrs     x2, sctlr_el1
+    orr     x2, x2, #SCTLR_M
+    orr     x2, x2, #SCTLR_C
+    msr     sctlr_el1, x2
+    isb
+
+    ret
+ENDFUNC(mmu_enable)
+
+/*
+ * Create MMU page tables.
+ *
+ * Clobbers: x0, x1, x2, x3, x4, x5, x6, x7
+ */
+setup_page_tables:
+    ldr          x0, =_text
+    ldr          x1, =_end
+    load_paddr   x3, l2_bpgtable
+    load_paddr   x4, l1_bpgtable
+
+    /* L1 table -> L2 table */
+    /* Find page table index */
+    lsr     x2, x0, #L1_TABLE_SHIFT
+    and     x2, x2, #TABLE_ADDR_MASK
+
+    /* Create page descriptor */
+    ldr     x5, =DESC_PAGE_TABLE
+    lsr     x6, x3, #PAGE_SHIFT
+    orr     x5, x5, x6, lsl #PAGE_SHIFT
+
+    /* Store the entry */
+    str     x5, [x4, x2, lsl #3]
+
+    /* Set TTBR1_EL1 */
+    msr     ttbr1_el1, x4
+    dsb     sy
+
+    /* L2 table -> 2M blocks */
+    /* Find page table index */
+1:  lsr     x2, x0, #L2_TABLE_SHIFT
+    and     x2, x2, #TABLE_ADDR_MASK
+
+    /* Create block descriptor */
+    add     x7, x0, x21
+    lsr     x7, x7, #PAGE_SHIFT
+    ldr     x5, =DESC_PAGE_BLOCK
+    orr     x5, x5, x7, lsl #PAGE_SHIFT
+
+    /* Store the entry */
+    str     x5, [x3, x2, lsl #3]
+
+    add     x0, x0, #L2_TABLE_SIZE
+    cmp     x1, x0
+    b.gt    1b
+
+    ret
+ENDFUNC(setup_page_tables)
+
+/*
+ * Create identity mapping.
+ *
+ * Clobbers: x0, x1, x2, x3, x4
+ */
+setup_identity_mapping:
+    load_paddr  x0, l1_idmap
+    load_paddr  x1, _text
+
+    /* Find the index */
+    lsr     x2, x1, #L1_TABLE_SHIFT
+    and     x2, x2, #TABLE_ADDR_MASK
+
+    /* Create block descriptor */
+    ldr     x3, =DESC_PAGE_BLOCK
+    lsr     x4, x1, #PAGE_SHIFT
+    orr     x3, x3, x4, lsl #PAGE_SHIFT
+
+    /* Store the entry */
+    str     x3, [x0, x2, lsl #3]
+
+    /* Set TTBR0_EL1 */
+    msr     ttbr0_el1, x0
+    isb
+
+    ret
+ENDFUNC(setup_identity_mapping)
+
+/*
+ * Link the fixmap in the page table.
+ *
+ * Clobbers: x0, x1, x2, x3, x4, x5
+ */
+setup_fixmap:
+    ldr            x0, =FIXMAP_ADDR(0)
+    load_paddr     x1, fix_pgtable
+    load_paddr     x2, l2_bpgtable
+
+    /* L2 table -> L3 table(fixmap) */
+    /* Find page table index */
+    lsr     x3, x0, #L2_TABLE_SHIFT
+    and     x3, x3, #TABLE_ADDR_MASK
+
+    /* Create page descriptor */
+    ldr     x4, =DESC_PAGE_TABLE
+    lsr     x5, x1, #PAGE_SHIFT
+    orr     x4, x4, x5, lsl #PAGE_SHIFT
+
+    /* Store the entry */
+    str     x4, [x2, x3, lsl #3]
+
+    dsb   nshst
+
+    ret
+ENDFUNC(setup_fixmap)
 
 /* Save state */
 .macro entry_trap

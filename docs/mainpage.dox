@@ -38,7 +38,7 @@ Environment | Guest | Width | Paging
 arm64:
 Environment | Guest | Width | Endianness | Paging
 :-----------|:------|:------|:-----------|:----------------
-`64le`      | arm64 | 64bit | little     | Currently no MMU
+`mmu64le`   | arm64 | 64bit | little     | 4kB
 
 arm32:
 Environment | Guest | Width | Endianness | Paging

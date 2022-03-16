@@ -40,6 +40,34 @@
 #define SCTLR_M           (1 << 0)
 #define SCTLR_C           (1 << 2)
 
+/* TCR_EL1 */
+#define TCR_T0SZ            ((64 - VA_WIDTH) << 0)
+#define TCR_T1SZ            ((64 - VA_WIDTH) << 16)
+
+/* ASID - 16bit */
+#define TCR_AS              (0x1 << 36)
+
+/* 4K granularity */
+#define TCR_TG0_4K          (0x0 << 14)
+#define TCR_TG1_4K          (0x2 << 30)
+
+/* Normal memory, In/Out Write-Back Read-Allocate Write-Allocate Cacheable */
+#define TCR_IRGN0           (0x1 << 8)
+#define TCR_IRGN1           (0x1 << 24)
+#define TCR_ORGN0           (0x1 << 10)
+#define TCR_ORGN1           (0x1 << 26)
+
+/* Inner shareable */
+#define TCR_SH0_IS          (0x3 << 12)
+#define TCR_SH1_IS          (0x3 << 28)
+
+/* Disable walks from the lower/upper region */
+#define TCR_EPD0            (0x1 << 7)
+#define TCR_EPD1            (0x1 << 23)
+
+#define TCRVAL              (TCR_T1SZ | TCR_T0SZ | TCR_TG1_4K | TCR_TG0_4K | \
+                             TCR_IRGN1 | TCR_ORGN1 | TCR_IRGN0 | TCR_IRGN0 | \
+                             TCR_SH1_IS | TCR_SH0_IS | TCR_AS)
 
 #endif /* XTF_ARM_PAGE_H */
 

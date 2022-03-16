@@ -43,7 +43,8 @@ For x86 architecture:
 - The compilation width (32bit or 64bit).
 - The primary paging mode (none, PSE, PAE).
 
-For arm64/arm32 there is currently a single environment called {64/32}le.
+For arm64 there is currently a single environment called mmu64le (with MMU).
+For arm32 there is currently a single environment called 32le (no MMU).
 
 All available environments for x86 are:
 @dontinclude build/x86/arch-common.mk
