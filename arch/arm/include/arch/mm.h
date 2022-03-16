@@ -7,6 +7,7 @@
 #define XTF_ARM_MM_H
 
 #include <arch/page.h>
+#include <xtf/types.h>
 
 /*
  * Granularity: 4KB
@@ -29,6 +30,7 @@
 #define L1_TABLE_SHIFT          30
 #define L1_TABLE_SIZE           (1 << L1_TABLE_SHIFT)
 #define L1_TABLE_OFFSET         (L1_TABLE_SIZE - 1)
+#define L1_TABLE_INDEX(x)       ((x >> L1_TABLE_SHIFT) & TABLE_ADDR_MASK)
 
 /*
  * L2 translation table
@@ -37,7 +39,7 @@
 #define L2_TABLE_SHIFT          21
 #define L2_TABLE_SIZE           (1 << L2_TABLE_SHIFT)
 #define L2_TABLE_OFFSET         (L2_TABLE_SIZE - 1)
-
+#define L2_TABLE_INDEX(x)       ((x >> L2_TABLE_SHIFT) & TABLE_ADDR_MASK)
 
 /*
  * L3 translation table
@@ -46,6 +48,7 @@
 #define L3_TABLE_SHIFT          PAGE_SHIFT
 #define L3_TABLE_SIZE           (1 << L3_TABLE_SHIFT)
 #define L3_TABLE_OFFSET         (L3_TABLE_SIZE - 1)
+#define L3_TABLE_INDEX(x)       ((x >> L3_TABLE_SHIFT) & TABLE_ADDR_MASK)
 
 /* Descriptors */
 #define DESCR_BAD               0x0
@@ -69,6 +72,35 @@
 #define DESC_PAGE_TABLE_DEV     (DESCR_VALID | DESC_TYPE_TABLE |\
                                  DESC_MAIR_INDEX(MT_DEVICE_nGnRnE) |\
                                  DESC_AF(0x1) | DESC_SH(0x3))
+
+#ifndef __ASSEMBLY__
+typedef uint64_t paddr_t;
+extern paddr_t phys_offset;
+
+/*
+ * PFN - physical frame number
+ * MFN - machine frame number
+ * PO  - physical offset
+ * PA  - physical address
+ * VA  - virtual address
+ *
+ * PA = PO + VA
+ * VA = PA - PO
+ */
+#define phys(x)         ((paddr_t)(x) + phys_offset)
+#define virt(x)         (void *)(((x) - phys_offset)
+#define pfn_to_phys(x)  ((paddr_t)(x) << PAGE_SHIFT)
+#define phys_to_pfn(x)  ((unsigned long)((x) >> PAGE_SHIFT))
+#define mfn_to_virt(x)  (virt(pfn_to_phys(x)))
+#define virt_to_mfn(x)  (phys_to_pfn(phys(x)))
+#define pfn_to_virt(x)  (virt(pfn_to_phys(x)))
+#define virt_to_pfn(x)  (phys_to_pfn(phys(x)))
+
+void store_pgt_entry(uint64_t *addr, uint64_t val);
+uint64_t set_fixmap(uint8_t slot, paddr_t pa, uint64_t flags);
+void setup_mm(paddr_t boot_phys_offset);
+
+#endif /* __ASSEMBLY__ */
 
 #endif /* XTF_ARM_MM_H */
 
