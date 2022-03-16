@@ -150,9 +150,8 @@ mmu_enabled:
     ldr     x0, =boot_data
     stp     x21, x20, [x0]
 
-    /* Start an infinite loop */
-    PRINT("- Infinite loop -\n")
-2:  b   2b
+    PRINT("- Jump to C world-\n")
+    b       xtf_main
 ENDFUNC(_start)
 
 /*

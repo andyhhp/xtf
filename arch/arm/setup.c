@@ -4,6 +4,7 @@
  * Early bringup code for arm.
  */
 #include <xtf/lib.h>
+#include <xtf/hypercall.h>
 
 /* Structure to store boot arguments. */
 struct init_data
@@ -13,6 +14,20 @@ struct init_data
 } boot_data;
 
 const char environment_description[] = ENVIRONMENT_DESCRIPTION;
+
+static void setup_console(void)
+{
+    /* Use Xen console to print messages */
+    register_console_callback(hypercall_console_write);
+}
+
+void arch_setup(void)
+{
+    setup_console();
+#ifdef CONFIG_MMU
+    setup_mm(boot_data.phys_offset);
+#endif
+}
 
 /*
  * Local variables:
