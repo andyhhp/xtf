@@ -1,0 +1,6 @@
+name="test-@@ENV@@-@@NAME@@@@VARIATION@@"
+
+vcpus=@@VCPUS@@
+
+memory=128
+kernel="@@XTFDIR@@/tests/@@NAME@@/test-@@ENV@@-@@NAME@@"

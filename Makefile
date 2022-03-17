@@ -1,6 +1,5 @@
 MAKEFLAGS += -rR
 ROOT := $(abspath $(CURDIR))
-export ROOT
 
 # Default to the all rule
 all:
@@ -25,7 +24,37 @@ endif
 
 xtftestdir := $(xtfdir)/tests
 
-export DESTDIR xtfdir xtftestdir
+# Supported architectures
+SUPPORTED_ARCH := x86 arm64 arm32
+
+# By default ARCH is set to the host architecture where make is executed,
+# provided that it is supported by XTF.
+# In order to perform cross compilation, ARCH needs to be set to the target
+# architecture (when invoking make) e.g. ARCH=x86, together with specifying
+# cross compiler prefix e.g. CROSS_COMPILE=x86_64-linux-gnu-.
+
+# Read machine hardware name using 'uname -m' and try to match it with the list
+# of architectures passed as the first argument (space separated).
+match-arch = $(shell echo $(1) | grep -w -q $(shell uname -m 2>/dev/null || \
+             echo none) && echo y || echo n)
+
+# Set ARCH to the host architecture
+ifeq ($(call match-arch, x86_64 i386),y)
+ARCH ?= x86
+else ifeq ($(call match-arch, aarch64 arm64),y)
+ARCH ?= arm64
+else ifeq ($(call match-arch, arm arm32),y)
+ARCH ?= arm32
+else
+ARCH ?= none
+endif
+
+# Check if specified architecture is supported
+ifeq ($(filter $(ARCH),$(SUPPORTED_ARCH)),)
+$(error Architecture '$(ARCH)' not supported)
+endif
+
+export ROOT DESTDIR ARCH xtfdir xtftestdir
 
 ifeq ($(LLVM),) # GCC toolchain
 CC              := $(CROSS_COMPILE)gcc
@@ -55,6 +84,10 @@ PYTHON_INTERPRETER := $(word 1,$(shell which python3 python python2 2>/dev/null)
 PYTHON             ?= $(PYTHON_INTERPRETER)
 
 export CC LD CPP INSTALL INSTALL_DATA INSTALL_DIR INSTALL_PROGRAM OBJCOPY PYTHON
+
+# Some tests are architecture specific. In this case we can have a list of tests
+# supported by a given architecture in $(ROOT)/build/$(ARCH)/arch-tests.mk.
+-include $(ROOT)/build/$(ARCH)/arch-tests.mk
 
 # By default enable all the tests
 TESTS ?= $(wildcard $(ROOT)/tests/*)
