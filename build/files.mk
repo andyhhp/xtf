@@ -1,22 +1,22 @@
 # Files compiled and linked for different architectures and environments
 #
-# obj-perarch  get compiled once per architecture
+# obj-perbits  get compiled once per bitness
 # obj-perenv   get get compiled once for each environment
 # obj-$(env)   are objects unique to a specific environment
 
-obj-perarch += $(ROOT)/common/console.o
-obj-perarch += $(ROOT)/common/exlog.o
-obj-perarch += $(ROOT)/common/extable.o
-obj-perarch += $(ROOT)/common/grant_table.o
-obj-perarch += $(ROOT)/common/heapsort.o
-obj-perarch += $(ROOT)/common/lib.o
-obj-perarch += $(ROOT)/common/libc/stdio.o
-obj-perarch += $(ROOT)/common/libc/string.o
-obj-perarch += $(ROOT)/common/libc/vsnprintf.o
-obj-perarch += $(ROOT)/common/report.o
-obj-perarch += $(ROOT)/common/setup.o
-obj-perarch += $(ROOT)/common/xenbus.o
-obj-perarch += $(ROOT)/common/weak-defaults.o
+obj-perbits += $(ROOT)/common/console.o
+obj-perbits += $(ROOT)/common/exlog.o
+obj-perbits += $(ROOT)/common/extable.o
+obj-perbits += $(ROOT)/common/grant_table.o
+obj-perbits += $(ROOT)/common/heapsort.o
+obj-perbits += $(ROOT)/common/lib.o
+obj-perbits += $(ROOT)/common/libc/stdio.o
+obj-perbits += $(ROOT)/common/libc/string.o
+obj-perbits += $(ROOT)/common/libc/vsnprintf.o
+obj-perbits += $(ROOT)/common/report.o
+obj-perbits += $(ROOT)/common/setup.o
+obj-perbits += $(ROOT)/common/xenbus.o
+obj-perbits += $(ROOT)/common/weak-defaults.o
 
 obj-perenv += $(ROOT)/arch/x86/decode.o
 obj-perenv += $(ROOT)/arch/x86/desc.o

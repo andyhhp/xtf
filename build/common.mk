@@ -40,7 +40,7 @@ COMMON_CFLAGS-x86_64 := -m64
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in
 defcfg-hvm   := $(ROOT)/config/default-hvm.cfg.in
 
-obj-perarch :=
+obj-perbits :=
 obj-perenv  :=
 include $(ROOT)/build/files.mk
 
@@ -57,9 +57,9 @@ link-$(1) := $(ROOT)/arch/x86/link-$(1).lds
 
 LDFLAGS_$(1) := -T $$(link-$(1)) -nostdlib $(LDFLAGS-y)
 
-# Needs to pick up test-provided obj-perenv and obj-perarch
+# Needs to pick up test-provided obj-perenv and obj-perbits
 DEPS-$(1) = \
-	$$(obj-perarch:%.o=%-$($(1)_arch).o) \
+	$$(obj-perbits:%.o=%-$($(1)_arch).o) \
 	$$(obj-$(1):%.o=%-$(1).o) $$(obj-perenv:%.o=%-$(1).o)
 
 # Generate .lds with appropriate flags
