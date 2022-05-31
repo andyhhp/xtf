@@ -120,7 +120,7 @@ static void init_callbacks(void)
     if ( rc )
         panic("Failed to set trap table: %d\n", rc);
 
-    static const xen_callback_register_t cb[] = {
+    xen_callback_register_t cb[] = {
         {
             .type = CALLBACKTYPE_event,
             .address = INIT_XEN_CALLBACK(__KERN_CS, _u(entry_EVTCHN)),
