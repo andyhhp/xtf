@@ -15,9 +15,11 @@ $(foreach env,$(HVM_ENVIRONMENTS),$(eval $(env)_guest := hvm))
 $(foreach env,$(32BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_32))
 $(foreach env,$(64BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_64))
 
+comma := ,
+
 COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 
-cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -S -o /dev/null -x c - 2>&1`" ]; \
+cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -c -o /dev/null -x c - 2>&1`" ]; \
 			then echo y; else echo n; fi)
 
 ld-option = $(shell if $(LD) -v $(1) >/dev/null 2>&1; then echo y; else echo n; fi)
@@ -25,11 +27,15 @@ ld-option = $(shell if $(LD) -v $(1) >/dev/null 2>&1; then echo y; else echo n; 
 # Disable PIE, but need to check if compiler supports it
 COMMON_CFLAGS-$(call cc-option,-no-pie) += -no-pie
 
+# Arrange for assembly files to have a proper .note.GNU-stack section added,
+# to silence warnings otherwise issued by GNU ld 2.39 and newer.
+COMMON_AFLAGS-$(call cc-option,-Wa$(comma)--noexecstack) += -Wa,--noexecstack
+
 # Suppress warnings about LOAD segments with RWX permissions, as what we build
 # aren't normal user-mode executables.
 LDFLAGS-$(call ld-option,--warn-rwx-segments) += --no-warn-rwx-segments
 
-COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
+COMMON_AFLAGS := $(COMMON_FLAGS) $(COMMON_AFLAGS-y) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
 COMMON_CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
 COMMON_CFLAGS += -fno-common -fno-asynchronous-unwind-tables -fno-strict-aliasing
