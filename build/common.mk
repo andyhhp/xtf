@@ -20,8 +20,14 @@ COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -S -o /dev/null -x c - 2>&1`" ]; \
 			then echo y; else echo n; fi)
 
+ld-option = $(shell if $(LD) -v $(1) >/dev/null 2>&1; then echo y; else echo n; fi)
+
 # Disable PIE, but need to check if compiler supports it
 COMMON_CFLAGS-$(call cc-option,-no-pie) += -no-pie
+
+# Suppress warnings about LOAD segments with RWX permissions, as what we build
+# aren't normal user-mode executables.
+LDFLAGS-$(call ld-option,--warn-rwx-segments) += --no-warn-rwx-segments
 
 COMMON_AFLAGS := $(COMMON_FLAGS) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
