@@ -24,9 +24,6 @@ cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -c -o /dev/null -x c 
 
 ld-option = $(shell if $(LD) -v $(1) >/dev/null 2>&1; then echo y; else echo n; fi)
 
-# Disable PIE, but need to check if compiler supports it
-COMMON_CFLAGS-$(call cc-option,-no-pie) += -no-pie
-
 # Arrange for assembly files to have a proper .note.GNU-stack section added,
 # to silence warnings otherwise issued by GNU ld 2.39 and newer.
 COMMON_AFLAGS-$(call cc-option,-Wa$(comma)--noexecstack) += -Wa,--noexecstack
