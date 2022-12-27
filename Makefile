@@ -26,7 +26,7 @@ endif
 xtftestdir := $(xtfdir)/tests
 
 # Supported architectures
-SUPPORTED_ARCH := x86 arm64 arm32
+SUPPORTED_ARCH := x86 arm64 arm32 riscv32 riscv64
 # Default architecture
 ARCH ?= x86
 # Check if specified architecture is supported

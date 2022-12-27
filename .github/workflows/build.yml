@@ -26,7 +26,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [x86, arm32, arm64]
+        arch: [x86, arm32, arm64, riscv32, riscv64]
         compiler: [llvm-12, llvm-13, llvm-14, llvm-15]
 
         include:
@@ -52,6 +52,9 @@ jobs:
             compiler: gcc-arm-linux-gnueabihf
           - arch: arm64
             compiler: gcc-aarch64-linux-gnu
+
+          - arch: riscv64
+            compiler: gcc-riscv64-linux-gnu
 
     runs-on: ubuntu-22.04
 
@@ -79,6 +82,8 @@ jobs:
         case $a in
             arm32) CROSS="CROSS_COMPILE=arm-linux-gnueabihf-" ;;
             arm64) CROSS="CROSS_COMPILE=aarch64-linux-gnu-"   ;;
+            riscv32) CROSS="CROSS_COMPILE=riscv32-linux-gnu-" ;;
+            riscv64) CROSS="CROSS_COMPILE=riscv64-linux-gnu-" ;;
         esac
 
         # Select appropriate LLVM= or CC=
