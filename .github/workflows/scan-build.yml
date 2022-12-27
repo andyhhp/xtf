@@ -5,16 +5,16 @@ on: [push, pull_request]
 jobs:
   scan-build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Install
       run: |
         sudo apt-get update -q
-        sudo apt-get install clang-tools-11
+        sudo apt-get install clang-tools-14
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Scan-build
       run: |
-        scan-build-11 --status-bugs -analyze-headers make -j`nproc`
+        scan-build-14 --status-bugs -analyze-headers make -j`nproc`

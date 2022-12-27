@@ -8,26 +8,26 @@ jobs:
     strategy:
       matrix:
         arch: [x86]
-        compiler: [llvm-9, llvm-10, llvm-11]
+        compiler: [llvm-12, llvm-13, llvm-14]
 
         include:
-          - arch: x86
-            compiler: gcc-7
-          - arch: x86
-            compiler: gcc-8
           - arch: x86
             compiler: gcc-9
           - arch: x86
             compiler: gcc-10
+          - arch: x86
+            compiler: gcc-11
+          - arch: x86
+            compiler: gcc-12
 
           - arch: x86
-            compiler: clang-9
+            compiler: clang-12
           - arch: x86
-            compiler: clang-10
+            compiler: clang-13
           - arch: x86
-            compiler: clang-11
+            compiler: clang-14
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Install
@@ -42,7 +42,7 @@ jobs:
         sudo apt-get update -q
         sudo apt-get install -y build-essential python3 ${{matrix.compiler}} ${EXTRA}
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Build
       run: |
