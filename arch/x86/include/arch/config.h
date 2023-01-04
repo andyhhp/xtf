@@ -11,6 +11,8 @@
 #ifndef XTF_X86_CONFIG_H
 #define XTF_X86_CONFIG_H
 
+#define XTF_VIRT_START (1 << 20)
+
 #include <xtf/macro_magic.h>
 
 #if defined(CONFIG_ENV_pv64)

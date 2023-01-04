@@ -1,28 +1,19 @@
 /*
- * Common linker file for all x86 environments
+ * Common linker file for all architectures/environments
  */
 
 #include <xtf/numbers.h>
 #include <arch/page.h>
 
-/* Don't clobber the ld directive */
-#undef i386
-
-#if defined(__x86_64__)
-
-OUTPUT_FORMAT("elf64-x86-64")
-OUTPUT_ARCH(i386:x86-64)
-
-#elif defined(__i386__)
-
-OUTPUT_FORMAT("elf32-i386")
-OUTPUT_ARCH(i386)
-
-#else
-# error Bad architecture to link with
-#endif
-
-ENTRY(_elf_start)
+/*
+ * Architecture must provide:
+ *   - OUTPUT_FORMAT()
+ *   - OUTPUT_ARCH()
+ *   - ENTRY()
+ */
+#define LINKER_HEADER
+#include <arch/link.lds.h>
+#undef LINKER_HEADER
 
 PHDRS
 {
@@ -32,7 +23,7 @@ PHDRS
 
 SECTIONS
 {
-        . = SEGMENT_START("text-segment", MB(1));
+        . = XTF_VIRT_START;
 
         _start = .;
 
@@ -97,10 +88,6 @@ SECTIONS
  */
 zeroptr = 0;
 
-ASSERT(IS_ALIGNED(hypercall_page, PAGE_SIZE), "hypercall_page misaligned");
-ASSERT(IS_ALIGNED(boot_stack, PAGE_SIZE), "boot_stack misaligned");
-ASSERT(IS_ALIGNED(user_stack, PAGE_SIZE), "user_stack misaligned");
-
 ASSERT(IS_ALIGNED(__start_user_text, PAGE_SIZE), "__start_user_text misaligned");
 ASSERT(IS_ALIGNED(__end_user_text,   PAGE_SIZE), "__end_user_text misaligned");
 ASSERT(IS_ALIGNED(__start_user_data, PAGE_SIZE), "__start_user_data misaligned");
@@ -108,26 +95,11 @@ ASSERT(IS_ALIGNED(__end_user_data,   PAGE_SIZE), "__end_user_data misaligned")
 ASSERT(IS_ALIGNED(__start_user_bss,  PAGE_SIZE), "__start_user_data misaligned");
 ASSERT(IS_ALIGNED(__end_user_bss,    PAGE_SIZE), "__end_user_data misaligned")
 
-#ifdef CONFIG_HVM
+/* Architecture may provide any extra asserts. */
+#define LINKER_FOOTER
+#include <arch/link.lds.h>
+#undef LINKER_FOOTER
 
-/* Check everything lives within l1_identmap[] for user and r/o mappings. */
-ASSERT(_end < (1 << (PT_ORDER + PAGE_SHIFT)), "Mappings exceed l1_identmap[]");
-
-ASSERT(IS_ALIGNED(pae_l1_identmap, PAGE_SIZE), "pae_l1_identmap misaligned");
-ASSERT(IS_ALIGNED(pae_l2_identmap, PAGE_SIZE), "pae_l2_identmap misaligned");
-ASSERT(IS_ALIGNED(pae_l3_identmap, PAGE_SIZE), "pae_l3_identmap misaligned");
-ASSERT(IS_ALIGNED(pae_l4_identmap, PAGE_SIZE), "pae_l4_identmap misaligned");
-
-ASSERT(IS_ALIGNED(pae32_l3_identmap, 32), "pae32_l3_ident misaligned");
-
-ASSERT(IS_ALIGNED(pse_l1_identmap, PAGE_SIZE), "pse_l1_identmap misaligned");
-ASSERT(IS_ALIGNED(pse_l2_identmap, PAGE_SIZE), "pse_l2_identmap misaligned");
-
-#else
-
-ASSERT(IS_ALIGNED(gdt, PAGE_SIZE), "gdt misaligned");
-
-#endif
 /*
  * Local variables:
  * tab-width: 8
