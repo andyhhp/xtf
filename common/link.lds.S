@@ -31,10 +31,10 @@ SECTIONS
                 *(.text.head)
                 *(.text)
 
-	. = ALIGN(PAGE_SIZE);
+        . = ALIGN(PAGE_SIZE);
         __start_user_text = .;
                 *(.text.user)
-	. = ALIGN(PAGE_SIZE);
+        . = ALIGN(PAGE_SIZE);
         __end_user_text = .;
 
         } :text = 0
@@ -47,7 +47,7 @@ SECTIONS
 
         __start_user_data = .;
                 *(.data.user)
-	. = ALIGN(PAGE_SIZE);
+        . = ALIGN(PAGE_SIZE);
         __end_user_data = .;
 
         }
@@ -75,7 +75,7 @@ SECTIONS
 
         __start_user_bss = .;
                 *(.bss.user.page_aligned)
-	. = ALIGN(PAGE_SIZE);
+        . = ALIGN(PAGE_SIZE);
         __end_user_bss = .;
         }
 
@@ -91,9 +91,9 @@ zeroptr = 0;
 ASSERT(IS_ALIGNED(__start_user_text, PAGE_SIZE), "__start_user_text misaligned");
 ASSERT(IS_ALIGNED(__end_user_text,   PAGE_SIZE), "__end_user_text misaligned");
 ASSERT(IS_ALIGNED(__start_user_data, PAGE_SIZE), "__start_user_data misaligned");
-ASSERT(IS_ALIGNED(__end_user_data,   PAGE_SIZE), "__end_user_data misaligned")
+ASSERT(IS_ALIGNED(__end_user_data,   PAGE_SIZE), "__end_user_data misaligned");
 ASSERT(IS_ALIGNED(__start_user_bss,  PAGE_SIZE), "__start_user_data misaligned");
-ASSERT(IS_ALIGNED(__end_user_bss,    PAGE_SIZE), "__end_user_data misaligned")
+ASSERT(IS_ALIGNED(__end_user_bss,    PAGE_SIZE), "__end_user_data misaligned");
 
 /* Architecture may provide any extra asserts. */
 #define LINKER_FOOTER

@@ -72,8 +72,8 @@ DEPS-$(1) = \
 	$$(obj-$(1):%.o=%-$(1).o) $$(obj-perenv:%.o=%-$(1).o)
 
 # Generate .lds with appropriate flags
-%/link-$(1).lds: %/link.lds.S
-	$$(CPP) $$(AFLAGS_$(1)) -P -C $$< -o $$@
+%/link-$(1).lds: $(ROOT)/common/link.lds.S
+	$$(CPP) $$(AFLAGS_$(1)) -P $$< -o $$@
 
 # Generate a per-arch .o from .S
 %-$($(1)_arch).o: %.S
