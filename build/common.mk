@@ -17,7 +17,7 @@ $(foreach env,$(64BIT_ENVIRONMENTS),$(eval $(env)_arch := x86_64))
 
 comma := ,
 
-COMMON_FLAGS := -pipe -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
+COMMON_FLAGS := -pipe -nostdinc -I$(ROOT)/include -I$(ROOT)/arch/x86/include -MMD -MP
 
 cc-option = $(shell if [ -z "`echo 'int p=1;' | $(CC) $(1) -c -o /dev/null -x c - 2>&1`" ]; \
 			then echo y; else echo n; fi)
@@ -36,7 +36,7 @@ COMMON_AFLAGS := $(COMMON_FLAGS) $(COMMON_AFLAGS-y) -D__ASSEMBLY__
 COMMON_CFLAGS := $(COMMON_FLAGS) $(COMMON_CFLAGS-y)
 COMMON_CFLAGS += -Wall -Wextra -Werror -std=gnu99 -Wstrict-prototypes -O3 -g
 COMMON_CFLAGS += -fno-common -fno-asynchronous-unwind-tables -fno-strict-aliasing
-COMMON_CFLAGS += -fno-stack-protector -fno-pic -ffreestanding -nostdinc
+COMMON_CFLAGS += -fno-stack-protector -fno-pic -ffreestanding
 COMMON_CFLAGS += -mno-red-zone -mno-sse
 COMMON_CFLAGS += -Wno-unused-parameter -Winline
 

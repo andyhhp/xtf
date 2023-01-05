@@ -14,6 +14,11 @@
 # define __PRIPTR
 #endif
 
+#define PRId32              "d"
+#define PRIx32              "x"
+#define PRIo32              "o"
+#define PRIu32              "u"
+
 #define PRId64     __PRI64  "d"
 #define PRIx64     __PRI64  "x"
 #define PRIo64     __PRI64  "o"
