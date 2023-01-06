@@ -237,36 +237,13 @@ _all_test_info = {}  # type: Dict[str, TestInfo]
 def get_all_test_info():
     """ Open and collate each info.json """
 
-    # Short circuit if already cached
-    if _all_test_info:
-        return _all_test_info
-
-    for test in os.listdir("tests"):
-
-        info_file = None
-        try:
-
-            # Ignore directories which don't have a info.json inside them
-            try:
-                info_file = open(path.join("tests", test, "info.json"))
-            except IOError:
-                continue
-
-            # Ignore tests which have bad JSON
-            try:
-                test_info = TestInfo(json.load(info_file))
-
-                if test_info.name != test:
-                    continue
-
-            except (ValueError, KeyError, TypeError):
-                continue
-
-            _all_test_info[test] = test_info
-
-        finally:
-            if info_file:
-                info_file.close()
+    if not _all_test_info:
+        for test in os.listdir("tests"):
+            info_file = path.join("tests", test, "info.json")
+            if not os.path.exists(info_file):
+                continue  # Not a test dir or test was not built successfully
+            with open(info_file) as info:
+                _all_test_info[test] = TestInfo(json.loads(info.read()))
 
     return _all_test_info
 
