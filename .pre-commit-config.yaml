@@ -22,6 +22,16 @@ repos:
 
 -   repo: local
     hooks:
+    -   id: pytest
+        name: run python3 unit tests for xtf-runner
+        entry: env PYTHONDEVMODE=yes python3 -m pytest -v -rA
+        pass_filenames: false
+        language: python
+        types: [python]
+        additional_dependencies: [pytest]
+
+-   repo: local
+    hooks:
     -   id: git-diff # For reference: https://github.com/pre-commit/pre-commit/issues/1712
         name: Show not staged changes (fixups may make them too)
         entry: git diff --exit-code

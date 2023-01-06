@@ -18,6 +18,8 @@ jobs:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
+    - run: make -j $(nproc)
+
     - name: pre-commit checks - run checks
       uses: pre-commit/action@v3.0.0
 
