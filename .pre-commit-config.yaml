@@ -23,7 +23,7 @@ repos:
 -   repo: local
     hooks:
     -   id: git-diff # For reference: https://github.com/pre-commit/pre-commit/issues/1712
-        name: When pre-commit fixers made changes, run 'git diff' to show the changes
+        name: Show not staged changes (fixups may make them too)
         entry: git diff --exit-code
         language: system
         pass_filenames: false
