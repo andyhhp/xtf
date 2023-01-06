@@ -674,7 +674,7 @@ def main():
             "\n"
             "  Running all the pv-iopl tests:\n"
             "    ./xtf-runner pv-iopl\n"
-            "      <console ouput>\n"
+            "      <console output>\n"
             "    Combined test results:\n"
             "    test-pv64-pv-iopl                        SUCCESS\n"
             "    test-pv32pae-pv-iopl                     SUCCESS\n"
