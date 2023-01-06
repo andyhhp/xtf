@@ -9,6 +9,9 @@ on:
 
 jobs:
   analyse:
+    # https://github.com/orgs/community/discussions/26409 (private secrets):
+    # Run this job if the feature branch is in the main repo (not in a fork):
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     strategy:
       matrix:
