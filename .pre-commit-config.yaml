@@ -35,6 +35,15 @@ repos:
     hooks:
     -   id: mypy
 
+-   repo: https://github.com/pylint-dev/pylint
+    rev: v3.0.3
+    hooks:
+    -   id: pylint
+        args: [--jobs=2]
+        files: '(^xtf-runner|\.py)$'
+        log_file: ".git/pre-commit-pylint.log"
+        additional_dependencies: [pytest]
+
 -   repo: local
     hooks:
     -   id: git-diff # For reference: https://github.com/pre-commit/pre-commit/issues/1712

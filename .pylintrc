@@ -48,7 +48,24 @@ extension-pkg-whitelist=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=bad-whitespace, bad-continuation, global-statement, star-args
+disable=bad-whitespace, bad-continuation, global-statement, star-args,
+    # Allow older pylint-1.9.x for Python2 to tolerate newer pylint options:
+    bad-option-value,
+    unrecognized-inline-option,
+    # Not real problems, returns on the same indentation level can be easier:
+    consider-using-with,
+    no-else-raise,
+    no-else-return,
+    multiple-imports,
+    len-as-condition,
+    # For Python3-only projects:
+    consider-using-f-string,
+    deprecated-module,
+    unrecognized-option,
+    unspecified-encoding,
+    use-implicit-booleaness-not-len,
+    useless-object-inheritance,
+    useless-option-value,
 
 
 [REPORTS]
@@ -337,4 +354,4 @@ max-public-methods=20
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

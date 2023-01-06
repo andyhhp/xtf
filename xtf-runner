@@ -18,7 +18,7 @@ from typing import Dict  # pylint: disable=unused-import
 
 # Python 2/3 compatibility
 if sys.version_info >= (3, ):
-    basestring = str
+    basestring = str  # pylint: disable=invalid-name,redefined-builtin
 
 # All results of a test, keep in sync with C code report.h.
 # Notes:
@@ -77,8 +77,7 @@ class TestInstance(object):
     def __repr__(self):
         if not self.variation:
             return "test-{0}-{1}".format(self.env, self.name)
-        else:
-            return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
+        return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -89,8 +88,9 @@ class TestInstance(object):
     def __ne__(self, other):
         return repr(self) != repr(other)
 
-    def __cmp__(self, other):
-        return cmp(repr(self), repr(other))
+    # Should be obsolete for Python2.7 as it can use __eq__() already:
+    def __cmp__(self, other):  # pylint: disable-next=undefined-variable
+        return cmp(repr(self), repr(other))  # pylint: disable=line-too-long #pyright:ignore[reportUndefinedVariable]
 
 
 class TestInfo(object):
