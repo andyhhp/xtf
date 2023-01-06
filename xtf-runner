@@ -9,12 +9,12 @@ Currently assumes the presence and availability of the `xl` toolstack.
 
 from __future__ import print_function, unicode_literals
 
+import json
 import sys, os, os.path as path
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE, call as subproc_call
-
-import json
+from typing import Dict  # pylint: disable=unused-import
 
 # Python 2/3 compatibility
 if sys.version_info >= (3, ):
@@ -142,12 +142,12 @@ class TestInfo(object):
         if env_filter:
             envs = set(env_filter).intersection(self.envs)
         else:
-            envs = self.envs
+            envs = set(self.envs)
 
         if vary_filter:
             variations = set(vary_filter).intersection(self.variations)
         else:
-            variations = self.variations
+            variations = set(self.variations)
 
         res = []
         if variations:
@@ -232,7 +232,7 @@ def parse_test_instance_string(arg):
 
 
 # Cached test json from disk
-_all_test_info = {}
+_all_test_info = {}  # type: Dict[str, TestInfo]
 
 def get_all_test_info():
     """ Open and collate each info.json """
