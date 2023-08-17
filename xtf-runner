@@ -403,7 +403,7 @@ def interpret_selection(opts):
 
         host_envs = []
 
-        cmd = Popen(['xl', 'info'], stdout = PIPE)
+        cmd = Popen(['xl', 'info'], stdout = PIPE, universal_newlines = True)
         stdout, _ = cmd.communicate()
 
         for line in stdout.splitlines():
