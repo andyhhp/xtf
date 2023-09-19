@@ -77,6 +77,16 @@ static inline long hypercall_stack_switch(const unsigned int ss, const void *sp)
     return HYPERCALL2(long, __HYPERVISOR_stack_switch, ss, sp);
 }
 
+static inline long hypercall_set_debugreg(unsigned int reg, unsigned long val)
+{
+    return HYPERCALL2(long, __HYPERVISOR_set_debugreg, reg, val);
+}
+
+static inline long hypercall_get_debugreg(unsigned int reg)
+{
+    return HYPERCALL1(long, __HYPERVISOR_get_debugreg, reg);
+}
+
 static inline long hypercall_update_descriptor(uint64_t maddr, user_desc desc)
 {
 #ifdef __x86_64__

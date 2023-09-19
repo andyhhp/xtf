@@ -165,6 +165,8 @@ states.
 
 @subpage test-xsa-339 - x86 pv guest kernel DoS via SYSENTER.
 
+@subpage test-xsa-444 - x86/AMD: Debug Mask handling.
+
 
 @section index-utility Utilities
 
