@@ -87,6 +87,7 @@ static inline bool cpu_has(unsigned int feature)
 #define cpu_has_lm              cpu_has(X86_FEATURE_LM)
 
 #define cpu_has_svm             cpu_has(X86_FEATURE_SVM)
+#define cpu_has_dbext           cpu_has(X86_FEATURE_DBEXT)
 
 #define cpu_has_fsgsbase        cpu_has(X86_FEATURE_FSGSBASE)
 #define cpu_has_hle             cpu_has(X86_FEATURE_HLE)

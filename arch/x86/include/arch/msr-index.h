@@ -65,6 +65,11 @@
 #define MSR_GS_BASE                     0xc0000101
 #define MSR_SHADOW_GS_BASE              0xc0000102
 
+#define MSR_DR0_ADDR_MASK               0xc0011027
+#define MSR_DR1_ADDR_MASK               0xc0011019
+#define MSR_DR2_ADDR_MASK               0xc001101a
+#define MSR_DR3_ADDR_MASK               0xc001101b
+
 #endif /* XTF_X86_MSR_INDEX_H */
 
 /*

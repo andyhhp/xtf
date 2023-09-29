@@ -43,12 +43,18 @@
 
 const char test_title[] = "Debugging facility tests";
 
-static void check_initial_state(unsigned int dr, unsigned long exp,
-                                unsigned long got)
+static void check_init_dr(unsigned int dr, unsigned long exp, unsigned long got)
 {
     if ( got != exp )
         xtf_failure("  Fail: %%dr%u expected %p, got %p\n",
                     dr, _p(exp), _p(got));
+}
+
+static void check_init_msr(const char *name, uint64_t exp, uint64_t got)
+{
+    if ( got != exp )
+        xtf_failure("  Fail: %s expected %08"PRIx64", got %08"PRIx64"\n",
+                    name, exp, got);
 }
 
 static void test_initial_debug_state(void)
@@ -58,17 +64,22 @@ static void test_initial_debug_state(void)
     if ( read_cr4() & X86_CR4_DE )
         xtf_failure("  Fail: %%cr4.de expected to be clear\n");
 
-    check_initial_state(0, 0, read_dr0());
-    check_initial_state(1, 0, read_dr1());
-    check_initial_state(2, 0, read_dr2());
-    check_initial_state(3, 0, read_dr3());
-    check_initial_state(6, X86_DR6_DEFAULT, read_dr6());
-    check_initial_state(7, X86_DR7_DEFAULT, read_dr7());
+    check_init_dr(0, 0, read_dr0());
+    check_init_dr(1, 0, read_dr1());
+    check_init_dr(2, 0, read_dr2());
+    check_init_dr(3, 0, read_dr3());
+    check_init_dr(6, X86_DR6_DEFAULT, read_dr6());
+    check_init_dr(7, X86_DR7_DEFAULT, read_dr7());
 
-    uint64_t val;
-    if ( (val = rdmsr(MSR_DEBUGCTL)) != 0 )
-         xtf_failure("  Fail: MSR_DEBUGCTL expected %08x, got %08"PRIx64"\n",
-                     0, val);
+    check_init_msr("MSR_DEBUGCTL", 0, rdmsr(MSR_DEBUGCTL));
+
+    if ( cpu_has_dbext )
+    {
+        check_init_msr("MSR_DR0_ADDR_MASK", 0, rdmsr(MSR_DR0_ADDR_MASK));
+        check_init_msr("MSR_DR1_ADDR_MASK", 0, rdmsr(MSR_DR1_ADDR_MASK));
+        check_init_msr("MSR_DR2_ADDR_MASK", 0, rdmsr(MSR_DR2_ADDR_MASK));
+        check_init_msr("MSR_DR3_ADDR_MASK", 0, rdmsr(MSR_DR3_ADDR_MASK));
+    }
 }
 
 /*
