@@ -19,6 +19,8 @@ jobs:
             compiler: gcc-11
           - arch: x86
             compiler: gcc-12
+          - arch: x86
+            compiler: gcc-13
 
           - arch: x86
             compiler: clang-12
