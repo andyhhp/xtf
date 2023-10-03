@@ -39,7 +39,7 @@ static void check_buffer(const char *ref, const char *buf, size_t buf_sz)
     else if ( str_len == buf_sz - 1 )
         return; /* No trailing space after data. */
 
-    for ( i = str_len + 1; buf[i] == '\0' && i < buf_sz; ++i )
+    for ( i = str_len + 1; i < buf_sz && buf[i] == '\0'; ++i )
         ; /* No action. */
 
     if ( i != buf_sz )

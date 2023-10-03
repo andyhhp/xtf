@@ -46,7 +46,7 @@ void do_exception(struct cpu_regs *regs)
     /* Still unresolved? Give up and panic() with some relevent information. */
     if ( !safe )
     {
-        exinfo_t ex = EXINFO(regs->entry_vector, regs->error_code);
+        exinfo_t exc = EXINFO(regs->entry_vector, regs->error_code);
 
         if ( regs->entry_vector == X86_EXC_PF )
         {
@@ -54,12 +54,12 @@ void do_exception(struct cpu_regs *regs)
 
             panic("Unhandled exception at %04x:%p\n"
                   "Vec %u %pe %%cr2 %p\n",
-                  regs->cs, _p(regs->ip), regs->entry_vector, _p(ex), _p(cr2));
+                  regs->cs, _p(regs->ip), regs->entry_vector, _p(exc), _p(cr2));
         }
         else
             panic("Unhandled exception at %04x:%p\n"
                   "Vec %u %pe\n",
-                  regs->cs, _p(regs->ip), regs->entry_vector, _p(ex));
+                  regs->cs, _p(regs->ip), regs->entry_vector, _p(exc));
     }
 }
 
