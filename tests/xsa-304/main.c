@@ -46,9 +46,12 @@ asm (".align 4096;"
      /*
       * %rsi points at `bool cond = true` on the stack, so this jump won't
       * actually be taken, but we want speculation to follow it.
+      *
+      * Work around https://github.com/llvm/llvm-project/issues/68086
+      * Clang IAS can't cope with `je 1f` so opencode it.
       */
      "    cmpb    $0, (%rsi);"
-     "    je      1f;"
+     "    .byte 0x74, 1f - (. + 1);" // je 1f
 
      /*
       * Write into the top of linear address space.  Because no A/D bits are
