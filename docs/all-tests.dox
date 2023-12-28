@@ -44,6 +44,8 @@ Coveres XSA-106 and XSA-156.
 
 @section index-xsa XSA Proof-of-Concept tests
 
+@subpage test-xsa-7 - SYSRET: 64-bit PV guest privilege escalation vulnerability.
+
 XSA-44 - See @ref test-xsa-339.
 
 XSA-106 - See @ref test-swint-emulation.
