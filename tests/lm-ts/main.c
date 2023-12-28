@@ -6,7 +6,7 @@
  *
  * Task Switches are removed from the AMD64 spec, but contrary to popular
  * belief, these are not the only source of @#TS exceptions.  This is a
- * demonstration of #TS occurring in 64bit mode (and 32bit to show that the
+ * demonstration of @#TS occurring in 64bit mode (and 32bit to show that the
  * behaviour is consistent.)
  *
  * @#TS can occur because of a limit violation accessing @%tr.  Construct a
