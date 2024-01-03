@@ -35,9 +35,8 @@ endif
 build: $(foreach env,$(TEST-ENVS),test-$(env)-$(NAME)) $(TEST-CFGS)
 build: info.json
 
-info.json: $(ROOT)/build/mkinfo.py FORCE
-	@$(PYTHON) $< $@.tmp "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)" "$(VARY-CFG)"
-	@$(call move-if-changed,$@.tmp,$@)
+info.json: $(ROOT)/build/mkinfo.py Makefile
+	$(PYTHON) $< $@ "$(NAME)" "$(CATEGORY)" "$(TEST-ENVS)" "$(VARY-CFG)"
 
 .PHONY: install install-each-env
 install: install-each-env info.json
@@ -62,19 +61,16 @@ endif
 
 cfg-$(1) ?= $(defcfg-$($(1)_guest))
 
-cfg-default-deps := $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) FORCE
+cfg-default-deps := $(ROOT)/build/mkcfg.py $$(cfg-$(1)) $(TEST-EXTRA-CFG) Makefile
 
 test-$(1)-$(NAME).cfg: $$(cfg-default-deps)
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" ""
-	@$(call move-if-changed,$$@.tmp,$$@)
+	$(PYTHON) $$< $$@ "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" ""
 
 test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) %.cfg.in
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$$*.cfg.in"
-	@$(call move-if-changed,$$@.tmp,$$@)
+	$(PYTHON) $$< $$@ "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$$*.cfg.in"
 
 test-$(1)-$(NAME)~%.cfg: $$(cfg-default-deps) $(ROOT)/config/%.cfg.in
-	$(PYTHON) $$< $$@.tmp "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$(ROOT)/config/$$*.cfg.in"
-	@$(call move-if-changed,$$@.tmp,$$@)
+	$(PYTHON) $$< $$@ "$$(cfg-$(1))" "$(VCPUS)" "$(TEST-EXTRA-CFG)" "$(ROOT)/config/$$*.cfg.in"
 
 -include $$(link-$(1):%.lds=%.d)
 -include $$(DEPS-$(1):%.o=%.d)
