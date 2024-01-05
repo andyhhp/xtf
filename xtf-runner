@@ -39,13 +39,13 @@ def exit_code(state):
     }[state]
 
 # All test categories
-default_categories     = set(("functional", "xsa"))
-non_default_categories = set(("special", "utility", "in-development"))
+default_categories     = {"functional", "xsa"}
+non_default_categories = {"special", "utility", "in-development"}
 all_categories         = default_categories | non_default_categories
 
 # All test environments
-pv_environments        = set(("pv64", "pv32pae"))
-hvm_environments       = set(("hvm64", "hvm32pae", "hvm32pse", "hvm32"))
+pv_environments        = {"pv64", "pv32pae"}
+hvm_environments       = {"hvm64", "hvm32pae", "hvm32pse", "hvm32"}
 all_environments       = pv_environments | hvm_environments
 
 
@@ -365,11 +365,11 @@ def interpret_selection(opts):
     # Allow "pv" and "hvm" as a combination of environments
     if "pv" in others:
         envs |= pv_environments
-        others -= set(("pv", ))
+        others -= {"pv"}
 
     if "hvm" in others:
         envs |= hvm_environments
-        others -= set(("hvm", ))
+        others -= {"hvm"}
 
     # No input? No selection.
     if not cats and not envs and not others:
