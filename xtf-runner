@@ -11,14 +11,23 @@ from __future__ import print_function, unicode_literals
 
 import json
 import sys, os, os.path as path
+import subprocess
 
+from functools import partial
 from optparse import OptionParser
-from subprocess import Popen, PIPE, call as subproc_call
+from subprocess import PIPE
 
 
 # Python 2/3 compatibility
 if sys.version_info >= (3, ):
     basestring = str
+
+
+# Wrap Subprocess functions to use universal_newlines by default
+Popen        = partial(subprocess.Popen, universal_newlines = True)
+subproc_call = partial(subprocess.call, universal_newlines = True)
+check_output = partial(subprocess.check_output, universal_newlines = True)
+
 
 # All results of a test, keep in sync with C code report.h.
 # Notes:
@@ -400,10 +409,7 @@ def interpret_selection(opts):
 
         host_envs = []
 
-        cmd = Popen(['xl', 'info'], stdout = PIPE, universal_newlines = True)
-        stdout, _ = cmd.communicate()
-
-        for line in stdout.splitlines():
+        for line in check_output(['xl', 'info']).splitlines():
             if not line.startswith("xen_caps"):
                 continue
 
@@ -493,7 +499,7 @@ def run_test_console(opts, test):
     if console.returncode:
         raise RunnerError("Failed to obtain VM console")
 
-    lines = stdout.decode("utf-8").splitlines()
+    lines = stdout.splitlines()
 
     if lines:
         if not opts.quiet:
