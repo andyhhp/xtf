@@ -3,6 +3,46 @@ name: build
 on: [push, pull_request]
 
 jobs:
+  python-tests:
+    name: "Python Tests"
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        # To have access to secrets, use the PR branch:
+        # https://github.com/orgs/community/discussions/26409
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
+
+    - name: pre-commit checks - setup cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+    - name: pre-commit checks - run checks
+      uses: pre-commit/action@v3.0.0
+      env:
+        # For merging PRs to master, skip the no-commit-to-branch check:
+        SKIP: no-commit-to-branch
+
+    - name: Install Python2 dependencies
+      run: |
+        #: Install Python 2.7 from Ubuntu 20.04 using apt-get install
+        sudo apt-get update && sudo apt-get install -y python2
+        curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+        python2 get-pip.py
+        if [ -f requirements.txt ]; then pip2 install -r requirements.txt; fi
+        if [ -f requirements-dev.txt ]; then pip2 install -r requirements-dev.txt; fi
+        pip2 install pytest pylint==1.9.4
+
+    - name: Run pylint-1.9.4
+      run: python2 -m pylint xtf-runner build/*.py
+
+    - name: Run python2 -m pytest to execute all unit and integration tests
+      run: python2 -m pytest -v -rA
+
   build:
 
     strategy:

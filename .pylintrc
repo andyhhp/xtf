@@ -37,7 +37,7 @@ extension-pkg-whitelist=
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time. See also the "--disable" option for examples.
-#enable=
+enable=spelling
 
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifiers separated by comma (,) or put this
@@ -48,7 +48,24 @@ extension-pkg-whitelist=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=bad-whitespace, bad-continuation, global-statement, star-args
+disable=bad-whitespace, bad-continuation, global-statement, star-args,
+    # Allow older pylint-1.9.x for Python2 to tolerate newer pylint options:
+    bad-option-value,
+    unrecognized-inline-option,
+    # Not real problems, returns on the same indentation level can be easier:
+    consider-using-with,
+    no-else-raise,
+    no-else-return,
+    multiple-imports,
+    len-as-condition,
+    # For Python3-only projects:
+    consider-using-f-string,
+    deprecated-module,
+    unrecognized-option,
+    unspecified-encoding,
+    use-implicit-booleaness-not-len,
+    useless-object-inheritance,
+    useless-option-value,
 
 
 [REPORTS]
@@ -101,6 +118,23 @@ ignore-docstrings=yes
 
 # Ignore imports when computing similarities.
 ignore-imports=no
+
+
+[SPELLING]
+
+# Spelling dictionary name. Available dictionaries: en (aspell), en_AU
+# (aspell), en_CA (aspell), en_GB (aspell), en_US (aspell).
+# To support spelling checks for older python2 pylint versions,
+# `sudo apt-get install -y libenchant-2-2` would be needed,
+# so we enable it for newer Python3 pylint in .pre-commit-config.yaml:
+#spelling-dict=en
+
+# A path to a file that contains the private dictionary; one word per line.
+spelling-private-dict-file=.pylintrc.project-dict.txt
+
+# Tells whether to store unknown words to the private dictionary (see the
+# --spelling-private-dict-file option) instead of raising a message.
+spelling-store-unknown-words=y
 
 
 [TYPECHECK]
@@ -337,4 +371,4 @@ max-public-methods=20
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

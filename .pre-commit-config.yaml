@@ -1,0 +1,108 @@
+#
+# Installation and activation of pre-commit:
+#
+# $ pip3 install pre-commit && pre-commit install
+#
+# With this, you get git pre-commit hook checks like shown in the terminal
+# on this page: https://pre-commit.com/index.html#usage
+#
+# It is easy to handle as a pre-commit hook once you get the hang of it.
+# If not skipped using git commit --no-verify, it makes each commit bisect-able,
+# whereas a check only run on a GitHub CI push will normally only run its checks
+# on the latest commit of a tree.
+#
+# However, it does not have to be used as a pre-commit hook:
+# Of course it can be used just for GitHub CI only:
+#
+# pre-commit runs in the GitHub Workflow of this project on each push and PR.
+# You can run it locally as well on demand after making changes to check them:
+#
+# $ pip3 install pre-commit
+# $ pre-commit run    # run only needed checks
+# $ pre-commit run -a # run all fixes and checks
+#
+# You can enable it as git pre-commit hook for your local clone using:
+# $ pre-commit install
+#
+# Then, the fixups and checks defined below run by default when you commit.
+#
+# To commit with all git pre-commit hooks skipped (for exceptional cases):
+# $ git commit --no-verify
+#
+# To commit with some checks skipped:
+# $ SKIP=mypy,pylint git commit -m "unchecked emergency commit"
+#
+# Documentation: https://pre-commit.com/#temporarily-disabling-hooks
+# All hooks: https://pre-commit.com/hooks.html
+#
+fail_fast: false
+default_stages: [commit, push]
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    # https://github.com/pre-commit/pre-commit-hooks/blob/main/README.md:
+    hooks:
+    -   id: no-commit-to-branch
+        name: "ensure that you don't commit to the local master branch"
+        args: [--branch, master]
+        always_run: true
+    -   id: trailing-whitespace
+        name: 'check and fix files to have no trailing whitespace'
+        exclude: install-sh
+    -   id: end-of-file-fixer
+        name: 'check and fix that files have a trailing newline'
+        exclude: |
+            (?x)^(
+                arch/x86/include/arch/msr-index.h
+            )
+    -   id: mixed-line-ending
+        args: ['--fix=lf']
+        name: 'check and fix that line endings are line feeds'
+    -   id: check-added-large-files
+        args: ['--maxkb=12']
+        name: 'check that no large files are added'
+    -   id: check-executables-have-shebangs
+    -   id: debug-statements
+        name: 'check for debugger imports and breakpoint calls'
+    -   id: check-shebang-scripts-are-executable
+    -   id: check-merge-conflict
+    -   id: check-yaml
+        name: 'check the syntax of yaml files'
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: run Python3 unit tests
+        entry: env PYTHONDEVMODE=yes python3 -m pytest -v
+        pass_filenames: false
+        language: python
+        types: [python]
+        additional_dependencies: [pytest]
+-   repo: https://github.com/akaihola/darker
+    rev: 1.7.2
+    hooks:
+    -   id: darker
+        name: format staged changes like black and isort would format them
+        args: [--skip-string-normalization, --isort, -tpy36]
+        additional_dependencies: [isort]
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+    -   id: mypy
+        name: run mypy
+-   repo: https://github.com/pylint-dev/pylint
+    rev: v3.0.3
+    hooks:
+    -   id: pylint
+        name: run pylint
+        args: [--jobs=4, --spelling-dict=en_US]  # Spell checks: See .pylintrc
+        files: '(^xtf-runner|\.py)$'
+        log_file: ".git/pre-commit-pylint.log"
+        additional_dependencies: ['pylint[spelling]', pytest]
+-   repo: local
+    hooks:
+    -   id: git-diff # Ref: https://github.com/pre-commit/pre-commit/issues/1712
+        name: Show and fail on not staged changes, also fixups may make them
+        entry: git diff --exit-code
+        language: system
+        pass_filenames: false
+        always_run: true

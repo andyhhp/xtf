@@ -9,19 +9,16 @@ Currently assumes the presence and availability of the `xl` toolstack.
 
 from __future__ import print_function, unicode_literals
 
+import json
 import sys, os, os.path as path
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE, call as subproc_call
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+from typing import Dict  # pylint: disable=unused-import
 
 # Python 2/3 compatibility
 if sys.version_info >= (3, ):
-    basestring = str
+    basestring = str  # pylint: disable=invalid-name,redefined-builtin
 
 # All results of a test, keep in sync with C code report.h.
 # Notes:
@@ -80,8 +77,7 @@ class TestInstance(object):
     def __repr__(self):
         if not self.variation:
             return "test-{0}-{1}".format(self.env, self.name)
-        else:
-            return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
+        return "test-{0}-{1}~{2}".format(self.env, self.name, self.variation)
 
     def __hash__(self):
         return hash(repr(self))
@@ -92,8 +88,9 @@ class TestInstance(object):
     def __ne__(self, other):
         return repr(self) != repr(other)
 
-    def __cmp__(self, other):
-        return cmp(repr(self), repr(other))
+    # Should be obsolete for Python2.7 as it can use __eq__() already:
+    def __cmp__(self, other):  # pylint: disable-next=undefined-variable
+        return cmp(repr(self), repr(other))  # pylint: disable=line-too-long #pyright:ignore[reportUndefinedVariable]
 
 
 class TestInfo(object):
@@ -235,7 +232,7 @@ def parse_test_instance_string(arg):
 
 
 # Cached test json from disk
-_all_test_info = {}
+_all_test_info = {}  # type: Dict[str, str]
 
 def get_all_test_info():
     """ Open and collate each info.json """
@@ -667,7 +664,7 @@ def main():
             "\n"
             "  Running all the pv-iopl tests:\n"
             "    ./xtf-runner pv-iopl\n"
-            "      <console ouput>\n"
+            "      <console output>\n"
             "    Combined test results:\n"
             "    test-pv64-pv-iopl                        SUCCESS\n"
             "    test-pv32pae-pv-iopl                     SUCCESS\n"
