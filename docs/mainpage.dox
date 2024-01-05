@@ -34,7 +34,7 @@ Environment | Guest | Width | Paging
 
 Requirements:
 - GNU Make >= 3.81
-- Python 2.6 or later
+- Python 2.7 or later
 
 For x86:
     - GNU compatible 32 and 64-bit toolchain, capable of `-std=gnu99`, `-m64`,
