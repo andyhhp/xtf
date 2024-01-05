@@ -240,42 +240,27 @@ def parse_test_instance_string(arg):
     return env, name, variation
 
 
-# Cached test json from disk
+# Cached data from tests/*/info.json
 _all_test_info = {}
 
 def get_all_test_info():
     """ Open and collate each info.json """
+    if not _all_test_info: # Cache on first request
 
-    # Short circuit if already cached
-    if _all_test_info:
-        return _all_test_info
-
-    for test in os.listdir("tests"):
-
-        info_file = None
-        try:
-
-            # Ignore directories which don't have a info.json inside them
+        for test in os.listdir("tests"):
             try:
-                info_file = open(path.join("tests", test, "info.json"))
-            except IOError:
+                with open(path.join("tests", test, "info.json")) as f:
+
+                    info = TestInfo(json.load(f))
+
+                    if info.name != test:
+                        raise ValueError # JSON also looks bad
+
+                    _all_test_info[test] = info
+
+            except (IOError, # Ignore directories without a info.json
+                    ValueError, KeyError, TypeError): # Ingore bad JSON
                 continue
-
-            # Ignore tests which have bad JSON
-            try:
-                test_info = TestInfo(json.load(info_file))
-
-                if test_info.name != test:
-                    continue
-
-            except (ValueError, KeyError, TypeError):
-                continue
-
-            _all_test_info[test] = test_info
-
-        finally:
-            if info_file:
-                info_file.close()
 
     return _all_test_info
 
