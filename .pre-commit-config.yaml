@@ -1,0 +1,35 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+#
+
+fail_fast: false
+default_stages: [commit, push]
+repos:
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    # https://pre-commit.com/hooks.html
+    hooks:
+    -   id: check-ast
+    -   id: check-builtin-literals
+    -   id: check-case-conflict
+    -   id: check-docstring-first
+    -   id: check-merge-conflict
+    -   id: check-symlinks
+    -   id: check-yaml
+    -   id: debug-statements
+    -   id: destroyed-symlinks
+    -   id: fix-byte-order-marker
+    -   id: fix-encoding-pragma
+    -   id: mixed-line-ending
+        args: ['--fix=lf']
+    -   id: trailing-whitespace
+
+-   repo: local
+    hooks:
+    -   id: git-diff # https://github.com/pre-commit/pre-commit/issues/1712
+        name: Show not staged changes (fixups may make them too)
+        entry: git diff --exit-code
+        language: system
+        pass_filenames: false
+        always_run: true

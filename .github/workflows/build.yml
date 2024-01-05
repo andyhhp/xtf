@@ -3,7 +3,26 @@ name: build
 on: [push, pull_request]
 
 jobs:
-  build:
+  python:
+    name: "Python Tests"
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: pre-commit checks - setup cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+    - name: pre-commit checks - run checks
+      uses: pre-commit/action@v3.0.0
+
+  C:
+    name: "C Builds"
 
     strategy:
       matrix:
