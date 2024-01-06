@@ -9,15 +9,12 @@ Currently assumes the presence and availability of the `xl` toolstack.
 
 from __future__ import print_function, unicode_literals
 
+import json
 import sys, os, os.path as path
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE, call as subproc_call
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
 # Python 2/3 compatibility
 if sys.version_info >= (3, ):
