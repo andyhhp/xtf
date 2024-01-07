@@ -1,0 +1,62 @@
+[project]
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+name = "xtf"
+description = "Xen Test Framework"
+requires-python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+license = {file = "COPYING"}
+keywords = ["xen", "xen-project"]
+authors = [
+    {name = "Andrew Cooper"},
+    {name = "Bernhard Kaindl"},
+    {name = "Jan Beulich"},
+    {name = "Michal Orzel"},
+    {name = "Haozhong Zhang"},
+    {name = "Roger Pau Monne"},
+    {name = "Wei Liuq"},
+]
+maintainers = [
+    {name = "Andrew Cooper"},
+]
+readme = "README"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: System :: Virtualization",
+]
+
+[tool.black]
+line-length = 80
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = ["xtf-runner", "build/*.py", "tests/python/test_*.py"]
+pretty = true
+error_summary = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+disallow_any_unimported = true
+disallow_any_explicit = false
+disallow_any_generics = true
+disallow_subclassing_any = true
+show_error_context = true
+show_error_codes = true
+strict_equality = true
+# Enables checking the contents of not yet typed functions:
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["xtf-runner"]
+disable_error_code = ["name-defined", "method-assign"]

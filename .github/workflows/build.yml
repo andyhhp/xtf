@@ -18,8 +18,17 @@ jobs:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
+    - run: make -j $(nproc)
+
     - name: pre-commit checks - run checks
       uses: pre-commit/action@v3.0.0
+
+    # Python2 pytest/pylint CI:
+    - run: sudo apt-get update && sudo apt-get install -y python2
+    - run: curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py | python2 -
+    - run: pip2 install pytest pylint==1.9.4
+    - run: python2 -m pytest -v -rA
+    - run: python2 -m pylint xtf-runner build/*.py tests/python/*.py
 
   build:
 

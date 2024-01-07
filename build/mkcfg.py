@@ -9,7 +9,7 @@ substitue variables appropriately.
 import sys, os
 
 # Usage: mkcfg.py $OUT $DEFAULT-CFG $EXTRA-CFG $VARY-CFG
-_, out, defcfg, vcpus, extracfg, varycfg = sys.argv
+_, out, defcfg, vcpus, extracfg, varycfg = sys.argv  # pylint: disable=unbalanced-tuple-unpacking
 
 # Evaluate environment and name from $OUT
 _, env, name = out.split('.')[0].split('-', 2)
