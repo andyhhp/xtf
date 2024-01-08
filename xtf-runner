@@ -10,11 +10,12 @@ Currently assumes the presence and availability of the `xl` toolstack.
 from __future__ import print_function, unicode_literals
 
 import json
-import sys, os, os.path as path
+import sys, os
 import subprocess
 
 from functools import partial
 from optparse import OptionParser
+from os import path
 from subprocess import PIPE
 
 
@@ -94,12 +95,6 @@ class TestInstance(object):
 
     def __eq__(self, other):
         return repr(self) == repr(other)
-
-    def __ne__(self, other):
-        return repr(self) != repr(other)
-
-    def __cmp__(self, other):
-        return cmp(repr(self), repr(other))
 
 
 class TestInfo(object):
@@ -544,7 +539,7 @@ def run_tests(opts):
     """ Run tests """
 
     tests = opts.selection
-    if not len(tests):
+    if not tests:
         raise RunnerError("No tests to run")
 
     run_test = { "console": run_test_console,
