@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Construct an xl configuration file for a test (from various fragments), and
 substitue variables appropriately.
 """
-
-import sys, os
+import os
+import sys
 
 # Usage: mkcfg.py $OUT $DEFAULT-CFG $EXTRA-CFG $VARY-CFG
 _, out, defcfg, vcpus, extracfg, varycfg = sys.argv
