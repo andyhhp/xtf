@@ -296,7 +296,7 @@ def get_virt_caps():
     return _virt_caps
 
 
-def tests_from_selection(cats, envs, tests):
+def tests_from_selection(cats, envs, tests, caps):
     """Given a selection of possible categories, environment and tests, return
     all tests within the provided parameters.
 
@@ -360,6 +360,9 @@ def tests_from_selection(cats, envs, tests):
         else:
             res = tests
 
+    if caps:
+        res = [ x for x in res if x.req_caps.issubset(caps) ]
+
     # Sort the results.  Variation third, Env second and Name fist.
     res = sorted(res, key = lambda test: test.variation or "")
     res = sorted(res, key = lambda test: test.env)
@@ -418,35 +421,12 @@ def interpret_selection(opts):
 
         tests.extend(instances)
 
-    selection = tests_from_selection(cats, envs, set(tests))
+    # Third, if --host is passed, also filter by capabilities
+    caps = None
+    if opts.host:
+        caps = get_virt_caps()
 
-    # If the caller passed --host, filter out the unsupported environments
-    if selection and opts.host:
-
-        host_envs = []
-
-        for line in check_output(['xl', 'info']).splitlines():
-            if not line.startswith("xen_caps"):
-                continue
-
-            caps = line.split()[2:]
-
-            if "xen-3.0-x86_64" in caps:
-                host_envs.append("pv64")
-            if "xen-3.0-x86_32p" in caps:
-                host_envs.append("pv32pae")
-            for cap in caps:
-                if cap.startswith("hvm"):
-                    host_envs.extend(hvm_environments)
-                    break
-
-            break
-
-        selection = tests_from_selection(cats = set(),
-                                         envs = set(host_envs),
-                                         tests = selection)
-
-    return selection
+    return tests_from_selection(cats, envs, set(tests), caps)
 
 
 def list_tests(opts):
@@ -571,19 +551,27 @@ def run_test_logfile(opts, test):
     return interpret_result(line)
 
 
+def run_test(opts, test):
+    """ Run a single test instance """
+
+    # If caps say the test can't run, short circuit to SKIP
+    if not test.req_caps.issubset(get_virt_caps()):
+        return "SKIP"
+
+    fn = {
+        "console": run_test_console,
+        "logfile": run_test_logfile,
+    }[opts.results_mode]
+
+    return fn(opts, test)
+
+
 def run_tests(opts):
     """ Run tests """
 
     tests = opts.selection
     if not tests:
         raise RunnerError("No tests to run")
-
-    run_test = { "console": run_test_console,
-                 "logfile": run_test_logfile,
-    }.get(opts.results_mode, None)
-
-    if run_test is None:
-        raise RunnerError("Unknown mode '{0}'".format(opts.mode))
 
     rc = all_results.index('SUCCESS')
     results = []
