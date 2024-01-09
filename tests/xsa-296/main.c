@@ -11,12 +11,9 @@
  * VCPUOP_initialise hypercall for PV guests.
  *
  * To tickle a continuation, we set up the new vCPU's pagetables to require
- * validation.  With PV-L1TF protections in place, we can force a continuation
- * by writing the first L1TF-vulnerable PTE for the domain.
- *
- * For less buggy (or unprotected) hardware, we have to be a bit more cunning
- * and (ab?)use the fact we can send ourselves an event by writing into evtchn
- * 2L block, rather than using a hypercall.
+ * validation.  In order to "force" a continuation, (ab)use the fact we can
+ * send ourselves an event by writing into evtchn 2L block.  This causes
+ * hypercall_preempt_check() in Xen to return true.
  *
  * This leaves a 1-instruction race window where, if Xen takes a real
  * interrupt, the pending evtchn would be delivered before issuing the
@@ -84,12 +81,7 @@ void test_main(void)
      *  * L4 validation is performed with preemption, but without actually
      *    checking, so it needs to decend a level before the hypercall will
      *    hit a contination point.
-     *
-     *  * t1[511] is deliberately chosen as an L1TF-vulnerable PTE, so that if
-     *    PV-L1TF protections are enabled, the hypercall will hit a
-     *    continuation point irrespective of pending event channels.
      */
-    t1[511] = pte_from_virt(t1, 0);
     t2[3] = pte_from_virt(t1, PF_SYM(P));
     vcpu1_ctx.ctrlreg[3] = xen_pfn_to_cr3(virt_to_gfn(t2));
 
