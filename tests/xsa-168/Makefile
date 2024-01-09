@@ -3,8 +3,7 @@ include $(ROOT)/build/common.mk
 NAME      := xsa-168
 CATEGORY  := xsa
 TEST-ENVS := hvm64
-
-TEST-EXTRA-CFG := extra.cfg.in
+VARY-CFG  := shadow
 
 obj-perenv += main.o
 
