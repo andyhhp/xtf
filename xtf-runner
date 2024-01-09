@@ -61,6 +61,17 @@ all_environments       = pv_environments | hvm_environments
 class RunnerError(Exception):
     """ Errors relating to xtf-runner itself """
 
+
+def env_to_virt_caps(env):
+    """ Identify which virt cap(s) are needed for an environment """
+    if env in hvm_environments:
+        return {"hvm"}
+    caps = {"pv"}
+    if env == "pv32pae":
+        caps |= {"pv32"}
+    return caps
+
+
 class TestInstance(object):
     """ Object representing a single test. """
 
@@ -74,6 +85,9 @@ class TestInstance(object):
         if self.variation is None and get_all_test_info()[self.name].variations:
             raise RunnerError("Test '{0}' has variations, but none specified"
                               .format(self.name))
+
+        self.req_caps = env_to_virt_caps(self.env)
+        self.req_caps |= {"hap", "shadow"} & set((self.variation, ))
 
     def vm_name(self):
         """ Return the VM name as `xl` expects it. """
@@ -257,6 +271,29 @@ def get_all_test_info():
                 continue
 
     return _all_test_info
+
+
+# Cached virt caps
+_virt_caps = set()
+
+def get_virt_caps():
+    """ Query Xen for the virt capabilities of the host """
+    global _virt_caps
+
+    if not _virt_caps: # Cache on first request
+
+        # Filter down to caps we're happy for tests to use
+        caps = {"pv", "hvm", "hap", "shadow"}
+        caps &= set(check_output(["xl", "info", "virt_caps"]).split())
+
+        # Synthesize a pv32 virt cap by looking at xen_caps
+        if ("pv" in caps and
+            "xen-3.0-x86_32p" in check_output(["xl", "info", "xen_caps"])):
+            caps |= {"pv32"}
+
+        _virt_caps = caps
+
+    return _virt_caps
 
 
 def tests_from_selection(cats, envs, tests):
