@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         arch: [x86]
-        compiler: [llvm-12, llvm-13, llvm-14]
+        compiler: [llvm-12, llvm-13, llvm-14, llvm-16, llvm-17]
 
         include:
           - arch: x86
@@ -47,6 +47,10 @@ jobs:
             compiler: clang-13
           - arch: x86
             compiler: clang-14
+          - arch: x86
+            compiler: clang-16
+          - arch: x86
+            compiler: clang-17
 
     runs-on: ubuntu-22.04
 
