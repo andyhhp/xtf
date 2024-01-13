@@ -1,0 +1,28 @@
+freebsd_template: &FREEBSD_TEMPLATE
+  environment:
+    APPEND_LIB: /usr/local/lib
+    APPEND_INCLUDES: /usr/local/include
+
+  install_script: pkg install -y gmake
+
+  build_script:
+    - cc --version
+    - gmake -j`sysctl -n hw.ncpu` LLVM=y
+
+freebsd_13_task:
+  name: 'FreeBSD 13'
+  freebsd_instance:
+    image_family: freebsd-13-2
+  << : *FREEBSD_TEMPLATE
+
+freebsd_14_task:
+  name: 'FreeBSD 14'
+  freebsd_instance:
+    image_family: freebsd-14-0
+  << : *FREEBSD_TEMPLATE
+
+freebsd_15_task:
+  name: 'FreeBSD 15'
+  freebsd_instance:
+    image_family: freebsd-15-0-snap
+  << : *FREEBSD_TEMPLATE
