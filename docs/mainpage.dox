@@ -93,6 +93,14 @@ To run tests on a Xen host: (see @ref errata first)
   enable the runtime use of FEP.  These tests will detect if FEP is
   unavailable and exit with an error.
 
+- Binutils 2.41 contains a regression causing a build failure:
+
+      Error: operand size mismatch for push.
+
+  A fix [7fe76f02413f](https://sourceware.org/git/
+  ?p=binutils-gdb.git;a=commitdiff;h=7fe76f02413fff61566ae52ec80d581da1e264a2)
+  was backported into Bintuils 2.41 stable branch.
+
 @section further Further Information
 
 @subsection test-intro Introduction to tests
@@ -119,11 +127,11 @@ doing this, it was observed that different hardware was behaving differently
 not behaving as described in the manual.
 
 Once the embargo on XSA-106 lifted, changesets
-[7dfa94c](https://xenbits.xen.org/gitweb/
+[7dfa94c6212b](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=7dfa94c6212b979cbfc8cff5ad5336922f4809d9),
-[ecf5678](https://xenbits.xen.org/gitweb/
+[ecf5678200ad](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=ecf5678200ad2642b69ffea47ad138190bc3e190) and
-[36ebf14](https://xenbits.xen.org/gitweb/
+[36ebf14ebe60](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=36ebf14ebe60310aa22952cbb94de951c158437d) were the
 eventual bugfixes which caused Xen to inject software exceptions correctly.
 
@@ -135,7 +143,7 @@ were not being done.
 Moving forward by a year, the author was dismayed to discover that the
 [XSA-156](https://xenbits.xen.org/xsa/advisory-156.html) release contained a
 regression (causing infinite loops inside guests which used hardware debugging
-facilities, fixed in [0747bc8](https://xenbits.xen.org/gitweb/
+facilities, fixed in [0747bc8b4d85](https://xenbits.xen.org/gitweb/
 ?p=xen.git;a=commitdiff;h=0747bc8b4d85f3fc0ee1e58418418fa0229e8ff8)) which
 would have been caught by the original test for XSA-106, had that test been in
 a usable state.
