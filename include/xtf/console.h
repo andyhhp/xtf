@@ -11,7 +11,7 @@
 typedef void (*cons_output_cb)(const char *buf, size_t len);
 
 /*
- * Register a console callback.  Several callbacks can be registered for usful
+ * Register a console callback.  Several callbacks can be registered for useful
  * destinations of console text.
  */
 void register_console_callback(cons_output_cb cb);

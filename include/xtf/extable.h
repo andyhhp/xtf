@@ -4,8 +4,8 @@
  * Exception table support.
  *
  * Allows code to tag an instruction which might fault, and where to jump to
- * in order to recover.  For more complicated recovery, a cusom handler
- * handler can be registerd.
+ * in order to recover.  For more complicated recovery, a custom handler
+ * can be registered.
  */
 #ifndef XTF_EXTABLE_H
 #define XTF_EXTABLE_H

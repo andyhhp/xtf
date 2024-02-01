@@ -1,5 +1,5 @@
 /*
- * Xen public hvm paramter index
+ * Xen public hvm parameter index
  */
 
 #ifndef XEN_PUBLIC_HVM_PARAMS_H
