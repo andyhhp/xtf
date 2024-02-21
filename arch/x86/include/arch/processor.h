@@ -86,6 +86,17 @@
 #define XSTATE_LWP                (1ULL << _XSTATE_LWP)
 
 /*
+ * Media eXtentions Control and Status Register.
+ */
+#define X86_MXCSR_IE            0x00000001  /* Invalid-Operation Exception  */
+#define X86_MXCSR_DE            0x00000002  /* Denormal-Operation Exception */
+#define X86_MXCSR_ZE            0x00000004  /* Zero-divide Exception        */
+#define X86_MXCSR_OE            0x00000008  /* Overflow Exception           */
+#define X86_MXCSR_UE            0x00000010  /* Underflow Exception          */
+#define X86_MXCSR_PE            0x00000020  /* Precision Exception          */
+#define X86_MXCSR_STATUS_MASK   0x0000003f  /* `- All of the above          */
+
+/*
  * Exception mnemonics.
  */
 #define X86_EXC_DE             0 /* Divide Error. */

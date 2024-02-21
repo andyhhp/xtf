@@ -167,6 +167,8 @@ states.
 
 @subpage test-xsa-444 - x86/AMD: Debug Mask handling.
 
+@subpage test-xsa-451 - x86: shadow stack vs exceptions from emulation stubs.
+
 
 @section index-utility Utilities
 

@@ -305,6 +305,20 @@ static inline void write_cr8(unsigned long cr8)
     asm volatile ("mov %0, %%cr8" :: "r" (cr8));
 }
 
+static inline uint32_t read_mxcsr(void)
+{
+    uint32_t mxcsr;
+
+    asm volatile ("stmxcsr %0" : "=m" (mxcsr));
+
+    return mxcsr;
+}
+
+static inline void write_mxcsr(uint32_t mxcsr)
+{
+    asm volatile ("ldmxcsr %0" :: "m" (mxcsr));
+}
+
 static inline void invlpg(const void *va)
 {
     asm volatile ("invlpg (%0)" :: "r" (va));
