@@ -67,6 +67,7 @@ To run tests on a Xen host: (see @ref errata first)
     Combined test results:
     test-pv64-example                        SUCCESS
 
+Note that if you've python3 installed, most distributions won't have `python` binary. So, run `python3 ./xtf-runner test-pv64-example` instead.
 
 @section errata Errata
 
