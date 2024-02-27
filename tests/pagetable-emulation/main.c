@@ -112,6 +112,7 @@ typedef union
         bool pkrs_ad:1;
 
         bool max:1; /* Must be last; upper boundary. */
+        unsigned int padding:20;
     };
 } __transparent pg_ctrl_t;
 

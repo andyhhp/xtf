@@ -123,7 +123,7 @@ void test_main(void)
         /* Alias 16M linear to 0, using 0's 4k mappings. */
         l2_identmap[8] = l2_identmap[0];
 
-        flush_tlb();
+        flush_tlb(false);
 
         stub(l2_identmap, &cond);
     }
