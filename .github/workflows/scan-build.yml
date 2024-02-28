@@ -13,7 +13,7 @@ jobs:
         sudo apt-get update -q
         sudo apt-get install clang-tools-14
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Scan-build
       run: |

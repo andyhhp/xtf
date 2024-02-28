@@ -10,16 +10,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: pre-commit checks - setup cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
     - name: pre-commit checks - run checks
-      uses: pre-commit/action@v3.0.0
+      uses: pre-commit/action@v3.0.1
 
   C:
     name: "C Builds"
@@ -63,7 +63,7 @@ jobs:
         sudo apt-get update -q
         sudo apt-get install -y build-essential python3 ${{matrix.compiler}} ${EXTRA}
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
