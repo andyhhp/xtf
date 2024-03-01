@@ -19,84 +19,85 @@ bool test_wants_user_mappings = true;
 
 static unsigned long stub_sgdt(unsigned long force)
 {
-    exinfo_t fault = 0;
+    unsigned long fault = 0;
     desc_ptr tmp;
 
-    asm volatile("test %[fep], %[fep];"
+    asm volatile("testb $1, %b[fep];"
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sgdt %[tmp]; 2:"
                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
-                 : "+D" (fault), [tmp] "=m" (tmp)
-                 : [fep] "q" (force),
-                   [rec] "p" (ex_record_fault_edi));
+                 : "+a" (fault), [tmp] "=m" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
+
 static unsigned long stub_sidt(unsigned long force)
 {
-    exinfo_t fault = 0;
+    unsigned long fault = 0;
     desc_ptr tmp;
 
-    asm volatile("test %[fep], %[fep];"
+    asm volatile("testb $1, %b[fep];"
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sidt %[tmp]; 2:"
                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
-                 : "+D" (fault), [tmp] "=m" (tmp)
-                 : [fep] "q" (force),
-                   [rec] "p" (ex_record_fault_edi));
+                 : "+a" (fault), [tmp] "=m" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
 
 static unsigned long stub_sldt(unsigned long force)
 {
-    exinfo_t fault = 0;
+    unsigned long fault = 0;
     unsigned int tmp;
 
-    asm volatile("test %[fep], %[fep];"
+    asm volatile("testb $1, %b[fep];"
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: sldt %[tmp]; 2:"
                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
-                 : "+D" (fault), [tmp] "=r" (tmp)
-                 : [fep] "q" (force),
-                   [rec] "p" (ex_record_fault_edi));
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
 
 static unsigned long stub_str(unsigned long force)
 {
-    exinfo_t fault = 0;
+    unsigned long fault = 0;
     unsigned int tmp;
 
-    asm volatile("test %[fep], %[fep];"
+    asm volatile("testb $1, %b[fep];"
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: str %[tmp]; 2:"
                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
-                 : "+D" (fault), [tmp] "=r" (tmp)
-                 : [fep] "q" (force),
-                   [rec] "p" (ex_record_fault_edi));
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
 
 static unsigned long stub_smsw(unsigned long force)
 {
-    exinfo_t fault = 0;
+    unsigned long fault = 0;
     unsigned int tmp;
 
-    asm volatile("test %[fep], %[fep];"
+    asm volatile("testb $1, %b[fep];"
                  "jz 1f;"
                  _ASM_XEN_FEP
                  "1: smsw %[tmp]; 2:"
                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
-                 : "+D" (fault), [tmp] "=r" (tmp)
-                 : [fep] "q" (force),
-                   [rec] "p" (ex_record_fault_edi));
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
 
     return fault;
 }
@@ -146,10 +147,12 @@ static void test_insns(bool umip_active, bool force)
             }
 
             if ( ret != exp )
-                xtf_failure("Fail: %s %s\n"
+                xtf_failure("Fail: %s %s (UMIP%c, FEP%c)\n"
                             "  expected %pe\n"
                             "       got %pe\n",
                             user ? "user" : "supervisor", s->name,
+                            umip_active ? '+' : '-',
+                            force ? '+' : '-',
                             _p(exp), _p(ret));
         }
 
