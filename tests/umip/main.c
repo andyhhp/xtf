@@ -15,7 +15,6 @@
 #include <xtf.h>
 
 const char test_title[] = "User-Mode Instruction Prevention Tests";
-bool test_wants_user_mappings = true;
 
 static unsigned long stub_sgdt(unsigned long force)
 {
@@ -102,15 +101,101 @@ static unsigned long stub_smsw(unsigned long force)
     return fault;
 }
 
+static unsigned long __user_text stub_user_sgdt(unsigned long force)
+{
+    unsigned long fault = 0;
+    desc_ptr tmp;
+
+    asm volatile("testb $1, %b[fep];"
+                 "jz 1f;"
+                 _ASM_XEN_FEP
+                 "1: sgdt %[tmp]; 2:"
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                 : "+a" (fault), [tmp] "=m" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
+static unsigned long __user_text stub_user_sidt(unsigned long force)
+{
+    unsigned long fault = 0;
+    desc_ptr tmp;
+
+    asm volatile("testb $1, %b[fep];"
+                 "jz 1f;"
+                 _ASM_XEN_FEP
+                 "1: sidt %[tmp]; 2:"
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                 : "+a" (fault), [tmp] "=m" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
+static unsigned long __user_text stub_user_sldt(unsigned long force)
+{
+    unsigned long fault = 0;
+    unsigned int tmp;
+
+    asm volatile("testb $1, %b[fep];"
+                 "jz 1f;"
+                 _ASM_XEN_FEP
+                 "1: sldt %[tmp]; 2:"
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
+static unsigned long __user_text stub_user_str(unsigned long force)
+{
+    unsigned long fault = 0;
+    unsigned int tmp;
+
+    asm volatile("testb $1, %b[fep];"
+                 "jz 1f;"
+                 _ASM_XEN_FEP
+                 "1: str %[tmp]; 2:"
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
+static unsigned long __user_text stub_user_smsw(unsigned long force)
+{
+    unsigned long fault = 0;
+    unsigned int tmp;
+
+    asm volatile("testb $1, %b[fep];"
+                 "jz 1f;"
+                 _ASM_XEN_FEP
+                 "1: smsw %[tmp]; 2:"
+                 _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                 : "+a" (fault), [tmp] "=r" (tmp)
+                 : [fep] "rm" (force),
+                   [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
 static const struct stub {
     unsigned long (*fn)(unsigned long);
+    unsigned long (*user_fn)(unsigned long);
     const char *name;
 } stubs[] = {
-    { stub_sgdt, "SGDT" },
-    { stub_sidt, "SIDT" },
-    { stub_sldt, "SLDT" },
-    { stub_str,  "STR"  },
-    { stub_smsw, "SMSW" },
+    { stub_sgdt, stub_user_sgdt, "SGDT" },
+    { stub_sidt, stub_user_sidt, "SIDT" },
+    { stub_sldt, stub_user_sldt, "SLDT" },
+    { stub_str,  stub_user_str,  "STR"  },
+    { stub_smsw, stub_user_smsw, "SMSW" },
 };
 
 static void test_insns(bool umip_active, bool force)
@@ -127,7 +212,7 @@ static void test_insns(bool umip_active, bool force)
             const struct stub *s = &stubs[i];
             exinfo_t ret;
 
-            ret = user ? exec_user_param(s->fn, force) : s->fn(force);
+            ret = user ? exec_user_param(s->user_fn, force) : s->fn(force);
 
             /*
              * Tolerate the instruction emulator not understanding these
