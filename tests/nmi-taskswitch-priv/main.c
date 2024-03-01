@@ -33,8 +33,6 @@
 
 const char test_title[] = "Test nmi-taskswitch-priv";
 
-bool test_wants_user_mappings = true;
-
 static uint8_t nmi_stack[PAGE_SIZE] __page_aligned_bss;
 
 void entry_NMI_task(void);
@@ -124,6 +122,12 @@ void test_main(void)
 
     if ( rc )
         return xtf_error("Error: Unable to set up xapic mode: %d\n", rc);
+
+    /*
+     * Remap the Local APIC MMIO window as USER, so user_inject_nmi() can send
+     * a self-NMI.  No INVLPG, as this is a strict relaxing of permissions.
+     */
+    pae_l2_identmap[APIC_DEFAULT_BASE >> PAE_L2_PT_SHIFT] |= _PAGE_USER;
 
     /*
      * Set up NMI handling to be a task gate.
