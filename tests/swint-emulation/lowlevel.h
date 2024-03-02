@@ -6,6 +6,8 @@
  * Nomaclature:
  * - `stub_$X_$Y()`
  *   - Stub function executing instruction `$X` with prefix `$Y`.
+ * - `stub_user_$X_$Y()`
+ *   - Stub function executing instruction `$X` with prefix `$Y` in userspace.
  *
  * Instructions `$X`:
  * - int3
@@ -56,6 +58,32 @@ unsigned long stub_into(void);
 unsigned long stub_into_A(void);
 unsigned long stub_into_F(void);
 unsigned long stub_into_FA(void);
+
+
+unsigned long stub_user_int3(void);
+unsigned long stub_user_int3_A(void);
+unsigned long stub_user_int3_F(void);
+unsigned long stub_user_int3_FA(void);
+
+unsigned long stub_user_int_0x3(void);
+unsigned long stub_user_int_0x3_A(void);
+unsigned long stub_user_int_0x3_F(void);
+unsigned long stub_user_int_0x3_FA(void);
+
+unsigned long stub_user_icebp(void);
+unsigned long stub_user_icebp_A(void);
+unsigned long stub_user_icebp_F(void);
+unsigned long stub_user_icebp_FA(void);
+
+unsigned long stub_user_int_0x1(void);
+unsigned long stub_user_int_0x1_A(void);
+unsigned long stub_user_int_0x1_F(void);
+unsigned long stub_user_int_0x1_FA(void);
+
+unsigned long stub_user_into(void);
+unsigned long stub_user_into_A(void);
+unsigned long stub_user_into_F(void);
+unsigned long stub_user_into_FA(void);
 
 #endif /* __LOWLEVEL_H__ */
 

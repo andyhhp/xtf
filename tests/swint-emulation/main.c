@@ -50,8 +50,6 @@
 
 const char test_title[] = "Software interrupt emulation";
 
-bool test_wants_user_mappings = true;
-
 #ifdef __i386__
 # define COND(_32, _64) _32
 #else
@@ -74,6 +72,7 @@ struct insn
 {
     const char *name;
     unsigned long (*fn[4])(void);
+    unsigned long (*user_fn[4])(void);
 };
 
 const struct insn int3 = {
@@ -83,6 +82,12 @@ const struct insn int3 = {
         stub_int3_A,
         stub_int3_F,
         stub_int3_FA,
+    },
+    {
+        stub_user_int3,
+        stub_user_int3_A,
+        stub_user_int3_F,
+        stub_user_int3_FA,
     },
 };
 
@@ -94,6 +99,12 @@ const struct insn int_0x3 = {
         stub_int_0x3_F,
         stub_int_0x3_FA,
     },
+    {
+        stub_user_int_0x3,
+        stub_user_int_0x3_A,
+        stub_user_int_0x3_F,
+        stub_user_int_0x3_FA,
+    },
 };
 
 const struct insn icebp = {
@@ -103,6 +114,12 @@ const struct insn icebp = {
         stub_icebp_A,
         stub_icebp_F,
         stub_icebp_FA,
+    },
+    {
+        stub_user_icebp,
+        stub_user_icebp_A,
+        stub_user_icebp_F,
+        stub_user_icebp_FA,
     },
 };
 
@@ -114,6 +131,12 @@ const struct insn int_0x1 = {
         stub_int_0x1_F,
         stub_int_0x1_FA,
     },
+    {
+        stub_user_int_0x1,
+        stub_user_int_0x1_A,
+        stub_user_int_0x1_F,
+        stub_user_int_0x1_FA,
+    },
 };
 
 const struct insn into = {
@@ -123,6 +146,12 @@ const struct insn into = {
         stub_into_A,
         stub_into_F,
         stub_into_FA,
+    },
+    {
+        stub_user_into,
+        stub_user_into_A,
+        stub_user_into_F,
+        stub_user_into_FA,
     },
 };
 
@@ -134,7 +163,7 @@ void test_insn(enum mode user, const struct insn *insn, exinfo_t exp)
     {
         exinfo_t got;
 
-        got = user ? exec_user(insn->fn[i]) : insn->fn[i]();
+        got = user ? exec_user(insn->user_fn[i]) : insn->fn[i]();
 
         if ( exp != got )
             xtf_failure("    Fail (Force%c, Addr%c): expected %pe %s, got %pe %s\n",

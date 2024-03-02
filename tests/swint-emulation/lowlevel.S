@@ -62,19 +62,29 @@ ENDFUNC(stub_\name\())
 .endm
 
         /* For a single instruction, generate each test variant. */
-.macro GEN_SEQUENCE insn
-        GEN_SINGLE \insn       \insn
-        GEN_SINGLE \insn\()_A  \insn addr=1
-        GEN_SINGLE \insn\()_F  \insn fep=1
-        GEN_SINGLE \insn\()_FA \insn fep=1 addr=1
+.macro GEN_SEQUENCE user insn
+        GEN_SINGLE \user\()\insn       \insn
+        GEN_SINGLE \user\()\insn\()_A  \insn addr=1
+        GEN_SINGLE \user\()\insn\()_F  \insn fep=1
+        GEN_SINGLE \user\()\insn\()_FA \insn fep=1 addr=1
 .endm
 
         /* Generate test sequences for each instruction. */
-GEN_SEQUENCE int3
-GEN_SEQUENCE int_0x3
-GEN_SEQUENCE icebp
-GEN_SEQUENCE int_0x1
-GEN_SEQUENCE into
+GEN_SEQUENCE , int3
+GEN_SEQUENCE , int_0x3
+GEN_SEQUENCE , icebp
+GEN_SEQUENCE , int_0x1
+GEN_SEQUENCE , into
+
+.pushsection .text.user, "ax", @progbits
+
+GEN_SEQUENCE user_ int3
+GEN_SEQUENCE user_ int_0x3
+GEN_SEQUENCE user_ icebp
+GEN_SEQUENCE user_ int_0x1
+GEN_SEQUENCE user_ into
+
+.popsection
 
 /*
  * Local variables:
