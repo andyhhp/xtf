@@ -44,84 +44,37 @@ const char test_title[] = "PV IOPL emulation";
 
 bool test_wants_user_mappings = true;
 
-static void stub_cli(void)
+static unsigned long stub_cli(void)
 {
-    asm volatile ("1: cli; 2:"
-                  _ASM_EXTABLE(1b, 2b));
+    unsigned long fault = 0;
+
+    asm ("1: cli; 2:"
+         _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+         : "+a" (fault)
+         : [rec] "p" (ex_record_fault_eax));
+
+    return fault;
 }
 
-static void stub_outb(void)
+static unsigned long stub_outb(void)
 {
-    asm volatile ("1: outb %b0, $0x80; 2:"
-                  _ASM_EXTABLE(1b, 2b)
-                  :: "a" (0));
+    unsigned long fault = 0;
+
+    asm ("1: outb %b0, $0x80; 2:"
+         _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+         : "+a" (fault) /* Overloaded as the input to OUTB */
+         : [rec] "p" (ex_record_fault_eax));
+
+    return fault;
 }
 
 static const struct insn {
     const char *name;
-    void (*fn)(void);
+    unsigned long (*fn)(void);
 } insns[] = {
     { "cli",  stub_cli,  },
     { "outb", stub_outb, },
 };
-
-static struct expectation
-{
-    const char *insn;
-    bool user;
-    bool fault;
-} /** Details about the stub under test. */
-expectation;
-
-/** Latch details of the stub under test. */
-static void expect(const char *insn, bool user, bool fault)
-{
-    expectation = (struct expectation){insn, user, fault, };
-    xtf_exlog_reset();
-}
-
-/** Check the exception long against the expected details. */
-static void check(void)
-{
-    unsigned int entries = xtf_exlog_entries();
-    const char *mode = expectation.user ? "user" : "kernel";
-
-    if ( expectation.fault )
-    {
-        if ( entries != 1 )
-        {
-            xtf_failure("Fail (%s %s): Expected 1 exception, got %u\n",
-                        mode, expectation.insn, entries);
-            xtf_exlog_dump_log();
-            return;
-        }
-
-        exlog_entry_t *entry = xtf_exlog_entry(0);
-        if ( !entry )
-        {
-            xtf_failure("Fail (%s %s): Unable to retrieve exception log\n",
-                        mode, expectation.insn);
-            return;
-        }
-
-        if ( (entry->ev != X86_EXC_GP) || (entry->ec != 0) )
-        {
-            xtf_failure("Fail (%s %s): Expected #GP[0], got %2u[%04x]\n",
-                        mode, expectation.insn, entry->ev, entry->ec);
-            return;
-        }
-    }
-    else
-    {
-        if ( entries != 0 )
-        {
-            xtf_failure("Fail (%s %s): Expected no exceptions, got %u\n",
-                        mode, expectation.insn, entries);
-            xtf_exlog_dump_log();
-            return;
-        }
-    }
-}
 
 enum mode { KERN, USER };
 struct test {
@@ -131,11 +84,7 @@ struct test {
 
 static void run_test(const struct test *t)
 {
-    unsigned int i, iopl;
-
-    xtf_exlog_start();
-
-    for ( iopl = 0; iopl <= 3; ++iopl )
+    for ( unsigned int iopl = 0; iopl <= 3; ++iopl )
     {
         /* vIOPL 2 is not interesting to test. */
         if ( iopl == 2 )
@@ -144,24 +93,28 @@ static void run_test(const struct test *t)
         printk("  vIOPL %u\n", iopl);
         t->set_iopl(iopl);
 
-        for ( i = 0; i < ARRAY_SIZE(insns); ++i )
+        for ( unsigned int i = 0; i < ARRAY_SIZE(insns); ++i )
         {
             const struct insn *insn = &insns[i];
+            exinfo_t exp, got;
 
             /* Run insn in kernel. */
-            expect(insn->name, KERN, t->should_fault(KERN, iopl));
-            insn->fn();
-            check();
+            exp = t->should_fault(KERN, iopl) ? EXINFO_SYM(GP, 0) : 0;
+            got = insn->fn();
+
+            if ( exp != got )
+                xtf_failure("Fail: kern %s, expected %pe, got %pe\n",
+                            insn->name, _p(exp), _p(got));
 
             /* Run insn in userspace. */
-            expect(insn->name, USER, t->should_fault(USER, iopl));
-            exec_user_void(insn->fn);
+            exp = t->should_fault(USER, iopl) ? EXINFO_SYM(GP, 0) : 0;
+            got = exec_user(insn->fn);
 
-            check();
+            if ( exp != got )
+                xtf_failure("Fail: user %s, expected %pe, got %pe\n",
+                            insn->name, _p(exp), _p(got));
         }
     }
-
-    xtf_exlog_stop();
 }
 
 static void hypercall_set_iopl(unsigned int iopl)
