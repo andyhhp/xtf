@@ -52,6 +52,14 @@ const char test_title[] = "Software interrupt emulation";
 
 bool test_wants_user_mappings = true;
 
+#ifdef __i386__
+# define COND(_32, _64) _32
+#else
+# define COND(_32, _64) _64
+#endif
+
+enum mode { KERN, USER };
+
 /** Single stub's worth of information. */
 struct single
 {
@@ -60,17 +68,15 @@ struct single
     void *trap, *fault;
 };
 
-/** A collection of subs for an instruction. */
-struct sequence
+struct insn
 {
     const char *name;
     struct single tests[4];
 };
 
-/** Sequence for `int3`. */
-struct sequence int3 =
-{ "int3",
-  {
+const struct insn int3 = {
+    "int3",
+    {
       {"regular", stub_int3_reg,
        label_int3_reg_trap, label_int3_reg_fault},
 
@@ -82,13 +88,12 @@ struct sequence int3 =
 
       {"forced redundant", stub_int3_forcered,
        label_int3_forcered_trap, label_int3_forcered_fault},
-  },
+    },
 };
 
-/** Sequence for `int $3`. */
-struct sequence int_0x3 =
-{ "int $3",
-  {
+const struct insn int_0x3 = {
+    "int $3",
+    {
       {"regular", stub_int_0x3_reg,
        label_int_0x3_reg_trap, label_int_0x3_reg_fault},
 
@@ -100,13 +105,12 @@ struct sequence int_0x3 =
 
       {"forced redundant", stub_int_0x3_forcered,
        label_int_0x3_forcered_trap, label_int_0x3_forcered_fault},
-  },
+    },
 };
 
-/** Sequence for `icebp`. */
-struct sequence icebp =
-{ "icebp",
-  {
+const struct insn icebp = {
+    "icebp",
+    {
       {"regular", stub_icebp_reg,
        label_icebp_reg_trap, label_icebp_reg_fault},
 
@@ -118,13 +122,12 @@ struct sequence icebp =
 
       {"forced redundant", stub_icebp_forcered,
        label_icebp_forcered_trap, label_icebp_forcered_fault},
-  },
+    },
 };
 
-/** Sequence for `int $1`. */
-struct sequence int_0x1 =
-{ "int $1",
-  {
+const struct insn int_0x1 = {
+    "int $1",
+    {
       {"regular", stub_int_0x1_reg,
        label_int_0x1_reg_trap, label_int_0x1_reg_fault},
 
@@ -136,13 +139,12 @@ struct sequence int_0x1 =
 
       {"forced redundant", stub_int_0x1_forcered,
        label_int_0x1_forcered_trap, label_int_0x1_forcered_fault},
-  },
+    },
 };
 
-/** Sequence for `into`. */
-struct sequence into =
-{ "into",
-  {
+const struct insn into = {
+    "into",
+    {
       {"regular", stub_into_reg,
        label_into_reg_trap, label_into_reg_fault},
 
@@ -154,11 +156,8 @@ struct sequence into =
 
       {"forced redundant", stub_into_forcered,
        label_into_forcered_trap, label_into_forcered_fault},
-  },
+    },
 };
-
-/** Whether to run the stub in user or supervisor mode. */
-static bool user = false;
 
 struct expectation {
     const char *prefix;
@@ -220,17 +219,17 @@ bool do_unhandled_exception(struct cpu_regs *regs)
     return false;
 }
 
-/** Test a single sequence of related instructions. */
-void test_seq(struct sequence *seq, unsigned int vector,
-              unsigned int error, bool fault)
+void test_insn(enum mode user, const struct insn *insn, exinfo_t exp)
 {
-    unsigned int i;
+    unsigned int vector = exinfo_vec(exp);
+    unsigned int error = exinfo_ec(exp);
+    bool fault = X86_EXC_FAULTS & (1u << vector);
 
-    printk("  Testing %s\n", seq->name);
+    printk("  Testing %s\n", insn->name);
 
-    for ( i = 0; i < ARRAY_SIZE(seq->tests); ++i )
+    for ( unsigned int i = 0; i < ARRAY_SIZE(insn->tests); ++i )
     {
-        struct single *s = &seq->tests[i];
+        const struct single *s = &insn->tests[i];
 
         expect(s->type,
                fault ? s->fault : s->trap,
@@ -244,19 +243,6 @@ void test_seq(struct sequence *seq, unsigned int vector,
         if ( i == 1 && !xtf_has_fep )
             break;
     }
-}
-
-/** test_seq() wrapper, for caller clarity. */
-static void test_trap(struct sequence *seq, unsigned int vector)
-{
-    test_seq(seq, vector, 0, false);
-}
-
-/** test_seq() wrapper, for caller clarity. */
-static void test_fault(struct sequence *seq,
-                       unsigned int vector, unsigned int error)
-{
-    test_seq(seq, vector, error, true);
 }
 
 /** Modify the present flag on the IDT entries under test. */
@@ -275,37 +261,31 @@ static void set_idt_entries_dpl(unsigned int dpl)
     idt[X86_EXC_OF].dpl = dpl;
 }
 
+#define TRAP(V)          EXINFO_SYM(V, 0)
+#define FAULT(V)         EXINFO_SYM(V, 0)
+#define FAULT_EC(V, ...) EXINFO_SYM(V, EXC_EC_SYM(__VA_ARGS__))
+
 /** Tests run in user mode. */
 void cpl3_tests(void)
 {
-    user = true;
-
     printk("Test cpl3: all perms ok\n");
     {
-        test_trap(&int3,    X86_EXC_BP);
-        test_trap(&int_0x3, X86_EXC_BP);
-        test_trap(&icebp,   X86_EXC_DB);
-        test_trap(&int_0x1, X86_EXC_DB);
-#ifdef __i386__
-        test_trap(&into,    X86_EXC_OF);
-#else
-        test_fault(&into,   X86_EXC_UD, 0);
-#endif
+        test_insn(USER, &int3,    TRAP(BP));
+        test_insn(USER, &int_0x3, TRAP(BP));
+        test_insn(USER, &icebp,   TRAP(DB));
+        test_insn(USER, &int_0x1, TRAP(DB));
+        test_insn(USER, &into,    COND(TRAP(OF), FAULT(UD)));
     }
 
     printk("Test cpl3: p=0\n");
     {
         set_idt_entries_present(false);
 
-        test_fault(&int3,    X86_EXC_NP, EXC_EC_SYM(BP));
-        test_fault(&int_0x3, X86_EXC_NP, EXC_EC_SYM(BP));
-        test_fault(&icebp,   X86_EXC_NP, EXC_EC_SYM(DB, EXT));
-        test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
-#ifdef __i386__
-        test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
-#else
-        test_fault(&into,    X86_EXC_UD, 0);
-#endif
+        test_insn(USER, &int3,    FAULT_EC(NP, BP));
+        test_insn(USER, &int_0x3, FAULT_EC(NP, BP));
+        test_insn(USER, &icebp,   FAULT_EC(NP, DB, EXT));
+        test_insn(USER, &int_0x1, FAULT_EC(NP, DB));
+        test_insn(USER, &into,    COND(FAULT_EC(NP, OF), FAULT(UD)));
 
         set_idt_entries_present(true);
     }
@@ -314,21 +294,14 @@ void cpl3_tests(void)
     {
         set_idt_entries_dpl(0);
 
-        test_fault(&int3,    X86_EXC_GP, EXC_EC_SYM(BP));
-        test_fault(&int_0x3, X86_EXC_GP, EXC_EC_SYM(BP));
-         /* icebp count as external, so no dpl check. */
-        test_trap (&icebp,   X86_EXC_DB);
-        test_fault(&int_0x1, X86_EXC_GP, EXC_EC_SYM(DB));
-#ifdef __i386__
-        test_fault(&into,    X86_EXC_GP, EXC_EC_SYM(OF));
-#else
-        test_fault(&into,    X86_EXC_UD, 0);
-#endif
+        test_insn(USER, &int3,    FAULT_EC(GP, BP));
+        test_insn(USER, &int_0x3, FAULT_EC(GP, BP));
+        test_insn(USER, &icebp,   TRAP(DB)); /* ICEBP doesn't check DPL. */
+        test_insn(USER, &int_0x1, FAULT_EC(GP, DB));
+        test_insn(USER, &into,    COND(FAULT_EC(GP, OF), FAULT(UD)));
 
         set_idt_entries_dpl(3);
     }
-
-    user = false;
 }
 
 /** Tests run in supervisor mode. */
@@ -336,30 +309,22 @@ void cpl0_tests(void)
 {
     printk("Test cpl0: all perms ok\n");
     {
-        test_trap(&int3,    X86_EXC_BP);
-        test_trap(&int_0x3, X86_EXC_BP);
-        test_trap(&icebp,   X86_EXC_DB);
-        test_trap(&int_0x1, X86_EXC_DB);
-#ifdef __i386__
-        test_trap(&into,    X86_EXC_OF);
-#else
-        test_fault(&into,   X86_EXC_UD, 0);
-#endif
+        test_insn(KERN, &int3,    TRAP(BP));
+        test_insn(KERN, &int_0x3, TRAP(BP));
+        test_insn(KERN, &icebp,   TRAP(DB));
+        test_insn(KERN, &int_0x1, TRAP(DB));
+        test_insn(KERN, &into,    COND(TRAP(OF), FAULT(UD)));
     }
 
     printk("Test cpl0: p=0\n");
     {
         set_idt_entries_present(false);
 
-        test_fault(&int3,    X86_EXC_NP, EXC_EC_SYM(BP));
-        test_fault(&int_0x3, X86_EXC_NP, EXC_EC_SYM(BP));
-        test_fault(&icebp,   X86_EXC_NP, EXC_EC_SYM(DB, EXT));
-        test_fault(&int_0x1, X86_EXC_NP, EXC_EC_SYM(DB));
-#ifdef __i386__
-        test_fault(&into,    X86_EXC_NP, EXC_EC_SYM(OF));
-#else
-        test_fault(&into,    X86_EXC_UD, 0);
-#endif
+        test_insn(KERN, &int3,    FAULT_EC(NP, BP));
+        test_insn(KERN, &int_0x3, FAULT_EC(NP, BP));
+        test_insn(KERN, &icebp,   FAULT_EC(NP, DB, EXT));
+        test_insn(KERN, &int_0x1, FAULT_EC(NP, DB));
+        test_insn(KERN, &into,    COND(FAULT_EC(NP, OF), FAULT(UD)));
 
         set_idt_entries_present(true);
     }
