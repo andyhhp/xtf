@@ -284,7 +284,6 @@ bool xtf_has_fep = false;
  * test_needs_* indicates options required by the test, without which the test
  * isn't worth running.
  */
-bool __weak test_wants_user_mappings = false;
 bool __weak test_needs_fep = false;
 
 void test_setup(void)

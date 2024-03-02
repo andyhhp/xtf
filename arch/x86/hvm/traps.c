@@ -122,26 +122,21 @@ void arch_init_traps(void)
     ltr(GDTE_TSS * 8);
 
     /*
-     * If we haven't applied blanket PAGE_USER mappings, remap the structures
-     * which specifically want to be user.
+     * Remap the structures which specifically want to be user.  No need for a
+     * TLB flush as this is a strict relaxing of permissions.
      */
-    if ( !test_wants_user_mappings )
-    {
-        extern const char __start_user_text[], __end_user_text[];
-        extern const char __start_user_data[], __end_user_data[];
-        extern const char __start_user_bss[],  __end_user_bss[];
+    extern const char __start_user_text[], __end_user_text[];
+    extern const char __start_user_data[], __end_user_data[];
+    extern const char __start_user_bss[],  __end_user_bss[];
 
-        remap_user(virt_to_gfn(__start_user_text),
-                   virt_to_gfn(__end_user_text));
+    remap_user(virt_to_gfn(__start_user_text),
+               virt_to_gfn(__end_user_text));
 
-        remap_user(virt_to_gfn(__start_user_data),
-                   virt_to_gfn(__end_user_data));
+    remap_user(virt_to_gfn(__start_user_data),
+               virt_to_gfn(__end_user_data));
 
-        remap_user(virt_to_gfn(__start_user_bss),
-                   virt_to_gfn(__end_user_bss));
-
-        write_cr3(_u(cr3_target));
-    }
+    remap_user(virt_to_gfn(__start_user_bss),
+               virt_to_gfn(__end_user_bss));
 }
 
 void __noreturn arch_crash_hard(void)

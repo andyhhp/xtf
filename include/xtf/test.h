@@ -25,20 +25,6 @@ extern const char test_title[];
 extern bool xtf_has_fep;
 
 /**
- * Boolean indicating whether the test wants user mappings or not.
- *
- * Some tests want an easy transition between supervisor and user modes.  For
- * such tests, this requires running on _PAGE_USER mappings, and they must
- * opt-in.
- *
- * @see @ref errata
- *
- * The framework variable is a weak reference, and may be overridden by a test
- * wishing to change the default.
- */
-extern bool test_wants_user_mappings;
-
-/**
  * Boolean indicating whether the test is entirely predicated on the available
  * of the Force Emulation Prefix.
  */

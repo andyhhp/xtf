@@ -77,20 +77,6 @@ int xtf_set_idte(unsigned int vector, const struct xtf_idte *idte)
     return hypercall_set_trap_table(ti);
 }
 
-static bool __maybe_unused ex_pf_user(struct cpu_regs *regs,
-                                      const struct extable_entry *ex)
-{
-    if ( regs->entry_vector == X86_EXC_PF && read_cr2() == 0xfff )
-    {
-        regs->ax = true;
-        regs->ip = ex->fixup;
-
-        return true;
-    }
-
-    return false;
-}
-
 static int remap_linear(const void *linear, uint64_t flags)
 {
     intpte_t nl1e = pte_from_virt(linear, flags);
@@ -199,116 +185,19 @@ void arch_init_traps(void)
         panic("Failed to set user %%cr3: %d\n", rc);
 
 #elif defined(__i386__)
-    if ( test_wants_user_mappings )
-    {
-        /*
-         * XTF uses a shared user/kernel address space, and _PAGE_USER must be
-         * set to permit cpl3 access to the virtual addresses without taking a
-         * pagefault.
-         *
-         * PV guests and Xen share a virtual address space, and before Xen
-         * 4.7, Xen's setting of CR4.{SMEP,SMAP} leaked with 32bit PV guests.
-         * On hardware which supports SMEP/SMAP, older versions of Xen must be
-         * booted with 'smep=0 smap=0' for pv32pae tests to run.
-         */
+    /* Remap the structures which specifically want to be user. */
+    extern const char __start_user_text[], __end_user_text[];
+    extern const char __start_user_data[], __end_user_data[];
+    extern const char __start_user_bss[],  __end_user_bss[];
 
-        /*
-         * First, probe whether Xen is leaking its SMEP/SMAP settings.
-         */
-        intpte_t nl1e = pte_from_gfn(pfn_to_mfn(0), PF_SYM(AD, U, RW, P));
-        bool leaked = false;
+    remap_linear_range(__start_user_text, __end_user_text,
+                       PF_SYM(AD, U, RW, P));
 
-        /* Remap the page at 0 with _PAGE_USER. */
-        rc = hypercall_update_va_mapping(0, nl1e, UVMF_INVLPG);
-        if ( rc )
-            panic("Failed to remap page at NULL with _PAGE_USER: %d\n", rc);
+    remap_linear_range(__start_user_data, __end_user_data,
+                       PF_SYM(AD, U, RW, P));
 
-        /*
-         * Write a `ret` instruction into the page at 0 (will be caught by
-         * leaked SMAP), then attempt to call at the `ret` instruction (will
-         * be caught by leaked SMEP).
-         */
-        asm volatile ("1: movb $0xc3, (%[ptr]);"
-                      "call *%[ptr];"
-                      "jmp 3f;"
-                      "2: ret;"
-                      "3:"
-                      _ASM_EXTABLE_HANDLER(1b,    3b, %P[rec])
-                      _ASM_EXTABLE_HANDLER(0xfff, 2b, %P[rec])
-                      : "+a" (leaked)
-                      : [ptr] "r" (0xfff),
-                        [rec] "p" (ex_pf_user));
-
-        if ( leaked )
-            panic("Xen's SMEP/SMAP settings leaked into guest context.\n"
-                  "Must boot this Xen with 'smep=0 smap=0' to run this test.\n");
-
-        /*
-         * If we have got this far, SMEP/SMAP are not leaking into guest
-         * context.  Proceed with remapping all mappings as _PAGE_USER.
-         */
-        uint64_t *l3 = _p(pv_start_info->pt_base);
-        unsigned long linear = 0;
-
-        while ( linear < __HYPERVISOR_VIRT_START_PAE )
-        {
-            unsigned int i3 = l3_table_offset(linear);
-
-            if ( !(l3[i3] & _PAGE_PRESENT) )
-            {
-                linear += 1UL << L3_PT_SHIFT;
-                continue;
-            }
-
-            uint64_t *l2 = maddr_to_virt(pte_to_paddr(l3[i3]));
-            unsigned int i2 = l2_table_offset(linear);
-
-            if ( !(l2[i2] & _PAGE_PRESENT) )
-            {
-                linear += 1UL << L2_PT_SHIFT;
-                continue;
-            }
-
-            uint64_t *l1 = maddr_to_virt(pte_to_paddr(l2[i2]));
-            unsigned int i1 = l1_table_offset(linear);
-
-            if ( !(l1[i1] & _PAGE_PRESENT) )
-            {
-                linear += 1UL << L1_PT_SHIFT;
-                continue;
-            }
-
-            if ( !(l1[i1] & _PAGE_USER) )
-            {
-                rc = hypercall_update_va_mapping(
-                    linear, l1[i1] | _PAGE_USER, UVMF_INVLPG);
-                if ( rc )
-                    panic("update_va_mapping(%p, 0x%016"PRIx64") failed: %d\n",
-                          _p(linear), l1[i1] | _PAGE_USER, rc);
-            }
-
-            linear += 1UL << L1_PT_SHIFT;
-        }
-    }
-    else
-    {
-        /*
-         * If we haven't applied blanket PAGE_USER mappings, remap the
-         * structures which specifically want to be user.
-         */
-        extern const char __start_user_text[], __end_user_text[];
-        extern const char __start_user_data[], __end_user_data[];
-        extern const char __start_user_bss[],  __end_user_bss[];
-
-        remap_linear_range(__start_user_text, __end_user_text,
-                           PF_SYM(AD, U, RW, P));
-
-        remap_linear_range(__start_user_data, __end_user_data,
-                           PF_SYM(AD, U, RW, P));
-
-        remap_linear_range(__start_user_bss, __end_user_bss,
-                           PF_SYM(AD, U, RW, P));
-    }
+    remap_linear_range(__start_user_bss, __end_user_bss,
+                       PF_SYM(AD, U, RW, P));
 #endif
 
     /* Unmap page at 0 to catch errors with NULL pointers. */

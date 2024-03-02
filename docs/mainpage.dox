@@ -33,6 +33,7 @@ Environment | Guest | Width | Paging
 @section getting-started Getting Started
 
 Requirements:
+- Xen 4.8 or later
 - GNU Make >= 3.81
 - Python 2.7 or later
 
@@ -69,15 +70,6 @@ To run tests on a Xen host: (see @ref errata first)
 
 
 @section errata Errata
-
-- Xen 4.6 and earlier running on hardware with SMEP (Intel IvyBridge/AMD
-  Excavator and later) or SMAP (Intel Broadwell/AMD Zen or later) leaked its
-  SMEP/SMAP settings into 32bit PV guests, which interferes with some tests.
-  Xen 4.7 and later is fixed not to leak its SMAP/SMEP settings.
-
-  To run certain pv32pae tests against Xen 4.6 or earlier on such hardware,
-  Xen must be booted with `"smep=0 smap=0"`.  Affected pv32pae tests will
-  probe for leaked settings and panic with a suitable error.
 
 - For the paths of binaries, `xl` accepts either an absolute path, or certain
   relative paths (`/etc/xen/` or `$CWD` for `kernel=`, `$libdir/xen/boot` for
