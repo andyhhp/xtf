@@ -6,8 +6,6 @@
  * Nomaclature:
  * - `stub_$X_$Y()`
  *   - Stub function executing instruction `$X` with prefix `$Y`.
- * - `label_$X_$Y_{trap, fault}:`
- *   - Labels for where `$X` is expected to trap or fault.
  *
  * Instructions `$X`:
  * - int3
@@ -22,62 +20,42 @@
  *   - `into` (`0xce`)
  *
  * Prefixes `$Y`:
- * - reg
+ * - (none)
  *   - Regular - no prefix
- * - red
- *   - Redundant - address size override prefix (`0x67`)
- * - force
+ * - A
+ *   - Address size override prefix (`0x67`)
+ * - F
  *   - Forced Emulation prefix - see @ref _ASM_XEN_FEP
- * - forcered
- *   - Forced Emulation and redundant prefixes
+ * - FA
+ *   - Forced Emulation and Address override prefixes
  */
 #ifndef __LOWLEVEL_H__
 #define __LOWLEVEL_H__
 
-void stub_int3_reg(void);
-void stub_int3_red(void);
-void stub_int3_force(void);
-void stub_int3_forcered(void);
-extern unsigned long label_int3_reg_trap[], label_int3_reg_fault[];
-extern unsigned long label_int3_red_trap[], label_int3_red_fault[];
-extern unsigned long label_int3_force_trap[], label_int3_force_fault[];
-extern unsigned long label_int3_forcered_trap[], label_int3_forcered_fault[];
+unsigned long stub_int3(void);
+unsigned long stub_int3_A(void);
+unsigned long stub_int3_F(void);
+unsigned long stub_int3_FA(void);
 
-void stub_int_0x3_reg(void);
-void stub_int_0x3_red(void);
-void stub_int_0x3_force(void);
-void stub_int_0x3_forcered(void);
-extern unsigned long label_int_0x3_reg_trap[], label_int_0x3_reg_fault[];
-extern unsigned long label_int_0x3_red_trap[], label_int_0x3_red_fault[];
-extern unsigned long label_int_0x3_force_trap[], label_int_0x3_force_fault[];
-extern unsigned long label_int_0x3_forcered_trap[], label_int_0x3_forcered_fault[];
+unsigned long stub_int_0x3(void);
+unsigned long stub_int_0x3_A(void);
+unsigned long stub_int_0x3_F(void);
+unsigned long stub_int_0x3_FA(void);
 
-void stub_icebp_reg(void);
-void stub_icebp_red(void);
-void stub_icebp_force(void);
-void stub_icebp_forcered(void);
-extern unsigned long label_icebp_reg_trap[], label_icebp_reg_fault[];
-extern unsigned long label_icebp_red_trap[], label_icebp_red_fault[];
-extern unsigned long label_icebp_force_trap[], label_icebp_force_fault[];
-extern unsigned long label_icebp_forcered_trap[], label_icebp_forcered_fault[];
+unsigned long stub_icebp(void);
+unsigned long stub_icebp_A(void);
+unsigned long stub_icebp_F(void);
+unsigned long stub_icebp_FA(void);
 
-void stub_int_0x1_reg(void);
-void stub_int_0x1_red(void);
-void stub_int_0x1_force(void);
-void stub_int_0x1_forcered(void);
-extern unsigned long label_int_0x1_reg_trap[], label_int_0x1_reg_fault[];
-extern unsigned long label_int_0x1_red_trap[], label_int_0x1_red_fault[];
-extern unsigned long label_int_0x1_force_trap[], label_int_0x1_force_fault[];
-extern unsigned long label_int_0x1_forcered_trap[], label_int_0x1_forcered_fault[];
+unsigned long stub_int_0x1(void);
+unsigned long stub_int_0x1_A(void);
+unsigned long stub_int_0x1_F(void);
+unsigned long stub_int_0x1_FA(void);
 
-void stub_into_reg(void);
-void stub_into_red(void);
-void stub_into_force(void);
-void stub_into_forcered(void);
-extern unsigned long label_into_reg_trap[], label_into_reg_fault[];
-extern unsigned long label_into_red_trap[], label_into_red_fault[];
-extern unsigned long label_into_force_trap[], label_into_force_fault[];
-extern unsigned long label_into_forcered_trap[], label_into_forcered_fault[];
+unsigned long stub_into(void);
+unsigned long stub_into_A(void);
+unsigned long stub_into_F(void);
+unsigned long stub_into_FA(void);
 
 #endif /* __LOWLEVEL_H__ */
 

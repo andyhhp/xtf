@@ -58,188 +58,92 @@ bool test_wants_user_mappings = true;
 # define COND(_32, _64) _64
 #endif
 
+#define EXINFO_TRAP EXINFO_AVAIL0
+
 enum mode { KERN, USER };
 
-/** Single stub's worth of information. */
-struct single
+bool ex_record_trap_eax(struct cpu_regs *regs, const struct extable_entry *ex)
 {
-    const char *type;
-    void (*fn)(void);
-    void *trap, *fault;
-};
+    regs->ax = EXINFO(regs->entry_vector, regs->error_code) | EXINFO_TRAP;
+    regs->ip = ex->fixup;
+
+    return true;
+}
 
 struct insn
 {
     const char *name;
-    struct single tests[4];
+    unsigned long (*fn[4])(void);
 };
 
 const struct insn int3 = {
     "int3",
     {
-      {"regular", stub_int3_reg,
-       label_int3_reg_trap, label_int3_reg_fault},
-
-      {"redundant", stub_int3_red,
-       label_int3_red_trap, label_int3_red_fault},
-
-      {"forced", stub_int3_force,
-       label_int3_force_trap, label_int3_force_fault},
-
-      {"forced redundant", stub_int3_forcered,
-       label_int3_forcered_trap, label_int3_forcered_fault},
+        stub_int3,
+        stub_int3_A,
+        stub_int3_F,
+        stub_int3_FA,
     },
 };
 
 const struct insn int_0x3 = {
     "int $3",
     {
-      {"regular", stub_int_0x3_reg,
-       label_int_0x3_reg_trap, label_int_0x3_reg_fault},
-
-      {"redundant", stub_int_0x3_red,
-       label_int_0x3_red_trap, label_int_0x3_red_fault},
-
-      {"forced", stub_int_0x3_force,
-       label_int_0x3_force_trap, label_int_0x3_force_fault},
-
-      {"forced redundant", stub_int_0x3_forcered,
-       label_int_0x3_forcered_trap, label_int_0x3_forcered_fault},
+        stub_int_0x3,
+        stub_int_0x3_A,
+        stub_int_0x3_F,
+        stub_int_0x3_FA,
     },
 };
 
 const struct insn icebp = {
     "icebp",
     {
-      {"regular", stub_icebp_reg,
-       label_icebp_reg_trap, label_icebp_reg_fault},
-
-      {"redundant", stub_icebp_red,
-       label_icebp_red_trap, label_icebp_red_fault},
-
-      {"forced", stub_icebp_force,
-       label_icebp_force_trap, label_icebp_force_fault},
-
-      {"forced redundant", stub_icebp_forcered,
-       label_icebp_forcered_trap, label_icebp_forcered_fault},
+        stub_icebp,
+        stub_icebp_A,
+        stub_icebp_F,
+        stub_icebp_FA,
     },
 };
 
 const struct insn int_0x1 = {
     "int $1",
     {
-      {"regular", stub_int_0x1_reg,
-       label_int_0x1_reg_trap, label_int_0x1_reg_fault},
-
-      {"redundant", stub_int_0x1_red,
-       label_int_0x1_red_trap, label_int_0x1_red_fault},
-
-      {"forced", stub_int_0x1_force,
-       label_int_0x1_force_trap, label_int_0x1_force_fault},
-
-      {"forced redundant", stub_int_0x1_forcered,
-       label_int_0x1_forcered_trap, label_int_0x1_forcered_fault},
+        stub_int_0x1,
+        stub_int_0x1_A,
+        stub_int_0x1_F,
+        stub_int_0x1_FA,
     },
 };
 
 const struct insn into = {
     "into",
     {
-      {"regular", stub_into_reg,
-       label_into_reg_trap, label_into_reg_fault},
-
-      {"redundant", stub_into_red,
-       label_into_red_trap, label_into_red_fault},
-
-      {"forced", stub_into_force,
-       label_into_force_trap, label_into_force_fault},
-
-      {"forced redundant", stub_into_forcered,
-       label_into_forcered_trap, label_into_forcered_fault},
+        stub_into,
+        stub_into_A,
+        stub_into_F,
+        stub_into_FA,
     },
 };
 
-struct expectation {
-    const char *prefix;
-    const void *ip;
-    unsigned int ev, ec;
-} /** Expected %%eip, vector and error code from the stub under test. */
-    expectation;
-
-/** Latch details of the stub under test. */
-void expect(const void *prefix, const void *ip,
-            unsigned int ev, unsigned int ec)
-{
-    expectation = (struct expectation){prefix, ip, ev, ec};
-    xtf_exlog_reset();
-}
-
-/** Check the exception long against the expected details. */
-void check(void)
-{
-    unsigned int entries = xtf_exlog_entries();
-
-    if ( entries != 1 )
-    {
-        xtf_failure("Fail %s: Expected 1 exception (vec %u at %p), got %u\n",
-                    expectation.prefix, expectation.ev,
-                    expectation.ip, entries);
-        xtf_exlog_dump_log();
-        return;
-    }
-
-    exlog_entry_t *entry = xtf_exlog_entry(0);
-    if ( !entry )
-    {
-        xtf_failure("Fail %s: Unable to retrieve exception log\n",
-                    expectation.prefix);
-        return;
-    }
-
-    if ( (_p(entry->ip) != expectation.ip) ||
-         (entry->ev != expectation.ev) ||
-         (entry->ec != expectation.ec) )
-    {
-        xtf_failure("Fail %s:\n"
-                    "  Expected vec %2u[%04x] at %p\n"
-                    "       got vec %2u[%04x] at %p\n",
-                    expectation.prefix,
-                    expectation.ev, expectation.ec, expectation.ip,
-                    entry->ev, entry->ec, _p(entry->ip));
-        return;
-    }
-}
-
-/** Print expected information in the case of an unexpected exception. */
-bool do_unhandled_exception(struct cpu_regs *regs)
-{
-    printk("Unhandled Exception at %p\n", _p(regs));
-    check();
-
-    return false;
-}
-
 void test_insn(enum mode user, const struct insn *insn, exinfo_t exp)
 {
-    unsigned int vector = exinfo_vec(exp);
-    unsigned int error = exinfo_ec(exp);
-    bool fault = X86_EXC_FAULTS & (1u << vector);
-
     printk("  Testing %s\n", insn->name);
 
-    for ( unsigned int i = 0; i < ARRAY_SIZE(insn->tests); ++i )
+    for ( unsigned int i = 0; i < ARRAY_SIZE(insn->fn); ++i )
     {
-        const struct single *s = &insn->tests[i];
+        exinfo_t got;
 
-        expect(s->type,
-               fault ? s->fault : s->trap,
-               vector, error);
+        got = user ? exec_user(insn->fn[i]) : insn->fn[i]();
 
-        user ? exec_user_void(s->fn) : s->fn();
+        if ( exp != got )
+            xtf_failure("    Fail (Force%c, Addr%c): expected %pe %s, got %pe %s\n",
+                        i & 1 ? '+' : '-',
+                        i & 2 ? '+' : '-',
+                        _p(exp), exp & EXINFO_TRAP ? "trap" : "fault",
+                        _p(got), got & EXINFO_TRAP ? "trap" : "fault");
 
-        check();
-
-        /* Avoid 'force' and 'forcered' stubs if FEP isn't available. */
+        /* Avoid FEP stubs if FEP isn't available. */
         if ( i == 1 && !xtf_has_fep )
             break;
     }
@@ -261,7 +165,7 @@ static void set_idt_entries_dpl(unsigned int dpl)
     idt[X86_EXC_OF].dpl = dpl;
 }
 
-#define TRAP(V)          EXINFO_SYM(V, 0)
+#define TRAP(V)          EXINFO_SYM(V, 0) | EXINFO_TRAP
 #define FAULT(V)         EXINFO_SYM(V, 0)
 #define FAULT_EC(V, ...) EXINFO_SYM(V, EXC_EC_SYM(__VA_ARGS__))
 
@@ -342,12 +246,8 @@ void test_main(void)
     set_idt_entries_present(true);
     set_idt_entries_dpl(3);
 
-    xtf_exlog_start();
-
     cpl0_tests();
     cpl3_tests();
-
-    xtf_exlog_stop();
 
     xtf_success(NULL);
 }
