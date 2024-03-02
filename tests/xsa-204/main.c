@@ -21,28 +21,30 @@
  */
 #include <xtf.h>
 
-bool test_needs_fep = true;
-bool test_wants_user_mappings = true;
 const char test_title[] = "XSA-204 PoC";
+bool test_needs_fep = true;
 
 void entry_SYSCALL_64(void);
 asm(".align 8;"
     "entry_SYSCALL_64:"
-    "and $~" STR(X86_EFLAGS_TF) ", %r11;"
+    "1: and $~" STR(X86_EFLAGS_TF) ", %r11;"
     "sysretq;"
+    _ASM_EXTABLE_HANDLER(1b, 1b, ex_record_fault_eax)
     );
 
-static void user_force_syscall(void)
+static unsigned long __user_text user_force_syscall(void)
 {
+    unsigned long fault = 0;
+
     asm volatile ("pushf;"
                   "orl $%c[TF], (%%rsp);"
                   "popf;"
-
-                  _ASM_XEN_FEP
-                  "syscall;"
-                  ::
-                   [TF] "i" (X86_EFLAGS_TF)
+                  _ASM_XEN_FEP "syscall;"
+                  : "+a" (fault)
+                  : [TF] "i" (X86_EFLAGS_TF)
                   : "rcx", "r11");
+
+    return fault;
 }
 
 void test_main(void)
@@ -67,14 +69,18 @@ void test_main(void)
     wrmsr(MSR_LSTAR, _u(entry_SYSCALL_64));
     wrmsr(MSR_FMASK, X86_EFLAGS_TF);
 
-    xtf_exlog_start();
-    exec_user_void(user_force_syscall);
-    xtf_exlog_stop();
+    exinfo_t ex = exec_user(user_force_syscall);
+    switch ( ex )
+    {
+    case 0:
+        return xtf_success("Success: Not vulnerable to XSA-204\n");
 
-    if ( xtf_exlog_entries() != 0 )
-        xtf_failure("Fail: Observed debug traps - vulnerable to XSA-204\n");
-    else
-        xtf_success("Success: Not vulnerable to XSA-204\n");
+    case EXINFO_SYM(DB, 0):
+        return xtf_failure("Fail: Got #DB - vulnerable to XSA-204\n");
+
+    default:
+        return xtf_error("Error: Expected nothing, got %pe\n", _p(ex));
+    }
 }
 
 /*
