@@ -34,7 +34,7 @@
  *    to make IOPL handling easier for the guest kernel.  A guest must opt in
  *    to the new ABI by enabling the VMASSIT.  This ABI considers a guest
  *    kernel to have an cpl of 0, and the shadowed IOPL will be updated from
- *    the contents of iret frame during an iret hypercall.
+ *    the contents of IRET frame during an IRET hypercall.
  *
  * @see tests/pv-iopl/main.c
  */
@@ -44,14 +44,12 @@ const char test_title[] = "PV IOPL emulation";
 
 bool test_wants_user_mappings = true;
 
-/** Stub CLI instruction with @#GP fixup. */
 static void stub_cli(void)
 {
     asm volatile ("1: cli; 2:"
                   _ASM_EXTABLE(1b, 2b));
 }
 
-/** Stub OUTB instruction with @#GP fixup. */
 static void stub_outb(void)
 {
     asm volatile ("1: outb %b0, $0x80; 2:"
@@ -59,13 +57,10 @@ static void stub_outb(void)
                   :: "a" (0));
 }
 
-static const struct insn
-{
+static const struct insn {
     const char *name;
     void (*fn)(void);
-} /** Sequence of instructions to run. */
-    insn_sequence[] =
-{
+} insns[] = {
     { "cli",  stub_cli,  },
     { "outb", stub_outb, },
 };
@@ -128,13 +123,12 @@ static void check(void)
     }
 }
 
-struct test
-{
+enum mode { KERN, USER };
+struct test {
     void (*set_iopl)(unsigned int iopl);
-    bool (*should_fault)(bool user, unsigned int iopl);
+    bool (*should_fault)(enum mode, unsigned int iopl);
 };
 
-/** Test the instruction sequence using a specific iopl interface. */
 static void run_test(const struct test *t)
 {
     unsigned int i, iopl;
@@ -150,18 +144,18 @@ static void run_test(const struct test *t)
         printk("  vIOPL %u\n", iopl);
         t->set_iopl(iopl);
 
-        for ( i = 0; i < ARRAY_SIZE(insn_sequence); ++i )
+        for ( i = 0; i < ARRAY_SIZE(insns); ++i )
         {
-            const struct insn *seq = &insn_sequence[i];
+            const struct insn *insn = &insns[i];
 
             /* Run insn in kernel. */
-            expect(seq->name, 0, t->should_fault(0, iopl));
-            seq->fn();
+            expect(insn->name, KERN, t->should_fault(KERN, iopl));
+            insn->fn();
             check();
 
             /* Run insn in userspace. */
-            expect(seq->name, 1, t->should_fault(1, iopl));
-            exec_user_void(seq->fn);
+            expect(insn->name, USER, t->should_fault(USER, iopl));
+            exec_user_void(insn->fn);
 
             check();
         }
@@ -175,7 +169,7 @@ static void hypercall_set_iopl(unsigned int iopl)
     hypercall_physdev_op(PHYSDEVOP_set_iopl, &iopl);
 }
 
-static bool hypercall_should_fault(bool user, unsigned int iopl)
+static bool hypercall_should_fault(enum mode mode, unsigned int iopl)
 {
     /*
      * Kernel has vCPL 1, userspace has vCPL 3
@@ -189,7 +183,7 @@ static bool hypercall_should_fault(bool user, unsigned int iopl)
     case 1:
     case 2:
         /* Kernel should succeed, user should fault. */
-        return user;
+        return mode == USER;
 
     case 3:
         /* Both kernel and userspace should succeed. */
@@ -200,9 +194,7 @@ static bool hypercall_should_fault(bool user, unsigned int iopl)
     }
 }
 
-/** Hypercall based IOPL interface. */
-static const struct test hypercall =
-{
+static const struct test hypercall = {
     .set_iopl     = hypercall_set_iopl,
     .should_fault = hypercall_should_fault,
 };
@@ -215,11 +207,11 @@ static void vmassist_set_iopl(unsigned int iopl)
      * with the appropriate iopl set.  Reuse the exec_user infrastructure to
      * issue the iret, and execute nothing interesting in user context.
      */
-    exec_user_efl_or_mask = iopl << 12;
+    exec_user_efl_or_mask = MASK_INSR(iopl, X86_EFLAGS_IOPL);
     exec_user_void(nop);
 }
 
-static bool vmassist_should_fault(bool user, unsigned int iopl)
+static bool vmassist_should_fault(enum mode mode, unsigned int iopl)
 {
     /*
      * Kernel has vCPL 0, userspace has vCPL 3.
@@ -227,33 +219,32 @@ static bool vmassist_should_fault(bool user, unsigned int iopl)
      * Kenrel should never fault, while userspace should only not fault at
      * iopl 3.
      */
-    if ( !user )
+    if ( mode == KERN )
         return false;
 
     return iopl != 3;
 }
 
-/** VMASSIT based IOPL interface. */
-static const struct test vmassist =
-{
+static const struct test vmassist = {
     .set_iopl     = vmassist_set_iopl,
     .should_fault = vmassist_should_fault,
 };
 
 void test_main(void)
 {
+    const char *cmdline = (const char *)pv_start_info->cmd_line;
     const struct test *test;
 
     /**
      * @todo Implement better command line infrastructure, but this will do
      * for now.
      */
-    if ( !strcmp((char *)pv_start_info->cmd_line, "hypercall") )
+    if ( !strcmp(cmdline, "hypercall") )
     {
         printk("Test: PHYSDEVOP_set_iopl\n");
         test = &hypercall;
     }
-    else if ( !strcmp((char *)pv_start_info->cmd_line, "vmassist") )
+    else if ( !strcmp(cmdline, "vmassist") )
     {
         if ( hypercall_vm_assist(VMASST_CMD_enable,
                                  VMASST_TYPE_architectural_iopl) )
