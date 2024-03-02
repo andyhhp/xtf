@@ -42,9 +42,19 @@
 
 const char test_title[] = "PV IOPL emulation";
 
-bool test_wants_user_mappings = true;
-
 static unsigned long stub_cli(void)
+{
+    unsigned long fault = 0;
+
+    asm ("1: cli; 2:"
+         _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+         : "+a" (fault)
+         : [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
+static unsigned long __user_text stub_user_cli(void)
 {
     unsigned long fault = 0;
 
@@ -68,12 +78,25 @@ static unsigned long stub_outb(void)
     return fault;
 }
 
+static unsigned long __user_text stub_user_outb(void)
+{
+    unsigned long fault = 0;
+
+    asm ("1: outb %b0, $0x80; 2:"
+         _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+         : "+a" (fault) /* Overloaded as the input to OUTB */
+         : [rec] "p" (ex_record_fault_eax));
+
+    return fault;
+}
+
 static const struct insn {
     const char *name;
     unsigned long (*fn)(void);
+    unsigned long (*user_fn)(void);
 } insns[] = {
-    { "cli",  stub_cli,  },
-    { "outb", stub_outb, },
+    { "cli",  stub_cli,  stub_user_cli,  },
+    { "outb", stub_outb, stub_user_outb, },
 };
 
 enum mode { KERN, USER };
@@ -108,7 +131,7 @@ static void run_test(const struct test *t)
 
             /* Run insn in userspace. */
             exp = t->should_fault(USER, iopl) ? EXINFO_SYM(GP, 0) : 0;
-            got = exec_user(insn->fn);
+            got = exec_user(insn->user_fn);
 
             if ( exp != got )
                 xtf_failure("Fail: user %s, expected %pe, got %pe\n",
@@ -152,7 +175,7 @@ static const struct test hypercall = {
     .should_fault = hypercall_should_fault,
 };
 
-static void nop(void){}
+static void __user_text nop(void) {}
 static void vmassist_set_iopl(unsigned int iopl)
 {
     /*
