@@ -1,6 +1,5 @@
 #include <xtf/lib.h>
 #include <xtf/traps.h>
-#include <xtf/exlog.h>
 
 #include <arch/decode.h>
 #include <arch/lib.h>
@@ -24,8 +23,6 @@ void do_exception(struct cpu_regs *regs)
 {
     const struct extable_entry *ex;
     bool safe = false;
-
-    xtf_exlog_log_exception(regs);
 
     /* Look in the exception table to see if a redirection has been set up. */
     if ( !safe && (ex = search_extable(regs->ip)) )

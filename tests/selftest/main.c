@@ -49,106 +49,6 @@ static void test_extable(void)
                   _ASM_EXTABLE(1b, 2b));
 }
 
-static bool check_nr_entries(unsigned int nr)
-{
-    unsigned int entries = xtf_exlog_entries();
-
-    if ( entries != nr )
-    {
-        xtf_failure("Fail: expected %u entries, got %u\n",
-                    nr, entries);
-        return false;
-    }
-
-    return true;
-}
-
-static bool check_exlog_entry(unsigned int entry, unsigned int cs,
-                              unsigned long ip, unsigned int ev,
-                              unsigned int ec)
-{
-    exlog_entry_t *e = xtf_exlog_entry(entry);
-
-    /* Check whether the log entry is available. */
-    if ( !e )
-    {
-        xtf_failure("Fail: unable to retrieve log entry %u\n", entry);
-        return false;
-    }
-
-    /* Check whether the log entry is correct. */
-    if ( (e->ip != ip) || (e->cs != cs) || (e->ec != ec) || (e->ev != ev) )
-    {
-        xtf_failure("Fail: exlog entry:\n"
-                    "  Expected: %04x:%p, ec %04x, vec %u\n"
-                    "       Got: %04x:%p, ec %04x, vec %u\n",
-                    cs, _p(ip), ec, ev, e->cs, _p(e->ip), e->ec, e->ev);
-        return false;
-    }
-
-    return true;
-}
-
-static void test_exlog(void)
-{
-    extern unsigned long exlog_int3[] asm(".Lexlog_int3");
-    extern unsigned long exlog_ud2a[] asm(".Lexlog_ud2a");
-
-    printk("Test: Exception Logging\n");
-
-    xtf_exlog_start();
-
-    /* Check that no entries have been logged thus far. */
-    if ( !check_nr_entries(0) )
-        goto out;
-
-    asm volatile ("int3; .Lexlog_int3:"
-                  _ASM_TRAP_OK(.Lexlog_int3));
-
-    /* Check that one entry has now been logged. */
-    if ( !check_nr_entries(1) ||
-         !check_exlog_entry(0, __KERN_CS, _u(exlog_int3), X86_EXC_BP, 0) )
-        goto out;
-
-    asm volatile (".Lexlog_ud2a: ud2a; 1:"
-                  _ASM_EXTABLE(.Lexlog_ud2a, 1b));
-
-    /* Check that two entries have now been logged. */
-    if ( !check_nr_entries(2) ||
-         !check_exlog_entry(1, __KERN_CS, _u(exlog_ud2a), X86_EXC_UD, 0) )
-        goto out;
-
-    xtf_exlog_reset();
-
-    /* Check that no entries now exist. */
-    if ( !check_nr_entries(0) )
-        goto out;
-
-    asm volatile ("int3; 1:"
-                  _ASM_TRAP_OK(1b));
-
-    /* Check that one entry now exists. */
-    if ( !check_nr_entries(1) )
-        goto out;
-
-    xtf_exlog_stop();
-
-    /* Check that one entry still exists. */
-    if ( !check_nr_entries(1) )
-        goto out;
-
-    asm volatile ("int3; 1:"
-                  _ASM_TRAP_OK(1b));
-
-    /* Check that the previous breakpoint wasn't logged. */
-    if ( !check_nr_entries(1) )
-        goto out;
-
- out:
-    xtf_exlog_reset();
-    xtf_exlog_stop();
-}
-
 enum {
     USER_not_seen,
     USER_seen,
@@ -186,21 +86,19 @@ static void test_exec_user(void)
 
 static void test_NULL_unmapped(void)
 {
-    extern unsigned long label_test_NULL_unmapped[];
-    unsigned long tmp;
+    unsigned int tmp;
+    exinfo_t got = 0;
 
     printk("Test: NULL unmapped\n");
 
-    xtf_exlog_start();
+    asm volatile ("1: mov 0, %[tmp]; 2:"
+                  _ASM_EXTABLE_HANDLER(1b, 2b, %P[rec])
+                  : "+a" (got),
+                    [tmp] "=r" (tmp)
+                  : [rec] "p" (ex_record_fault_eax));
 
-    asm volatile ("label_test_NULL_unmapped: mov 0, %0; 2:"
-                  _ASM_EXTABLE(label_test_NULL_unmapped, 2b)
-                  : "=q" (tmp) :: "memory");
-
-    if ( check_nr_entries(1) )
-        check_exlog_entry(0, __KERN_CS, _u(label_test_NULL_unmapped), X86_EXC_PF, 0);
-
-    xtf_exlog_stop();
+    if ( got != EXINFO_SYM(PF, 0) )
+        xtf_failure("Fail: Expected #PF, got %pe\n", _p(got));
 }
 
 bool do_unhandled_exception(struct cpu_regs *regs)
@@ -394,7 +292,6 @@ void test_main(void)
     }
 
     test_extable();
-    test_exlog();
     test_exec_user();
     if ( CONFIG_PAGING_LEVELS > 0 )
         test_NULL_unmapped();

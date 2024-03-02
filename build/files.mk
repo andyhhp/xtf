@@ -5,7 +5,6 @@
 # obj-$(env)   are objects unique to a specific environment
 
 obj-perbits += $(ROOT)/common/console.o
-obj-perbits += $(ROOT)/common/exlog.o
 obj-perbits += $(ROOT)/common/extable.o
 obj-perbits += $(ROOT)/common/grant_table.o
 obj-perbits += $(ROOT)/common/heapsort.o
