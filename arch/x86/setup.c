@@ -71,7 +71,7 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
         cpuid_fn(7, 0, &tmp,
                  &x86_features[FEATURESET_7b0],
                  &x86_features[FEATURESET_7c0],
-                 &tmp);
+                 &x86_features[FEATURESET_7d0]);
     if ( max_leaf >= 0xd )
         cpuid_fn(0xd, 0,
                  &x86_features[FEATURESET_Da1],

@@ -47,8 +47,9 @@ static inline bool vendor_is(enum x86_vendor v)
 #define FEATURESET_7c0          cpufeat_word(X86_FEATURE_PREFETCHWT1)
 #define FEATURESET_e7d          cpufeat_word(X86_FEATURE_ITSC)
 #define FEATURESET_e8b          cpufeat_word(X86_FEATURE_CLZERO)
+#define FEATURESET_7d0          cpufeat_word(X86_FEATURE_RTM_ALWAYS_ABORT)
 
-#define FSCAPINTS               (FEATURESET_e8b + 1)
+#define FSCAPINTS               (FEATURESET_7d0 + 1)
 
 extern uint32_t x86_features[FSCAPINTS];
 
@@ -97,6 +98,8 @@ static inline bool cpu_has(unsigned int feature)
 
 #define cpu_has_umip            cpu_has(X86_FEATURE_UMIP)
 #define cpu_has_pku             cpu_has(X86_FEATURE_PKU)
+
+#define cpu_has_rtm_always_abort cpu_has(X86_FEATURE_RTM_ALWAYS_ABORT)
 
 #endif /* XTF_X86_CPUID_H */
 

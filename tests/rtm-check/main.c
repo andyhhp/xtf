@@ -15,8 +15,8 @@ const char test_title[] = "Test RTM behaviour";
 
 void test_main(void)
 {
-    printk("CPUID: HLE %u, RTM %u\n",
-           cpu_has_hle, cpu_has_rtm);
+    printk("CPUID: HLE %u, RTM %u, RTM_ALWAYS_ABORT %u\n",
+           cpu_has_hle, cpu_has_rtm, cpu_has_rtm_always_abort);
 
     for ( int i = 0; i < 1000; ++i )
     {

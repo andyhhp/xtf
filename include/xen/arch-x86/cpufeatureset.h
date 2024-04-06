@@ -155,6 +155,9 @@
 /* AMD-defined CPU features, CPUID level 0x80000008.ebx, word 8 */
 #define X86_FEATURE_CLZERO        (8*32+ 0) /* CLZERO instruction */
 
+/* Intel-defined CPU features, CPUID level 0x00000007:0.edx, word 9 */
+#define X86_FEATURE_RTM_ALWAYS_ABORT (9*32+11) /* RTM disabled (XBEGIN aborts) */
+
 #endif /* XEN_PUBLIC_ARCH_X86_CPUFEATURESET_H */
 
 /*
