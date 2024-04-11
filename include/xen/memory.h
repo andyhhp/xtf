@@ -17,6 +17,8 @@ struct xen_memory_reservation {
     domid_t domid;
 };
 
+#define XENMEM_maximum_ram_page     2
+
 #define XENMEM_add_to_physmap       7
 
 struct xen_add_to_physmap {

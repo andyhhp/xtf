@@ -169,6 +169,8 @@ states.
 
 @subpage test-xsa-451 - x86: shadow stack vs exceptions from emulation stubs.
 
+@subpage test-xsa-454 - x86 HVM hypercalls may trigger Xen bug check.
+
 
 @section index-utility Utilities
 
