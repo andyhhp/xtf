@@ -21,12 +21,18 @@
 #define APIC_SPIV       0x0f0
 #define   APIC_SPIV_APIC_ENABLED  0x00100
 
+#define APIC_ESR        0x280
+#define   APIC_SIV                0x00020 /* Send Illegal Vector */
+#define   APIC_RIV                0x00040 /* Recieve Illegal Vector */
+
 #define APIC_ICR        0x300
+#define   APIC_DM_FIXED           0x00000
 #define   APIC_DM_NMI             0x00400
 #define   APIC_ICR_BUSY           0x01000
 #define   APIC_DEST_SELF          0x40000
 
 #define APIC_ICR2       0x310
+#define APIC_LVTERR     0x370
 
 #define APIC_DEFAULT_BASE 0xfee00000ul
 

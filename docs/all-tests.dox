@@ -171,6 +171,8 @@ states.
 
 @subpage test-xsa-454 - x86 HVM hypercalls may trigger Xen bug check.
 
+@subpage test-xsa-462 - x86: Deadlock in vlapic_error().
+
 
 @section index-utility Utilities
 
