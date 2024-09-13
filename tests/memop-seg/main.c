@@ -269,6 +269,10 @@ void test_main(void)
         update_desc(&gdt[GDTE_AVAIL1],
                     GDTE_SYM(0, 0x7ffff, COMMON, DATA, DPL3, B, W));
         exec_user_ss = GDTE_AVAIL1 << 3 | 3;
+
+        /* Load %fs/%gs unconditionally. */
+        write_fs(exec_user_ss);
+        write_gs(exec_user_ss);
     }
 
     for ( i = 0; i < ARRAY_SIZE(tests); ++i )

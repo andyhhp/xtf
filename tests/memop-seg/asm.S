@@ -155,7 +155,7 @@ ENDFUNC(stub_\seg\()_\reg)
  */
 .local seg_mask, seg_idx, reg_mask, reg_idx
 #ifdef __i386__
-    seg_mask = 0b1100111
+    seg_mask = 0b1100100
 #else
     seg_mask = 0
 #endif
