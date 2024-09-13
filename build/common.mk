@@ -43,7 +43,7 @@ COMMON_CFLAGS += -Wno-unused-parameter -Winline
 COMMON_AFLAGS-x86_32 := -m32
 COMMON_AFLAGS-x86_64 := -m64
 
-COMMON_CFLAGS-x86_32 := -m32
+COMMON_CFLAGS-x86_32 := -m32 -mregparm=3
 COMMON_CFLAGS-x86_64 := -m64
 
 defcfg-pv    := $(ROOT)/config/default-pv.cfg.in

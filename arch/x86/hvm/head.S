@@ -73,7 +73,7 @@ GLOBAL(_elf_start)              /* HVM common setup. */
 #ifdef __x86_64__
         lea .Lmain_err_msg(%rip), %rdi
 #else
-        push $.Lmain_err_msg
+        mov $.Lmain_err_msg, %eax
 #endif
         call panic
 ENDFUNC(_elf_start)

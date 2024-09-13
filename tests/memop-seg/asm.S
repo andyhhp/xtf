@@ -12,9 +12,6 @@ ENTRY(stub_\seg\()_abs) /* exinfo_t stub_\seg_abs(unsigned long addr) */
          * Switch segment if necessary.  The old segment is preserved on the
          * stack for the duration of the test.
          */
-        .local stack_adj
-        stack_adj = 0
-
         .if \load_seg
             .ifeqs "\seg", "none"
                 push %ds
@@ -25,19 +22,22 @@ ENTRY(stub_\seg\()_abs) /* exinfo_t stub_\seg_abs(unsigned long addr) */
                 push $(GDTE_AVAIL1 << 3 | 3)
                 pop  %\seg
             .endif
-            stack_adj = 1
         .endif
 #endif
 
-        /* No exception if we don't fault.  Also reused by the 64bit case. */
-        xor %eax, %eax
-
         /* The bottom bit of 'addr' encodes FEP. */
 #ifdef __i386__
-        testb $1, (1 + stack_adj)*4(%esp)
+        testb $1, %al
 #else
         testb $1, %dil
 #endif
+
+        /*
+         * No exception if we don't fault.
+         * Reused by the 64bit case, and careful to not clobber flags.
+         */
+        mov $0, %eax
+
         jz 1f
 
         _ASM_XEN_FEP
@@ -82,9 +82,6 @@ ENTRY(stub_\seg\()_\reg) /* exinfo_t stub_\seg_\reg(unsigned long addr) */
          * Switch segment if necessary.  The old segment is preserved on the
          * stack for the duration of the test.
          */
-        .local stack_adj
-        stack_adj = 0
-
         .if \load_seg
             .ifeqs "\seg", "none"
                 push %ds
@@ -95,7 +92,6 @@ ENTRY(stub_\seg\()_\reg) /* exinfo_t stub_\seg_\reg(unsigned long addr) */
                 push $(GDTE_AVAIL1 << 3 | 3)
                 pop  %\seg
             .endif
-            stack_adj = 1
         .endif
 #endif
 
@@ -106,7 +102,7 @@ ENTRY(stub_\seg\()_\reg) /* exinfo_t stub_\seg_\reg(unsigned long addr) */
 
         /* Move 'addr' into \reg */
 #ifdef __i386__
-        mov (1 + stack_adj)*4(%esp), %\reg
+        mov %eax, %\reg
 #else
         mov %rdi, %\reg
 #endif

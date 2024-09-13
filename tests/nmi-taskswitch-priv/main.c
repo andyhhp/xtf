@@ -54,9 +54,8 @@ asm("exit_NMI_task:"
     "push %ebx;"
     "push %ebp;"
 
-    "push %esp;"
+    "mov %esp, %eax;"
     "call do_exception;"
-    "add $1*4, %esp;"
 
     "pop %ebp;"
     "pop %ebx;"

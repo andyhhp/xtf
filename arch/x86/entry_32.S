@@ -84,9 +84,8 @@ handle_exception:
         mov %eax, %ds
         mov %eax, %es
 
-        push %esp               /* struct cpu_regs * */
+        mov %esp, %eax          /* struct cpu_regs * */
         call do_exception
-        add $4, %esp
 
         RESTORE_ALL
 
@@ -104,17 +103,10 @@ ENTRY(entry_ret_to_kernel)      /* int $X86_VEC_RET2KERN */
         ret
 ENDFUNC(entry_ret_to_kernel)
 
-ENTRY(exec_user_param)
-        /*
-         * 2*4(%esp) ulong p1
-         * 1*4(%esp) ulong (*fn)(ulong)
-         * 0*4(%esp) return address
-         */
+ENTRY(exec_user_param)          /* %eax = ulong (*fn)(ulong p1), %edx = ulong p1 */
         push %ebp
 
         /* Prepare to "call" exec_user_stub(). */
-        mov (1+1)*4(%esp), %eax /* Pass fn() in %eax */
-        mov (1+2)*4(%esp), %ecx /* Pass p1 in %ecx */
         push $1f                /* Fake return addr as if we'd called exec_user_stub(). */
         mov %esp, %ebp          /* Stash %esp for entry_ret_to_kernel(). */
 
@@ -125,10 +117,10 @@ ENTRY(exec_user_param)
         pushf                   /* EFLAGS */
 
         /* Apply and/or masks to eflags. */
-        mov exec_user_efl_and_mask, %edx
-        and %edx, (%esp)
-        mov exec_user_efl_or_mask, %edx
-        or %edx, (%esp)
+        mov exec_user_efl_and_mask, %ecx
+        and %ecx, (%esp)
+        mov exec_user_efl_or_mask, %ecx
+        or %ecx, (%esp)
 
         push exec_user_cs       /* CS */
         push $exec_user_stub    /* EIP */
@@ -142,13 +134,9 @@ ENTRY(exec_user_param)
 ENDFUNC(exec_user_param)
 
 .pushsection .text.user, "ax", @progbits
-ENTRY(exec_user_stub)
-        /*
-         * For SMEP/SMAP safety, no shared stack can be used, so all
-         * parameters are passed in registers.
-         */
-        push %ecx               /* Push p1 for fn()'s call frame. */
-        call *%eax              /* fn(p1) */
+ENTRY(exec_user_stub)           /* %eax = ulong (*fn)(ulong p1), %edx = ulong p1 */
+        xchg %eax, %edx         /* Swap p1 to be first parameter to fn(). */
+        call *%edx              /* fn(p1) */
 
         int $X86_VEC_RET2KERN   /* Return to kernel privilege. */
 ENDFUNC(exec_user_stub)
@@ -167,9 +155,8 @@ ENTRY(entry_EVTCHN)
         mov %eax, %ds
         mov %eax, %es
 
-        push %esp               /* struct cpu_regs * */
+        mov %esp, %eax          /* struct cpu_regs * */
         call do_evtchn
-        add $4, %esp
 
         RESTORE_ALL
 
@@ -195,9 +182,8 @@ ENTRY(entry_SYSCALL)
         mov %eax, %ds
         mov %eax, %es
 
-        push %esp               /* struct cpu_regs * */
+        mov %esp, %eax          /* struct cpu_regs * */
         call do_syscall
-        add $4, %esp
 
         RESTORE_ALL
 
@@ -222,9 +208,8 @@ ENTRY(entry_SYSENTER)
         mov %eax, %ds
         mov %eax, %es
 
-        push %esp               /* struct cpu_regs * */
+        mov %esp, %eax          /* struct cpu_regs * */
         call do_sysenter
-        add $4, %esp
 
         RESTORE_ALL
 
