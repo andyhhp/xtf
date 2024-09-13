@@ -101,9 +101,13 @@ static void test_NULL_unmapped(void)
         xtf_failure("Fail: Expected #PF, got %pe\n", _p(got));
 }
 
+static volatile bool test_hook_active;
 bool do_unhandled_exception(struct cpu_regs *regs)
 {
     extern unsigned long hook_fault[], hook_fixup[];
+
+    if ( !test_hook_active )
+        return false;
 
     if ( _p(regs->ip) != hook_fault )
     {
@@ -121,7 +125,9 @@ static void test_unhandled_exception_hook(void)
     printk("Test: Unhandled Exception Hook\n");
 
     /* Check that the hook catches the exception, and fix it up. */
+    test_hook_active = true;
     asm volatile ("hook_fault: ud2a; hook_fixup:");
+    test_hook_active = false;
 }
 
 static bool test_extable_handler_handler_run;
