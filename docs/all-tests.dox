@@ -173,6 +173,8 @@ states.
 
 @subpage test-xsa-462 - x86: Deadlock in vlapic_error().
 
+@subpage test-xsa-463 - Deadlock in x86 HVM standard VGA handling.
+
 
 @section index-utility Utilities
 
