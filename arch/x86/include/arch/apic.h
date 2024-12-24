@@ -88,9 +88,17 @@ static inline void apic_msr_icr_write(uint64_t val)
 
 extern enum apic_mode cur_apic_mode;
 
+/*
+ * Allow tests to force code generation for a single APIC mode.
+ */
+#ifndef TEST_APIC_MODE
+#define TEST_APIC_MODE 0
+#endif
+#define CUR_APIC_MODE (TEST_APIC_MODE ?: cur_apic_mode)
+
 static inline uint32_t apic_read(unsigned int reg)
 {
-    if ( cur_apic_mode == APIC_MODE_XAPIC )
+    if ( CUR_APIC_MODE == APIC_MODE_XAPIC )
         return apic_mmio_read(reg);
     else
         return apic_msr_read(reg);
@@ -98,7 +106,7 @@ static inline uint32_t apic_read(unsigned int reg)
 
 static inline void apic_write(unsigned int reg, uint32_t val)
 {
-    if ( cur_apic_mode == APIC_MODE_XAPIC )
+    if ( CUR_APIC_MODE == APIC_MODE_XAPIC )
         return apic_mmio_write(reg, val);
     else
         return apic_msr_write(reg, val);
@@ -106,7 +114,7 @@ static inline void apic_write(unsigned int reg, uint32_t val)
 
 static inline void apic_icr_write(uint64_t val)
 {
-    if ( cur_apic_mode == APIC_MODE_XAPIC )
+    if ( CUR_APIC_MODE == APIC_MODE_XAPIC )
         return apic_mmio_icr_write(val);
     else
         return apic_msr_icr_write(val);

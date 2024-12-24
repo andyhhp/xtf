@@ -29,6 +29,9 @@
  *
  * @see tests/nmi-taskswitch-priv/main.c
  */
+
+#define TEST_APIC_MODE APIC_MODE_XAPIC
+
 #include <xtf.h>
 
 const char test_title[] = "Test nmi-taskswitch-priv";
@@ -111,7 +114,7 @@ bool do_unhandled_exception(struct cpu_regs *regs)
 
 static void __user_text user_inject_nmi(void)
 {
-    apic_mmio_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
+    apic_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
 }
 
 void test_main(void)
@@ -139,7 +142,7 @@ void test_main(void)
      * the expected TSS.
      */
     printk("First self-nmi, from supervisor mode\n");
-    apic_mmio_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
+    apic_icr_write(APIC_DEST_SELF | APIC_DM_NMI);
 
     if ( (curr_ts = str()) != TSS_SEL )
         xtf_failure("Fail: Running main task with unexpected %%tr\n"
