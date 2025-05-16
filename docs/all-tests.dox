@@ -175,6 +175,8 @@ states.
 
 @subpage test-xsa-463 - Deadlock in x86 HVM standard VGA handling.
 
+@subpage test-xsa-470 - x86: Incorrect stubs exception handling for flags recovery.
+
 
 @section index-utility Utilities
 
