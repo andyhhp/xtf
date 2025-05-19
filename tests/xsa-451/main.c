@@ -28,7 +28,7 @@ void test_main(void)
     exinfo_t fault = 0;
     unsigned int status;
 
-    /* Enable SEE, clear and unmask all exceptions. */
+    /* Enable SSE, clear and unmask all exceptions. */
     write_cr4(read_cr4() | X86_CR4_OSFXSR | X86_CR4_OSXMMEXCPT);
     write_mxcsr(0);
 
@@ -57,7 +57,7 @@ void test_main(void)
     if ( status != X86_MXCSR_IE )
         return xtf_error("Error: expecting #I, got %#x\n", status);
 
-    xtf_success("Success: not vulnerable to XSA-451\n");
+    xtf_success("Success: Not vulnerable to XSA-451\n");
 }
 
 /*

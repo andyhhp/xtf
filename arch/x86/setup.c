@@ -212,13 +212,12 @@ static void map_shared_info(void)
 
     if ( IS_DEFINED(CONFIG_HVM) )
     {
-        struct xen_add_to_physmap xatp =
-            {
-                .domid = DOMID_SELF,
-                .space = XENMAPSPACE_shared_info,
-                .idx = 0,
-                .gfn = virt_to_gfn(&shared_info),
-            };
+        struct xen_add_to_physmap xatp = {
+            .domid = DOMID_SELF,
+            .space = XENMAPSPACE_shared_info,
+            .idx = 0,
+            .gfn = virt_to_gfn(&shared_info),
+        };
 
         rc = hypercall_memory_op(XENMEM_add_to_physmap, &xatp);
     }
@@ -233,7 +232,7 @@ static void map_shared_info(void)
 
 static void qemu_console_write(const char *buf, size_t len)
 {
-    asm volatile("rep; outsb"
+    asm volatile("rep outsb"
                  : "+S" (buf), "+c" (len)
                  : "d" (0x12));
 }

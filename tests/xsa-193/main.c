@@ -32,7 +32,7 @@ void test_main(void)
     if ( !wrmsr_safe(MSR_SHADOW_GS_BASE, 0x8000000000000000ull) )
         xtf_failure("Fail: MSR_SHADOW_GS_BASE didn't fault for non-canonical value\n");
 
-    xtf_success("Success: not vulnerable to XSA-193\n");
+    xtf_success("Success: Not vulnerable to XSA-193\n");
 }
 
 /*
