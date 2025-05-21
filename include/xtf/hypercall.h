@@ -225,6 +225,11 @@ static inline int hypercall_evtchn_send(evtchn_port_t port)
     return hypercall_event_channel_op(EVTCHNOP_send, &port);
 }
 
+static inline int hypercall_evtchn_status(struct evtchn_status *status)
+{
+    return hypercall_event_channel_op(EVTCHNOP_status, status);
+}
+
 static inline int hvm_set_param(unsigned int idx, uint64_t value)
 {
     xen_hvm_param_t p = { .domid = DOMID_SELF, .index = idx, .value = value };

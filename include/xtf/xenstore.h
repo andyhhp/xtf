@@ -7,8 +7,8 @@
 #define XTF_XENSTORE_H
 
 /**
- * Initialise XTF ready for xenstore communication.  May fail if there is no
- * xenbus ring found.
+ * Initialise XTF ready for xenstore communication, and determine whether
+ * xenstored is listening.
  */
 int xenstore_init(void);
 

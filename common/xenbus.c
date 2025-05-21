@@ -108,8 +108,32 @@ static void xenbus_read(void *data, size_t len)
 
 int xenstore_init(void)
 {
-    /* Nothing to initialise.  Report the presence of the xenbus ring. */
-    return xb_port ? 0 : -ENODEV;
+    /*
+     * The XenBus connection is usually set up on behalf of the domain by the
+     * domain builder.
+     *
+     * dom0 is the entity expected to start xenstored (daemon or domain), and
+     * gets no connection details at all.  It is supposed to connect late
+     * after starting xenstored.
+     */
+    if ( !xb_port )
+        return -ENODEV;
+
+    /*
+     * Probe whether xb_port is bound.  "dom0less" constructs some domains
+     * with an unbound event channel, to be connected later when dom0 starts
+     * xenstored.
+     */
+    struct evtchn_status es = {
+        .dom = DOMID_SELF,
+        .port = xb_port,
+    };
+    int rc = hypercall_evtchn_status(&es);
+
+    if ( rc || es.status != EVTCHN_STATUS_interdomain )
+        return -ENODEV;
+
+    return 0;
 }
 
 const char *xenstore_read(const char *path)
