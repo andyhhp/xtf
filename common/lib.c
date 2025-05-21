@@ -73,6 +73,10 @@ int xtf_get_domid(void)
 {
     int rc;
 
+    rc = arch_get_domid();
+    if ( rc >= 0 )
+        return rc;
+
     rc = xenstore_get_domid();
     if ( rc >= 0 )
         return rc;

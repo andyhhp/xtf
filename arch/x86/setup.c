@@ -279,6 +279,22 @@ void arch_setup(void)
     map_shared_info();
 }
 
+int arch_get_domid(void)
+{
+    if ( IS_DEFINED(CONFIG_HVM) )
+    {
+        uint32_t eax, ebx, ecx, edx;
+        unsigned int base = find_xen_leaves();
+
+        cpuid_count(base + 4, 0, &eax, &ebx, &ecx, &edx);
+
+        if ( eax & XEN_HVM_CPUID_DOMID_PRESENT )
+            return ecx;
+    }
+
+    return -1;
+}
+
 /*
  * Common test setup:
  *

@@ -36,6 +36,16 @@
  * EDX: Features 2. Unused bits are set to zero.
  */
 
+/*
+ * Leaf 5 (0x40000x04)
+ * HVM-specific features
+ * Sub-leaf 0: EAX: Features
+ * Sub-leaf 0: EBX: vcpu id (iff EAX has XEN_HVM_CPUID_VCPU_ID_PRESENT flag)
+ * Sub-leaf 0: ECX: domain id (iff EAX has XEN_HVM_CPUID_DOMID_PRESENT flag)
+ */
+#define XEN_HVM_CPUID_VCPU_ID_PRESENT  (1u << 3) /* vcpu id is present in EBX */
+#define XEN_HVM_CPUID_DOMID_PRESENT    (1u << 4) /* domid is present in ECX */
+
 #endif /* XEN_PUBLIC_ARCH_X86_CPUID_H */
 
 /*
