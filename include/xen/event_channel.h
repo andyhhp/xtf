@@ -3,6 +3,7 @@
 
 #include <xen/xen.h>
 
+#define EVTCHNOP_close            3
 #define EVTCHNOP_send             4
 #define EVTCHNOP_status           5
 #define EVTCHNOP_alloc_unbound    6

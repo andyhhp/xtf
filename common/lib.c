@@ -44,6 +44,36 @@ int xtf_probe_sysctl_interface_version(void)
     return -1;
 }
 
+static int evtchn_get_domid(void)
+{
+    union {
+        struct evtchn_alloc_unbound alloc;
+        struct evtchn_status status;
+    } op;
+    evtchn_port_t port;
+    int rc;
+
+    op.alloc.dom = DOMID_SELF;
+    op.alloc.remote_dom = DOMID_SELF;
+    rc = hypercall_evtchn_alloc_unbound(&op.alloc);
+    if ( rc )
+        return -1;
+
+    port = op.alloc.port;
+
+    op.status.dom = DOMID_SELF;
+    op.status.port = port;
+    rc = hypercall_evtchn_status(&op.status);
+
+    /* Clean up the allocated port, irrespective of other failures. */
+    hypercall_evtchn_close(port);
+
+    if ( rc )
+        return -1;
+
+    return op.status.unbound.dom;
+}
+
 static int xenstore_get_domid(void)
 {
     int rc = xenstore_init();
@@ -74,6 +104,10 @@ int xtf_get_domid(void)
     int rc;
 
     rc = arch_get_domid();
+    if ( rc >= 0 )
+        return rc;
+
+    rc = evtchn_get_domid();
     if ( rc >= 0 )
         return rc;
 

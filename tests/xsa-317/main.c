@@ -33,7 +33,7 @@ void test_main(void)
      */
     for ( i = 0; i < 4100; ++i )
     {
-        int rc = hypercall_event_channel_op(EVTCHNOP_alloc_unbound, &ub);
+        int rc = hypercall_evtchn_alloc_unbound(&ub);
 
         if ( rc == -ENOSPC )
             break;
