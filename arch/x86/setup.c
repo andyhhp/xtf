@@ -99,6 +99,37 @@ static void collect_cpuid(cpuid_count_fn_t cpuid_fn)
 }
 
 /*
+ * Find the Xen CPUID leaves.  They may be at 0x4000_0000, or at 0x4000_0100
+ * if Xen is e.g. providing a viridian interface to the guest too.
+ */
+static unsigned int find_xen_leaves(void)
+{
+    static unsigned int leaves;
+
+    if ( leaves )
+        return leaves;
+
+    for ( unsigned int l = XEN_CPUID_FIRST_LEAF;
+          l < XEN_CPUID_FIRST_LEAF + 0x10000; l += 0x100 )
+    {
+        unsigned int eax, ebx, ecx, edx;
+
+        cpuid(l, &eax, &ebx, &ecx, &edx);
+
+        if ( (ebx == XEN_CPUID_SIGNATURE_EBX) &&
+             (ecx == XEN_CPUID_SIGNATURE_ECX) &&
+             (edx == XEN_CPUID_SIGNATURE_EDX) &&
+             ((eax - l) >= 2) )
+        {
+            leaves = l;
+            return l;
+        }
+    }
+
+    panic("Unable to locate Xen CPUID leaves\n");
+}
+
+/*
  * PV guests should have hypercalls set up by the domain builder, due to the
  * HYPERCALL_PAGE ELFNOTE being filled.  HVM guests have to locate the
  * hypervisor cpuid leaves to find correct MSR to requst that Xen writes a
@@ -108,26 +139,8 @@ static void init_hypercalls(void)
 {
     if ( IS_DEFINED(CONFIG_HVM) )
     {
-        uint32_t eax, ebx, ecx, edx, base;
-        bool found = false;
-
-        for ( base = XEN_CPUID_FIRST_LEAF;
-              base < XEN_CPUID_FIRST_LEAF + 0x10000; base += 0x100 )
-        {
-            cpuid(base, &eax, &ebx, &ecx, &edx);
-
-            if ( (ebx == XEN_CPUID_SIGNATURE_EBX) &&
-                 (ecx == XEN_CPUID_SIGNATURE_ECX) &&
-                 (edx == XEN_CPUID_SIGNATURE_EDX) &&
-                 ((eax - base) >= 2) )
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if ( !found )
-            panic("Unable to locate Xen CPUID leaves\n");
+        uint32_t eax, ebx, ecx, edx;
+        unsigned int base = find_xen_leaves();
 
         cpuid(base + 2, &eax, &ebx, &ecx, &edx);
         wrmsr(ebx, _u(hypercall_page));
