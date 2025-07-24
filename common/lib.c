@@ -44,7 +44,7 @@ int xtf_probe_sysctl_interface_version(void)
     return -1;
 }
 
-int xtf_get_domid(void)
+static int xenstore_get_domid(void)
 {
     int rc = xenstore_init();
 
@@ -67,6 +67,17 @@ int xtf_get_domid(void)
         return -1;
 
     return domid;
+}
+
+int xtf_get_domid(void)
+{
+    int rc;
+
+    rc = xenstore_get_domid();
+    if ( rc >= 0 )
+        return rc;
+
+    return -1;
 }
 
 /*
