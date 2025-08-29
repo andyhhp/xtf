@@ -183,6 +183,8 @@ states.
 
 @subpage test-xsa-472-2 - Viridian Synthetic Timers SIM page NULL dereference.
 
+@subpage test-xsa-472-3 - Viridian reference TSC page leak.
+
 
 @section index-utility Utilities
 

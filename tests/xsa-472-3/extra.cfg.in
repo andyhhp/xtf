@@ -1,0 +1,2 @@
+viridian = [ "base", "reference_tsc" ]
+vcpus = 3
