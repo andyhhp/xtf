@@ -179,6 +179,8 @@ states.
 
 @subpage test-xsa-470 - x86: Incorrect stubs exception handling for flags recovery.
 
+@subpage test-xsa-472-1 - Viridian reference TSC NULL dereference.
+
 
 @section index-utility Utilities
 
