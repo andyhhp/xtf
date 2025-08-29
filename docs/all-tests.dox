@@ -181,6 +181,8 @@ states.
 
 @subpage test-xsa-472-1 - Viridian reference TSC NULL dereference.
 
+@subpage test-xsa-472-2 - Viridian Synthetic Timers SIM page NULL dereference.
+
 
 @section index-utility Utilities
 
