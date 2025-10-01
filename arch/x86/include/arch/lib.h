@@ -121,6 +121,13 @@ static inline void outl(uint32_t val, uint16_t port)
     asm volatile("outl %k0, %w1": : "a" (val), "Nd" (port));
 }
 
+static inline void rep_outsb(const char *buf, size_t len, uint16_t port)
+{
+    asm volatile ("rep outsb"
+                  : "+S" (buf), "+c" (len)
+                  : "d" (port) );
+}
+
 static inline unsigned int read_cs(void)
 {
     unsigned int cs;

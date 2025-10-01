@@ -245,9 +245,7 @@ static void map_shared_info(void)
 
 static void qemu_console_write(const char *buf, size_t len)
 {
-    asm volatile("rep outsb"
-                 : "+S" (buf), "+c" (len)
-                 : "d" (0x12));
+    rep_outsb(buf, len, 0x12);
 }
 
 static void xen_console_write(const char *buf, size_t len)
