@@ -1,6 +1,12 @@
 #ifndef XTF_COMPILER_H
 #define XTF_COMPILER_H
 
+#if defined(CONFIG_ENV_pv64) || defined(CONFIG_ENV_pv32pae) || \
+    defined(CONFIG_ENV_hvm64) || defined(CONFIG_ENV_hvm32pae) || \
+    defined(CONFIG_ENV_hvm32pse) || defined(CONFIG_ENV_hvm32)
+#include <arch/config.h>
+#endif
+
 #ifdef __GNUC__
 #include <xtf/compiler-gcc.h>
 #endif

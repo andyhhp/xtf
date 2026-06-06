@@ -6,6 +6,12 @@
 #ifndef XTF_NUMBERS_H
 #define XTF_NUMBERS_H
 
+#if defined(CONFIG_ENV_pv64) || defined(CONFIG_ENV_pv32pae) || \
+	defined(CONFIG_ENV_hvm64) || defined(CONFIG_ENV_hvm32pae) || \
+	defined(CONFIG_ENV_hvm32pse) || defined(CONFIG_ENV_hvm32)
+#include <arch/config.h>
+#endif
+
 /**
  * Create an integer usable in both C and Assembly, even when @p suf is
  * needed.
