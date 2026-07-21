@@ -203,7 +203,7 @@ states.
 
 @subpage test-debug-regs - Debugging facility tests.
 
-@subpage test-nested-svm - Nested SVM tests.
+@subpage test-nested-svm-run - Nested SVM VMRUN tests.
 
 @subpage test-nested-vmx - Nested VT-x tests.
 */

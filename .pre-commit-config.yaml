@@ -1,9 +1,14 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 #
+# Installation notes:
+# - Install pre-commit, e.g. via pip:
+#   pip install pre-commit
+# - Enable it as git pre-commit hook for the current repository:
+#   pre-commit install
 
 fail_fast: false
-default_stages: [commit, push]
+default_stages: [pre-commit, pre-push]
 repos:
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -23,16 +28,61 @@ repos:
     -   id: destroyed-symlinks
     -   id: end-of-file-fixer
     -   id: fix-byte-order-marker
-    -   id: fix-encoding-pragma
     -   id: mixed-line-ending
         args: ['--fix=lf']
     -   id: trailing-whitespace
 
--   repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.12.0
-    hooks:
-    -   id: reorder-python-imports
 
+# This is the pre-commit hook to run black, the Python code formatter.
+-   repo: https://github.com/psf/black
+    rev: 26.5.1
+    hooks:
+    -   id: black
+        # We use the --skip-string-normalization option to preserve the
+        # minimise churn initially, leaving string normalization for
+        # later cleanup commit to not mix with the formatting changes.
+        args: ['--skip-string-normalization']
+
+
+# This is the isort hook recommended for use with black
+-   repo: https://github.com/pycqa/isort
+    rev: 8.0.1
+    hooks:
+      - id: isort
+        args: ['--profile', 'black']
+
+
+# This is the flake8 hook used by black itself:
+-   repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+
+
+# This is the mypy hook:
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.1.0
+    hooks:
+      - id: mypy
+        args: [--strict]
+        exclude: ^docs/gdb-test-fw/reference/
+        additional_dependencies:
+          - pytest
+          - types-gdb
+
+
+# This is the pylint hook:
+-   repo: https://github.com/PyCQA/pylint
+    rev: v4.0.5
+    hooks:
+      - id: pylint
+
+
+# Custom hook to show not staged changes, which may be caused by fixup commits.
 -   repo: local
     hooks:
     -   id: git-diff # https://github.com/pre-commit/pre-commit/issues/1712

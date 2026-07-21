@@ -1,0 +1,58 @@
+name: CI
+
+# Some organisations do not allow workflows to run on push events,
+# so we only run on pull requests.
+on:
+  - pull_request
+
+jobs:
+  python:
+    name: "Pre-commit Checks"
+    runs-on: ubuntu-24.04
+    steps:
+    # Some organisations require pinning of actions to a specific commit SHA.
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    # Some organisations allow only verified actions to be used in workflows.
+    # The owner of this pre-commit action is verified:
+    - uses: cloudposse/github-action-pre-commit@ed9906221c8a4ee1dcb1e665da895998e0f7b396 # v4.1.0
+
+  C:
+    name: "C Builds"
+
+    strategy:
+      matrix:
+        arch: [x86]
+        compiler: [llvm-18, llvm-19, gcc-12, gcc-13, gcc-14]
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Install
+      run: |
+        c=${{matrix.compiler}}
+        v=${c##llvm-}
+        case $c in
+            # Need all {clang,lld}-$v packages
+            llvm-*) EXTRA="clang-${v} lld-${v}" ;;
+        esac
+
+        sudo apt-get update -q
+        sudo apt-get install -y ${{matrix.compiler}} ${EXTRA}
+
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+    - name: Build
+      run: |
+        # Select appropriate LLVM= or CC=
+        c=${{matrix.compiler}}
+        case $c in
+            llvm-*)  COMP="LLVM=${c#llvm}" ;;
+            *)       COMP="CC=$c" ;;
+        esac
+
+        make -j`nproc` ARCH=${{matrix.arch}} $CROSS $COMP
+
+    - name: scan-build
+      if: matrix.compiler == 'llvm-19'
+      run: |
+        sudo apt-get install -y clang-tools-19
+        scan-build-19 --status-bugs -analyze-headers make -j`nproc`

@@ -1,0 +1,3 @@
+# Pipeline configuration to not run copyright checks on pull requests.
+copyright:
+  enablePRCheck: false

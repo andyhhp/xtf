@@ -8,9 +8,6 @@
 # pygtk.require().
 #init-hook=
 
-# Profiled execution.
-profile=no
-
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
 ignore=CVS
@@ -37,7 +34,7 @@ extension-pkg-whitelist=
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time. See also the "--disable" option for examples.
-#enable=
+enable=unneeded-not,consider-using-set-comprehension
 
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifiers separated by comma (,) or put this
@@ -48,7 +45,7 @@ extension-pkg-whitelist=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=bad-whitespace, bad-continuation, global-statement, star-args
+disable=import-error,global-statement,unspecified-encoding
 
 
 [REPORTS]
@@ -57,11 +54,6 @@ disable=bad-whitespace, bad-continuation, global-statement, star-args
 # (visual studio) and html. You can also give a reporter class, eg
 # mypackage.mymodule.MyReporterClass.
 output-format=text
-
-# Put messages in a separate file for each module / package specified on the
-# command line instead of printing them on stdout. Reports (if any) will be
-# written in a file name "pylint_global.[txt|html]".
-files-output=no
 
 # Tells whether to display a full report or only the messages
 reports=no
@@ -72,10 +64,6 @@ reports=no
 # number of statements analyzed. This is used by the global evaluation report
 # (RP0004).
 evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
-
-# Add a comment according to your evaluation note. This is used by the global
-# evaluation report (RP0004).
-comment=no
 
 # Template used to display messages. This is a python new-style format string
 # used to format the message information. See doc for all details
@@ -118,10 +106,6 @@ ignored-modules=
 # (useful for classes with attributes dynamically set).
 ignored-classes=SQLObject
 
-# When zope mode is activated, add a predefined set of Zope acquired attributes
-# to generated-members.
-zope=no
-
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E0201 when accessed. Python regular
 # expressions are accepted.
@@ -138,7 +122,7 @@ logging-modules=logging
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=80
+max-line-length=88
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
@@ -146,9 +130,6 @@ ignore-long-lines=^\s*(# )?<?https?://\S+>?$
 # Allow the body of an if to be on the same line as the test if there is no
 # else.
 single-line-if-stmt=no
-
-# List of optional constructs for which whitespace checking is disabled
-no-space-check=trailing-comma,dict-separator
 
 # Maximum number of lines in a module
 max-module-lines=1000
@@ -163,12 +144,6 @@ indent-after-paren=4
 
 [BASIC]
 
-# Required attributes for module, separated by a comma
-required-attributes=
-
-# List of builtins function names that should not be used, separated by a comma
-bad-functions=apply,input
-
 # Good variable names which should always be accepted, separated by a comma
 good-names=e,i,j,k,ex,Run,_
 
@@ -179,68 +154,35 @@ bad-names=foo,bar,baz,toto,tutu,tata
 # the name regexes allow several styles.
 name-group=
 
-# Include a hint for the correct naming format with invalid-name
-include-naming-hint=no
-
 # Regular expression matching correct function names
-function-rgx=[a-z_][a-z0-9_]{1,35}$
-
-# Naming hint for function names
-function-name-hint=[a-z_][a-z0-9_]{2,30}$
+function-rgx=[a-z_][a-z0-9_]{1,45}$
 
 # Regular expression matching correct variable names
 variable-rgx=[a-z_][a-z0-9_]{1,35}$
 
-# Naming hint for variable names
-variable-name-hint=[a-z_][a-z0-9_]{2,30}$
-
 # Regular expression matching correct constant names
 const-rgx=(([A-Za-z_][A-Za-z0-9_]*)|(__.*__))$
-
-# Naming hint for constant names
-const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
 # Regular expression matching correct attribute names
 attr-rgx=[a-z_][a-z0-9_]{1,35}$
 
-# Naming hint for attribute names
-attr-name-hint=[a-z_][a-z0-9_]{2,30}$
-
 # Regular expression matching correct argument names
 argument-rgx=[a-z_][a-z0-9_]{1,35}$
-
-# Naming hint for argument names
-argument-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression matching correct class attribute names
 class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
 
-# Naming hint for class attribute names
-class-attribute-name-hint=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
-
 # Regular expression matching correct inline iteration names
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
-
-# Naming hint for inline iteration names
-inlinevar-name-hint=[A-Za-z_][A-Za-z0-9_]*$
 
 # Regular expression matching correct class names
 class-rgx=[A-Z_][a-zA-Z0-9]+$
 
-# Naming hint for class names
-class-name-hint=[A-Z_][a-zA-Z0-9]+$
-
 # Regular expression matching correct module names
 module-rgx=(([a-z_][a-z0-9_-]*)|([A-Z][a-zA-Z0-9-]+))$
 
-# Naming hint for module names
-module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-
 # Regular expression matching correct method names
-method-rgx=[a-z_][a-z0-9_]{1,35}$
-
-# Naming hint for method names
-method-name-hint=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{1,45}$
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
@@ -285,10 +227,6 @@ int-import-graph=
 
 [CLASSES]
 
-# List of interface methods to ignore, separated by a comma. This is used for
-# instance to not check methods defines in Zope's Interface base class.
-ignore-iface-methods=isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf,adaptWith,is_implemented_by
-
 # List of method names used to declare (i.e. assign) instance attributes.
 defining-attr-methods=__init__,__new__,setUp
 
@@ -302,14 +240,15 @@ valid-metaclass-classmethod-first-arg=mcs
 [DESIGN]
 
 # Maximum number of arguments for function / method
-max-args=5
+max-args=7
+max-positional-arguments=7
 
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
 ignored-argument-names=_.*
 
 # Maximum number of locals for function / method body
-max-locals=50
+max-locals=60
 
 # Maximum number of return / yield for function / method body
 max-returns=250
@@ -337,4 +276,4 @@ max-public-methods=20
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

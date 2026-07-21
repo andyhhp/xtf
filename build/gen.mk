@@ -1,3 +1,8 @@
+ifeq ($(XTF_METADATA_ONLY),1)
+
+# In metadata-loading mode, this file is a compatibility shim only.
+
+else
 
 # Sanity checking of expected parameters
 
@@ -48,15 +53,30 @@ hvm64-format := $(firstword $(filter elf32-x86-64,$(shell $(OBJCOPY) --help)) el
 define PERENV_build
 
 ifneq ($(1),hvm64)
+#
 # Generic link line for most environments
+#
+# Link from $(ROOT) for the same reason as compilation: preserve
+# diagnostic paths relative to the workspace root while keeping
+# the make target names unchanged for recursive callers.
+#
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
-	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@
+	cd $(ROOT) && $(LD) $$(LDFLAGS_$(1)) \
+		$$(foreach dep,$$(DEPS-$(1)),$$(call root-path,$$(dep))) \
+		-o $$(call root-path,$$@)
 else
+#
 # hvm64 needs linking normally, then converting to elf32-x86-64 or elf32-i386
+#
+# Keep the temporary file root-relative as well so objcopy sees
+# the same path spelling that the linker emitted diagnostics for.
+#
 test-$(1)-$(NAME): $$(DEPS-$(1)) $$(link-$(1))
-	$(LD) $$(LDFLAGS_$(1)) $$(DEPS-$(1)) -o $$@.tmp
-	$(OBJCOPY) $$@.tmp -O $(hvm64-format) $$@
-	rm -f $$@.tmp
+	cd $(ROOT) && $(LD) $$(LDFLAGS_$(1)) \
+		$$(foreach dep,$$(DEPS-$(1)),$$(call root-path,$$(dep))) \
+		-o $$(call root-path,$$@).tmp
+	cd $(ROOT) && $(OBJCOPY) $$(call root-path,$$@).tmp -O $(hvm64-format) $$(call root-path,$$@)
+	rm -f $$(call root-path,$$@).tmp
 endif
 
 cfg-$(1) ?= $(defcfg-$($(1)_guest))
@@ -100,3 +120,5 @@ clean:
 
 .PHONY: FORCE
 FORCE:
+
+endif

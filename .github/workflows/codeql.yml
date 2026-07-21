@@ -9,6 +9,12 @@ on:
 
 jobs:
   analyse:
+    # Only run CodeQL analysis on the main repository, not forks
+    # because forks may not have CodeQL analysis enabled and we
+    # don't want to run CodeQL analysis on forks to avoid wasting
+    # GitHub Actions minutes on forks. For test code, CodeQL analysis
+    # is not required, so we only run it on the main repository.
+    if: ${{ github.repository_owner == 'andyhhp' }}
 
     strategy:
       matrix:
@@ -17,13 +23,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
-    - uses: github/codeql-action/init@v3
+    - uses: github/codeql-action/init@v4
       with:
         languages: ${{matrix.lang}}
         queries: security-and-quality
 
-    - uses: github/codeql-action/autobuild@v3
+    - uses: github/codeql-action/autobuild@v4
 
-    - uses: github/codeql-action/analyze@v3
+    - uses: github/codeql-action/analyze@v4
